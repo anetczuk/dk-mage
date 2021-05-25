@@ -1,0 +1,149 @@
+#!/bin/bash
+#
+# MIT License
+# 
+# Copyright (c) 2019 Arkadiusz Netczuk <dev.arnet@gmail.com>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+
+#
+# This file was automatically generated from '@GENERATOR_FILE@'. All changes will be lost.
+#
+
+set -e
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+arguments=()
+checkTool=""
+
+for i in "$@"; do
+case $i in
+    --tool=*|-t=*)      checkTool="${i#*=}"
+                        shift                   # past argument=value
+                        ;;
+    *)                  arguments+=($i)
+                        shift                   # past argument
+                        ;;
+esac
+done
+
+
+if [ ! -z "$checkTool" ]; then
+    echo "Running tool: $checkTool"
+fi
+
+
+valgrind_params=""
+coverage=0
+valgrind=0
+
+case "$checkTool" in
+    "")              ## no tool, just run test suite
+                     ;;
+
+    memcheck)        valgrind_params="--tool=$checkTool"
+                     valgrind=1
+                     ;;
+                   
+    callgrind)       valgrind_params="--tool=$checkTool"
+                     valgrind=1
+                     ;;
+    
+    cover|coverage)  ## prepare coverage
+                     if [ "@CODE_COVERAGE@" == "" ] || [ "@CODE_COVERAGE@" == "0" ] || [ "@CODE_COVERAGE@" == "OFF" ]; then
+                         echo "Code coverage not enable. Activate it through cmake (variable CODE_COVERAGE)"
+                         exit 1
+                     fi
+                     coverage=1
+                     ;;
+    
+    *)               echo "Unknown tool: '$checkTool'"
+                     exit 1;; 
+esac
+
+
+
+cd $SCRIPT_DIR
+
+
+if [ $valgrind -eq 1 ]; then
+    ## run valgrind
+    valgrind $valgrind_params --error-exitcode=1 $SCRIPT_DIR/@EXECUTABLE@ ${arguments[@]}
+    exit $?
+fi
+
+
+if [ $coverage -eq 1 ]; then
+    ## initialize code coverage calculateion
+    coverage_dir=$SCRIPT_DIR/tests_coverage
+    rm -rf $coverage_dir
+    mkdir -p $coverage_dir
+     
+    coverage_reference_file=$coverage_dir/base.info
+    coverage_measure_file=$coverage_dir/test.info
+    coverage_merge_file=$coverage_dir/total.info
+    coverage_binary_dir=@CMAKE_CURRENT_BINARY_DIR@
+     
+    #### calculate reference values
+    ##base_dir=$coverage_binary_dir/..
+    ##lcov --zerocounters --directory $base_dir --output-file $coverage_reference_file                    
+    ##lcov --capture --initial --directory $base_dir --output-file $coverage_reference_file
+     
+    lcov --base-directory $coverage_binary_dir --directory $coverage_binary_dir --zerocounters -q
+     
+    ## execute tests
+    set +e
+
+
+    ## running tests
+    @EXECUTABLE@ ${arguments[@]}
+
+
+    ## generate coverage report
+    set -e
+     
+    lcov --capture --directory $coverage_binary_dir --output-file $coverage_measure_file
+    if [ -f "$coverage_reference_file" ]; then
+        ## merge baseline data with coverage data
+        lcov -a $coverage_reference_file -a $coverage_measure_file -o $coverage_merge_file
+    else
+        coverage_merge_file=$coverage_measure_file
+    fi
+     
+    #### remove system headers references (lcov's '--no-external' is not supported for version 1.9 and below)
+    ##lcov --extract $coverage_merge_file "$coverage_binary_dir/*" --output-file $coverage_merge_file
+    ##lcov --remove $coverage_merge_file "$coverage_binary_dir/example/*" --output-file $coverage_merge_file
+                          
+    ## generate report
+    genhtml --demangle-cpp --prefix "@CMAKE_SOURCE_DIR@" -o $coverage_dir -t "@CMAKE_PROJECT_NAME@ test coverage" --num-spaces 4 $coverage_merge_file
+     
+    echo -e "\nReport file: $coverage_dir/index.html"
+    
+    exit 0
+fi
+
+
+## running tests -- normal case
+@EXECUTABLE@ ${arguments[@]}
+    
