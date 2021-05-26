@@ -4,13 +4,15 @@
 
 #include "adiktedpp/Level.h"
 
-#include "libadikted/adikted.h"
+//extern "C" {
+//    #include "libadikted/adikted.h"
+//}
 
 
 namespace adiktedpp {
 
     struct LevelData {
-        ///
+//        struct LEVEL *lvl;
     };
 
 
@@ -18,9 +20,12 @@ namespace adiktedpp {
 
 
     Level::Level(): data( new LevelData() ) {
+//        level_init( &data->lvl, MFV_DKGOLD, NULL );
     }
 
     Level::~Level() {
+//        level_free( data->lvl );
+//        level_deinit( &data->lvl );
     }
 
 } /* namespace adiktedpp */

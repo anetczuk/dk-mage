@@ -27,7 +27,11 @@ cp $SCRIPT_DIR/fix/globals.h "$LIB_PATH"
 
 cd "$LIB_PATH"
 
-make all BUILD_FOR_LINUX=1
+## building for Windows
+make all
+
+## building for Linux
+#make all BUILD_FOR_LINUX=1
 
 
 mkdir -p "$INSTALL_PATH"
@@ -35,7 +39,8 @@ mkdir -p "$INSTALL_PATH/include/libadikted"
 mkdir -p "$INSTALL_PATH/lib"
 
 cp $LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
-cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so"
+#cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so" && true
+cp "$LIB_PATH/bin/adikted.dll" -T "$INSTALL_PATH/lib/libadikted.dll" && true
 
 
 echo "building adikted done"

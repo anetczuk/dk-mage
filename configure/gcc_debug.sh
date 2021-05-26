@@ -20,8 +20,9 @@ rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 
+##export CC=/usr/bin/gcc
+##export CXX=/usr/bin/g++
 
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
+cmake -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/cmake/windows.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
 
-cmake -D CMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
+#cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
