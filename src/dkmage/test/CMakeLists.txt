@@ -23,7 +23,7 @@ target_link_libraries( ${TARGET_NAME} PUBLIC dkmage PRIVATE Catch2::Catch2 )
 set( EXECUTABLE "./${TARGET_NAME}" )
 generate_file( run_tests.sh.in )
 
-add_test( NAME ${TARGET_NAME} COMMAND ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
         
 
 #TODO: copying data and scripts can be optimised by creating script from template with defined data directry
