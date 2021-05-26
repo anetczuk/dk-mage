@@ -10,14 +10,14 @@ set( PUBLIC_HEADERS "../include" )
 
 include_directories( ${PUBLIC_HEADERS} )
 
-set( EXT_LIBS ${adikted_LIBRARY} )
 
 file(GLOB_RECURSE cpp_files *.cpp )
 file(GLOB_RECURSE h_files ${PUBLIC_HEADERS}/*.h )
 
 
 add_library( ${TARGET_NAME} SHARED ${cpp_files} )
-target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
+#target_link_libraries( ${TARGET_NAME} ${adikted_LIBRARY} )
+target_link_libraries( ${TARGET_NAME} )
 
 set_target_properties( ${TARGET_NAME} PROPERTIES PUBLIC_HEADER "${h_files}" )
 

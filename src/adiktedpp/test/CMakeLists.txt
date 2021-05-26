@@ -13,13 +13,12 @@ set( TARGET_NAME adiktedpp_tests )
 include_directories( "../include" )
 
 
-set( EXT_LIBS ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} adiktedpp )
-
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
 add_executable( ${TARGET_NAME} ${cpp_files} )
-target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
+#target_link_libraries( ${TARGET_NAME} PUBLIC ${adikted_LIBRARY} adiktedpp PRIVATE Catch2::Catch2 )
+target_link_libraries( ${TARGET_NAME} PUBLIC adiktedpp PRIVATE Catch2::Catch2 )
 
 set( EXECUTABLE "./${TARGET_NAME}" )
 generate_file( run_tests.sh.in )

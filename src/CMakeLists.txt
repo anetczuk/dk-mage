@@ -13,13 +13,15 @@ endif()
 project( dk-mage )
 
 
+set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
+
 SET( EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external" )
 
-SET( CMAKE_PREFIX_PATH "${EXTERNAL_DIR};${CMAKE_PREFIX_PATH}" )
-SET( CMAKE_INCLUDE_PATH "${EXTERNAL_DIR}/adikted/install;${CMAKE_INCLUDE_PATH}" )
-SET( CMAKE_LIBRARY_PATH "${EXTERNAL_DIR}/adikted/install;${CMAKE_LIBRARY_PATH}" )
+list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/adikted/install" )
+#list( APPEND CMAKE_INCLUDE_PATH "${EXTERNAL_DIR}/adikted/install" )
+#list( APPEND CMAKE_LIBRARY_PATH "${EXTERNAL_DIR}/adikted/install" )
 
-set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
+list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/catch2/install/lib/cmake" )
 
 
 include( CMakeCompileFlags.txt )
@@ -42,7 +44,7 @@ enable_testing()
 
 
 if( CMAKE_TESTING_ENABLED )   
-    find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+    find_package( Catch2 REQUIRED )
 endif()
 
 
