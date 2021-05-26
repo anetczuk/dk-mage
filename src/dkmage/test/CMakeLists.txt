@@ -21,7 +21,7 @@ add_executable( ${TARGET_NAME} ${cpp_files} )
 target_link_libraries( ${TARGET_NAME} PUBLIC dkmage PRIVATE Catch2::Catch2 )
 
 set( EXECUTABLE "./${TARGET_NAME}" )
-generate_file( run_tests.sh.in )
+generate_file( ../../run_tests.sh.in )
 
 add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
         
