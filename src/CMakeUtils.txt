@@ -2,7 +2,7 @@
 ## various functions and macros
 ##
 
-function(generate_file sourceFile targetFile)
+function(generate_to_file sourceFile targetFile)
     set( GENERATOR_FILE "${sourceFile}" )
     configure_file( ${sourceFile} ${targetFile} @ONLY )
 endfunction()
