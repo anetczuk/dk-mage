@@ -40,7 +40,8 @@ mkdir -p "$INSTALL_PATH/lib"
 
 cp $LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
 #cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so" && true
-cp "$LIB_PATH/bin/adikted.dll" -T "$INSTALL_PATH/lib/libadikted.dll" && true
+cp "$LIB_PATH/bin/adikted.dll" "$INSTALL_PATH/lib" && true
+#cp "$LIB_PATH/bin/adikted.dll" -T "$INSTALL_PATH/lib/libadikted.dll" && true
 
 
 echo "building adikted done"

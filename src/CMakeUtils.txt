@@ -8,6 +8,14 @@ function(generate_to_file sourceFile targetFile)
 endfunction()
 
 
+function(generate_file script_template)
+    set( GENERATOR_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${script_template}" )
+    set( DATA_TYPE ${data_type} )
+    string(REGEX REPLACE "\\.[^.]*$" "" output_file ${script_template})
+    configure_file( ${GENERATOR_FILE} "${output_file}" @ONLY )
+endfunction()
+
+
 macro(current_dir_name output_var)
     get_filename_component( ${output_var} ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 endmacro()
@@ -61,9 +69,19 @@ function(build_cpps project_name)
 endfunction()
 
 
-function(generate_file script_template)
-    set( GENERATOR_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${script_template}" )
-    set( DATA_TYPE ${data_type} )
-    string(REGEX REPLACE "\\.[^.]*$" "" output_file ${script_template})
-    configure_file( ${GENERATOR_FILE} "${output_file}" @ONLY )
+function(get_library_path output_var package_name)
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set( varname "${package_name}_LIBRARY_DEBUG" )
+    else()
+        set( varname "${package_name}_LIBRARY_RELEASE" )
+    endif()
+    set( ${output_var} "${${varname}}" PARENT_SCOPE )
 endfunction()
+
+
+function(copy_package_library package_name output_dir)
+    get_library_path( package_lib "${package_name}" )
+    file(COPY ${package_lib} DESTINATION ${output_dir} )
+endfunction()
+
+

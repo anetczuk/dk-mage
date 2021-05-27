@@ -17,19 +17,15 @@ file(GLOB_RECURSE cpp_files *.cpp )
 
 
 add_executable( ${TARGET_NAME} ${cpp_files} )
-#target_link_libraries( ${TARGET_NAME} PUBLIC ${adikted_LIBRARY} adiktedpp PRIVATE Catch2::Catch2 )
 target_link_libraries( ${TARGET_NAME} PUBLIC adiktedpp PRIVATE Catch2::Catch2 )
+#target_link_libraries( ${TARGET_NAME} PUBLIC ${adikted_LIBRARY} adiktedpp PRIVATE Catch2::Catch2 )
 
 set( EXECUTABLE "./${TARGET_NAME}" )
-generate_to_file( ../../run_tests.sh.in run_tests.sh )
+generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
+#generate_to_file( ../../run_tests.sh.in run_tests.sh )
 
 add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-        
 
-#TODO: copying data and scripts can be optimised by creating script from template with defined data directry
 
-## copy run script
-#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/runTests.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
-
-## copy data directory
-#file(COPY refimg DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
+## copy dependencies
+copy_package_library( "adikted" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
