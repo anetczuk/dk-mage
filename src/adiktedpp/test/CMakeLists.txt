@@ -24,8 +24,5 @@ set( EXECUTABLE "./${TARGET_NAME}" )
 generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
 #generate_to_file( ../../run_tests.sh.in run_tests.sh )
 
-add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-
-## copy dependencies
-copy_package_library( "adikted" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+#add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
