@@ -11,7 +11,7 @@ BUILD_TYPE=Release
 SRC_DIR=$SCRIPT_DIR/../src
 
 BUILD_DIR_NAME=$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
-BUILD_DIR=$SCRIPT_DIR/../build/$BUILD_DIR_NAME
+BUILD_DIR=$SCRIPT_DIR/../build/win_$BUILD_DIR_NAME
 
 
 ## remove old configuration
@@ -24,6 +24,6 @@ cd $BUILD_DIR
 #export CC=/usr/bin/gcc
 #export CXX=/usr/bin/g++
 
-cmake -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/cmake/windows.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
+cmake -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/cmake/lin-to-win.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
 
 #cmake -D CMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
