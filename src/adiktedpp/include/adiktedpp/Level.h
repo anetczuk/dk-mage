@@ -27,6 +27,32 @@ namespace adiktedpp {
 
         ~Level();
 
+        /// fname
+        std::string inputFileName() const;
+
+        /// savfname
+        std::string outputFileName() const;
+
+        std::string levelsPath() const;
+
+        void setLevelsPath( const std::string& path );
+
+        std::string dataPath() const;
+
+        void startNewMap();
+
+        /// map ide template to load: "Levels/MAP{mapId}"
+        bool loadMapById( const std::size_t mapId );
+
+        /// if relative path is given, then it refers to current working directory or
+        /// directory of executable
+        /// example of map ID: "Levels/MAP00001"
+        bool loadMapByPath( const std::string& mapId );
+
+        //TODO: user_set_slab
+
+        void generateBmp();
+
     };
 
 } /* namespace adiktedpp */
