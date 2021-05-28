@@ -58,6 +58,8 @@ if( CMAKE_TESTING_ENABLED )
 endif()
 
 
+include_directories( "utils/include" )
+
 add_subdirectory( adiktedpp )
 add_subdirectory( dkmage )
 add_subdirectory( cli )

@@ -1,14 +1,12 @@
 /*
  * Log.h
  *
- *  Created on: May 27, 2021
- *      Author: bob
  */
 
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_LOG_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_LOG_H_
 
-/// inclusion: #include "adiktedpp/Log.h"
+/// inclusion: #include "utils/Log.h"
 
 #include <iostream>
 

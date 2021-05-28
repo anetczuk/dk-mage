@@ -27,10 +27,10 @@ namespace adiktedpp {
 
         ~Level();
 
-        /// fname
+        /// returns path of recent attempt to load map (fname)
         std::string inputFileName() const;
 
-        /// savfname
+        /// returns path of recent successful load of map (savfname)
         std::string outputFileName() const;
 
         std::string levelsPath() const;

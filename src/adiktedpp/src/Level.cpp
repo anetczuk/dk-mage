@@ -4,7 +4,7 @@
 
 #include "adiktedpp/Level.h"
 
-#include "adiktedpp/Log.h"
+#include "utils/Log.h"
 
 #include <sstream>
 #include <iomanip>
@@ -111,7 +111,7 @@ namespace adiktedpp {
         format_lvl_fname( data->lvl, levelName );
 
         /// loading map
-        short result = user_load_map( data->lvl, 0 );
+        const short result = user_load_map( data->lvl, 0 );
         if (result == ERR_NONE) {
             return true;
         }

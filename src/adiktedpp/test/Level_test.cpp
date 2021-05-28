@@ -6,6 +6,10 @@
 
 #include "adiktedpp/Level.h"
 
+#include "Path.h"
+#include "utils/Log.h"
+#include "utils/Separator.h"
+
 
 using namespace adiktedpp;
 
@@ -57,7 +61,7 @@ TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
     REQUIRE_FALSE( loaded );
 
     const std::string fName = level.inputFileName();
-    CHECK( fName == ".\\map_invalid_name" );
+    CHECK( separatorsToLinux( fName ) == "./map_invalid_name" );
 
     const std::string outFName = level.outputFileName();
     CHECK( outFName == "" );
@@ -89,7 +93,7 @@ TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
     REQUIRE_FALSE( loaded );
 
     const std::string fName = level.inputFileName();
-    CHECK( fName == ".\\map00123" );
+    CHECK( separatorsToLinux( fName ) == "./map00123" );
 
     const std::string outFName = level.outputFileName();
     CHECK( outFName == "" );
@@ -101,14 +105,15 @@ TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
 TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
     Level level;
 
-    const bool loaded = level.loadMapByPath( "xxx/map00001" );
+    const std::string inputData = getDataPath( "map00001/map00001" );
+    const bool loaded = level.loadMapByPath( inputData );
     REQUIRE( loaded );
 
     const std::string fName = level.inputFileName();
-    CHECK( fName == "xxx/map00001" );
+    CHECK( fName != "" );
 
     const std::string outFName = level.outputFileName();
-    CHECK( outFName == "xxx/map00001" );
+    CHECK( outFName != "" );
 
     const std::string levelPath = level.levelsPath();
     CHECK( levelPath == "" );
