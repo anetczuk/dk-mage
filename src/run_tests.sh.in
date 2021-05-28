@@ -145,5 +145,5 @@ fi
 
 
 ## running tests -- normal case
-wine @EXECUTABLE@ ${arguments[@]}
+@EXECUTABLE@ ${arguments[@]}
     

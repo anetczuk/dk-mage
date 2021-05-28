@@ -39,6 +39,16 @@ include( CMakeUtils.txt )
 enable_testing()
 
 
+set( EXE_EMULATOR "" )
+if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    ## Linux host
+    if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        ## Windows target
+        set( EXE_EMULATOR "wine" )
+    endif()
+endif()
+
+
 
 ## ================= build =================
 

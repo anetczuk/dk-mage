@@ -20,9 +20,17 @@ add_executable( ${TARGET_NAME} ${cpp_files} )
 target_link_libraries( ${TARGET_NAME} PUBLIC dkmage PRIVATE Catch2::Catch2 )
 #target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
 
-set( EXECUTABLE "./${TARGET_NAME}" )
+
+if (WIN32)
+    ## for Windows target
+    set( EXECUTABLE "wine ./${TARGET_NAME}" )
+else()
+    set( EXECUTABLE "./${TARGET_NAME}" )
+endif()
+
 generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
 #generate_to_file( ../../run_tests.sh.in run_tests.sh )
 
-add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
-#add_test( NAME ${TARGET_NAME} COMMAND wine ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+add_test( NAME ${TARGET_NAME} COMMAND ${EXE_EMULATOR} ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
+#add_test( NAME ${TARGET_NAME} COMMAND ${EXE_EMULATOR} ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
