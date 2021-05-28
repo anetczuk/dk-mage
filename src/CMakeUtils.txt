@@ -84,4 +84,15 @@ function(copy_package_library package_name output_dir)
     file(COPY ${package_lib} DESTINATION ${output_dir} )
 endfunction()
 
+function(copy_package_libraries package_name output_dir)
+    set( varname "${package_name}_LIBRARY_DEBUG" )
+    if ( ${varname} )
+        file(COPY ${${varname}} DESTINATION ${output_dir} )
+    endif()
+    set( varname "${package_name}_LIBRARY_RELEASE" )
+    if ( ${varname} )
+        file(COPY ${${varname}} DESTINATION ${output_dir} )
+    endif()
+endfunction()
+
 
