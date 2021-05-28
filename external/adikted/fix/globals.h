@@ -48,6 +48,12 @@
 //# define DLLIMPORT __declspec (dllimport)
 #endif
 
+#if defined(USE_FASTCALL)
+# define FASTCALL __fastcall
+#else
+# define FASTCALL
+#endif
+
 /* Basic Definitions */
 
 #if defined(unix) && !defined (GO32)

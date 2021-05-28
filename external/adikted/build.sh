@@ -17,31 +17,52 @@ BUILD_PATH="$SCRIPT_DIR/build/$SRC_DIR"
 INSTALL_PATH="$SCRIPT_DIR/install"
 LIB_PATH="$BUILD_PATH/libadikted"
 
+rm -rf "$BUILD_PATH"
+rm -rf "$INSTALL_PATH"
 
 mkdir -p "$BUILD_PATH"
-
-unzip -o "$SCRIPT_DIR/$SRC_ARCHIVE" -d "$SCRIPT_DIR/build"
-
-cp $SCRIPT_DIR/fix/globals.h "$LIB_PATH"
-
-
-cd "$LIB_PATH"
-
-## building for Windows
-make all
-
-## building for Linux
-#make all BUILD_FOR_LINUX=1
-
-
 mkdir -p "$INSTALL_PATH"
 mkdir -p "$INSTALL_PATH/include/libadikted"
 mkdir -p "$INSTALL_PATH/lib"
 
+
+unzip -o "$SCRIPT_DIR/$SRC_ARCHIVE" -d "$SCRIPT_DIR/build"
+
+## cpy fixes
+cp $SCRIPT_DIR/fix/* "$LIB_PATH"
+
+
+cd "$LIB_PATH"
+
+
 cp $LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
-#cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so" && true
+
+
+## building for Windows
+make clean
+make all
+
 cp "$LIB_PATH/bin/adikted.dll" "$INSTALL_PATH/lib" && true
-#cp "$LIB_PATH/bin/adikted.dll" -T "$INSTALL_PATH/lib/libadikted.dll" && true
+
+
+make clean
+make all DEBUG=1
+
+cp "$LIB_PATH/bin/adikted.dll" "$INSTALL_PATH/lib/adikted_d.dll" && true
+
+
+
+## building for Linux
+make clean
+make all BUILD_FOR_LINUX=1
+
+cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so" && true
+
+
+make clean
+make all BUILD_FOR_LINUX=1 DEBUG=1
+
+cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted_d.so" && true
 
 
 echo "building adikted done"
