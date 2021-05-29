@@ -26,10 +26,12 @@ target_link_libraries( ${TARGET_NAME} PUBLIC adiktedpp PRIVATE Catch2::Catch2 )
 
 if (WIN32)
     ## for Windows target
-    set( EXECUTABLE "wine ./${TARGET_NAME}" )
+    set( EXECUTABLE_PATH "wine ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET_NAME}" )
 else()
-    set( EXECUTABLE "./${TARGET_NAME}" )
+    set( EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET_NAME}" )
 endif()
+
+set( EXECUTABLE_WORKDIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET_NAME}_output" )
 
 generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
 #generate_to_file( ../../run_tests.sh.in run_tests.sh )

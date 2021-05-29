@@ -83,20 +83,20 @@ case "$checkTool" in
 esac
 
 
-
-cd $SCRIPT_DIR
+mkdir -p "@EXECUTABLE_WORKDIR@"
+cd "@EXECUTABLE_WORKDIR@"
 
 
 if [ $valgrind -eq 1 ]; then
     ## run valgrind
-    valgrind $valgrind_params --error-exitcode=1 $SCRIPT_DIR/@EXECUTABLE@ ${arguments[@]}
+    valgrind $valgrind_params --error-exitcode=1 @EXECUTABLE_PATH@ ${arguments[@]}
     exit $?
 fi
 
 
 if [ $coverage -eq 1 ]; then
     ## initialize code coverage calculateion
-    coverage_dir=$SCRIPT_DIR/tests_coverage
+    coverage_dir="@EXECUTABLE_WORKDIR@/tests_coverage"
     rm -rf $coverage_dir
     mkdir -p $coverage_dir
      
@@ -117,7 +117,7 @@ if [ $coverage -eq 1 ]; then
 
 
     ## running tests
-    @EXECUTABLE@ ${arguments[@]}
+    @EXECUTABLE_PATH@ ${arguments[@]}
 
 
     ## generate coverage report
@@ -145,5 +145,5 @@ fi
 
 
 ## running tests -- normal case
-@EXECUTABLE@ ${arguments[@]}
+@EXECUTABLE_PATH@ ${arguments[@]}
     
