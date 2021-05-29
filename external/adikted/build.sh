@@ -65,4 +65,4 @@ make all BUILD_FOR_LINUX=1 DEBUG=1
 cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted_d.so" && true
 
 
-echo "building adikted done"
+echo -e "\nbuilding adikted done"
