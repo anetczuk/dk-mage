@@ -49,6 +49,10 @@ if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 
+set( KEEPER_DATA "" CACHE PATH "Path to DK data directory" )
+
+add_definitions( -DKEEPER_DATA_PATH="${KEEPER_DATA}" )
+
 
 ## ================= build =================
 
