@@ -1,8 +1,6 @@
 /*
  * Path.h
  *
- *  Created on: May 29, 2021
- *      Author: bob
  */
 
 #ifndef ADIKTEDPP_TEST_PATH_H_
