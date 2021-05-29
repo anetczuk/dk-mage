@@ -6,6 +6,7 @@
 
 #include "adiktedpp/Level.h"
 
+#include "adiktedpp/Messages.h"
 #include "Path.h"
 #include "utils/Log.h"
 #include "utils/Separator.h"
@@ -14,18 +15,30 @@
 using namespace adiktedpp;
 
 
+inline ScopeMessages initialize_messages() {
+    const std::string testName = Catch::getResultCapture().getCurrentTestName();
+    return ScopeMessages( testName, ".log" );
+}
+
+
 TEST_CASE("Level_constructor", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
     REQUIRE( true );
 }
 
 TEST_CASE("Level_levelPath_unload", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
     const std::string path = level.levelsPath();
     REQUIRE( path == "" );
 }
 
 TEST_CASE("Level_setLevelsPath", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     level.setLevelsPath( "abc/def" );
@@ -34,12 +47,16 @@ TEST_CASE("Level_setLevelsPath", "[classic]") {
 }
 
 TEST_CASE("Level_dataPath_unload", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
     const std::string path = level.dataPath();
     REQUIRE( path == "" );
 }
 
 TEST_CASE("Level_startNewMap_succeed", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     level.startNewMap();
@@ -55,6 +72,8 @@ TEST_CASE("Level_startNewMap_succeed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     const bool loaded = level.loadMapByPath( "map_invalid_name" );
@@ -71,6 +90,8 @@ TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_subdir_failed", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     const bool loaded = level.loadMapByPath( "aaa/map_invalid_name" );
@@ -87,6 +108,8 @@ TEST_CASE("Level_loadMapByPath_string_subdir_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     const bool loaded = level.loadMapByPath( "123" );
@@ -103,6 +126,8 @@ TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
+    ScopeMessages scoped = initialize_messages();
+
     Level level;
 
     const std::string inputData = getDataPath( "map00001/map00001" );
