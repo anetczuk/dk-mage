@@ -19,6 +19,21 @@ namespace adiktedpp {
 
     struct LevelData {
         struct LEVEL *lvl;
+
+
+        const char* getDataPath() const {
+            if ( lvl == nullptr ) {
+                return nullptr;
+            }
+            return lvl->optns.data_path;
+        }
+
+        char* getDataPath() {
+            if ( lvl == nullptr ) {
+                return nullptr;
+            }
+            return lvl->optns.data_path;
+        }
     };
 
 
@@ -79,16 +94,17 @@ namespace adiktedpp {
     }
 
     std::string Level::dataPath() const {
-        if ( data->lvl == nullptr ) {
-//            LOG() << "uninitialized level";
-            return "";
-        }
-        const char* path = data->lvl->optns.data_path;
+        const char* path = data->getDataPath();
         if ( path == nullptr ) {
 //            LOG() << "uninitialized data_path";
             return "";
         }
         return std::string( path );
+    }
+
+    void Level::setDataPath( const std::string& path ) {
+        char* dataPath = (char*)path.c_str();
+        set_data_path( data->lvl, dataPath );
     }
 
     void Level::startNewMap() {
@@ -105,9 +121,9 @@ namespace adiktedpp {
         return loadMapByPath( idString );
     }
 
-    bool Level::loadMapByPath( const std::string& mapId ) {
+    bool Level::loadMapByPath( const std::string& mapPath ) {
         /// setting file name of the map to load
-        char* levelName = (char*)mapId.c_str();
+        char* levelName = (char*)mapPath.c_str();
         format_lvl_fname( data->lvl, levelName );
 
         /// loading map
@@ -128,8 +144,57 @@ namespace adiktedpp {
         return false;
     }
 
+    bool Level::saveMapById( const std::size_t mapId ) const {
+        std::stringstream id;
+        /// example format: "Levels/MAP00001"
+        id << "Levels/MAP" << std::setw(5) << std::setfill('0') << mapId;
+        const std::string& idString = id.str();
+//        LOG() << idString;
+        return saveMapByPath( idString );
+    }
+
+    bool Level::saveMapByPath( const std::string& mapPath ) const {
+        char* levelName = (char*)mapPath.c_str();
+        format_lvl_savfname( data->lvl, levelName );
+
+        const short result = user_save_map( data->lvl, 0 );
+        if (result == ERR_NONE) {
+            return true;
+        }
+        return true;
+    }
+
     void Level::generateBmp() {
+        if ( data->lvl == nullptr ) {
+            LOG() << "uninitialized level";
+            return ;
+        }
+        const char* dataPath = data->getDataPath();
+        if ( dataPath == nullptr ) {
+            /// data path is not set -- initialize with empty string
+            setDataPath( "" );
+        }
         generate_map_bitmap_mapfname( data->lvl );
+    }
+
+    void Level::generateBmp( const std::string& path ) {
+        if ( data->lvl == nullptr ) {
+            LOG() << "uninitialized level";
+            return ;
+        }
+        const char* dataPath = data->getDataPath();
+        if ( dataPath == nullptr ) {
+            /// data path is not set -- initialize with empty string
+            setDataPath( "" );
+        }
+
+        data->lvl->optns.picture.data_path = data->lvl->optns.data_path;
+        const char *bmpfname = path.c_str();
+        ///data->lvl->optns.picture.tngflags = TNGFLG_SHOW_CIRCLES;
+//        data->lvl->optns.picture.rescale = 2;
+        const short result = generate_map_bitmap( bmpfname, data->lvl, &(data->lvl->optns.picture));
+        if (result==ERR_NONE)
+          message_info("Bitmap \"%s\" created.",bmpfname);
     }
 
 } /* namespace adiktedpp */

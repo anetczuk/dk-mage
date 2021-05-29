@@ -130,7 +130,7 @@ TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
 
     Level level;
 
-    const std::string inputData = getDataPath( "map00001/map00001" );
+    const std::string inputData = getTestDataPath( "map_empty/map_empty" );
     const bool loaded = level.loadMapByPath( inputData );
     REQUIRE( loaded );
 
@@ -140,17 +140,23 @@ TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
     const std::string outFName = level.outputFileName();
     CHECK( outFName != "" );
 
+    const std::string dataPath = level.dataPath();
+    CHECK( dataPath == "" );
+
     const std::string levelPath = level.levelsPath();
     CHECK( levelPath == "" );
-
-//    level.generateBmp();
 }
 
-//TEST_CASE("Level_loadMapById_number", "[classic]") {
-//    Level level;
-//    const bool loaded = level.loadMapById( 23 );
-//    CHECK( loaded );
+//TEST_CASE("Level_generateBmp", "[classic]") {
+//    ScopeMessages scoped = initialize_messages();
 //
-//    const std::string path = level.levelsPath();
-//    CHECK( path == "" );
+//    Level level;
+//
+//    level.startNewMap();
+//
+//    const std::string& keeperData = getKeeperDataPath();
+//    level.setDataPath( keeperData );
+//
+//    const std::string outputPath = Catch::getResultCapture().getCurrentTestName() + ".bmp";
+//    level.generateBmp( outputPath );
 //}
