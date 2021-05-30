@@ -51,6 +51,10 @@ endif()
 
 set( KEEPER_DATA "" CACHE PATH "Path to DK data directory" )
 
+if ( NOT KEEPER_DATA )
+    message( WARNING "path to game's data directory not set (KEEPER_DATA)" )
+endif()
+
 add_definitions( -DKEEPER_DATA_PATH="${KEEPER_DATA}" )
 
 
