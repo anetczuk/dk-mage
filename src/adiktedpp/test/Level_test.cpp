@@ -85,6 +85,31 @@ TEST_CASE("Level_startNewMap_succeed", "[classic]") {
     CHECK( levelPath == "" );
 }
 
+TEST_CASE("Level_generateRandomMap", "[classic]") {
+    LevelMock level;
+
+//    srand( 0 );
+    level.generateRandomMap();
+
+    level.generateTestBmp();
+}
+
+TEST_CASE("Level_verifyMap_empty", "[classic]") {
+    LevelMock level;
+
+    const bool ok = level.verifyMap();
+    REQUIRE( ok == false );
+}
+
+TEST_CASE("Level_verifyMap_random", "[classic]") {
+    LevelMock level;
+
+    level.generateRandomMap();
+
+    const bool ok = level.verifyMap();
+    REQUIRE( ok == false );
+}
+
 TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
     LevelMock level;
 

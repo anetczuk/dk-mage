@@ -47,6 +47,8 @@ namespace adiktedpp {
         /// log to file and to buffer (available by 'readRecent()')
         void info( const std::string& message );
 
+        const char* getRecent();
+
         void readRecent();
 
 

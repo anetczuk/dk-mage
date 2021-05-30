@@ -82,6 +82,10 @@ namespace adiktedpp {
         message_info( data );
     }
 
+    const char* Messages::getRecent() {
+        return message_get();
+    }
+
     void Messages::readRecent() {
         LOG() << message_get() << "\n";
     }

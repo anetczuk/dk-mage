@@ -64,6 +64,10 @@ namespace adiktedpp {
 
         void startNewMap();
 
+        void generateRandomMap();
+
+        bool verifyMap();
+
         SlabType getSlab( const std::size_t x, const std::size_t y );
 
         void setSlab( const std::size_t x, const std::size_t y, const SlabType type );

@@ -4,6 +4,8 @@
 
 #include "adiktedpp/Level.h"
 
+#include "adiktedpp/Messages.h"
+
 #include "utils/Log.h"
 
 #include <sstream>
@@ -119,6 +121,28 @@ namespace adiktedpp {
         start_new_map( level );
     }
 
+    void Level::generateRandomMap() {
+        LEVEL* level = data->lvl;
+        free_map( level );
+        generate_random_map( level );
+    }
+
+    bool Level::verifyMap() {
+        LEVEL* level = data->lvl;
+        struct IPOINT_2D errpt = {-1,-1};
+        const short result = level_verify( level, (char*) "save", &errpt );
+        const bool ok = ( result == VERIF_OK );
+//        if ( ok == false ) {
+//            const char* recentError = Messages::get().getRecent();
+//            if ( recentError != nullptr ) {
+//                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
+//            } else {
+//                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
+//            }
+//        }
+        return ok;
+    }
+
     bool Level::loadMapById( const std::size_t mapId ) {
         std::stringstream id;
         /// example format: "Levels/MAP00001"
@@ -158,8 +182,9 @@ namespace adiktedpp {
         format_lvl_savfname( level, levelName );
 
         const short result = user_save_map( level, 0 );
-        if (result == ERR_NONE) {
-            return true;
+        if (result != ERR_NONE) {
+            LOG() << "error detected during saving map";
+            return false;
         }
         return true;
     }
