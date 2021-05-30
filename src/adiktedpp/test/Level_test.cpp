@@ -21,25 +21,41 @@ inline ScopeMessages initialize_messages() {
 }
 
 
-TEST_CASE("Level_constructor", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
+//using LevelMock = Level;
 
-    Level level;
+class LevelMock: public Level {
+public:
+
+    ScopeMessages scoped;
+
+
+    LevelMock(): Level(), scoped( initialize_messages() ) {
+        const std::string& keeperData = getKeeperDataPath();
+        setDataPath( keeperData );
+    }
+
+    void generateTestBmp( const std::size_t rescale = 3 ) {
+        setRescale( rescale );
+        const std::string outputPath = Catch::getResultCapture().getCurrentTestName() + ".bmp";
+        generateBmp( outputPath );
+    }
+
+};
+
+
+TEST_CASE("Level_constructor", "[classic]") {
+    LevelMock level;
     REQUIRE( true );
 }
 
 TEST_CASE("Level_levelPath_unload", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
     const std::string path = level.levelsPath();
     REQUIRE( path == "" );
 }
 
 TEST_CASE("Level_setLevelsPath", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     level.setLevelsPath( "abc/def" );
     const std::string path = level.levelsPath();
@@ -47,7 +63,7 @@ TEST_CASE("Level_setLevelsPath", "[classic]") {
 }
 
 TEST_CASE("Level_dataPath_unload", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
+    ScopeMessages  messages = initialize_messages();
 
     Level level;
     const std::string path = level.dataPath();
@@ -55,9 +71,7 @@ TEST_CASE("Level_dataPath_unload", "[classic]") {
 }
 
 TEST_CASE("Level_startNewMap_succeed", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     level.startNewMap();
 
@@ -72,9 +86,7 @@ TEST_CASE("Level_startNewMap_succeed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     const bool loaded = level.loadMapByPath( "map_invalid_name" );
     REQUIRE_FALSE( loaded );
@@ -90,9 +102,7 @@ TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_subdir_failed", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     const bool loaded = level.loadMapByPath( "aaa/map_invalid_name" );
     REQUIRE_FALSE( loaded );
@@ -108,9 +118,7 @@ TEST_CASE("Level_loadMapByPath_string_subdir_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     const bool loaded = level.loadMapByPath( "123" );
     REQUIRE_FALSE( loaded );
@@ -126,9 +134,7 @@ TEST_CASE("Level_loadMapByPath_string_number_failed", "[classic]") {
 }
 
 TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
-    ScopeMessages scoped = initialize_messages();
-
-    Level level;
+    LevelMock level;
 
     const std::string inputData = getTestDataPath( "map_empty/map_empty" );
     const bool loaded = level.loadMapByPath( inputData );
@@ -140,23 +146,38 @@ TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
     const std::string outFName = level.outputFileName();
     CHECK( outFName != "" );
 
-    const std::string dataPath = level.dataPath();
-    CHECK( dataPath == "" );
-
     const std::string levelPath = level.levelsPath();
     CHECK( levelPath == "" );
 }
 
-//TEST_CASE("Level_generateBmp", "[classic]") {
-//    ScopeMessages scoped = initialize_messages();
-//
-//    Level level;
-//
-//    level.startNewMap();
-//
-//    const std::string& keeperData = getKeeperDataPath();
-//    level.setDataPath( keeperData );
-//
-//    const std::string outputPath = Catch::getResultCapture().getCurrentTestName() + ".bmp";
-//    level.generateBmp( outputPath );
-//}
+TEST_CASE("Level_setSlab_rect", "[classic]") {
+    LevelMock level;
+
+    level.startNewMap();
+
+    const SlabType newSlab = SlabType::ST_LAVA;
+    level.setSlab( 10, 10, 20, 20, newSlab );
+
+    const SlabType gotSlab = level.getSlab( 15, 15 );
+    CHECK( gotSlab == newSlab );
+
+    level.generateTestBmp();
+}
+
+TEST_CASE("Level_setSlabRoom", "[classic]") {
+    LevelMock level;
+
+    level.startNewMap();
+
+    const SlabType newSlab    = SlabType::ST_TRAINING;
+    const PlayerType newOwner = PlayerType::PT_0;
+    level.setSlabRoom( 10, 10, 20, 20, newSlab, newOwner );
+
+    const SlabType gotSlab = level.getSlab( 15, 15 );
+    CHECK( gotSlab == newSlab );
+
+    const PlayerType gotOwner = level.getOwner( 15, 15 );
+    CHECK( gotOwner == newOwner );
+
+    level.generateTestBmp();
+}

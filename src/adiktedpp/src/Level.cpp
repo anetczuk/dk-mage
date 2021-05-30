@@ -11,6 +11,7 @@
 
 extern "C" {
     #include "libadikted/adikted.h"
+    #include "libadikted/lev_data.h"
     #include "libadikted/draw_map.h"
 }
 
@@ -18,7 +19,7 @@ extern "C" {
 namespace adiktedpp {
 
     struct LevelData {
-        struct LEVEL *lvl;
+        LEVEL* lvl;
 
 
         const char* getDataPath() const {
@@ -50,11 +51,12 @@ namespace adiktedpp {
     }
 
     std::string Level::inputFileName() const {
-        if ( data->lvl == nullptr ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
             LOG() << "uninitialized level";
             return "";
         }
-        const char* path = data->lvl->fname;
+        const char* path = level->fname;
         if ( path == nullptr ) {
 //            LOG() << "uninitialized fname";
             return "";
@@ -63,11 +65,12 @@ namespace adiktedpp {
     }
 
     std::string Level::outputFileName() const {
-        if ( data->lvl == nullptr ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
             LOG() << "uninitialized level";
             return "";
         }
-        const char* path = data->lvl->savfname;
+        const char* path = level->savfname;
         if ( path == nullptr ) {
 //            LOG() << "uninitialized savfname";
             return "";
@@ -76,11 +79,12 @@ namespace adiktedpp {
     }
 
     std::string Level::levelsPath() const {
-        if ( data->lvl == nullptr ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
             LOG() << "uninitialized level";
             return "";
         }
-        const char* path = data->lvl->optns.levels_path;
+        const char* path = level->optns.levels_path;
         if ( path == nullptr ) {
 //            LOG() << "uninitialized levels_path";
             return "";
@@ -89,8 +93,9 @@ namespace adiktedpp {
     }
 
     void Level::setLevelsPath( const std::string& path ) {
+        LEVEL* level = data->lvl;
         char* levelPath = (char*)path.c_str();
-        set_levels_path( data->lvl, levelPath );
+        set_levels_path( level, levelPath );
     }
 
     std::string Level::dataPath() const {
@@ -103,13 +108,15 @@ namespace adiktedpp {
     }
 
     void Level::setDataPath( const std::string& path ) {
+        LEVEL* level = data->lvl;
         char* dataPath = (char*)path.c_str();
-        set_data_path( data->lvl, dataPath );
+        set_data_path( level, dataPath );
     }
 
     void Level::startNewMap() {
-        free_map( data->lvl );
-        start_new_map( data->lvl );
+        LEVEL* level = data->lvl;
+        free_map( level );
+        start_new_map( level );
     }
 
     bool Level::loadMapById( const std::size_t mapId ) {
@@ -123,24 +130,16 @@ namespace adiktedpp {
 
     bool Level::loadMapByPath( const std::string& mapPath ) {
         /// setting file name of the map to load
+        LEVEL* level = data->lvl;
         char* levelName = (char*)mapPath.c_str();
-        format_lvl_fname( data->lvl, levelName );
+        format_lvl_fname( level, levelName );
 
         /// loading map
-        const short result = user_load_map( data->lvl, 0 );
+        const short result = user_load_map( level, 0 );
         if (result == ERR_NONE) {
             return true;
         }
 
-//        LOG() << "cannot load map, error: " << result;
-
-        // The following two commands should be used to free memory
-        // allocated for level
-//        level_free( data->lvl );
-//        level_deinit( &data->lvl );
-
-        // This command should be always last function used from library
-//            free_messages();
         return false;
     }
 
@@ -154,18 +153,76 @@ namespace adiktedpp {
     }
 
     bool Level::saveMapByPath( const std::string& mapPath ) const {
+        LEVEL* level = data->lvl;
         char* levelName = (char*)mapPath.c_str();
-        format_lvl_savfname( data->lvl, levelName );
+        format_lvl_savfname( level, levelName );
 
-        const short result = user_save_map( data->lvl, 0 );
+        const short result = user_save_map( level, 0 );
         if (result == ERR_NONE) {
             return true;
         }
         return true;
     }
 
+    SlabType Level::getSlab( const std::size_t x, const std::size_t y ) {
+        LEVEL* level = data->lvl;
+        const SlabType slab = (SlabType) get_tile_slab( level, x, y );
+        return slab;
+    }
+
+    void Level::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
+        LEVEL* level = data->lvl;
+        user_set_slab( level, x, y, (unsigned short) type );
+    }
+
+    void Level::setSlab( const std::size_t startX, const std::size_t startY,
+                         const std::size_t endX,   const std::size_t endY,
+                         const SlabType type ) {
+//        /// does not seem to work (buggy?)
+//        LEVEL* level = data->lvl;
+//        user_set_slab_rect( level, startX, startY, endX, endY, (unsigned short) type );
+
+        for (std::size_t x=startX; x<=endX; ++x) {
+            for (std::size_t y=startY; y<=endY; ++y) {
+                setSlab( x, y, type );
+            }
+        }
+    }
+
+    void Level::setSlabRoom( const std::size_t startX, const std::size_t startY,
+                             const std::size_t endX,   const std::size_t endY,
+                             const SlabType room, const PlayerType owner ) {
+//        /// does not seem to work (buggy?)
+//        LEVEL* level = data->lvl;
+//        user_set_slabown_rect( level, startX, startY, endX, endY, (unsigned short) room, (unsigned short) owner );
+
+        for (std::size_t x=startX; x<=endX; ++x) {
+            for (std::size_t y=startY; y<=endY; ++y) {
+                setSlab( x, y, room );
+                setOwner( x, y, owner );
+            }
+        }
+    }
+
+    PlayerType Level::getOwner( const std::size_t x, const std::size_t y ) {
+        LEVEL* level = data->lvl;
+        const PlayerType player = (PlayerType) get_tile_owner( level, x, y );
+        return player;
+    }
+
+    void Level::setOwner( const std::size_t x, const std::size_t y, const PlayerType owner ) {
+        LEVEL* level = data->lvl;
+        user_set_tile_owner( level, x, y, (unsigned short) owner );
+    }
+
+    void Level::setRescale( const std::size_t rescale ) {
+        LEVEL* level = data->lvl;
+        level->optns.picture.rescale = rescale;
+    }
+
     void Level::generateBmp() {
-        if ( data->lvl == nullptr ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
             LOG() << "uninitialized level";
             return ;
         }
@@ -174,11 +231,12 @@ namespace adiktedpp {
             /// data path is not set -- initialize with empty string
             setDataPath( "" );
         }
-        generate_map_bitmap_mapfname( data->lvl );
+        generate_map_bitmap_mapfname( level );
     }
 
     void Level::generateBmp( const std::string& path ) {
-        if ( data->lvl == nullptr ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
             LOG() << "uninitialized level";
             return ;
         }
@@ -188,11 +246,11 @@ namespace adiktedpp {
             setDataPath( "" );
         }
 
-        data->lvl->optns.picture.data_path = data->lvl->optns.data_path;
+        level->optns.picture.data_path = level->optns.data_path;
         const char *bmpfname = path.c_str();
-        ///data->lvl->optns.picture.tngflags = TNGFLG_SHOW_CIRCLES;
-//        data->lvl->optns.picture.rescale = 2;
-        const short result = generate_map_bitmap( bmpfname, data->lvl, &(data->lvl->optns.picture));
+        ///level->optns.picture.tngflags = TNGFLG_SHOW_CIRCLES;
+//        level->optns.picture.rescale = 2;
+        const short result = generate_map_bitmap( bmpfname, level, &(level->optns.picture));
         if (result==ERR_NONE)
           message_info("Bitmap \"%s\" created.",bmpfname);
     }
