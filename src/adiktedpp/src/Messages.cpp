@@ -86,4 +86,13 @@ namespace adiktedpp {
         LOG() << message_get() << "\n";
     }
 
+
+    /// ==============================================
+
+
+    bool& ScopeMessages::getActivatedFlag() {
+        static bool activated = false;
+        return activated;
+    }
+
 } /* namespace adiktedpp */

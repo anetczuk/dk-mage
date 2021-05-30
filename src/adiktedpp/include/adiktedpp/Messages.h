@@ -7,6 +7,7 @@
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_MESSAGES_H_
 
 #include <string>
+#include <stdexcept>
 
 
 namespace adiktedpp {
@@ -65,22 +66,40 @@ namespace adiktedpp {
      * Warning: does not work for nested scopes yet.
      */
     class ScopeMessages {
+
+        static bool& getActivatedFlag();
+
+        void checkActivated() {
+            bool& activated = getActivatedFlag();
+            if ( activated ) {
+                /// guard
+                throw std::runtime_error("scope message already created");
+            }
+            activated = true;
+        }
+
+
     public:
 
         ScopeMessages() {
-            Messages::get();            /// initialize if needed
+            checkActivated();
+            Messages::get();                                    /// initialize if needed
         }
 
         ScopeMessages( const std::string& fileName ) {
+            checkActivated();
             Messages::get( fileName );
         }
 
         ScopeMessages( const std::string& fileName, const std::string& fileSuffix ) {
+            checkActivated();
             Messages::get( fileName, fileSuffix );
         }
 
         ~ScopeMessages() {
             Messages::release();
+            bool& activated = getActivatedFlag();
+            activated = false;
         }
 
     };
