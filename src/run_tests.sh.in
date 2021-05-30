@@ -42,7 +42,7 @@ case $i in
     --tool=*|-t=*)      checkTool="${i#*=}"
                         shift                   # past argument=value
                         ;;
-    *)                  arguments+=($i)
+    *)                  arguments+=("$i")
                         shift                   # past argument
                         ;;
 esac
@@ -89,7 +89,7 @@ cd "@EXECUTABLE_WORKDIR@"
 
 if [ $valgrind -eq 1 ]; then
     ## run valgrind
-    valgrind $valgrind_params --error-exitcode=1 @EXECUTABLE_PATH@ ${arguments[@]}
+    valgrind $valgrind_params --error-exitcode=1 @EXECUTABLE_PATH@ "${arguments[@]}"
     exit $?
 fi
 
@@ -117,7 +117,7 @@ if [ $coverage -eq 1 ]; then
 
 
     ## running tests
-    @EXECUTABLE_PATH@ ${arguments[@]}
+    @EXECUTABLE_PATH@ "${arguments[@]}"
 
 
     ## generate coverage report
@@ -145,5 +145,5 @@ fi
 
 
 ## running tests -- normal case
-@EXECUTABLE_PATH@ ${arguments[@]}
+@EXECUTABLE_PATH@ "${arguments[@]}"
     
