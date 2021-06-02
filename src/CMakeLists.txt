@@ -13,15 +13,13 @@ endif()
 project( dk-mage )
 
 
-set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
-
 SET( EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external" )
 
-list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/adikted/install" )
-#list( APPEND CMAKE_INCLUDE_PATH "${EXTERNAL_DIR}/adikted/install" )
-#list( APPEND CMAKE_LIBRARY_PATH "${EXTERNAL_DIR}/adikted/install" )
+list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 
+list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/adikted/install" )
 list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/catch2/install/lib/cmake" )
+list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/lemon/install" )
 
 
 include( CMakeCompileFlags.txt )

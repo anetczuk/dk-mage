@@ -10,7 +10,7 @@ set( PUBLIC_HEADERS "../include" )
 
 include_directories( ${PUBLIC_HEADERS} )
 
-set( EXT_LIBS  )
+set( EXT_LIBS ${LEMON_LIBRARY} )
 
 file(GLOB_RECURSE cpp_files *.cpp )
 file(GLOB_RECURSE h_files ${PUBLIC_HEADERS}/*.h )
