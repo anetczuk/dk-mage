@@ -33,17 +33,5 @@ cmake -Bbuild -H. -DBUILD_TESTING=OFF -DCATCH_BUILD_TESTING=OFF -DCMAKE_INSTALL_
 
 cmake --build . --target install
 
-exit 1
 
-#make all BUILD_FOR_LINUX=1
-
-
-
-mkdir -p "$INSTALL_PATH/include/libadikted"
-mkdir -p "$INSTALL_PATH/lib"
-
-cp $LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
-cp "$LIB_PATH/bin/adikted.so" -T "$INSTALL_PATH/lib/libadikted.so"
-
-
-echo "building adikted done"
+echo "building catch2 done"
