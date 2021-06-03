@@ -207,6 +207,22 @@ namespace dkmage {
                 return ret;
             }
 
+            std::vector< Direction > availableDirections( const TItem& item ) {
+                const lemon::ListDigraph::Node itemNode = findNode( item );
+                if ( graph.valid( itemNode ) == false ) {
+                    return std::vector< Direction >();
+                }
+                std::vector< Direction > ret;
+                const std::vector<Direction>& directions = DirectionValues();
+                for ( const Direction dir: directions ) {
+                    if ( isFree( itemNode, dir ) == false ) {
+                        ret.push_back( dir );
+                    }
+
+                }
+                return ret;
+            }
+
             bool isFree( const lemon::ListDigraph::Node& itemNode, const Direction direction ) {
                 lemon::ListDigraph::Arc edge = findEdge( itemNode, direction );
                 return ( edge == lemon::INVALID );
