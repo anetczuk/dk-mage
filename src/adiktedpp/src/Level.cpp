@@ -18,6 +18,9 @@ extern "C" {
 }
 
 
+#define MAP_MAX_COORD   84
+
+
 namespace adiktedpp {
 
     struct LevelData {
@@ -130,16 +133,16 @@ namespace adiktedpp {
     bool Level::verifyMap() {
         LEVEL* level = data->lvl;
         struct IPOINT_2D errpt = {-1,-1};
-        const short result = level_verify( level, (char*) "save", &errpt );
+        const short result = level_verify( level, (char*) "check", &errpt );
         const bool ok = ( result == VERIF_OK );
-//        if ( ok == false ) {
-//            const char* recentError = Messages::get().getRecent();
-//            if ( recentError != nullptr ) {
-//                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
-//            } else {
-//                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
-//            }
-//        }
+        if ( ok == false ) {
+            const char* recentError = Messages::get().getRecent();
+            if ( recentError != nullptr ) {
+                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
+            } else {
+                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
+            }
+        }
         return ok;
     }
 
@@ -190,19 +193,39 @@ namespace adiktedpp {
     }
 
     SlabType Level::getSlab( const std::size_t x, const std::size_t y ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return SlabType::ST_ROCK;
+        }
         LEVEL* level = data->lvl;
         const SlabType slab = (SlabType) get_tile_slab( level, x, y );
         return slab;
     }
 
     void Level::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
         LEVEL* level = data->lvl;
         user_set_slab( level, x, y, (unsigned short) type );
     }
 
     void Level::setSlab( const std::size_t startX, const std::size_t startY,
                          const std::size_t endX,   const std::size_t endY,
-                         const SlabType type ) {
+                         const SlabType type )
+    {
+        if ( startX > MAP_MAX_COORD || startY > MAP_MAX_COORD ) {
+            LOG() << "given point is outside map: [" << startX << " " << startY << "]";
+            return ;
+        }
+        if ( endX > MAP_MAX_COORD || endY > MAP_MAX_COORD ) {
+            LOG() << "given point is outside map: [" << endX << " " << endY << "]";
+            return ;
+        }
+
 //        /// does not seem to work (buggy?)
 //        LEVEL* level = data->lvl;
 //        user_set_slab_rect( level, startX, startY, endX, endY, (unsigned short) type );
@@ -214,9 +237,23 @@ namespace adiktedpp {
         }
     }
 
+    void Level::setSlab( const utils::Rect& rect, const SlabType type ) {
+        setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, type );
+    }
+
     void Level::setSlabRoom( const std::size_t startX, const std::size_t startY,
                              const std::size_t endX,   const std::size_t endY,
-                             const SlabType room, const PlayerType owner ) {
+                             const SlabType room, const PlayerType owner )
+    {
+        if ( startX > MAP_MAX_COORD || startY > MAP_MAX_COORD ) {
+            LOG() << "given point is outside map: [" << startX << " " << startY << "]";
+            return ;
+        }
+        if ( endX > MAP_MAX_COORD || endY > MAP_MAX_COORD ) {
+            LOG() << "given point is outside map: [" << endX << " " << endY << "]";
+            return ;
+        }
+
 //        /// does not seem to work (buggy?)
 //        LEVEL* level = data->lvl;
 //        user_set_slabown_rect( level, startX, startY, endX, endY, (unsigned short) room, (unsigned short) owner );
@@ -229,13 +266,27 @@ namespace adiktedpp {
         }
     }
 
+    void Level::setSlabRoom( const utils::Rect& rect, const SlabType room, const PlayerType owner ) {
+        setSlabRoom( rect.min.x, rect.min.y, rect.max.x, rect.max.y, room, owner );
+    }
+
     PlayerType Level::getOwner( const std::size_t x, const std::size_t y ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return PlayerType::PT_UNSET;
+        }
         LEVEL* level = data->lvl;
         const PlayerType player = (PlayerType) get_tile_owner( level, x, y );
         return player;
     }
 
     void Level::setOwner( const std::size_t x, const std::size_t y, const PlayerType owner ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
         LEVEL* level = data->lvl;
         user_set_tile_owner( level, x, y, (unsigned short) owner );
     }

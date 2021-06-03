@@ -8,6 +8,8 @@
 #include "adiktedpp/SlabType.h"
 #include "adiktedpp/PlayerType.h"
 
+#include "utils/Rect.h"
+
 #include <memory>
 
 
@@ -76,9 +78,13 @@ namespace adiktedpp {
                       const std::size_t endX,   const std::size_t endY,
                       const SlabType type );
 
+        void setSlab( const utils::Rect& rect, const SlabType type );
+
         void setSlabRoom( const std::size_t startX, const std::size_t startY,
                           const std::size_t endX,   const std::size_t endY,
                           const SlabType room, const PlayerType owner );
+
+        void setSlabRoom( const utils::Rect& rect, const SlabType room, const PlayerType owner );
 
         PlayerType getOwner( const std::size_t x, const std::size_t y );
 
