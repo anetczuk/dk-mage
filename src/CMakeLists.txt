@@ -66,6 +66,7 @@ endif()
 
 include_directories( "utils/include" )
 
+add_subdirectory( utils )
 add_subdirectory( adiktedpp )
 add_subdirectory( dkmage )
 add_subdirectory( cli )
