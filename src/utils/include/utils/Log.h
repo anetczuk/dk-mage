@@ -8,10 +8,12 @@
 
 /// inclusion: #include "utils/Log.h"
 
+#include <sstream>
 #include <iostream>
 
 
 class Logger {
+    std::stringstream buffer;
     std::string file;
     int lane;
 
@@ -19,14 +21,15 @@ class Logger {
 public:
 
     Logger( const char* file, const int lane ): file(file), lane(lane) {
-        stream() << file << "(" << lane << "): ";
+        buffer << file << "(" << lane << "): ";
     }
     ~Logger() {
-        stream() << "\n";
+        buffer << "\n";
+        std::cerr << buffer.str();
     }
 
     std::ostream& stream() {
-        return std::cerr;
+        return buffer;
     }
 };
 
