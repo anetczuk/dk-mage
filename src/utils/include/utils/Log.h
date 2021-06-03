@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_LOG_H_
-#define ADIKTEDPP_INCLUDE_ADIKTEDPP_LOG_H_
+#ifndef UTILS_INCLUDE_UTILS_LOG_H_
+#define UTILS_INCLUDE_UTILS_LOG_H_
 
 /// inclusion: #include "utils/Log.h"
 
@@ -12,29 +12,33 @@
 #include <iostream>
 
 
-class Logger {
-    std::stringstream buffer;
-    std::string file;
-    int lane;
+namespace utils {
+
+    class Logger {
+        std::stringstream buffer;
+        std::string file;
+        int lane;
 
 
-public:
+    public:
 
-    Logger( const char* file, const int lane ): file(file), lane(lane) {
-        buffer << file << "(" << lane << "): ";
-    }
-    ~Logger() {
-        buffer << "\n";
-        std::cerr << buffer.str();
-    }
+        Logger( const char* file, const int lane ): file(file), lane(lane) {
+            buffer << file << "(" << lane << "): ";
+        }
+        ~Logger() {
+            buffer << "\n";
+            std::cerr << buffer.str();
+        }
 
-    std::ostream& stream() {
-        return buffer;
-    }
-};
+        std::ostream& stream() {
+            return buffer;
+        }
+    };
+
+}
 
 
-#define LOG()   Logger( __FILE__, __LINE__ ).stream()
+#define LOG()   utils::Logger( __FILE__, __LINE__ ).stream()
 
 
-#endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_LOG_H_ */
+#endif /* UTILS_INCLUDE_UTILS_LOG_H_ */
