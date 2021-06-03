@@ -6,6 +6,8 @@
 #ifndef ADIKTEDPP_TEST_PATH_H_
 #define ADIKTEDPP_TEST_PATH_H_
 
+/// inclusion: #include "Path.h"
+
 
 inline std::string getTestDataPath( const std::string& subPath ) {
     #if defined(TEST_DATA_PATH)
