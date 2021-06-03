@@ -6,6 +6,9 @@
 #ifndef UTILS_INCLUDE_UTILS_RECT_H_
 #define UTILS_INCLUDE_UTILS_RECT_H_
 
+#include <ostream>
+
+
 namespace utils {
 
     struct Point {
@@ -78,6 +81,22 @@ namespace utils {
             min.y = std::min( min.y, rect.min.y );
             max.x = std::max( max.x, rect.max.x );
             max.y = std::max( max.y, rect.max.y );
+        }
+
+        bool isInside( const int minCoord, const int maxCoord ) const {
+            if ( min.x < minCoord || min.x > maxCoord ) {
+                return false;
+            }
+            if ( min.y < minCoord || min.y > maxCoord ) {
+                return false;
+            }
+            if ( max.x < minCoord || max.x > maxCoord ) {
+                return false;
+            }
+            if ( max.y < minCoord || max.y > maxCoord ) {
+                return false;
+            }
+            return true;
         }
 
         /// ================================================
