@@ -96,9 +96,6 @@ namespace dkmage {
                     }
                 }
             }
-
-            centerize();
-            move( 100, 100 );
         }
 
         Rect Dungeon::boundingBox() {
