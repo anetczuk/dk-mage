@@ -56,6 +56,15 @@ endif()
 add_definitions( -DKEEPER_DATA_PATH="${KEEPER_DATA}" )
 
 
+set( KEEPER_LEVELS "" CACHE PATH "Path to DK levels directory" )
+
+if ( NOT KEEPER_LEVELS )
+    message( WARNING "path to game's levels directory not set (KEEPER_LEVELS)" )
+endif()
+
+add_definitions( -DKEEPER_LEVELS_PATH="${KEEPER_LEVELS}" )
+
+
 ## ================= build =================
 
 
