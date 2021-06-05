@@ -183,6 +183,23 @@ namespace dkmage {
                 return ret;
             }
 
+            std::vector< TItem* > connectedItems( const TItem& item ) {
+                const lemon::ListDigraph::Node itemNode = findNode( item );
+                if ( graph.valid( itemNode ) == false ) {
+                    return std::vector< TItem* >();
+                }
+                std::vector< TItem* > ret;
+                const std::vector<Direction>& directions = DirectionValues();
+                for ( const Direction dir: directions ) {
+                    TItem* target = getItem( item, dir );
+                    if ( target == nullptr ) {
+                        continue ;
+                    }
+                    ret.push_back( target );
+                }
+                return ret;
+            }
+
             std::size_t itemId( const TItem& item ) {
                 lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {

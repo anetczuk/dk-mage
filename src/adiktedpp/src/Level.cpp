@@ -186,11 +186,14 @@ namespace adiktedpp {
 
         const short result = user_save_map( level, 0 );
         if (result != ERR_NONE) {
-            LOG() << "error detected during saving map";
+            const char* recentError = Messages::get().getRecent();
+            LOG() << recentError;
             return false;
         }
         return true;
     }
+
+    /// ============================================================
 
     SlabType Level::getSlab( const std::size_t x, const std::size_t y ) {
         if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
@@ -203,6 +206,20 @@ namespace adiktedpp {
         return slab;
     }
 
+    SlabType Level::getSlab( const utils::Point& point ) {
+        return getSlab( point.x, point.y );
+    }
+
+    bool Level::isSlab( const std::size_t x, const std::size_t y, const SlabType slab ) {
+        const SlabType currSlab = getSlab( x, y );
+        return ( currSlab == slab );
+    }
+
+    bool Level::isSlab( const utils::Point& point, const SlabType slab ) {
+        const SlabType currSlab = getSlab( point.x, point.y );
+        return ( currSlab == slab );
+    }
+
     void Level::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
         if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
             /// out of map
@@ -211,6 +228,20 @@ namespace adiktedpp {
         }
         LEVEL* level = data->lvl;
         user_set_slab( level, x, y, (unsigned short) type );
+    }
+
+    void Level::setSlab( const utils::Point& point, const SlabType type ) {
+        setSlab( point.x, point.y, type );
+    }
+
+    void Level::setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner ) {
+        setSlab( x, y, type );
+        setOwner( x, y, owner );
+    }
+
+    void Level::setSlab( const utils::Point& point, const SlabType type, const PlayerType owner ) {
+        setSlab( point.x, point.y, type );
+        setOwner( point.x, point.y, owner );
     }
 
     void Level::setSlab( const std::size_t startX, const std::size_t startY,
@@ -291,6 +322,8 @@ namespace adiktedpp {
         user_set_tile_owner( level, x, y, (unsigned short) owner );
     }
 
+    /// ============================================================
+
     void Level::setRescale( const std::size_t rescale ) {
         LEVEL* level = data->lvl;
         level->optns.picture.rescale = rescale;
@@ -310,11 +343,11 @@ namespace adiktedpp {
         generate_map_bitmap_mapfname( level );
     }
 
-    void Level::generateBmp( const std::string& path ) {
+    bool Level::generateBmp( const std::string& path ) {
         LEVEL* level = data->lvl;
         if ( level == nullptr ) {
             LOG() << "uninitialized level";
-            return ;
+            return false;
         }
         const char* dataPath = data->getDataPath();
         if ( dataPath == nullptr ) {
@@ -327,8 +360,11 @@ namespace adiktedpp {
         ///level->optns.picture.tngflags = TNGFLG_SHOW_CIRCLES;
 //        level->optns.picture.rescale = 2;
         const short result = generate_map_bitmap( bmpfname, level, &(level->optns.picture));
-        if (result==ERR_NONE)
-          message_info("Bitmap \"%s\" created.",bmpfname);
+        if ( result != ERR_NONE ) {
+            return false;
+        }
+        message_info("Bitmap \"%s\" created.",bmpfname);
+        return true;
     }
 
 } /* namespace adiktedpp */

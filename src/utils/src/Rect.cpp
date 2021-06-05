@@ -1,13 +1,112 @@
-///*
-// * Rect.cpp
-// *
-// */
-//
-//#include "utils/Rect.h"
-//
-//
-//namespace utils {
-//
-//    ///
-//
-//} /* namespace utils */
+/*
+ * Rect.cpp
+ *
+ */
+
+#include "utils/Rect.h"
+
+
+namespace utils {
+
+    Point Point::diff( const Point& point ) const {
+        const int xDiff = std::abs(x - point.x);
+        const int yDiff = std::abs(y - point.y);
+        return Point(xDiff, yDiff);
+    }
+
+    std::size_t Point::distance( const Point& point ) const {
+        const int xDiff = std::abs(x - point.x);
+        const int yDiff = std::abs(y - point.y);
+        return xDiff + yDiff;
+    }
+
+    /// implementation taken and adapted from: https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
+    std::vector<Point> line_dda( const Point& from, const Point& to ) {
+        std::vector<Point> ret;
+
+        const int x1 = from.x;
+        const int y1 = from.y;
+        const int x2 = to.x;
+        const int y2 = to.y;
+        double dx = (x2 - x1);
+        double dy = (y2 - y1);
+        double step = 0;
+        if ( std::abs(dx) >= std::abs(dy) )
+            step = std::abs(dx);
+        else
+            step = std::abs(dy);
+
+        dx = dx / step;
+        dy = dy / step;
+        double x = x1;
+        double y = y1;
+        double i = 1;
+        while (i <= step) {
+            ret.push_back( Point(x,y) );
+            x = x + dx;
+            y = y + dy;
+            i = i + 1;
+        }
+        ret.push_back( to );
+
+        return ret;
+    }
+
+    /// implementation taken and adapted from: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+    std::vector<Point> line_bresenham( const Point& from, const Point& to ) {
+        std::vector<Point> ret;
+
+        int x0 = from.x;
+        int y0 = from.y;
+        int x1 = to.x;
+        int y1 = to.y;
+
+        const int dx = std::abs( x1 - x0 );
+        const int sx = ( x0 < x1 ) ? 1 : -1;
+        const int dy = -std::abs( y1 - y0 );
+        const int sy = y0 < y1 ? 1 : -1;
+        int err = dx + dy;                          /// error value e_xy
+        while (true) {
+            ret.push_back( Point(x0,y0) );
+            if (x0 == x1 && y0 == y1)
+                break;
+            int e2 = 2 * err;
+            const int diffY = e2 - dy;
+            const int diffX = dx - e2;
+            if ( diffY > diffX ) {
+                if (diffY >= 0) {                         /// e_xy+e_x > 0
+                    err += dy;
+                    x0 += sx;
+                } else if (diffX >=0) {                         /// e_xy+e_y < 0
+                    err += dx;
+                    y0 += sy;
+                }
+            } else {
+                if (diffX >=0) {                         /// e_xy+e_y < 0
+                    err += dx;
+                    y0 += sy;
+                } else if (diffY >= 0) {                         /// e_xy+e_x > 0
+                    err += dy;
+                    x0 += sx;
+                }
+            }
+
+//            if (e2 >= dy) {                         /// e_xy+e_x > 0
+//                err += dy;
+//                x0 += sx;
+//            }
+//            if (e2 <= dx) {                         /// e_xy+e_y < 0
+//                err += dx;
+//                y0 += sy;
+//            }
+        }
+
+        return ret;
+    }
+
+    std::vector<Point> line( const Point& from, const Point& to ) {
+        return line_bresenham( from, to );
+//        return line_dda( from, to );
+    }
+
+} /* namespace utils */

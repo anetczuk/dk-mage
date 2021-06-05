@@ -64,13 +64,32 @@ namespace dkmage {
 
 
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
+            std::vector< adiktedpp::SlabType > roomsType;
+            {
+                roomsType.push_back( adiktedpp::SlabType::ST_TREASURE );
+                roomsType.push_back( adiktedpp::SlabType::ST_LAIR );
+                roomsType.push_back( adiktedpp::SlabType::ST_HATCHERY );
+                roomsType.push_back( adiktedpp::SlabType::ST_TRAINING );
+                roomsType.push_back( adiktedpp::SlabType::ST_LIBRARY );
+                roomsType.push_back( adiktedpp::SlabType::ST_WORKSHOP );
+                roomsType.push_back( adiktedpp::SlabType::ST_PRISONCASE );
+                roomsType.push_back( adiktedpp::SlabType::ST_TORTURE );
+                roomsType.push_back( adiktedpp::SlabType::ST_GRAVEYARD );
+                roomsType.push_back( adiktedpp::SlabType::ST_TEMPLE );
+                roomsType.push_back( adiktedpp::SlabType::ST_SCAVENGER );
+            }
             {
                 Room& first = graph.firstItem();
                 first.resize( roomSize );
                 Rect& basePos = first.position();
                 basePos.centerize();
+                first.type( adiktedpp::SlabType::ST_DUNGHEART );
+                first.owner( player );
             }
             for (std::size_t i=1; i<roomsNum; ++i) {
+                const std::size_t roomIndex = ( i - 1 ) % roomsType.size();
+                const adiktedpp::SlabType newRoomType = roomsType[roomIndex];
+                /// randomize next room
                 std::vector< Room* > roomsList = graph.itemsList();
                 while ( roomsList.empty() == false ) {
                     const std::size_t rRoom = rand() % roomsList.size();
@@ -87,13 +106,17 @@ namespace dkmage {
                     const std::size_t rDir = rand() % dirSize;
                     const Direction newDir = availableDirs[ rDir ];
                     Room* newRoom = graph.addItem( *selected, newDir );
-                    if ( newRoom != nullptr ) {
-                        /// new node added
-                        newRoom->resize( roomSize );
-                        Rect& newPos = newRoom->position();
-                        moveRect( newPos, basePos, newDir );
-                        break;
+                    if ( newRoom == nullptr ) {
+                        continue ;
                     }
+
+                    /// new node added
+                    newRoom->resize( roomSize );
+                    Rect& newPos = newRoom->position();
+                    moveRect( newPos, basePos, newDir );
+                    newRoom->type( newRoomType );
+                    newRoom->owner( player );
+                    break ;
                 }
             }
         }
@@ -117,6 +140,11 @@ namespace dkmage {
             const Rect bbox = boundingBox();
             const Point center = bbox.center();
             move( -center.x, -center.y );
+        }
+
+        void Dungeon::centerize( const int x, const int y ) {
+            centerize();
+            move( x, y );
         }
 
         std::string Dungeon::print() {

@@ -20,8 +20,7 @@ add_definitions( -DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data" )
 
 
 add_executable( ${TARGET_NAME} ${cpp_files} )
-target_link_libraries( ${TARGET_NAME} PUBLIC dkmage PRIVATE Catch2::Catch2 )
-#target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
+target_link_libraries( ${TARGET_NAME} PUBLIC utils PRIVATE Catch2::Catch2 )
 
 
 if (WIN32)

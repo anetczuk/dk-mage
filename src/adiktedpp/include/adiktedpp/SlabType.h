@@ -14,15 +14,15 @@ namespace adiktedpp {
     /// data taken from header 'obj_slabs.h'
     //TODO: make auto converter of '#define' list to enum
     enum class SlabType {
-        ST_ROCK         = 0x00,
+        ST_ROCK         = 0x00,             /// impassable
         ST_GOLD         = 0x01,
         ST_EARTH        = 0x02,
         ST_TORCHDIRT    = 0x03,
-        ST_WALLDRAPE    = 0x04,
-        ST_WALLTORCH    = 0x05,
-        ST_WALLWTWINS   = 0x06,
-        ST_WALLWWOMAN   = 0x07,
-        ST_WALLPAIRSHR  = 0x08,
+        ST_WALLDRAPE    = 0x04,             /// fortified wall
+        ST_WALLTORCH    = 0x05,             /// fortified wall
+        ST_WALLWTWINS   = 0x06,             /// fortified wall
+        ST_WALLWWOMAN   = 0x07,             /// fortified wall
+        ST_WALLPAIRSHR  = 0x08,             /// fortified wall
         ST_PATH         = 0x0a,
         ST_CLAIMED      = 0x0b,
         ST_LAVA         = 0x0c,
@@ -53,6 +53,25 @@ namespace adiktedpp {
         ST_GEMS         = 0x34,
         ST_GUARDPOST    = 0x35
     };
+
+    inline bool isEarth( const SlabType type ) {
+        switch( type ) {
+        case SlabType::ST_EARTH:     return true;
+        case SlabType::ST_TORCHDIRT: return true;
+        default: return false;
+        }
+    }
+
+    inline bool isWall( const SlabType type ) {
+        switch( type ) {
+        case SlabType::ST_WALLDRAPE:     return true;
+        case SlabType::ST_WALLTORCH:     return true;
+        case SlabType::ST_WALLWTWINS:    return true;
+        case SlabType::ST_WALLWWOMAN:    return true;
+        case SlabType::ST_WALLPAIRSHR:   return true;
+        default: return false;
+        }
+    }
 
 }
 

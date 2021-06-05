@@ -8,6 +8,9 @@
 
 #include "dkmage/generator/DungeonGraph.h"
 
+#include "adiktedpp/SlabType.h"
+#include "adiktedpp/PlayerType.h"
+
 #include "utils/Log.h"
 #include "utils/Rect.h"
 
@@ -28,10 +31,17 @@ namespace dkmage {
 
             Rect roomPosition;
 
+            bool validType;
+            adiktedpp::SlabType roomType;
+            adiktedpp::PlayerType roomOwner;
+
 
         public:
 
-            Room(): roomPosition() {
+            Room(): roomPosition(), validType(false),
+                roomType( adiktedpp::SlabType::ST_ROCK ),
+                roomOwner( adiktedpp::PlayerType::PT_0 )
+            {
             }
 
             Point roomSize() const {
@@ -50,6 +60,22 @@ namespace dkmage {
                 roomPosition = Rect( newSize, newSize );
             }
 
+            adiktedpp::SlabType type() const {
+                return roomType;
+            }
+
+            void type( const adiktedpp::SlabType newType ) {
+                roomType = newType;
+            }
+
+            adiktedpp::PlayerType owner() const {
+                return roomOwner;
+            }
+
+            void owner( const adiktedpp::PlayerType newType ) {
+                roomOwner = newType;
+            }
+
             std::string print() const;
 
         };
@@ -58,16 +84,43 @@ namespace dkmage {
         /// ==================================================================
 
 
+        /**
+         *
+         */
         class Dungeon {
 
             DungeonGraph<Room> graph;
+            adiktedpp::PlayerType player;
+            bool fortifyWalls;
 
 
         public:
 
-            Dungeon() {
+            Dungeon( const adiktedpp::PlayerType player=adiktedpp::PlayerType::PT_0, const bool fortify=true ): player(player), fortifyWalls( fortify ) {
             }
 
+            adiktedpp::PlayerType owner() const {
+                return player;
+            }
+
+            bool fortify() const {
+                return fortifyWalls;
+            }
+            void fortify( const bool value ) {
+                fortifyWalls = value;
+            }
+
+            std::vector< Room* > rooms() {
+                return graph.itemsList();
+            }
+
+            Room* room( const std::size_t index ) {
+                return graph.itemByindex( index );
+            }
+
+            std::vector< Room* > connectedRooms( const Room& room ) {
+                return graph.connectedItems( room );
+            }
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
             /// size of dungeon
@@ -86,6 +139,8 @@ namespace dkmage {
             }
 
             void centerize();
+
+            void centerize( const int x, const int y );
 
             std::string print();
 

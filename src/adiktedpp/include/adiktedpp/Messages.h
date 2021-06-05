@@ -104,6 +104,11 @@ namespace adiktedpp {
             activated = false;
         }
 
+        void readRecent() {
+            Messages& messages = Messages::get();
+            messages.readRecent();
+        }
+
     };
 
 } /* namespace adiktedpp */

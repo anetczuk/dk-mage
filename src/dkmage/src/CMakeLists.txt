@@ -6,7 +6,7 @@
 set( TARGET_NAME dkmage )
 
 
-set( PUBLIC_HEADERS "../include" )
+list( APPEND PUBLIC_HEADERS "../include" )
 
 include_directories( ${PUBLIC_HEADERS} )
 

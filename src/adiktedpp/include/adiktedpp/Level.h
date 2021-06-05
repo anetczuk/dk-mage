@@ -70,9 +70,23 @@ namespace adiktedpp {
 
         bool verifyMap();
 
+        /// ===========================================================================
+
         SlabType getSlab( const std::size_t x, const std::size_t y );
 
+        SlabType getSlab( const utils::Point& point );
+
+        bool isSlab( const std::size_t x, const std::size_t y, const SlabType slab );
+
+        bool isSlab( const utils::Point& point, const SlabType slab );
+
         void setSlab( const std::size_t x, const std::size_t y, const SlabType type );
+
+        void setSlab( const utils::Point& point, const SlabType type );
+
+        void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
+
+        void setSlab( const utils::Point& point, const SlabType type, const PlayerType owner );
 
         void setSlab( const std::size_t startX, const std::size_t startY,
                       const std::size_t endX,   const std::size_t endY,
@@ -97,7 +111,7 @@ namespace adiktedpp {
         /// saves bmp next to map input file
         void generateBmp();
 
-        void generateBmp( const std::string& path );
+        bool generateBmp( const std::string& path );
 
     };
 

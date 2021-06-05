@@ -6,20 +6,67 @@
 #ifndef UTILS_INCLUDE_UTILS_RECT_H_
 #define UTILS_INCLUDE_UTILS_RECT_H_
 
+#include <vector>
 #include <ostream>
 
 
 namespace utils {
 
+    /**
+     *
+     */
     struct Point {
         int x;
         int y;
+
         Point(): x(0), y(0) {
         }
         Point( const int ax, const int ay ): x(ax), y(ay) {
         }
+
+        bool operator==( const Point& data ) const {
+            return ( x == data.x && y == data.y );
+        }
+
+        Point operator+( const Point& data ) const {
+            Point newPoint = *this;
+            newPoint.x += data.x;
+            newPoint.y += data.y;
+            return newPoint;
+        }
+        Point operator-( const Point& data ) const {
+            Point newPoint = *this;
+            newPoint.x -= data.x;
+            newPoint.y -= data.y;
+            return newPoint;
+        }
+
+        Point& operator+=( const Point& data ) {
+            x += data.x;
+            y += data.y;
+            return *this;
+        }
+        Point& operator-=( const Point& data ) {
+            x -= data.x;
+            y -= data.y;
+            return *this;
+        }
+
+        Point diff( const Point& point ) const;
+
+        std::size_t distance( const Point& point ) const;
+
     };
 
+    inline std::ostream& operator<<( std::ostream& os, const Point& data ) {
+        os << "[" << data.x << " " << data.y << "]";
+        return os;
+    }
+
+
+    /**
+     *
+     */
     struct Rect {
         Point min;
         Point max;
@@ -29,6 +76,11 @@ namespace utils {
         }
 
         Rect( const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {
+        }
+
+        Rect( const Point& center, const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {
+            centerize();
+            move( center );
         }
 
         Rect( const Point& aMin, const Point& aMax ): min(aMin), max(aMax) {
@@ -99,6 +151,24 @@ namespace utils {
             return true;
         }
 
+        Point distance( const Rect& rect ) const {
+            const Point p1 = center();
+            const Point p2 = rect.center();
+            const Point pdist = p1.diff( p2 );
+            const int wCommon = ( width()  + rect.width()  ) / 2;
+            const int hCommon = ( height() + rect.height() ) / 2;
+
+            int xdistance = 0;
+            int ydistance = 0;
+            if ( pdist.x >= wCommon ) {
+                xdistance = pdist.x - wCommon + 1;
+            }
+            if ( pdist.y > hCommon ) {
+                ydistance = pdist.y - hCommon + 1;
+            }
+            return Point( xdistance, ydistance );
+        }
+
         /// ================================================
 
         static Rect empty() {
@@ -111,9 +181,12 @@ namespace utils {
     };
 
     inline std::ostream& operator<<( std::ostream& os, const Rect& data ) {
-        os << "{[" << data.min.x << " " << data.min.y << "] [" << data.max.x << " " << data.max.y << "]}";
+        os << "{" << data.min << " " << data.max << "}";
         return os;
     }
+
+
+    std::vector<Point> line( const Point& from, const Point& to );
 
 } /* namespace utils */
 
