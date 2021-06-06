@@ -5,6 +5,7 @@
 #include "adiktedpp/Level.h"
 
 #include "adiktedpp/Messages.h"
+#include "adiktedpp/ThingType.h"
 
 #include "utils/Log.h"
 
@@ -320,6 +321,61 @@ namespace adiktedpp {
         }
         LEVEL* level = data->lvl;
         user_set_tile_owner( level, x, y, (unsigned short) owner );
+    }
+
+    std::string Level::printItems() const {
+        std::stringstream stream;
+
+        LEVEL* level = data->lvl;
+        const int arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
+        const int arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
+
+        std::size_t totalNum = 0;
+        for (int i=0; i < arr_entries_y; ++i) {
+            for (int j=0; j < arr_entries_x; ++j) {
+                const int x = i / MAP_SUBNUM_X;
+                const int y = j / MAP_SUBNUM_Y;
+                const int sx = i % MAP_SUBNUM_X;
+                const int sy = j % MAP_SUBNUM_Y;
+                const int ti = sy * MAP_SUBNUM_X + sx;
+
+                const int things_count = get_thing_subnums( level, i, j );
+                totalNum += things_count;
+
+                for (int k=0; k<things_count; ++k) {
+                    unsigned char* thing = (unsigned char*) get_thing( level, i, j, k );
+                    unsigned char type_idx = get_thing_type(thing);
+                    unsigned short stype_idx = get_thing_subtype(thing);
+                    char* obj_name = get_thing_subtype_fullname( type_idx, stype_idx );
+
+                    const ThingType thingType = (ThingType) type_idx;
+                    stream << "[" << x << " " << y << " " << ti << "]: " << thingType << ": " << obj_name << "\n";
+                }
+            }
+        }
+        stream << "items counted: " << totalNum << "\n";
+
+        return stream.str();
+    }
+
+    void Level::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
+        LEVEL* level = data->lvl;
+        const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
+        const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
+        unsigned char * thing = create_item_adv( level, sx, sy, (unsigned char) item );
+        if ( thing == nullptr ) {
+            return ;
+        }
+        thing_add( level, thing );
+    }
+
+    void Level::setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item ) {
+        setItem( point.x, point.y, subIndex, item );
     }
 
     /// ============================================================

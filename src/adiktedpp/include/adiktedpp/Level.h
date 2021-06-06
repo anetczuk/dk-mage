@@ -7,6 +7,7 @@
 
 #include "adiktedpp/SlabType.h"
 #include "adiktedpp/PlayerType.h"
+#include "adiktedpp/SubTypeItem.h"
 
 #include "utils/Rect.h"
 
@@ -103,6 +104,12 @@ namespace adiktedpp {
         PlayerType getOwner( const std::size_t x, const std::size_t y );
 
         void setOwner( const std::size_t x, const std::size_t y, const PlayerType owner );
+
+        std::string printItems() const;
+
+        void setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item );
+
+        void setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );
 
         /// ===========================================================================
 
