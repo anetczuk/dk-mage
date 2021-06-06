@@ -378,6 +378,28 @@ namespace adiktedpp {
         setItem( point.x, point.y, subIndex, item );
     }
 
+    void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
+        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
+        LEVEL* level = data->lvl;
+        const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
+        const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
+        for (std::size_t i=0; i<number; ++i) {
+            unsigned char * thing = create_creature( level, sx, sy, (unsigned char) creature );
+            if ( thing == nullptr ) {
+                return ;
+            }
+            thing_add( level, thing );
+        }
+    }
+
+    void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
+        setCreature( point.x, point.y, subIndex, creature, number );
+    }
+
     /// ============================================================
 
     void Level::setRescale( const std::size_t rescale ) {
