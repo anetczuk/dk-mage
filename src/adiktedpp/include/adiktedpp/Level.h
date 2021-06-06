@@ -112,6 +112,8 @@ namespace adiktedpp {
 
         void setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );
 
+        void setItem( const utils::Rect& rect, const std::size_t subIndex, const SubTypeItem item );
+
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );
 
         void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );

@@ -378,6 +378,14 @@ namespace adiktedpp {
         setItem( point.x, point.y, subIndex, item );
     }
 
+    void Level::setItem( const utils::Rect& rect, const std::size_t subIndex, const SubTypeItem item ) {
+        for ( int x = rect.min.x; x<= rect.max.x; ++x ) {
+            for ( int y = rect.min.y; y<= rect.max.y; ++y ) {
+                setItem( x, y, subIndex, item );
+            }
+        }
+    }
+
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
         if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
             /// out of map
