@@ -63,6 +63,20 @@ namespace dkmage {
         /// ============================================================
 
 
+        std::vector< Room* > Dungeon::findRoom( const adiktedpp::SlabType roomType ) {
+            std::vector< Room* > ret;
+            std::vector< Room* > allRooms = graph.itemsList();
+            for ( Room* item: allRooms ) {
+                if ( item == nullptr ) {
+                    continue ;
+                }
+                if ( item->type() == roomType ) {
+                    ret.push_back( item );
+                }
+            }
+            return ret;
+        }
+
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
             std::vector< adiktedpp::SlabType > roomsType;
             {

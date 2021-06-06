@@ -121,6 +121,9 @@ namespace dkmage {
             std::vector< Room* > connectedRooms( const Room& room ) {
                 return graph.connectedItems( room );
             }
+
+            std::vector< Room* > findRoom( const adiktedpp::SlabType roomType );
+
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
             /// size of dungeon
