@@ -72,11 +72,11 @@ namespace adiktedpp {
 
         /*UNTESTED - indices may differ by one */
         STI_ARMOUR    = 0x33,
-        STI_GLDHOARD1 = 0x34,
-        STI_GLDHOARD2 = 0x35,
-        STI_GLDHOARD3 = 0x36,
-        STI_GLDHOARD4 = 0x37,
-        STI_GLDHOARD5 = 0x38,
+        STI_GLDHOARD1 = 0x34,       /// small bag (800)
+        STI_GLDHOARD2 = 0x35,       /// medium bag (1200)
+        STI_GLDHOARD3 = 0x36,       /// big bag (1600)
+        STI_GLDHOARD4 = 0x37,       /// big bag (1600)
+        STI_GLDHOARD5 = 0x38,       /// big bag (1600)
 
         /*Creature lairs */
         STI_LAIRWIZRD = 0x39,
