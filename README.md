@@ -19,6 +19,7 @@ For example calling `./configure/release_gcc.sh` will create `build/release_gcc`
 
 ## References:
 
+- Mapmaker's Documentation: (https://lubiki.keeperklan.com/dk1_docs/)
 - description of Dungeon Keeper data formats: (https://jonskeet.uk/dk/index.html)
 - ADiKtEd editor: (https://github.com/dkfans/ADiKtEd)
 - maps and tools: (https://lubiki.keeperklan.com/index.php)
