@@ -19,9 +19,6 @@ extern "C" {
 }
 
 
-#define MAP_MAX_COORD   84
-
-
 namespace adiktedpp {
 
     struct LevelData {
@@ -44,6 +41,13 @@ namespace adiktedpp {
     };
 
 
+    void setTextField( char** fieldPtr, const char* data ) {
+        free( *fieldPtr );
+        char* desc = (char*) data;
+        *fieldPtr = strdup_noquot( desc );
+    }
+
+
     /// ===============================================================
 
 
@@ -54,6 +58,10 @@ namespace adiktedpp {
     Level::~Level() {
         level_free( data->lvl );
         level_deinit( &data->lvl );
+    }
+
+    LEVEL* Level::rawData() {
+        return data->lvl;
     }
 
     std::string Level::inputFileName() const {
@@ -123,12 +131,14 @@ namespace adiktedpp {
         LEVEL* level = data->lvl;
         free_map( level );
         start_new_map( level );
+        setInfo();
     }
 
     void Level::generateRandomMap() {
         LEVEL* level = data->lvl;
         free_map( level );
         generate_random_map( level );
+        setInfo();
     }
 
     bool Level::verifyMap() {
@@ -197,7 +207,7 @@ namespace adiktedpp {
     /// ============================================================
 
     SlabType Level::getSlab( const std::size_t x, const std::size_t y ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return SlabType::ST_ROCK;
@@ -222,7 +232,7 @@ namespace adiktedpp {
     }
 
     void Level::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;
@@ -249,11 +259,11 @@ namespace adiktedpp {
                          const std::size_t endX,   const std::size_t endY,
                          const SlabType type )
     {
-        if ( startX > MAP_MAX_COORD || startY > MAP_MAX_COORD ) {
+        if ( startX >= MAP_SIZE_DKSTD_X || startY >= MAP_SIZE_DKSTD_Y ) {
             LOG() << "given point is outside map: [" << startX << " " << startY << "]";
             return ;
         }
-        if ( endX > MAP_MAX_COORD || endY > MAP_MAX_COORD ) {
+        if ( endX >= MAP_SIZE_DKSTD_X || endY >= MAP_SIZE_DKSTD_Y ) {
             LOG() << "given point is outside map: [" << endX << " " << endY << "]";
             return ;
         }
@@ -277,11 +287,11 @@ namespace adiktedpp {
                              const std::size_t endX,   const std::size_t endY,
                              const SlabType room, const PlayerType owner )
     {
-        if ( startX > MAP_MAX_COORD || startY > MAP_MAX_COORD ) {
+        if ( startX >= MAP_SIZE_DKSTD_X || startY >= MAP_SIZE_DKSTD_Y ) {
             LOG() << "given point is outside map: [" << startX << " " << startY << "]";
             return ;
         }
-        if ( endX > MAP_MAX_COORD || endY > MAP_MAX_COORD ) {
+        if ( endX >= MAP_SIZE_DKSTD_X || endY >= MAP_SIZE_DKSTD_Y ) {
             LOG() << "given point is outside map: [" << endX << " " << endY << "]";
             return ;
         }
@@ -303,7 +313,7 @@ namespace adiktedpp {
     }
 
     PlayerType Level::getOwner( const std::size_t x, const std::size_t y ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return PlayerType::PT_UNSET;
@@ -314,7 +324,7 @@ namespace adiktedpp {
     }
 
     void Level::setOwner( const std::size_t x, const std::size_t y, const PlayerType owner ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;
@@ -359,7 +369,7 @@ namespace adiktedpp {
     }
 
     void Level::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;
@@ -387,7 +397,7 @@ namespace adiktedpp {
     }
 
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
-        if ( x > MAP_MAX_COORD || y > MAP_MAX_COORD ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;
@@ -451,6 +461,30 @@ namespace adiktedpp {
         }
         message_info("Bitmap \"%s\" created.",bmpfname);
         return true;
+    }
+
+    void Level::setInfo() {
+        setAuthor( "dkmage" );
+        setDesciption( "map generated by dkmage -- DK map generator v. 1.0.1" );
+    }
+
+    void Level::setAuthor( const std::string& info ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
+            LOG() << "uninitialized level";
+            return ;
+        }
+        setTextField( &level->info.author_text, info.c_str() );
+        setTextField( &level->info.editor_text, info.c_str() );
+    }
+
+    void Level::setDesciption( const std::string& info ) {
+        LEVEL* level = data->lvl;
+        if ( level == nullptr ) {
+            LOG() << "uninitialized level";
+            return ;
+        }
+        setTextField( &level->info.desc_text, info.c_str() );
     }
 
 } /* namespace adiktedpp */

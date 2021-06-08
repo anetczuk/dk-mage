@@ -15,6 +15,9 @@
 #include <memory>
 
 
+struct LEVEL;
+
+
 namespace adiktedpp {
 
     struct LevelData;
@@ -33,6 +36,8 @@ namespace adiktedpp {
         Level();
 
         ~Level();
+
+        LEVEL* rawData();
 
         /// ===========================================================================
 
@@ -126,6 +131,15 @@ namespace adiktedpp {
         void generateBmp();
 
         bool generateBmp( const std::string& path );
+
+
+    private:
+
+        void setInfo();
+
+        void setAuthor( const std::string& info );
+
+        void setDesciption( const std::string& info );
 
     };
 
