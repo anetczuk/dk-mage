@@ -77,6 +77,36 @@ namespace dkmage {
             return ret;
         }
 
+        void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize ) {
+            std::vector< Room* > roomsList = graph.itemsList();
+            while ( roomsList.empty() == false ) {
+                const std::size_t rRoom = rand() % roomsList.size();
+                Room* selected = remove_at( roomsList, rRoom );
+                if ( selected == nullptr ) {
+                    continue;
+                }
+                std::vector< Direction > availableDirs = graph.freeDirections( *selected );
+                while ( availableDirs.empty() == false ) {
+                    const Rect& basePos = selected->position();
+                    const std::size_t rDir = rand() % availableDirs.size();
+                    const Direction newDir = remove_at( availableDirs, rDir );
+                    Room* newRoom = graph.addItem( *selected, newDir );
+                    if ( newRoom == nullptr ) {
+                        continue ;
+                    }
+
+                    /// new node added
+                    newRoom->resize( roomSize );
+                    Rect& newPos = newRoom->position();
+                    moveRect( newPos, basePos, newDir );
+                    newRoom->type( roomType );
+                    newRoom->owner( player );
+                    return ;
+                }
+            }
+            LOG() << "unable to add room: " << roomType;
+        }
+
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
             std::vector< adiktedpp::SlabType > roomsType;
             {
@@ -104,34 +134,7 @@ namespace dkmage {
                 const std::size_t roomIndex = ( i - 1 ) % roomsType.size();
                 const adiktedpp::SlabType newRoomType = roomsType[roomIndex];
                 /// randomize next room
-                std::vector< Room* > roomsList = graph.itemsList();
-                while ( roomsList.empty() == false ) {
-                    const std::size_t rRoom = rand() % roomsList.size();
-                    Room* selected = remove_at( roomsList, rRoom );
-                    if ( selected == nullptr ) {
-                        continue;
-                    }
-                    std::vector< Direction > availableDirs = graph.freeDirections( *selected );
-                    const std::size_t dirSize = availableDirs.size();
-                    if ( dirSize < 1 ) {
-                        continue ;
-                    }
-                    const Rect& basePos = selected->position();
-                    const std::size_t rDir = rand() % dirSize;
-                    const Direction newDir = availableDirs[ rDir ];
-                    Room* newRoom = graph.addItem( *selected, newDir );
-                    if ( newRoom == nullptr ) {
-                        continue ;
-                    }
-
-                    /// new node added
-                    newRoom->resize( roomSize );
-                    Rect& newPos = newRoom->position();
-                    moveRect( newPos, basePos, newDir );
-                    newRoom->type( newRoomType );
-                    newRoom->owner( player );
-                    break ;
-                }
+                addRandomRoom( newRoomType, roomSize );
             }
         }
 

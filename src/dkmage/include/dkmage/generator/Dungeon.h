@@ -124,6 +124,8 @@ namespace dkmage {
 
             std::vector< Room* > findRoom( const adiktedpp::SlabType roomType );
 
+            void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
+
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
             /// size of dungeon

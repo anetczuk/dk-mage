@@ -18,9 +18,9 @@ namespace adiktedpp {
         PT_1                = 0x01,
         PT_2                = 0x02,
         PT_3                = 0x03,
-        PT_GOOD             = 0x04,
-        PT_UNSET            = 0x05,
-        PT_ALL              = 0x06  /*used in scripts only */
+        PT_GOOD             = 0x04,     /// hero (white)
+        PT_UNSET            = 0x05,     /// neutral (multicolor)
+        PT_ALL              = 0x06      /// used in scripts only
     };
 
 }

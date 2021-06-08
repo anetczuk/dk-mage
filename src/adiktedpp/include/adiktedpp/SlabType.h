@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/SlabType.h"
 
+#include <ostream>
+
 
 namespace adiktedpp {
 
@@ -53,6 +55,51 @@ namespace adiktedpp {
         ST_GEMS         = 0x34,
         ST_GUARDPOST    = 0x35
     };
+
+    inline std::ostream& operator<<( std::ostream& os, const SlabType data ) {
+        switch( data ) {
+        case SlabType::ST_ROCK:       { os << "ST_ROCK"; return os; }
+        case SlabType::ST_GOLD:       { os << "ST_GOLD"; return os; }
+        case SlabType::ST_EARTH:      { os << "ST_EARTH"; return os; }
+        case SlabType::ST_TORCHDIRT:  { os << "ST_TORCHDIRT"; return os; }
+        case SlabType::ST_WALLDRAPE:  { os << "ST_WALLDRAPE"; return os; }
+        case SlabType::ST_WALLTORCH:  { os << "ST_WALLTORCH"; return os; }
+        case SlabType::ST_WALLWTWINS: { os << "ST_WALLWTWINS"; return os; }
+        case SlabType::ST_WALLWWOMAN: { os << "ST_WALLWWOMAN"; return os; }
+        case SlabType::ST_WALLPAIRSHR:{ os << "ST_WALLPAIRSHR"; return os; }
+        case SlabType::ST_PATH:       { os << "ST_PATH"; return os; }
+        case SlabType::ST_CLAIMED:    { os << "ST_CLAIMED"; return os; }
+        case SlabType::ST_LAVA:       { os << "ST_LAVA"; return os; }
+        case SlabType::ST_WATER:      { os << "ST_WATER"; return os; }
+        case SlabType::ST_PORTAL:     { os << "ST_PORTAL"; return os; }
+        case SlabType::ST_TREASURE:   { os << "ST_TREASURE"; return os; }
+        case SlabType::ST_LIBRARY:    { os << "ST_LIBRARY"; return os; }
+        case SlabType::ST_PRISONCASE: { os << "ST_PRISONCASE"; return os; }
+        case SlabType::ST_TORTURE:    { os << "ST_TORTURE"; return os; }
+        case SlabType::ST_TRAINING:   { os << "ST_TRAINING"; return os; }
+        case SlabType::ST_DUNGHEART:  { os << "ST_DUNGHEART"; return os; }
+        case SlabType::ST_WORKSHOP:   { os << "ST_WORKSHOP"; return os; }
+        case SlabType::ST_SCAVENGER:  { os << "ST_SCAVENGER"; return os; }
+        case SlabType::ST_TEMPLE:     { os << "ST_TEMPLE"; return os; }
+        case SlabType::ST_GRAVEYARD:  { os << "ST_GRAVEYARD"; return os; }
+        case SlabType::ST_HATCHERY:   { os << "ST_HATCHERY"; return os; }
+        case SlabType::ST_LAIR:       { os << "ST_LAIR"; return os; }
+        case SlabType::ST_BARRACKS:   { os << "ST_BARRACKS"; return os; }
+        case SlabType::ST_DOORWOOD1:  { os << "ST_DOORWOOD1"; return os; }
+        case SlabType::ST_DOORWOOD2:  { os << "ST_DOORWOOD2"; return os; }
+        case SlabType::ST_DOORBRACE1: { os << "ST_DOORBRACE1"; return os; }
+        case SlabType::ST_DOORBRACE2: { os << "ST_DOORBRACE2"; return os; }
+        case SlabType::ST_DOORIRON1:  { os << "ST_DOORIRON1"; return os; }
+        case SlabType::ST_DOORIRON2:  { os << "ST_DOORIRON2"; return os; }
+        case SlabType::ST_DOORMAGIC1: { os << "ST_DOORMAGIC1"; return os; }
+        case SlabType::ST_DOORMAGIC2: { os << "ST_DOORMAGIC2"; return os; }
+        case SlabType::ST_BRIDGE:     { os << "ST_BRIDGE"; return os; }
+        case SlabType::ST_GEMS:       { os << "ST_GEMS"; return os; }
+        case SlabType::ST_GUARDPOST:  { os << "ST_GUARDPOST"; return os; }
+        }
+        os << "UNKNOWN[" << (int) data << "]";
+        return os;
+    }
 
     inline bool isEarth( const SlabType type ) {
         switch( type ) {
