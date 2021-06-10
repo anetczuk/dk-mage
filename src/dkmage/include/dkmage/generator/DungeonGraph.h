@@ -149,19 +149,18 @@ namespace dkmage {
             lemon::ListDigraph::ArcMap< Direction > edgeDirection;
             lemon::ListDigraph::NodeMap< DataPtr > items;
 
-            lemon::ListDigraph::Node first;
+            lemon::ListDigraph::Node root;
 
 
-            DungeonGraph(): graph(), edgeDirection( graph ), items( graph ) {
-                first = graph.addNode();
+            DungeonGraph(): graph(), edgeDirection( graph ), items( graph ), root( lemon::INVALID ) {
             }
 
             std::size_t size() const {
                 return (std::size_t) lemon::countNodes( graph );
             }
 
-            TItem& firstItem() {
-                return getItem( first );
+            TItem* rootItem() {
+                return itemByindex( 0 );
             }
 
             TItem* itemByindex( const std::size_t index ) {
@@ -253,6 +252,15 @@ namespace dkmage {
                 lemon::ListDigraph::Node targetNode = getNode( itemNode, direction );
                 if ( graph.valid( targetNode ) == false ) {
                     return nullptr;
+                }
+                TItem& targetItem = getItem( targetNode );
+                return &targetItem;
+            }
+
+            TItem* addItem() {
+                lemon::ListDigraph::Node targetNode = graph.addNode();
+                if ( root == lemon::INVALID ) {
+                    root = targetNode;
                 }
                 TItem& targetItem = getItem( targetNode );
                 return &targetItem;

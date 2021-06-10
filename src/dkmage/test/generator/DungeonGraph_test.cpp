@@ -28,7 +28,7 @@ namespace {
 
 TEST_CASE("DungeonGraph_size_new", "[classic]") {
     DungeonGraphMock graph;
-    REQUIRE( graph.size() == 1 );
+    REQUIRE( graph.size() == 0 );
 }
 
 TEST_CASE("DungeonGraph_itemByindex_invalid", "[classic]") {
@@ -37,14 +37,15 @@ TEST_CASE("DungeonGraph_itemByindex_invalid", "[classic]") {
     REQUIRE( room == nullptr );
 }
 
-TEST_CASE("DungeonGraph_itemByindex_first", "[classic]") {
+TEST_CASE("DungeonGraph_itemByindex_empty", "[classic]") {
     DungeonGraphMock graph;
     RoomMock* room = graph.itemByindex( 0 );
-    REQUIRE( room != nullptr );
+    REQUIRE( room == nullptr );
 }
 
 TEST_CASE("DungeonGraph_addItem_02", "[classic]") {
     DungeonGraphMock graph;
+    graph.addItem();
     RoomMock* room = graph.itemByindex( 0 );                                /// id: 0
 //    LOG() << "graph 1:\n" << graph.print();
     REQUIRE( room != nullptr );
@@ -61,6 +62,7 @@ TEST_CASE("DungeonGraph_addItem_02", "[classic]") {
 
 TEST_CASE("DungeonGraph_addItem_03", "[classic]") {
     DungeonGraphMock graph;
+    graph.addItem();
     RoomMock* room = graph.itemByindex( 0 );                                /// id: 0
 //    LOG() << "graph 1:\n" << graph.print();
     REQUIRE( room != nullptr );
