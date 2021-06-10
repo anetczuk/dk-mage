@@ -23,6 +23,20 @@ namespace adiktedpp {
         PT_ALL              = 0x06      /// used in scripts only
     };
 
+    inline std::ostream& operator<<( std::ostream& os, const PlayerType data ) {
+        switch( data ) {
+        case PlayerType::PT_0:       { os << "PLAYER0"; return os; }
+        case PlayerType::PT_1:       { os << "PLAYER1"; return os; }
+        case PlayerType::PT_2:       { os << "PLAYER2"; return os; }
+        case PlayerType::PT_3:       { os << "PLAYER3"; return os; }
+        case PlayerType::PT_GOOD:    { os << "PLAYER_GOOD"; return os; }
+        case PlayerType::PT_UNSET:   { os << "PLAYER_UNSET"; return os; }
+        case PlayerType::PT_ALL:     { os << "PLAYER_ALL"; return os; }
+        }
+        os << "UNKNOWN[" << (int) data << "]";
+        return os;
+    }
+
 }
 
 #endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_PLAYERTYPE_H_ */

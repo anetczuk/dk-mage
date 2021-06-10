@@ -11,6 +11,13 @@
 
 namespace adiktedpp {
 
+    enum class AvailableMode {
+        AM_DISABLED,
+        AM_POSSIBLE,            /// available after meet certain criteria (e.g. research or build proper room)
+        AM_ENABLED
+    };
+
+
     class Script {
 
         Level* levelPtr;
@@ -38,6 +45,32 @@ namespace adiktedpp {
         bool addLine( const std::string& line );
 
         bool addLine( const std::string& line, const std::size_t position );
+
+        /// set creature pool
+        void setEvilCreaturesPool( const std::size_t number );
+
+        /// set available creatures from pool
+        void setEvilCreaturesAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+
+        void setRoomsAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+
+        /**
+         * "available" parameter meaning:
+         *      - negative -- disabled
+         *      - zero     -- possible to workshop
+         *      - positive -- number of available items
+         */
+        void setDoorsAvailable( const PlayerType player, const int available = -1 );
+
+        /**
+         * "available" parameter meaning:
+         *      - negative -- disabled
+         *      - zero     -- possible to workshop
+         *      - positive -- number of available items
+         */
+        void setTrapsAvailable( const PlayerType player, const int available = -1 );
+
+        void setMagicAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
 
     private:

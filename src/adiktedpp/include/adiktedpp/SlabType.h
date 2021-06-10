@@ -8,6 +8,7 @@
 
 /// inclusion: #include "adiktedpp/SlabType.h"
 
+#include <set>
 #include <ostream>
 
 
@@ -100,6 +101,10 @@ namespace adiktedpp {
         os << "UNKNOWN[" << (int) data << "]";
         return os;
     }
+
+    const std::set< SlabType >& Rooms();
+
+    const std::set< SlabType >& Doors();
 
     inline bool isEarth( const SlabType type ) {
         switch( type ) {

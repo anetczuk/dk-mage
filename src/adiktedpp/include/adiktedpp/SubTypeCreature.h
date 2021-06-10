@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/SubTypeCreature.h"
 
+#include <set>
+
 
 namespace adiktedpp {
 
@@ -48,6 +50,10 @@ namespace adiktedpp {
         STC_ORC       = 0x1E,
         STC_FLOAT     = 0x1F
     };
+
+
+    /// all evil creatures
+    const std::set< SubTypeCreature >& EvilCreatures();
 
 }
 

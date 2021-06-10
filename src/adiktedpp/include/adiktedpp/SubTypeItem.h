@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/SubTypeItem.h"
 
+#include <set>
+
 
 namespace adiktedpp {
 
@@ -160,6 +162,10 @@ namespace adiktedpp {
         STI_SPCUSTOM  = 0x85,
         STI_SPELLARMG = 0x86
     };
+
+    const std::set< SubTypeItem >& Traps();
+
+    const std::set< SubTypeItem >& Spells();
 
 }
 
