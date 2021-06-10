@@ -86,6 +86,9 @@ namespace utils {
         Rect( const Point& aMin, const Point& aMax ): min(aMin), max(aMax) {
         }
 
+        Rect( const int minX, const int minY, const int maxX, const int maxY ): min(minX, minY), max(maxX, maxY) {
+        }
+
         int width() const {
             return ( max.x - min.x + 1);
         }
@@ -169,6 +172,16 @@ namespace utils {
             return Point( xdistance, ydistance );
         }
 
+        bool isCollision( const Rect& rect ) const {
+            if ( isSmallerThan(rect) ) {
+                return false;
+            }
+            if ( rect.isSmallerThan( *this ) ) {
+                return false;
+            }
+            return true;
+        }
+
         /// ================================================
 
         static Rect empty() {
@@ -176,6 +189,19 @@ namespace utils {
             rect.max.x = -1;
             rect.max.y = -1;
             return rect;
+        }
+
+
+    private:
+
+        bool isSmallerThan( const Rect& rect ) const {
+            if ( max.x < rect.min.x ) {
+                return true;
+            }
+            if ( max.y < rect.min.y ) {
+                return true;
+            }
+            return false;
         }
 
     };

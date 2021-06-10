@@ -35,3 +35,24 @@ TEST_CASE( "Dungeon_boundingBox_02" ) {
     CHECK( rect.max.x ==  2 );
     CHECK( rect.max.y ==  2 );
 }
+
+TEST_CASE( "Dungeon_addRoom_collision" ) {
+    Dungeon dungeon;
+    Room* first = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+    REQUIRE( first != nullptr );
+
+    Room* next = first;
+    next = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5, *next, Direction::D_WEST );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5, *next, Direction::D_NORTH );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5, *next, Direction::D_EAST );
+    REQUIRE( next != nullptr );
+
+    Room* last = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5, *next, Direction::D_SOUTH );
+    REQUIRE( last == nullptr );
+
+    REQUIRE( dungeon.roomsNum() == 4 );
+}

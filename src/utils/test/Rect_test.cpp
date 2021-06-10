@@ -124,6 +124,58 @@ TEST_CASE( "Rect_distance" ) {
         CHECK( dist.x == 16 );
         CHECK( dist.y == 16 );
     }
+    {
+        /// common
+        Rect rect1( 0, 0, 5, 5 );
+        Rect rect2( 3, 3, 8, 8 );
+        const Point dist = rect1.distance( rect2 );
+        CHECK( dist.x == 0 );
+        CHECK( dist.y == 0 );
+    }
+    {
+        /// on side
+        Rect rect1( 0, 0, 5, 5 );
+        Rect rect2( 6, 0, 10, 5 );
+        const Point dist = rect1.distance( rect2 );
+        CHECK( dist.x == 1 );
+        CHECK( dist.y == 0 );
+    }
+}
+
+TEST_CASE( "Rect_isCollision" ) {
+    {
+        Rect rect1( 5, 5 );
+        Rect rect2( 5, 5 );
+        const bool collision = rect1.isCollision( rect2 );
+        CHECK( collision == true );
+    }
+    {
+        Rect rect1( Point(0,0), Point(2,2) );
+        Rect rect2( Point(3,0), Point(5,2) );
+        const bool collision = rect1.isCollision( rect2 );
+        CHECK( collision == false );
+    }
+    {
+        Rect rect1( 5, 5 );
+        Rect rect2( 5, 5 );
+        rect2.move( 20, 20 );
+        const bool collision = rect1.isCollision( rect2 );
+        CHECK( collision == false );
+    }
+    {
+        /// common
+        Rect rect1( 0, 0, 5, 5 );
+        Rect rect2( 3, 3, 8, 8 );
+        const bool collision = rect1.isCollision( rect2 );
+        CHECK( collision == true );
+    }
+    {
+        /// on side
+        Rect rect1( 0, 0, 5, 5 );
+        Rect rect2( 6, 0, 10, 5 );
+        const bool collision = rect1.isCollision( rect2 );
+        CHECK( collision == false );
+    }
 }
 
 /// ===============================================================

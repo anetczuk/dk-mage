@@ -110,6 +110,10 @@ namespace dkmage {
                 fortifyWalls = value;
             }
 
+            std::size_t roomsNum() const {
+                return graph.size();
+            }
+
             std::vector< Room* > rooms() {
                 return graph.itemsList();
             }
@@ -126,10 +130,16 @@ namespace dkmage {
 
             void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
 
+            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
+
+            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction );
+
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
             /// size of dungeon
             Rect boundingBox();
+
+            bool isCollision( const Rect& rect );
 
             void move( const int offsetX, const int offsetY ) {
                 std::vector< Room* > roomsList = graph.itemsList();

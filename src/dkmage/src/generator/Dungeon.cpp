@@ -55,7 +55,7 @@ namespace dkmage {
 
         std::string Room::print() const {
             std::stringstream stream;
-            stream << "position: " << position();
+            stream << "position: " << position() << " type: " << roomType;
             return stream.str();
         }
 
@@ -87,24 +87,55 @@ namespace dkmage {
                 }
                 std::vector< Direction > availableDirs = graph.freeDirections( *selected );
                 while ( availableDirs.empty() == false ) {
-                    const Rect& basePos = selected->position();
                     const std::size_t rDir = rand() % availableDirs.size();
                     const Direction newDir = remove_at( availableDirs, rDir );
-                    Room* newRoom = graph.addItem( *selected, newDir );
-                    if ( newRoom == nullptr ) {
-                        continue ;
+                    const Room* added = addRoom( roomType, roomSize, *selected, newDir );
+                    if ( added != nullptr ) {
+                        return ;
                     }
-
-                    /// new node added
-                    newRoom->resize( roomSize );
-                    Rect& newPos = newRoom->position();
-                    moveRect( newPos, basePos, newDir );
-                    newRoom->type( roomType );
-                    newRoom->owner( player );
-                    return ;
                 }
             }
             LOG() << "unable to add room: " << roomType;
+        }
+
+        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize ) {
+            const Rect newRect( roomSize, roomSize );
+            if ( isCollision( newRect ) ) {
+                /// collision detected
+                return nullptr;
+            }
+
+            Room* newRoom = graph.addItem();
+            if ( newRoom == nullptr ) {
+                return newRoom;
+            }
+
+            /// new node added
+            newRoom->position() = newRect;
+            newRoom->type( roomType );
+            newRoom->owner( player );
+            return newRoom;
+        }
+
+        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction ) {
+            Rect newRect( roomSize, roomSize );
+            const Rect& basePos = from.position();
+            moveRect( newRect, basePos, direction );
+            if ( isCollision( newRect ) ) {
+                /// collision detected
+                return nullptr;
+            }
+
+            Room* newRoom = graph.addItem( from, direction );
+            if ( newRoom == nullptr ) {
+                return newRoom;
+            }
+
+            /// new node added
+            newRoom->position() = newRect;
+            newRoom->type( roomType );
+            newRoom->owner( player );
+            return newRoom;
         }
 
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
@@ -123,12 +154,12 @@ namespace dkmage {
                 roomsType.push_back( adiktedpp::SlabType::ST_SCAVENGER );
             }
             {
-                Room& first = graph.firstItem();
-                first.resize( roomSize );
-                Rect& basePos = first.position();
+                Room* root = graph.addItem();
+                root->resize( roomSize );
+                Rect& basePos = root->position();
                 basePos.centerize();
-                first.type( adiktedpp::SlabType::ST_DUNGHEART );
-                first.owner( player );
+                root->type( adiktedpp::SlabType::ST_DUNGHEART );
+                root->owner( player );
             }
             for (std::size_t i=1; i<roomsNum; ++i) {
                 const std::size_t roomIndex = ( i - 1 ) % roomsType.size();
@@ -151,6 +182,17 @@ namespace dkmage {
                 minMax.expand( roomPos );
             }
             return minMax;
+        }
+
+        bool Dungeon::isCollision( const Rect& rect ) {
+            std::vector< Room* > roomsList = graph.itemsList();
+            for ( const Room* item: roomsList ) {
+                const Rect& pos = item->position();
+                if ( rect.isCollision( pos ) ) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         void Dungeon::centerize() {
