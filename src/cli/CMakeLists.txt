@@ -6,10 +6,16 @@
 set( TARGET_NAME dkmagecli )
 
 
-set( PUBLIC_HEADERS "../dkmage/include" )
+list( APPEND PUBLIC_HEADERS "." )
+
+#include_directories( ${LEMON_INCLUDE_DIR} )
+include_directories( "${EXTERNAL_DIR}/tclap/install/include" )
+#include_directories( "../adiktedpp/include" )
+#include_directories( "../dkmage/include" )
+include_directories( ${PUBLIC_HEADERS} )
 
 
-set( EXT_LIBS  )
+set( EXT_LIBS utils adiktedpp dkmage )
 
 file(GLOB_RECURSE cpp_files *.cpp )
 file(GLOB_RECURSE h_files ${PUBLIC_HEADERS}/*.h )
