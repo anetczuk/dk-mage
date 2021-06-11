@@ -3,26 +3,20 @@
  *
  */
 
+#include "cli/Generator.h"
+
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
-
-
-namespace {
-
-    void generate( const std::string& mapType, const std::string& seed ) {
-        LOG() << "generating map: " << mapType << " seed: " << seed;
-    }
-
-}
 
 
 int main( int argc, char** argv ) {
     try {
         TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', "1.0.1" );
 
-        std::vector<std::string> typeAllowed;
-        typeAllowed.push_back("cave");
+        cli::Generator& generator = cli::Generator::instance();
+
+        std::vector<std::string> typeAllowed = generator.generatorsList();                                          /// yes, copy
         TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
         TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "cave", &typeAllowedVals, cmd );
 
@@ -33,7 +27,7 @@ int main( int argc, char** argv ) {
         const std::string& mapType = typeArg.getValue();
         const std::string& mapSeed = seedArg.getValue();
 
-        generate( mapType, mapSeed );
+        generator.generate( mapType, mapSeed );
 
     } catch ( TCLAP::ArgException &e ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
