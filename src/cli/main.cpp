@@ -10,8 +10,8 @@
 
 namespace {
 
-    void generate( const std::string& mapTemplate, const std::string& seed ) {
-        LOG() << "generating map: " << mapTemplate << " seed: " << seed;
+    void generate( const std::string& mapType, const std::string& seed ) {
+        LOG() << "generating map: " << mapType << " seed: " << seed;
     }
 
 }
@@ -21,19 +21,19 @@ int main( int argc, char** argv ) {
     try {
         TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', "1.0.1" );
 
-        std::vector<std::string> templateAllowed;
-        templateAllowed.push_back("cave");
-        TCLAP::ValuesConstraint<std::string> templateAllowedVals( templateAllowed );
-        TCLAP::ValueArg<std::string> templateArg( "", "template", "Map template", true, "", &templateAllowedVals, cmd );
+        std::vector<std::string> typeAllowed;
+        typeAllowed.push_back("cave");
+        TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
+        TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "cave", &typeAllowedVals, cmd );
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
         cmd.parse( argc, argv );
 
-        const std::string& mapTemplate = templateArg.getValue();
-        const std::string& mapSeed     = seedArg.getValue();
+        const std::string& mapType = typeArg.getValue();
+        const std::string& mapSeed = seedArg.getValue();
 
-        generate( mapTemplate, mapSeed );
+        generate( mapType, mapSeed );
 
     } catch ( TCLAP::ArgException &e ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
