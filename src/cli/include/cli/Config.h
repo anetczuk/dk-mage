@@ -23,7 +23,18 @@ namespace cli {
 
         Config( const std::string& configPath = "" );
 
-        std::string readLevelsPath() const;
+        std::string readDataPath() const {
+            return readFieldString( "data", "data_path" );
+        }
+
+        std::string readLevelsPath() const {
+            return readFieldString( "data", "levels_path" );
+        }
+
+
+    private:
+
+        std::string readFieldString( const std::string& section, const std::string& field ) const;
 
     };
 

@@ -15,23 +15,23 @@ namespace cli {
     Config::Config( const std::string& configPath ): configPath( configPath ) {
     }
 
-    std::string Config::readLevelsPath() const {
+    std::string Config::readFieldString( const std::string& section, const std::string& field ) const {
         if ( configPath.empty() ) {
             return "";
         }
 
         INIReader reader( configPath );
         if (reader.ParseError() != 0) {
-            std::string message = std::string( "Can't load '" ) + configPath + "'";
+            const std::string message = std::string( "Can't load '" ) + configPath + "'";
             throw std::runtime_error( message );
-            return "";
         }
 
-        const std::string levelPath = reader.Get("data", "levels_path", "");
-        if ( levelPath.empty() ) {
-            throw std::runtime_error( "Can't read 'levels_path' field in 'data' section" );
+        const std::string fieldData = reader.Get(section, field, "");
+        if ( fieldData.empty() ) {
+            const std::string message = std::string( "Can't read '" ) + field + "' field in '" + section + "' section";
+            throw std::runtime_error( message );
         }
-        return levelPath;
+        return fieldData;
     }
 
 } /* namespace cli */
