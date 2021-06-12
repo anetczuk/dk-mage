@@ -5,22 +5,84 @@
 
 #include "cli/Generator.h"
 
+#include "dkmage/mode/Cave.h"
+
 #include "utils/Log.h"
+
+#include <functional>                               /// std::hash
+#include <random>
+#include <time.h>                                   /// time
 
 
 namespace cli {
 
-    class CaveMode: public GeneratorInstance {
+    /**
+     *
+     */
+    class CaveMode: public LevelGenerator {
     public:
 
-        CaveMode( const std::string& code ): GeneratorInstance( code ) {
+        dkmage::mode::Cave generator;
+
+
+        CaveMode( const std::string& code ): LevelGenerator( code ) {
         }
 
-        void generate( const int seed ) override {
-            LOG() << "generating cave with seed " << seed;
+        void generate( const std::size_t seed ) override {
+            generator.generate( seed );
+        }
+
+        void storeLevel( const std::string& dirPath ) override {
+            generator.saveLevel( dirPath );
+        }
+
+        void storePreview( const std::string& filePath ) override {
+            generator.saveBmp( filePath );
         }
 
     };
+
+
+    /// ===============================================================
+
+
+    static std::string genSeed( const std::size_t length = 8 ) {
+        static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        std::string ret;
+        ret.reserve( length );
+
+        const int len = sizeof( alphanum ) - 1;
+        for ( std::size_t i=0; i<length; ++i ) {
+            const int index = rand() % len;
+            ret += alphanum[ index ];
+        }
+        return ret;
+    }
+
+
+    /// ===============================================================
+
+
+    void LevelGenerator::generate( const std::string& seed ) {
+        if ( seed.empty() ) {
+            const unsigned int timeSeed = time(NULL);
+            srand( timeSeed );
+            const std::string newSeed = genSeed();
+            if ( newSeed.empty() ) {
+                LOG() << "unable to generate seed";
+                return ;
+            }
+            generate( newSeed );
+            return ;
+        }
+
+        LOG() << "generating map '" << genCode << "' with seed '" << seed << "'";
+        const std::size_t seedValue = std::hash< std::string >{}( seed );
+        generate( seedValue );
+    }
 
 
     /// ===============================================================
@@ -35,14 +97,14 @@ namespace cli {
         return list;
     }
 
-    void Generator::generate( const std::string& type, const std::string& seed ) {
-        GeneratorInstance* generator = find( type );
-        if ( generator == nullptr ) {
-            LOG() << "unable to find generator " << type;
-            return ;
+    LevelGenerator* Generator::get( const std::string& type ) {
+        for ( const auto& item: genMap ) {
+            const std::string& itemCode = item->code();
+            if ( itemCode == type ) {
+                return item.get();
+            }
         }
-        LOG() << "generating map '" << type << "' with seed '" << seed << "'";
-        generator->generate( 0 );
+        return nullptr;
     }
 
     Generator& Generator::instance() {
@@ -52,16 +114,6 @@ namespace cli {
 
     Generator::Generator() {
         add<CaveMode>( "cave" );
-    }
-
-    GeneratorInstance* Generator::find( const std::string& code ) {
-        for ( const auto& item: genMap ) {
-            const std::string& itemCode = item->code();
-            if ( itemCode == code ) {
-                return item.get();
-            }
-        }
-        return nullptr;
     }
 
 } /* namespace cli */

@@ -18,24 +18,34 @@ namespace cli {
     /**
      *
      */
-    class GeneratorInstance {
+    class LevelGenerator {
 
         std::string genCode;
 
 
     public:
 
-        GeneratorInstance( const std::string& code ): genCode( code ) {
+        LevelGenerator( const std::string& code ): genCode( code ) {
         }
 
-        virtual ~GeneratorInstance() {
+        virtual ~LevelGenerator() {
         }
 
         const std::string& code() const {
             return genCode;
         }
 
-        virtual void generate( const int seed ) = 0;
+        void generate( const std::string& seed );
+
+        virtual void generate( const std::size_t seed ) = 0;
+
+        /**
+         * "levelPath" is path without extension, e.g. "map00333" or "path/to/map/file"
+         * in both cases various files will be created by adding extension to "levelPath"
+         */
+        virtual void storeLevel( const std::string& levelPath ) = 0;
+
+        virtual void storePreview( const std::string& filePath ) = 0;
 
     };
 
@@ -46,16 +56,16 @@ namespace cli {
     class Generator {
     private:
 
-        typedef std::unique_ptr<GeneratorInstance> GeneratorInstancePtr;
+        typedef std::unique_ptr<LevelGenerator> LevelGeneratorPtr;
 
-        std::vector< GeneratorInstancePtr > genMap;
+        std::vector< LevelGeneratorPtr > genMap;
 
 
     public:
 
         std::vector< std::string > generatorsList() const;
 
-        void generate( const std::string& type, const std::string& seed );
+        LevelGenerator* get( const std::string& type );
 
         static Generator& instance();
 
@@ -66,10 +76,8 @@ namespace cli {
 
         template <typename T>
         void add( const std::string& code ) {
-            genMap.push_back( GeneratorInstancePtr( new T(code) ) );
+            genMap.push_back( LevelGeneratorPtr( new T(code) ) );
         }
-
-        GeneratorInstance* find( const std::string& code );
 
     };
 

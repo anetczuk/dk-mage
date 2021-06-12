@@ -22,12 +22,29 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
+        TCLAP::ValueArg<std::string> outdirArg( "", "outdir", "Path to map's output directory", true, ".", "path string", cmd );
+
+        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
+
         cmd.parse( argc, argv );
 
         const std::string& mapType = typeArg.getValue();
-        const std::string& mapSeed = seedArg.getValue();
+        cli::LevelGenerator* typeGenerator = generator.get( mapType );
+        if ( typeGenerator == nullptr ) {
+            LOG() << "unable to find generator '" << mapType << "'";
+            return 1;
+        }
 
-        generator.generate( mapType, mapSeed );
+        const std::string& mapSeed = seedArg.getValue();
+        typeGenerator->generate( mapSeed );
+
+        const std::string& levelDir = outdirArg.getValue();
+        typeGenerator->storeLevel( levelDir );
+
+        const std::string& bmpFile = outbmpArg.getValue();
+        if ( bmpFile.empty() == false ) {
+            typeGenerator->storePreview( bmpFile );
+        }
 
     } catch ( TCLAP::ArgException &e ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
