@@ -10,7 +10,7 @@ list( APPEND PUBLIC_HEADERS "../include" )
 
 include_directories( ${PUBLIC_HEADERS} )
 
-set( EXT_LIBS ${LEMON_LIBRARY} )
+set( EXT_LIBS ${LEMON_LIBRARY} utils adiktedpp )
 
 file(GLOB_RECURSE cpp_files *.cpp )
 file(GLOB_RECURSE h_files ${PUBLIC_HEADERS}/*.h )

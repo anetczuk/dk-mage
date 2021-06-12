@@ -25,7 +25,7 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
-        TCLAP::ValueArg<std::string> outdirArg( "", "outdir", "Path to map's output directory", true, ".", "path string", cmd );
+        TCLAP::ValueArg<std::string> outdirArg( "", "output", "Path to map's output directory", true, ".", "path string", cmd );
 
         TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
 
@@ -37,7 +37,7 @@ int main( int argc, char** argv ) {
         cli::Config config( configPath );
 
         const std::string& mapType = typeArg.getValue();
-        cli::LevelGenerator* typeGenerator = generator.get( mapType );
+        dkmage::LevelGenerator* typeGenerator = generator.get( mapType );
         if ( typeGenerator == nullptr ) {
             LOG() << "unable to find generator '" << mapType << "'";
             return 1;
@@ -59,6 +59,7 @@ int main( int argc, char** argv ) {
     } catch ( TCLAP::ArgException& e ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
         return 1;
+
     } catch ( std::runtime_error& e ) {
         LOG() << "error: " << e.what();
         return 1;
