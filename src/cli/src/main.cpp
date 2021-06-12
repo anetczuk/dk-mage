@@ -4,6 +4,7 @@
  */
 
 #include "cli/Generator.h"
+#include "cli/Config.h"
 
 #include "utils/Log.h"
 
@@ -15,6 +16,8 @@ int main( int argc, char** argv ) {
         TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', "1.0.1" );
 
         cli::Generator& generator = cli::Generator::instance();
+
+        TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
 
         std::vector<std::string> typeAllowed = generator.generatorsList();                                          /// yes, copy
         TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
@@ -28,6 +31,11 @@ int main( int argc, char** argv ) {
 
         cmd.parse( argc, argv );
 
+        /// ---------------------------------------------------------
+
+        const std::string& configPath = configArg.getValue();
+        cli::Config config( configPath );
+
         const std::string& mapType = typeArg.getValue();
         cli::LevelGenerator* typeGenerator = generator.get( mapType );
         if ( typeGenerator == nullptr ) {
@@ -38,16 +46,22 @@ int main( int argc, char** argv ) {
         const std::string& mapSeed = seedArg.getValue();
         typeGenerator->generate( mapSeed );
 
+        const std::string levelsPath = config.readLevelsPath();
         const std::string& levelDir = outdirArg.getValue();
-        typeGenerator->storeLevel( levelDir );
+        const std::string outPath = levelsPath + "/" + levelDir;
+        typeGenerator->storeLevel( outPath );
 
         const std::string& bmpFile = outbmpArg.getValue();
         if ( bmpFile.empty() == false ) {
             typeGenerator->storePreview( bmpFile );
         }
 
-    } catch ( TCLAP::ArgException &e ) {
+    } catch ( TCLAP::ArgException& e ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
+        return 1;
+    } catch ( std::runtime_error& e ) {
+        LOG() << "error: " << e.what();
+        return 1;
     }
 
     return 0;
