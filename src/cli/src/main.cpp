@@ -6,9 +6,29 @@
 #include "cli/Generator.h"
 #include "cli/Config.h"
 
+#include "utils/Seed.h"
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
+
+
+void generate( dkmage::LevelGenerator& generator, const std::string& seed ) {
+    if ( seed.empty() ) {
+        const unsigned int timeSeed = time(NULL);
+        srand( timeSeed );
+        const std::string newSeed = utils::genSeed();
+        if ( newSeed.empty() ) {
+            LOG() << "unable to generate seed";
+            return ;
+        }
+        generate( generator, newSeed );
+        return ;
+    }
+
+    LOG() << "using seed '" << seed << "'";
+    const std::size_t seedValue = std::hash< std::string >{}( seed );
+    generator.generate( seedValue );
+}
 
 
 int main( int argc, char** argv ) {
@@ -43,17 +63,29 @@ int main( int argc, char** argv ) {
             return 1;
         }
 
-        const std::string& mapSeed = seedArg.getValue();
-        typeGenerator->generate( mapSeed );
+        {
+            /// generate level
+            LOG() << "using map generator: '" << mapType << "'";
+            const std::string& mapSeed = seedArg.getValue();
+            generate( *typeGenerator, mapSeed );
+        }
 
-        const std::string levelsPath = config.readLevelsPath();
-        const std::string& levelDir = outdirArg.getValue();
-        const std::string outPath = levelsPath + "/" + levelDir;
-        typeGenerator->storeLevel( outPath );
+        {
+            /// store generated level
+            const std::string levelsPath = config.readLevelsPath();
+            const std::string& levelDir = outdirArg.getValue();
+            const std::string outPath = levelsPath + "/" + levelDir;
+            typeGenerator->storeLevel( outPath );
+        }
 
-        const std::string& bmpFile = outbmpArg.getValue();
-        if ( bmpFile.empty() == false ) {
-            typeGenerator->storePreview( bmpFile );
+        {
+            /// store preview image
+            const std::string& bmpFile = outbmpArg.getValue();
+            if ( bmpFile.empty() == false ) {
+                const std::string dataPath = config.readDataPath();
+                typeGenerator->setDataPath( dataPath );
+                typeGenerator->storePreview( bmpFile );
+            }
         }
 
     } catch ( TCLAP::ArgException& e ) {

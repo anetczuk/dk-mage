@@ -22,7 +22,7 @@ namespace dkmage {
         virtual ~LevelGenerator() {
         }
 
-        void generate( const std::string& seed );
+        virtual void setDataPath( const std::string& dataPath ) = 0;
 
         virtual void generate( const std::size_t seed ) = 0;
 
