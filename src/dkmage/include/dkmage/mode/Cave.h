@@ -8,27 +8,28 @@
 
 #include "dkmage/LevelGenerator.h"
 
-///#include <memory>
+#include <memory>
 
 
 namespace dkmage {
     namespace mode {
 
+        /**
+         *
+         */
         class Cave: public LevelGenerator {
 
-//            std::unique_ptr<CaveData> data;
+            std::unique_ptr< LevelGenerator > data;
 
 
         public:
 
             Cave();
 
+            void setDataPath( const std::string& dataPath ) override;
+
             void generate( const std::size_t seed ) override;
 
-            /**
-             * "levelPath" is path without extension, e.g. "map00333" or "path/to/map/file"
-             * in both cases various files will be created by adding extension to "levelPath"
-             */
             void storeLevel( const std::string& levelPath ) override;
 
             void storePreview( const std::string& filePath ) override;
