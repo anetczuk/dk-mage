@@ -130,7 +130,11 @@ namespace dkmage {
 
             void generate( const std::size_t seed ) override {
                 srand( seed );
+                generateLevel();
+            }
 
+            void generateLevel() {
+                LOG() << "generating level";
                 dkmage::generator::Dungeon dungeon;
                 dungeon.fortify( true );
                 dungeon.generate( 12, 5 );
@@ -154,15 +158,20 @@ namespace dkmage {
                     enemyDungeon.move( 0, yoffset );
                 }
 
-                LOG() << "dungeon:\n" << dungeon.print();
+//                LOG() << "dungeon:\n" << dungeon.print();
             //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
-
-                LOG() << "generating level";
 
                 level.generateRandomMap();
 
                 drawDungeon( level, dungeon );
                 drawDungeon( level, enemyDungeon );
+
+                level.fillSeparatedAreas( 9 );
+                if ( level.countSeparatedAreas() > 1 ) {
+                    LOG() << "found inaccessible areas -- restarting generation";
+                    generateLevel();
+                    return ;
+                }
 
                 {
                     dkmage::generator::Room* first = dungeon.room(0);

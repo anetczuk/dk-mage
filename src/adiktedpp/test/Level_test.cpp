@@ -158,6 +158,23 @@ TEST_CASE("Level_countSeparatedAreas_1", "[classic]") {
     REQUIRE( areas == 1 );
 }
 
+TEST_CASE("Level_fillSeparatedAreas", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+    level.setSlab( utils::Rect( utils::Point(50, 50), 5, 5 ), SlabType::ST_ROCK );
+    level.setSlab( utils::Rect( utils::Point(50, 50), 3, 3 ), SlabType::ST_EARTH );
+
+    level.generateTestBmp();
+
+    REQUIRE( level.countSeparatedAreas() == 1 );
+
+    level.fillSeparatedAreas( 10 );
+
+    REQUIRE( level.countSeparatedAreas() == 0 );
+}
+
 TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
     LevelMock level;
 

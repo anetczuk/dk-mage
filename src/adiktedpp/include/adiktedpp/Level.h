@@ -80,6 +80,8 @@ namespace adiktedpp {
         /// count separated chambers by impassable rocks
         std::size_t countSeparatedAreas();
 
+        void fillSeparatedAreas( const std::size_t areaLimit );
+
         /// ===========================================================================
 
         SlabType getSlab( const std::size_t x, const std::size_t y );
