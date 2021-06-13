@@ -11,6 +11,7 @@
 
 #include <sstream>
 #include <iomanip>
+///#include <queue>
 
 extern "C" {
     #include "libadikted/adikted.h"
@@ -153,8 +154,15 @@ namespace adiktedpp {
             } else {
                 LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
             }
+            return false;
         }
-        return ok;
+
+        if ( countSeparatedAreas() > 0 ) {
+            LOG() << "map problem found: inaccessible areas";
+            return false;
+        }
+
+        return true;
     }
 
     bool Level::loadMapById( const std::size_t mapId ) {
@@ -484,6 +492,115 @@ namespace adiktedpp {
             return ;
         }
         setTextField( &level->info.desc_text, info.c_str() );
+    }
+
+
+    struct FillData {
+        int data[ MAP_SIZE_DKSTD_X * MAP_SIZE_DKSTD_Y ] = { 0 };
+//        int data[ MAP_SIZE_DKSTD_X ][ MAP_SIZE_DKSTD_Y ] = { {0} };
+
+        void set( const std::size_t x, const std::size_t y, const int val ) {
+            data[ y * MAP_SIZE_DKSTD_X + x ] = val;
+//            data[y][x] = val;
+        }
+
+        int get( const std::size_t x, const std::size_t y ) const {
+            return data[ y * MAP_SIZE_DKSTD_X + x ];
+//            return data[y][x];
+        }
+
+        std::size_t fill( const int value ) {
+            std::size_t areas = 0;
+            for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
+                for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+                    if ( get( x, y ) == value ) {
+                         /// cell not filled
+                        ++areas;
+                        fillValue( x, y, value, areas );
+                    }
+                }
+            }
+            return areas;
+        }
+
+//        void fillValue( const std::size_t startX, const std::size_t startY, const int oldValue, const int newValue ) {
+//            std::queue< std::pair<std::size_t, std::size_t> > obj;
+//            obj.push( { startX, startY } );
+//            while ( obj.empty() == false ) {
+//                const std::pair<std::size_t, std::size_t> coord = obj.front();
+//                const std::size_t x = coord.first;
+//                const std::size_t y = coord.second;
+//
+//                /// poping front pair of queue
+//                obj.pop();
+//
+//                if ( x >= MAP_SIZE_DKSTD_X ) {
+//                    continue ;
+//                }
+//                if ( y >= MAP_SIZE_DKSTD_Y ) {
+//                    continue ;
+//                }
+//
+//                const int preColor = get( x, y );
+//
+//                if ( preColor != oldValue ) {
+//                    continue ;
+//                }
+//                if ( preColor == newValue ) {
+//                    continue ;
+//                }
+//
+//                set( x, y, newValue );
+//
+//                obj.push( { x + 1, y } );
+//                obj.push( { x - 1, y } );
+//                obj.push( { x, y + 1 } );
+//                obj.push( { x, y - 1 } );
+//            }
+//        }
+
+        /// recursive solution
+        void fillValue( const std::size_t x, const std::size_t y, const int oldValue, const int newValue ) {
+            if ( x >= MAP_SIZE_DKSTD_X ) {
+                return ;
+            }
+            if ( y >= MAP_SIZE_DKSTD_Y ) {
+                return ;
+            }
+            if ( get( x, y ) != oldValue ) {
+                return ;
+            }
+            if ( get( x, y ) == newValue ) {
+                return ;
+            }
+            set( x, y, newValue );
+            fillValue( x+1, y, oldValue, newValue );
+            fillValue( x-1, y, oldValue, newValue );
+            fillValue( x, y+1, oldValue, newValue );
+            fillValue( x, y-1, oldValue, newValue );
+        }
+    };
+
+
+    std::size_t Level::countSeparatedAreas() {
+        FillData data;
+        /// mark rock
+        for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
+            for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+                if ( getSlab(x, y) == SlabType::ST_ROCK ) {
+                    data.set(x, y, -1 );
+                }
+//                else {
+//                    data.set(x, y, 0 );
+//                }
+            }
+        }
+
+        const std::size_t areas = data.fill( 0 );
+        if ( areas == 0 ) {
+            return 0;
+        }
+        return (areas - 1);
     }
 
 } /* namespace adiktedpp */

@@ -110,6 +110,54 @@ TEST_CASE("Level_verifyMap_random", "[classic]") {
     REQUIRE( ok == false );
 }
 
+TEST_CASE("Level_countSeparatedAreas_new", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    level.generateTestBmp();
+
+    const std::size_t areas = level.countSeparatedAreas();
+    REQUIRE( areas == 0 );
+}
+
+TEST_CASE("Level_countSeparatedAreas_rock", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_ROCK );
+
+    level.generateTestBmp();
+
+    const std::size_t areas = level.countSeparatedAreas();
+    REQUIRE( areas == 0 );
+}
+
+TEST_CASE("Level_countSeparatedAreas_earth", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+
+    level.generateTestBmp();
+
+    const std::size_t areas = level.countSeparatedAreas();
+    REQUIRE( areas == 0 );
+}
+
+TEST_CASE("Level_countSeparatedAreas_1", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+    level.setSlab( utils::Rect( utils::Point(50, 50), 11, 11 ), SlabType::ST_ROCK );
+    level.setSlab( utils::Rect( utils::Point(50, 50), 9, 9 ), SlabType::ST_EARTH );
+
+    level.generateTestBmp();
+
+    const std::size_t areas = level.countSeparatedAreas();
+    REQUIRE( areas == 1 );
+}
+
 TEST_CASE("Level_loadMapByPath_string_name_failed", "[classic]") {
     LevelMock level;
 

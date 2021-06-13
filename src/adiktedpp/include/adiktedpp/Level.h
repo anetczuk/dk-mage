@@ -77,6 +77,9 @@ namespace adiktedpp {
 
         bool verifyMap();
 
+        /// count separated chambers by impassable rocks
+        std::size_t countSeparatedAreas();
+
         /// ===========================================================================
 
         SlabType getSlab( const std::size_t x, const std::size_t y );
