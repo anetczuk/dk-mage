@@ -27,12 +27,12 @@ namespace dkmage {
             switch( direction ) {
             case Direction::D_NORTH: {
                 const int yOffset = ( rect.height() + base.height() ) / 2 + 1;      /// +1 for wall
-                rect.move( 0, yOffset );
+                rect.move( 0, -yOffset );
                 break;
             }
             case Direction::D_SOUTH: {
                 const int yOffset = ( rect.height() + base.height() ) / 2 + 1;      /// +1 for wall
-                rect.move( 0, -yOffset );
+                rect.move( 0, yOffset );
                 break;
             }
             case Direction::D_EAST: {
@@ -47,6 +47,11 @@ namespace dkmage {
             }
             }
 
+        }
+
+        template <typename T>
+        void remove( std::vector<T>& vec, const T data ) {
+            vec.erase( std::remove( vec.begin(), vec.end(), data ), vec.end() );
         }
 
 
@@ -86,6 +91,24 @@ namespace dkmage {
                     continue;
                 }
                 std::vector< Direction > availableDirs = graph.freeDirections( *selected );
+
+                const int northDiff = limitNorth - selected->northCoord;
+                if ( northDiff <= 0) {
+                    remove( availableDirs, Direction::D_NORTH );
+                }
+                const int southDiff = limitSouth + selected->northCoord;
+                if ( southDiff <= 0) {
+                    remove( availableDirs, Direction::D_SOUTH );
+                }
+                const int eastDiff = limitEast - selected->eastCoord;
+                if ( eastDiff <= 0) {
+                    remove( availableDirs, Direction::D_EAST );
+                }
+                const int westDiff = limitWest + selected->eastCoord;
+                if ( westDiff == 0) {
+                    remove( availableDirs, Direction::D_WEST );
+                }
+
                 while ( availableDirs.empty() == false ) {
                     const std::size_t rDir = rand() % availableDirs.size();
                     const Direction newDir = remove_at( availableDirs, rDir );
@@ -129,6 +152,29 @@ namespace dkmage {
             Room* newRoom = graph.addItem( from, direction );
             if ( newRoom == nullptr ) {
                 return newRoom;
+            }
+
+            switch( direction ) {
+            case Direction::D_NORTH: {
+                newRoom->northCoord = from.northCoord + 1;
+                newRoom->eastCoord  = from.eastCoord;
+                break;
+            }
+            case Direction::D_SOUTH: {
+                newRoom->northCoord = from.northCoord - 1;
+                newRoom->eastCoord  = from.eastCoord;
+                break;
+            }
+            case Direction::D_EAST: {
+                newRoom->northCoord = from.northCoord;
+                newRoom->eastCoord  = from.eastCoord + 1;
+                break;
+            }
+            case Direction::D_WEST: {
+                newRoom->northCoord = from.northCoord;
+                newRoom->eastCoord  = from.eastCoord - 1;
+                break;
+            }
             }
 
             /// new node added

@@ -136,6 +136,8 @@ namespace dkmage {
             void generateLevel() {
                 LOG() << "generating level";
                 dkmage::generator::Dungeon dungeon;
+                dungeon.limitNorth = 1;
+                dungeon.limitSouth = 0;
                 dungeon.fortify( true );
                 dungeon.generate( 12, 5 );
                 dungeon.centerize( 42, 42 );
@@ -147,9 +149,11 @@ namespace dkmage {
 
             //    dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
                 dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
+                enemyDungeon.limitNorth = 0;
+                enemyDungeon.limitSouth = 1;
                 enemyDungeon.fortify( true );
-                enemyDungeon.generate( 6, 5 );
-            //    enemyDungeon.generate( 12, 5 );
+//                enemyDungeon.generate( 6, 5 );
+                enemyDungeon.generate( 12, 5 );
                 enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_PORTAL, 3 );
                 enemyDungeon.centerize( 42, 42 );
                 {
@@ -167,7 +171,7 @@ namespace dkmage {
                 drawDungeon( level, enemyDungeon );
 
                 level.fillSeparatedAreas( 9 );
-                if ( level.countSeparatedAreas() > 1 ) {
+                if ( level.countSeparatedAreas() > 0 ) {
                     LOG() << "found inaccessible areas -- restarting generation";
                     generateLevel();
                     return ;

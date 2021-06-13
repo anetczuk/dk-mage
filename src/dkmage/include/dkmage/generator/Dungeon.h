@@ -38,9 +38,14 @@ namespace dkmage {
 
         public:
 
+            int northCoord;
+            int eastCoord;
+
+
             Room(): roomPosition(), validType(false),
                 roomType( adiktedpp::SlabType::ST_ROCK ),
-                roomOwner( adiktedpp::PlayerType::PT_0 )
+                roomOwner( adiktedpp::PlayerType::PT_0 ),
+                northCoord(0), eastCoord(0)
             {
             }
 
@@ -96,7 +101,15 @@ namespace dkmage {
 
         public:
 
-            Dungeon( const adiktedpp::PlayerType player=adiktedpp::PlayerType::PT_0, const bool fortify=true ): player(player), fortifyWalls( fortify ) {
+            std::size_t limitNorth;
+            std::size_t limitSouth;
+            std::size_t limitEast;
+            std::size_t limitWest;
+
+
+            Dungeon( const adiktedpp::PlayerType player=adiktedpp::PlayerType::PT_0, const bool fortify=true ): player(player), fortifyWalls( fortify ),
+                    limitNorth( 999 ), limitSouth( 999 ), limitEast( 999 ), limitWest( 999 )
+            {
             }
 
             adiktedpp::PlayerType owner() const {
