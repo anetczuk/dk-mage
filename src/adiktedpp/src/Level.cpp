@@ -142,23 +142,27 @@ namespace adiktedpp {
         setInfo();
     }
 
-    bool Level::verifyMap() {
+    bool Level::verifyMap( const bool silent ) {
         LEVEL* level = data->lvl;
         struct IPOINT_2D errpt = {-1,-1};
         const short result = level_verify( level, (char*) "check", &errpt );
         const bool ok = ( result == VERIF_OK );
         if ( ok == false ) {
-            const char* recentError = Messages::get().getRecent();
-            if ( recentError != nullptr ) {
-                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
-            } else {
-                LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
+            if ( silent == false ) {
+                const char* recentError = Messages::get().getRecent();
+                if ( recentError != nullptr ) {
+                    LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
+                } else {
+                    LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
+                }
             }
             return false;
         }
 
         if ( countSeparatedAreas() > 0 ) {
-            LOG() << "map problem found: inaccessible areas";
+            if ( silent == false ) {
+                LOG() << "map problem found: inaccessible areas";
+            }
             return false;
         }
 

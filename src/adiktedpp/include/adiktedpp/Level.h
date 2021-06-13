@@ -75,7 +75,7 @@ namespace adiktedpp {
 
         void generateRandomMap();
 
-        bool verifyMap();
+        bool verifyMap( const bool silent = false );
 
         /// count separated chambers by impassable rocks
         std::size_t countSeparatedAreas();

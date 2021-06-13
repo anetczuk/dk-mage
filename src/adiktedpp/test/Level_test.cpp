@@ -97,7 +97,7 @@ TEST_CASE("Level_generateRandomMap", "[classic]") {
 TEST_CASE("Level_verifyMap_empty", "[classic]") {
     LevelMock level;
 
-    const bool ok = level.verifyMap();
+    const bool ok = level.verifyMap( true );
     REQUIRE( ok == false );
 }
 
@@ -106,7 +106,7 @@ TEST_CASE("Level_verifyMap_random", "[classic]") {
 
     level.generateRandomMap();
 
-    const bool ok = level.verifyMap();
+    const bool ok = level.verifyMap( true );
     REQUIRE( ok == false );
 }
 
