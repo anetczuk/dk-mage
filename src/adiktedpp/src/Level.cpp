@@ -238,6 +238,7 @@ namespace adiktedpp {
             return ;
         }
         LEVEL* level = data->lvl;
+//        set_tile_slab( level, x, y, (unsigned short) type );            /// much faster
         user_set_slab( level, x, y, (unsigned short) type );
     }
 
@@ -268,15 +269,14 @@ namespace adiktedpp {
             return ;
         }
 
-//        /// does not seem to work (buggy?)
-//        LEVEL* level = data->lvl;
-//        user_set_slab_rect( level, startX, startY, endX, endY, (unsigned short) type );
+        LEVEL* level = data->lvl;
+        user_set_slab_rect( level, startX, endX, startY, endY, (unsigned short) type );
 
-        for (std::size_t x=startX; x<=endX; ++x) {
-            for (std::size_t y=startY; y<=endY; ++y) {
-                setSlab( x, y, type );
-            }
-        }
+//        for (std::size_t x=startX; x<=endX; ++x) {
+//            for (std::size_t y=startY; y<=endY; ++y) {
+//                setSlab( x, y, type );
+//            }
+//        }
     }
 
     void Level::setSlab( const utils::Rect& rect, const SlabType type ) {
@@ -296,16 +296,15 @@ namespace adiktedpp {
             return ;
         }
 
-//        /// does not seem to work (buggy?)
-//        LEVEL* level = data->lvl;
-//        user_set_slabown_rect( level, startX, startY, endX, endY, (unsigned short) room, (unsigned short) owner );
+        LEVEL* level = data->lvl;
+        user_set_slabown_rect( level, startX, endX, startY, endY, (unsigned short) room, (unsigned short) owner );
 
-        for (std::size_t x=startX; x<=endX; ++x) {
-            for (std::size_t y=startY; y<=endY; ++y) {
-                setSlab( x, y, room );
-                setOwner( x, y, owner );
-            }
-        }
+//        for (std::size_t x=startX; x<=endX; ++x) {
+//            for (std::size_t y=startY; y<=endY; ++y) {
+//                setSlab( x, y, room );
+//                setOwner( x, y, owner );
+//            }
+//        }
     }
 
     void Level::setSlabRoom( const utils::Rect& rect, const SlabType room, const PlayerType owner ) {
