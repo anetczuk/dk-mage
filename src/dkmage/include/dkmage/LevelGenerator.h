@@ -9,6 +9,7 @@
 /// inclusion: #include "dkmage/LevelGenerator.h"
 
 #include <string>
+#include <memory>
 
 
 namespace dkmage {
@@ -33,6 +34,42 @@ namespace dkmage {
         virtual void storeLevel( const std::string& levelPath ) = 0;
 
         virtual void storePreview( const std::string& filePath ) = 0;
+
+    };
+
+
+    /**
+     *
+     */
+    class LevelGeneratorWrapper: public LevelGenerator {
+
+        std::unique_ptr< LevelGenerator > data;
+
+
+    public:
+
+        LevelGeneratorWrapper( LevelGenerator* generator ): data( generator ) {
+        }
+
+        void setDataPath( const std::string& dataPath ) override {
+            LevelGenerator* implementation = data.get();
+            implementation->setDataPath( dataPath );
+        }
+
+        void generate( const std::size_t seed ) override {
+            LevelGenerator* implementation = data.get();
+            implementation->generate( seed );
+        }
+
+        void storeLevel( const std::string& levelPath ) override {
+            LevelGenerator* implementation = data.get();
+            implementation->storeLevel( levelPath );
+        }
+
+        void storePreview( const std::string& filePath ) override {
+            LevelGenerator* implementation = data.get();
+            implementation->storePreview( filePath );
+        }
 
     };
 

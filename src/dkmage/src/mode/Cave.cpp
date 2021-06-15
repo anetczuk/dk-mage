@@ -5,15 +5,13 @@
 
 #include "dkmage/mode/Cave.h"
 
-#include "utils/Log.h"
-
-
-
 #include "dkmage/generator/Dungeon.h"
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Script.h"
 #include "adiktedpp/Messages.h"
+
+#include "utils/Log.h"
 
 #include <random>
 #include <time.h>                                   /// time
@@ -313,27 +311,7 @@ namespace dkmage {
         /// =======================================================
 
 
-        Cave::Cave(): data( new CaveGenImplementaton() ) {
-        }
-
-        void Cave::setDataPath( const std::string& dataPath ) {
-            LevelGenerator* implementation = data.get();
-            implementation->setDataPath( dataPath );
-        }
-
-        void Cave::generate( const std::size_t seed ) {
-            LevelGenerator* implementation = data.get();
-            implementation->generate( seed );
-        }
-
-        void Cave::storeLevel( const std::string& levelPath ) {
-            LevelGenerator* implementation = data.get();
-            implementation->storeLevel( levelPath );
-        }
-
-        void Cave::storePreview( const std::string& filePath ) {
-            LevelGenerator* implementation = data.get();
-            implementation->storePreview( filePath );
+        Cave::Cave(): LevelGeneratorWrapper( new CaveGenImplementaton() ) {
         }
 
     } /* namespace mode */
