@@ -42,9 +42,9 @@ namespace adiktedpp {
         case SlabType::ST_SCAVENGER:    return "SCAVENGER";
         case SlabType::ST_TEMPLE:       return "TEMPLE";
         case SlabType::ST_GRAVEYARD:    return "GRAVEYARD";
-        case SlabType::ST_HATCHERY:     return "BARRACKS";
-        case SlabType::ST_LAIR:         return "GARDEN";
-        case SlabType::ST_BARRACKS:     return "LAIR";
+        case SlabType::ST_HATCHERY:     return "GARDEN";
+        case SlabType::ST_LAIR:         return "LAIR";
+        case SlabType::ST_BARRACKS:     return "BARRACKS";
         case SlabType::ST_BRIDGE:       return "BRIDGE";
         case SlabType::ST_GUARDPOST:    return "GUARD_POST";
 
