@@ -10,10 +10,7 @@
 
 #include "adiktedpp/Script.h"
 
-#include "utils/Log.h"
-
 #include <random>
-#include <time.h>                                   /// time
 
 
 void fortifyRoom( adiktedpp::Level& level, const Rect& position, const adiktedpp::PlayerType owner ) {
