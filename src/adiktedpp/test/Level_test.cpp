@@ -254,14 +254,14 @@ TEST_CASE("Level_setSlab_rect", "[classic]") {
     level.generateTestBmp();
 }
 
-TEST_CASE("Level_setSlabRoom", "[classic]") {
+TEST_CASE("Level_setSlab_owner", "[classic]") {
     LevelMock level;
 
     level.startNewMap();
 
     const SlabType newSlab    = SlabType::ST_TRAINING;
     const PlayerType newOwner = PlayerType::PT_0;
-    level.setSlabRoom( 10, 10, 20, 20, newSlab, newOwner );
+    level.setSlab( 10, 10, 20, 20, newSlab, newOwner );
 
     const SlabType gotSlab = level.getSlab( 15, 15 );
     CHECK( gotSlab == newSlab );

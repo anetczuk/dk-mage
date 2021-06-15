@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <queue>
+#include <random>
 
 extern "C" {
     #include "libadikted/adikted.h"
@@ -295,9 +296,15 @@ namespace adiktedpp {
         setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, type );
     }
 
-    void Level::setSlabRoom( const std::size_t startX, const std::size_t startY,
-                             const std::size_t endX,   const std::size_t endY,
-                             const SlabType room, const PlayerType owner )
+    void Level::setSlab( const std::set< utils::Point >& positions, const SlabType type ) {
+        for ( const utils::Point& item: positions ) {
+            setSlab( item, type );
+        }
+    }
+
+    void Level::setSlab( const std::size_t startX, const std::size_t startY,
+                         const std::size_t endX,   const std::size_t endY,
+                         const SlabType room, const PlayerType owner )
     {
         if ( startX >= MAP_SIZE_DKSTD_X || startY >= MAP_SIZE_DKSTD_Y ) {
             LOG() << "given point is outside map: [" << startX << " " << startY << "]";
@@ -319,8 +326,90 @@ namespace adiktedpp {
 //        }
     }
 
-    void Level::setSlabRoom( const utils::Rect& rect, const SlabType room, const PlayerType owner ) {
-        setSlabRoom( rect.min.x, rect.min.y, rect.max.x, rect.max.y, room, owner );
+    void Level::setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner ) {
+        setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, room, owner );
+    }
+
+    struct VeinGenerator {
+        std::set< utils::Point > available;
+        std::set< utils::Point > added;
+
+        void add( const utils::Point& point ) {
+            if ( added.count( point ) > 0 ) {
+                return ;
+            }
+            added.insert( point );
+            addAvailable( point + utils::Point(  1, 0 ) );
+            addAvailable( point + utils::Point( -1, 0 ) );
+            addAvailable( point + utils::Point( 0,  1 ) );
+            addAvailable( point + utils::Point( 0, -1 ) );
+            available.erase( point );
+        }
+
+        void add( const std::size_t availableIndex ) {
+            auto avpos = available.begin();
+            std::advance( avpos, availableIndex );
+            add( *avpos );
+        }
+
+        utils::Point getAvailable( const std::size_t availableIndex ) {
+            auto avpos = available.begin();
+            std::advance( avpos, availableIndex );
+            available.erase( avpos );
+            return *avpos;
+        }
+
+        void addAvailable( const utils::Point& point ) {
+            if ( added.count( point ) > 0 ) {
+                return ;
+            }
+            available.insert( point );
+        }
+    };
+
+    std::size_t Level::setVein( const utils::Rect& boundingLimit, const SlabType room, const std::size_t itemsNum ) {
+        if ( itemsNum < 1 ) {
+            return 0;
+        }
+        const int area = boundingLimit.area();
+        if ( area < 0 ) {
+            return 0;
+        }
+        if ( itemsNum >= (std::size_t) area ) {
+            setSlab( boundingLimit, room );
+            return (std::size_t) area;
+        }
+
+//        std::set< utils::Point > available;
+//        for ( int x=boundingLimit.min.x; x<=boundingLimit.max.x; ++x ) {
+//            for ( int y=boundingLimit.min.y; y<=boundingLimit.max.y; ++y ) {
+//                available.insert( utils::Point(x,y) );
+//            }
+//        }
+//        std::set< utils::Point > added;
+//        for ( std::size_t i=0; i<itemsNum; ++i ) {
+//            const std::size_t vIndex = rand() % available.size();
+//            auto avpos = available.begin();
+//            std::advance( avpos, vIndex );
+//            added.insert( *avpos );
+//            available.erase( avpos );
+//        }
+//        setSlab( added, room );
+//        return added.size();
+
+        VeinGenerator vein;
+        const utils::Point center = boundingLimit.center();
+        vein.add( center );
+        while ( vein.added.size() < itemsNum ) {
+            const std::size_t vIndex = rand() % vein.available.size();
+            const utils::Point point = vein.getAvailable( vIndex );
+            if ( boundingLimit.isInside( point ) == false ) {
+                continue ;
+            }
+            vein.add( point );
+        }
+        setSlab( vein.added, room );
+        return vein.added.size();
     }
 
     PlayerType Level::getOwner( const std::size_t x, const std::size_t y ) {

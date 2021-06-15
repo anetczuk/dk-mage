@@ -96,21 +96,25 @@ namespace adiktedpp {
 
         void setSlab( const utils::Point& point, const SlabType type );
 
-        void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
-
-        void setSlab( const utils::Point& point, const SlabType type, const PlayerType owner );
-
         void setSlab( const std::size_t startX, const std::size_t startY,
                       const std::size_t endX,   const std::size_t endY,
                       const SlabType type );
 
         void setSlab( const utils::Rect& rect, const SlabType type );
 
-        void setSlabRoom( const std::size_t startX, const std::size_t startY,
-                          const std::size_t endX,   const std::size_t endY,
-                          const SlabType room, const PlayerType owner );
+        void setSlab( const std::set< utils::Point >& positions, const SlabType type );
 
-        void setSlabRoom( const utils::Rect& rect, const SlabType room, const PlayerType owner );
+        void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
+
+        void setSlab( const utils::Point& point, const SlabType type, const PlayerType owner );
+
+        void setSlab( const std::size_t startX, const std::size_t startY,
+                      const std::size_t endX,   const std::size_t endY,
+                      const SlabType room, const PlayerType owner );
+
+        void setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner );
+
+        std::size_t setVein( const utils::Rect& rect, const SlabType room, const std::size_t itemsNum );
 
         PlayerType getOwner( const std::size_t x, const std::size_t y );
 

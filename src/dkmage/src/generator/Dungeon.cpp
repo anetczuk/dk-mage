@@ -19,29 +19,29 @@ namespace dkmage {
             return last;
         }
 
-        void moveRect( Rect& rect, const Rect& base, const Direction direction ) {
+        void moveRect( Rect& rect, const Rect& base, const Direction direction, const std::size_t space ) {
             rect.centerize();
             const Point baseCenter = base.center();
             rect.move( baseCenter );
 
             switch( direction ) {
             case Direction::D_NORTH: {
-                const int yOffset = ( rect.height() + base.height() ) / 2 + 1;      /// +1 for wall
+                const int yOffset = ( rect.height() + base.height() ) / 2 + space;
                 rect.move( 0, -yOffset );
                 break;
             }
             case Direction::D_SOUTH: {
-                const int yOffset = ( rect.height() + base.height() ) / 2 + 1;      /// +1 for wall
+                const int yOffset = ( rect.height() + base.height() ) / 2 + space;
                 rect.move( 0, yOffset );
                 break;
             }
             case Direction::D_EAST: {
-                const int xOffset = ( rect.width() + base.width() ) / 2 + 1;        /// +1 for wall
+                const int xOffset = ( rect.width() + base.width() ) / 2 + space;
                 rect.move( xOffset, 0 );
                 break;
             }
             case Direction::D_WEST: {
-                const int xOffset = ( rect.width() + base.width() ) / 2 + 1;        /// +1 for wall
+                const int xOffset = ( rect.width() + base.width() ) / 2 + space;
                 rect.move( -xOffset, 0 );
                 break;
             }
@@ -82,7 +82,7 @@ namespace dkmage {
             return ret;
         }
 
-        void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize ) {
+        void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
             std::vector< Room* > roomsList = graph.itemsList();
             while ( roomsList.empty() == false ) {
                 const std::size_t rRoom = rand() % roomsList.size();
@@ -112,7 +112,7 @@ namespace dkmage {
                 while ( availableDirs.empty() == false ) {
                     const std::size_t rDir = rand() % availableDirs.size();
                     const Direction newDir = remove_at( availableDirs, rDir );
-                    const Room* added = addRoom( roomType, roomSize, *selected, newDir );
+                    const Room* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
                     if ( added != nullptr ) {
                         return ;
                     }
@@ -140,16 +140,16 @@ namespace dkmage {
             return newRoom;
         }
 
-        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction ) {
+        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink, const std::size_t distance ) {
             Rect newRect( roomSize, roomSize );
             const Rect& basePos = from.position();
-            moveRect( newRect, basePos, direction );
+            moveRect( newRect, basePos, direction, distance );
             if ( isCollision( newRect ) ) {
                 /// collision detected
                 return nullptr;
             }
 
-            Room* newRoom = graph.addItem( from, direction );
+            Room* newRoom = graph.addItem( from, direction, addLink );
             if ( newRoom == nullptr ) {
                 return newRoom;
             }
@@ -250,6 +250,20 @@ namespace dkmage {
         void Dungeon::centerize( const int x, const int y ) {
             centerize();
             move( x, y );
+        }
+
+        void Dungeon::moveToTopEdge( const std::size_t distanceFromEdge ) {
+            centerize( 42, 42 );
+            const Rect bbox = boundingBox();
+            const int yoffset = 0 - bbox.min.y + distanceFromEdge + 1;          /// +1 to prevent going outside map
+            move( 0, yoffset );
+        }
+
+        void Dungeon::moveToBottomEdge( const std::size_t distanceFromEdge ) {
+            centerize( 42, 42 );
+            const Rect bbox = boundingBox();
+            const int yoffset = 84 - bbox.max.y - distanceFromEdge - 1;         /// -1 to prevent going outside map
+            move( 0, yoffset );
         }
 
         std::string Dungeon::print() {

@@ -232,7 +232,7 @@ namespace adiktedpp {
         }
     }
 
-    void Script::setEvilCreaturesAvailable( const PlayerType player, const AvailableMode mode ) {
+    void Script::setEvilCreaturesAvailable( const PlayerType player, const bool available ) {
         std::set< SubTypeCreature > list = EvilCreatures();
         list.erase( SubTypeCreature::STC_HORNY );
         list.erase( SubTypeCreature::STC_FLOAT );
@@ -242,19 +242,10 @@ namespace adiktedpp {
         list.erase( SubTypeCreature::STC_SKELETON );
         for ( const SubTypeCreature item: list ) {
             std::stringstream stream;
-            switch( mode ) {
-            case AvailableMode::AM_DISABLED: {
-                stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 0, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_POSSIBLE: {
-                stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_ENABLED: {
+            if ( available ) {
                 stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 1 )";
-                break ;
-            }
+            } else {
+                stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 0, 0 )";
             }
             const std::string& line = stream.str();
             addLine( line );
@@ -262,26 +253,35 @@ namespace adiktedpp {
     }
 
     void Script::setRoomsAvailable( const PlayerType player, const AvailableMode mode ) {
-        std::set< SlabType > list = Rooms();
+        const std::set< SlabType >& list = Rooms();
         for ( const SlabType item: list ) {
-            std::stringstream stream;
-            switch( mode ) {
-            case AvailableMode::AM_DISABLED: {
-                stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 0, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_POSSIBLE: {
-                stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_ENABLED: {
-                stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 1 )";
-                break ;
-            }
-            }
-            const std::string& line = stream.str();
-            addLine( line );
+            setRoomAvailable( player, item, mode );
         }
+    }
+
+    void Script::setRoomAvailable( const PlayerType player, const SlabType room, const AvailableMode mode ) {
+        const std::set< SlabType >& list = Rooms();
+        if ( list.count( room ) < 1 ) {
+            LOG() << "invalid room: " << room;
+            return ;
+        }
+        std::stringstream stream;
+        switch( mode ) {
+        case AvailableMode::AM_DISABLED: {
+            stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( room ) << ", 0, 0 )";
+            break ;
+        }
+        case AvailableMode::AM_POSSIBLE: {
+            stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( room ) << ", 1, 0 )";
+            break ;
+        }
+        case AvailableMode::AM_ENABLED: {
+            stream << "ROOM_AVAILABLE( " << scriptName( player ) << ", " << scriptName( room ) << ", 1, 1 )";
+            break ;
+        }
+        }
+        const std::string& line = stream.str();
+        addLine( line );
     }
 
     void Script::setDoorsAvailable( const PlayerType player, const int available ) {
@@ -317,26 +317,35 @@ namespace adiktedpp {
     }
 
     void Script::setMagicAvailable( const PlayerType player, const AvailableMode mode ) {
-        std::set< SubTypeItem > list = Spells();
+        const std::set< SubTypeItem >& list = Spells();
         for ( const SubTypeItem item: list ) {
-            std::stringstream stream;
-            switch( mode ) {
-            case AvailableMode::AM_DISABLED: {
-                stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 0, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_POSSIBLE: {
-                stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 0 )";
-                break ;
-            }
-            case AvailableMode::AM_ENABLED: {
-                stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 1 )";
-                break ;
-            }
-            }
-            const std::string& line = stream.str();
-            addLine( line );
+            setMagicAvailable( player, item, mode );
         }
+    }
+
+    void Script::setMagicAvailable( const PlayerType player, const SubTypeItem spell, const AvailableMode mode ) {
+        const std::set< SubTypeItem >& list = Spells();
+        if ( list.count( spell ) < 1 ) {
+            LOG() << "invalid spell: " << (int)spell;
+            return ;
+        }
+        std::stringstream stream;
+        switch( mode ) {
+        case AvailableMode::AM_DISABLED: {
+            stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( spell ) << ", 0, 0 )";
+            break ;
+        }
+        case AvailableMode::AM_POSSIBLE: {
+            stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( spell ) << ", 1, 0 )";
+            break ;
+        }
+        case AvailableMode::AM_ENABLED: {
+            stream << "MAGIC_AVAILABLE( " << scriptName( player ) << ", " << scriptName( spell ) << ", 1, 1 )";
+            break ;
+        }
+        }
+        const std::string& line = stream.str();
+        addLine( line );
     }
 
     void Script::convertToTextArray() {

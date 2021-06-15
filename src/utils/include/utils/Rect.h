@@ -28,6 +28,13 @@ namespace utils {
             return ( x == data.x && y == data.y );
         }
 
+        bool operator<( const Point& data ) const {
+            if ( x < data.x ) {
+                return true;
+            }
+            return ( y < data.y );
+        }
+
         Point operator+( const Point& data ) const {
             Point newPoint = *this;
             newPoint.x += data.x;
@@ -115,6 +122,16 @@ namespace utils {
             max.y += offsetY;
         }
 
+        Rect moved( const Point offset ) const {
+            return moved( offset.x, offset.y );
+        }
+
+        Rect moved( const int offsetX, const int offsetY ) const {
+            Rect r = *this;
+            r.move( offsetX, offsetY );
+            return r;
+        }
+
         void move( const Point offset ) {
             move( offset.x, offset.y );
         }
@@ -149,6 +166,16 @@ namespace utils {
                 return false;
             }
             if ( max.y < minCoord || max.y > maxCoord ) {
+                return false;
+            }
+            return true;
+        }
+
+        bool isInside( const Point point ) const {
+            if ( point.x < min.x || point.x > max.x ) {
+                return false;
+            }
+            if ( point.y < min.y || point.y > max.y ) {
                 return false;
             }
             return true;

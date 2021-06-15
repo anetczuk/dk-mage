@@ -266,13 +266,13 @@ namespace dkmage {
                 return &targetItem;
             }
 
-            TItem* addItem( const TItem& from, const Direction direction ) {
+            TItem* addItem( const TItem& from, const Direction direction, const bool addLink = true ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
                     LOG() << "unable to find node for given item";
                     return nullptr;
                 }
-                lemon::ListDigraph::Node targetNode = createNode( itemNode, direction );
+                lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
                 TItem& targetItem = getItem( targetNode );
                 return &targetItem;
             }
@@ -318,7 +318,7 @@ namespace dkmage {
             }
 
             /// creates new node if needed
-            lemon::ListDigraph::Node createNode( const lemon::ListDigraph::Node& from, const Direction direction ) {
+            lemon::ListDigraph::Node createNode( const lemon::ListDigraph::Node& from, const Direction direction, const bool addLink = true ) {
                 lemon::ListDigraph::Arc edge = findEdge( from, direction );
                 if ( edge != lemon::INVALID ) {
                     /// edge exists
@@ -327,7 +327,9 @@ namespace dkmage {
 
                 /// no edge -- add new item
                 const lemon::ListDigraph::Node newNode = graph.addNode();
-                createEdge( from, newNode, direction );
+                if ( addLink ) {
+                    createEdge( from, newNode, direction );
+                }
                 return newNode;
             }
 

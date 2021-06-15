@@ -141,11 +141,11 @@ namespace dkmage {
 
             std::vector< Room* > findRoom( const adiktedpp::SlabType roomType );
 
-            void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
+            void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 
             Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
 
-            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction );
+            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
@@ -169,6 +169,12 @@ namespace dkmage {
             void centerize();
 
             void centerize( const int x, const int y );
+
+            /// method prevents moving to world edge
+            void moveToTopEdge( const std::size_t distanceFromEdge );
+
+            /// method prevents moving to world edge
+            void moveToBottomEdge( const std::size_t distanceFromEdge );
 
             std::string print();
 

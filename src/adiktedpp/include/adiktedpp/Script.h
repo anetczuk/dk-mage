@@ -50,9 +50,11 @@ namespace adiktedpp {
         void setEvilCreaturesPool( const std::size_t number );
 
         /// set available creatures from pool
-        void setEvilCreaturesAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+        void setEvilCreaturesAvailable( const PlayerType player, const bool available = true );
 
         void setRoomsAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+
+        void setRoomAvailable( const PlayerType player, const SlabType room, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
         /**
          * "available" parameter meaning:
@@ -71,6 +73,8 @@ namespace adiktedpp {
         void setTrapsAvailable( const PlayerType player, const int available = -1 );
 
         void setMagicAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+
+        void setMagicAvailable( const PlayerType player, const SubTypeItem spell, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
 
     private:
