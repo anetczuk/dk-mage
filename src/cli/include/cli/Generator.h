@@ -8,7 +8,6 @@
 
 #include "dkmage/LevelGenerator.h"
 
-#include <set>
 #include <vector>
 #include <map>
 #include <memory>
@@ -23,7 +22,20 @@ namespace cli {
     class Generator {
     private:
 
-        typedef std::unique_ptr<dkmage::LevelGenerator> LevelGeneratorPtr;
+        struct AbstractItem {
+            virtual dkmage::LevelGenerator* create() = 0;
+        };
+
+        template <typename T>
+        struct Item: public AbstractItem {
+            std::unique_ptr<T> data;
+            dkmage::LevelGenerator* create() override {
+                data.reset( new T() );
+                return data.get();
+            }
+        };
+
+        typedef std::unique_ptr< AbstractItem > LevelGeneratorPtr;
 
         std::map< std::string, LevelGeneratorPtr > genMap;
 
@@ -43,7 +55,7 @@ namespace cli {
 
         template <typename T>
         void add( const std::string& code ) {
-            genMap[ code ].reset( new T() );
+            genMap[ code ].reset( new Item<T>() );
         }
 
     };

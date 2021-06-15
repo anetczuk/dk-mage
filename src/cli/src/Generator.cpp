@@ -7,11 +7,6 @@
 
 #include "dkmage/mode/Cave.h"
 
-#include "utils/Log.h"
-
-#include <functional>                               /// std::hash
-#include <time.h>                                   /// time
-
 
 namespace cli {
 
@@ -24,8 +19,10 @@ namespace cli {
     }
 
     dkmage::LevelGenerator* Generator::get( const std::string& type ) {
-        LevelGeneratorPtr& item = genMap[ type ];
-        return item.get();
+        LevelGeneratorPtr& itemPtr = genMap[ type ];
+        AbstractItem* item = itemPtr.get();
+        return item->create();
+//        return itemPtr.get();
     }
 
     Generator& Generator::instance() {
