@@ -6,6 +6,7 @@
 #include "cli/Generator.h"
 
 #include "dkmage/mode/Cave.h"
+#include "dkmage/mode/Maze.h"
 
 
 namespace cli {
@@ -32,6 +33,7 @@ namespace cli {
 
     Generator::Generator() {
         add< dkmage::mode::Cave >( "cave" );
+        add< dkmage::mode::Maze >( "maze" );
     }
 
 } /* namespace cli */
