@@ -5,7 +5,7 @@
 
 #include "cli/Generator.h"
 
-#include "dkmage/mode/Cave.h"
+#include "dkmage/mode/CaveMode.h"
 #include "dkmage/mode/Maze.h"
 
 
@@ -32,7 +32,7 @@ namespace cli {
     }
 
     Generator::Generator() {
-        add< dkmage::mode::Cave >( "cave" );
+        add< dkmage::mode::CaveMode >( "cave" );
         add< dkmage::mode::Maze >( "maze" );
     }
 

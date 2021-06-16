@@ -1,9 +1,9 @@
 ///*
-// * Cave_test.cpp
+// * CaveMode_test.cpp
 // *
 // */
 //
-//#include "dkmage/mode/Cave.h"
+//#include "dkmage/mode/CaveMode.h"
 //
 //
 //namespace dkmage {

@@ -1,9 +1,9 @@
 /*
- * Cave.cpp
+ * CaveMode.cpp
  *
  */
 
-#include "dkmage/mode/Cave.h"
+#include "dkmage/mode/CaveMode.h"
 
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
@@ -276,7 +276,7 @@ namespace dkmage {
         /// =======================================================
 
 
-        Cave::Cave(): LevelGeneratorWrapper( new CaveGenImplementaton() ) {
+        CaveMode::CaveMode(): LevelGeneratorWrapper( new CaveGenImplementaton() ) {
         }
 
     } /* namespace mode */
