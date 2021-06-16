@@ -1,9 +1,9 @@
 /*
- * Maze.cpp
+ * MazeMode.cpp
  *
  */
 
-#include "dkmage/mode/Maze.h"
+#include "dkmage/mode/MazeMode.h"
 
 #include "dkmage/BaseLevelGenerator.h"
 
@@ -34,7 +34,7 @@ namespace dkmage {
         /// =======================================================
 
 
-        Maze::Maze(): LevelGeneratorWrapper( new MazeGenImplementaton() ) {
+        MazeMode::MazeMode(): LevelGeneratorWrapper( new MazeGenImplementaton() ) {
         }
 
     } /* namespace mode */

@@ -6,7 +6,7 @@
 #include "cli/Generator.h"
 
 #include "dkmage/mode/CaveMode.h"
-#include "dkmage/mode/Maze.h"
+#include "dkmage/mode/MazeMode.h"
 
 
 namespace cli {
