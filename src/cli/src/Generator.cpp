@@ -33,7 +33,7 @@ namespace cli {
 
     Generator::Generator() {
         add< dkmage::mode::CaveMode >( "cave" );
-        add< dkmage::mode::Maze >( "maze" );
+        add< dkmage::mode::MazeMode >( "maze" );
     }
 
 } /* namespace cli */
