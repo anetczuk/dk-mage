@@ -94,7 +94,7 @@ namespace dkmage {
          */
         class Dungeon {
 
-            DungeonGraph<Room> graph;
+            DungeonGraph< Room, NoEdgeData > graph;
             adiktedpp::PlayerType player;
             bool fortifyWalls;
 

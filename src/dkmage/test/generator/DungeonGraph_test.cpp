@@ -21,7 +21,7 @@ namespace {
         ///
     };
 
-    typedef DungeonGraph< RoomMock > DungeonGraphMock;
+    typedef DungeonGraph< RoomMock, NoEdgeData > DungeonGraphMock;
 
 }
 

@@ -69,16 +69,16 @@ namespace dkmage {
          * Implementation of rule of five.
          */
         template <typename T>
-        struct GraphData {
+        struct NodeDataWrapper {
             std::unique_ptr<T> data;
 
-            GraphData(): data( new T() ) {
+            NodeDataWrapper(): data( new T() ) {
             }
 
             /// copy constructor
-            GraphData( const GraphData& dataPtr ): GraphData() {
+            NodeDataWrapper( const NodeDataWrapper& dataPtr ): NodeDataWrapper() {
                 /// swap have to be performed in case of proper execution
-                GraphData* dataCast = const_cast<GraphData*>( &dataPtr );
+                NodeDataWrapper* dataCast = const_cast<NodeDataWrapper*>( &dataPtr );
                 data.swap( dataCast->data );
 
     //                T* dataRaw = get();
@@ -86,22 +86,22 @@ namespace dkmage {
             }
 
             /// move constructor
-            GraphData( GraphData&& dataPtr ) noexcept: GraphData() {
+            NodeDataWrapper( NodeDataWrapper&& dataPtr ) noexcept: NodeDataWrapper() {
                 data.swap( dataPtr.data );
             }
 
-            ~GraphData() {
+            ~NodeDataWrapper() {
             }
 
             /// copy assignment
-            GraphData& operator=( const GraphData& dataPtr ) {
-                *this = GraphData( dataPtr );
+            NodeDataWrapper& operator=( const NodeDataWrapper& dataPtr ) {
+                *this = NodeDataWrapper( dataPtr );
                 return *this;
             }
 
             /// move assignment
-            GraphData& operator=( GraphData&& dataPtr ) noexcept {
-                *this = GraphData( dataPtr );
+            NodeDataWrapper& operator=( NodeDataWrapper&& dataPtr ) noexcept {
+                *this = NodeDataWrapper( dataPtr );
                 return *this;
             }
 
@@ -139,58 +139,96 @@ namespace dkmage {
         /**
          *
          */
-        template <typename TItem>
+        class NoEdgeData {
+        };
+
+
+        /**
+         *
+         */
+        template <typename T>
+        class EdgeDataWrapper {
+        public:
+
+            Direction dir;
+            std::shared_ptr< T > data;
+
+            EdgeDataWrapper(): dir(), data() {
+            }
+
+            EdgeDataWrapper( const Direction direction, std::shared_ptr< T >& data ): dir( direction ), data( data ) {
+            }
+
+            bool operator==( const Direction direction ) const {
+                return ( dir == direction );
+            }
+
+            bool valid() const {
+                return (data.get() != nullptr);
+            }
+
+        };
+
+
+        /// =================================================================================
+
+
+        /**
+         *
+         */
+        template <typename TNodeData, typename TEdgeData>
         class DungeonGraph {
         public:
 
-            typedef GraphData<TItem> DataPtr;
+            typedef NodeDataWrapper<TNodeData> GraphNode;
+            typedef EdgeDataWrapper<TEdgeData> GraphEdge;
 
             lemon::ListDigraph graph;
-            lemon::ListDigraph::ArcMap< Direction > edgeDirection;
-            lemon::ListDigraph::NodeMap< DataPtr > items;
+            lemon::ListDigraph::NodeMap< GraphNode > nodesMap;
+            lemon::ListDigraph::ArcMap< GraphEdge >  edgesMap;
 
             lemon::ListDigraph::Node root;
 
 
-            DungeonGraph(): graph(), edgeDirection( graph ), items( graph ), root( lemon::INVALID ) {
+            DungeonGraph(): graph(), nodesMap( graph ), edgesMap( graph ), root( lemon::INVALID ) {
             }
 
             std::size_t size() const {
                 return (std::size_t) lemon::countNodes( graph );
             }
 
-            TItem* rootItem() {
+            TNodeData* rootItem() {
                 return itemByindex( 0 );
             }
 
-            TItem* itemByindex( const std::size_t index ) {
+            TNodeData* itemByindex( const std::size_t index ) {
                 lemon::ListDigraph::Node node = graph.nodeFromId( index );
                 if ( graph.valid( node ) == false ) {
                     return nullptr;
                 }
-                TItem& item = getItem( node );
+                TNodeData& item = getItem( node );
                 return &item;
             }
 
-            std::vector< TItem* > itemsList() {
-                std::vector< TItem* > ret;
+            std::vector< TNodeData* > itemsList() {
+                std::vector< TNodeData* > ret;
                 ret.reserve( size() );
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TItem& nItem = getItem( n );
+                    TNodeData& nItem = getItem( n );
                     ret.push_back( &nItem );
                 }
                 return ret;
             }
 
-            std::vector< TItem* > connectedItems( const TItem& item ) {
+            std::vector< TNodeData* > connectedItems( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
-                    return std::vector< TItem* >();
+                    return std::vector< TNodeData* >();
                 }
-                std::vector< TItem* > ret;
+                std::vector< TNodeData* > ret;
                 const std::vector<Direction>& directions = DirectionValues();
                 for ( const Direction dir: directions ) {
-                    TItem* target = getItem( item, dir );
+                    TNodeData* target = getItem( item, dir );
                     if ( target == nullptr ) {
                         continue ;
                     }
@@ -199,7 +237,7 @@ namespace dkmage {
                 return ret;
             }
 
-            std::size_t itemId( const TItem& item ) {
+            std::size_t itemId( const TNodeData& item ) {
                 lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return (std::size_t) -1;
@@ -207,7 +245,7 @@ namespace dkmage {
                 return graph.id( itemNode );
             }
 
-            std::vector< Direction > freeDirections( const TItem& item ) {
+            std::vector< Direction > freeDirections( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return std::vector< Direction >();
@@ -223,7 +261,7 @@ namespace dkmage {
                 return ret;
             }
 
-            std::vector< Direction > availableDirections( const TItem& item ) {
+            std::vector< Direction > availableDirections( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return std::vector< Direction >();
@@ -244,7 +282,7 @@ namespace dkmage {
                 return ( edge == lemon::INVALID );
             }
 
-            TItem* getItem( const TItem& from, const Direction direction ) {
+            TNodeData* getItem( const TNodeData& from, const Direction direction ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
                     return nullptr;
@@ -253,42 +291,42 @@ namespace dkmage {
                 if ( graph.valid( targetNode ) == false ) {
                     return nullptr;
                 }
-                TItem& targetItem = getItem( targetNode );
+                TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
             }
 
-            TItem* addItem() {
+            TNodeData* addItem() {
                 lemon::ListDigraph::Node targetNode = graph.addNode();
                 if ( root == lemon::INVALID ) {
                     root = targetNode;
                 }
-                TItem& targetItem = getItem( targetNode );
+                TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
             }
 
-            TItem* addItem( const TItem& from, const Direction direction, const bool addLink = true ) {
+            TNodeData* addItem( const TNodeData& from, const Direction direction, const bool addLink = true ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
                     LOG() << "unable to find node for given item";
                     return nullptr;
                 }
                 lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
-                TItem& targetItem = getItem( targetNode );
+                TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
             }
 
             std::string print() {
                 std::stringstream stream;
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TItem& nItem = getItem( n );
+                    TNodeData& nItem = getItem( n );
                     stream << graph.id( n ) << " " << &nItem << "\n";
                 }
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TItem& nItem = getItem( n );
+                    TNodeData& nItem = getItem( n );
                     for (lemon::ListDigraph::OutArcIt e(graph, n); e != lemon::INVALID; ++e) {
                         const lemon::ListDigraph::Node tNode = targetNode( e );
-                        TItem& tItem = getItem( tNode );
-                        stream << graph.id( n ) << " " << &nItem << " -> " << edgeDirection[ e ] << " " << graph.id( tNode ) << " " << &tItem << "\n";
+                        TNodeData& tItem = getItem( tNode );
+                        stream << graph.id( n ) << " " << &nItem << " -> " << edgesMap[ e ] << " " << graph.id( tNode ) << " " << &tItem << "\n";
                     }
                 }
                 return stream.str();
@@ -297,10 +335,10 @@ namespace dkmage {
 
         protected:
 
-            lemon::ListDigraph::Node findNode( const TItem& item ) {
-                const TItem* itemPtr = &item;
+            lemon::ListDigraph::Node findNode( const TNodeData& item ) {
+                const TNodeData* itemPtr = &item;
                 for (lemon::ListDigraph::NodeIt n( graph ); n != lemon::INVALID; ++n) {
-                    const TItem* currItem = getItemPtr( n );
+                    const TNodeData* currItem = getItemPtr( n );
                     if ( currItem == itemPtr ) {
                         return n;
                     }
@@ -339,33 +377,34 @@ namespace dkmage {
 
             void createEdge( const lemon::ListDigraph::Node& from, const lemon::ListDigraph::Node& to, const Direction direction ) {
                 lemon::ListDigraph::Arc fromEdge = graph.addArc( from, to );
-                edgeDirection[ fromEdge ] = direction;
+                std::shared_ptr< TEdgeData > edgeData( new TEdgeData() );
+                edgesMap[ fromEdge ] = GraphEdge( direction, edgeData );
                 lemon::ListDigraph::Arc toEdge = graph.addArc( to, from );
-                edgeDirection[ toEdge ] = opposite( direction );
+                edgesMap[ toEdge ] = GraphEdge( opposite( direction ), edgeData );
             }
 
             lemon::ListDigraph::Arc findEdge( const lemon::ListDigraph::Node& from, const Direction direction ) {
                 /// check node edges
                 for (lemon::ListDigraph::OutArcIt e(graph, from); e != lemon::INVALID; ++e) {
-                    if ( edgeDirection[ e ] == direction ) {
+                    if ( edgesMap[ e ] == direction ) {
                         return e;
                     }
                 }
                 return lemon::ListDigraph::Arc();
             }
 
-            TItem& getItem( const lemon::ListDigraph::Node& node ) {
-                DataPtr& roadPtr = items[ node ];
+            TNodeData& getItem( const lemon::ListDigraph::Node& node ) {
+                GraphNode& roadPtr = nodesMap[ node ];
                 if ( roadPtr == nullptr ) {
-                    roadPtr.reset( new TItem() );
+                    roadPtr.reset( new TNodeData() );
                 }
                 return *roadPtr;
             }
 
-            TItem* getItemPtr( const lemon::ListDigraph::Node& node ) {
-                DataPtr& roadPtr = items[ node ];
+            TNodeData* getItemPtr( const lemon::ListDigraph::Node& node ) {
+                GraphNode& roadPtr = nodesMap[ node ];
                 if ( roadPtr == nullptr ) {
-                    roadPtr.reset( new TItem() );
+                    roadPtr.reset( new TNodeData() );
                 }
                 return roadPtr.get();
             }
