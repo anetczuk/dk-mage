@@ -169,6 +169,12 @@ namespace dkmage {
 
         };
 
+        template <typename T>
+        inline std::ostream& operator<<( std::ostream& os, const EdgeDataWrapper<T>& data ) {
+            os << data.dir << " " << data.data.get();
+            return os;
+        }
+
 
         /// =================================================================================
 
@@ -220,6 +226,7 @@ namespace dkmage {
                 return ret;
             }
 
+            /// find nodes connected to given 'item'
             std::vector< TNodeData* > connectedItems( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
@@ -315,18 +322,84 @@ namespace dkmage {
                 return &targetItem;
             }
 
+            TEdgeData* getEdge( const TNodeData& from, const TNodeData& to ) {
+                const lemon::ListDigraph::Node fromNode = findNode( from );
+                if ( graph.valid( fromNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return nullptr;
+                }
+                const lemon::ListDigraph::Node toNode = findNode( to );
+                if ( graph.valid( fromNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return nullptr;
+                }
+
+                lemon::ListDigraph::Arc edge = findEdge( fromNode, toNode );
+                if ( edge == lemon::INVALID ) {
+                    LOG() << "unable to find edge";
+                    return nullptr;
+                }
+                GraphEdge& graphEdge = edgesMap[ edge ];
+                return graphEdge.data.get();
+            }
+
+            TEdgeData* getEdge( const TNodeData& from, const Direction dir ) {
+                const lemon::ListDigraph::Node fromNode = findNode( from );
+                if ( graph.valid( fromNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return nullptr;
+                }
+                lemon::ListDigraph::Arc edge = findEdge( fromNode, dir );
+                if ( edge == lemon::INVALID ) {
+                    LOG() << "unable to find edge";
+                    return nullptr;
+                }
+                GraphEdge& graphEdge = edgesMap[ edge ];
+                return graphEdge.data.get();
+            }
+
+            void addEdge( const TNodeData& from, const TNodeData& to, const Direction direction ) {
+                const lemon::ListDigraph::Node fromNode = findNode( from );
+                if ( graph.valid( fromNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return ;
+                }
+                const lemon::ListDigraph::Node toNode = findNode( to );
+                if ( graph.valid( toNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return ;
+                }
+                createEdge( fromNode, toNode, direction );
+            }
+
             std::string print() {
                 std::stringstream stream;
+                stream << "nodes:\n";
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
                     TNodeData& nItem = getItem( n );
                     stream << graph.id( n ) << " " << &nItem << "\n";
                 }
+
+                stream << "edges:\n";
+                for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
+                    for (lemon::ListDigraph::OutArcIt e(graph, n); e != lemon::INVALID; ++e) {
+                        const GraphEdge& edgeData = edgesMap[ e ];
+                        const TEdgeData* rawData = edgeData.data.get();
+                        if ( rawData == nullptr ) {
+                            stream << rawData << " nullptr\n";
+                        } else {
+                            stream << rawData << " " << (*rawData) << "\n";
+                        }
+                    }
+                }
+
+                stream << "connections:\n";
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
                     TNodeData& nItem = getItem( n );
                     for (lemon::ListDigraph::OutArcIt e(graph, n); e != lemon::INVALID; ++e) {
                         const lemon::ListDigraph::Node tNode = targetNode( e );
                         TNodeData& tItem = getItem( tNode );
-                        stream << graph.id( n ) << " " << &nItem << " -> " << edgesMap[ e ] << " " << graph.id( tNode ) << " " << &tItem << "\n";
+                        stream << graph.id( n ) << " " << &nItem << " " << graph.id( tNode ) << " " << &tItem << " " << edgesMap[ e ] << "\n";
                     }
                 }
                 return stream.str();
@@ -387,6 +460,17 @@ namespace dkmage {
                 /// check node edges
                 for (lemon::ListDigraph::OutArcIt e(graph, from); e != lemon::INVALID; ++e) {
                     if ( edgesMap[ e ] == direction ) {
+                        return e;
+                    }
+                }
+                return lemon::ListDigraph::Arc();
+            }
+
+            lemon::ListDigraph::Arc findEdge( const lemon::ListDigraph::Node& from, const lemon::ListDigraph::Node& to ) {
+                /// check node edges
+                for (lemon::ListDigraph::OutArcIt e(graph, from); e != lemon::INVALID; ++e) {
+                    const lemon::ListDigraph::Node tNode = graph.target( e );
+                    if ( tNode == to ) {
                         return e;
                     }
                 }
