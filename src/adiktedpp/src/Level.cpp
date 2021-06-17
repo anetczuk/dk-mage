@@ -396,51 +396,6 @@ namespace adiktedpp {
         setSlab( rect.max.x, rect.min.y, rect.max.x, rect.max.y, type );
     }
 
-    std::size_t Level::setVein( const utils::Rect& boundingLimit, const SlabType room, const std::size_t itemsNum ) {
-        if ( itemsNum < 1 ) {
-            return 0;
-        }
-        const int area = boundingLimit.area();
-        if ( area < 0 ) {
-            return 0;
-        }
-        if ( itemsNum >= (std::size_t) area ) {
-            setSlab( boundingLimit, room );
-            return (std::size_t) area;
-        }
-
-//        std::set< utils::Point > available;
-//        for ( int x=boundingLimit.min.x; x<=boundingLimit.max.x; ++x ) {
-//            for ( int y=boundingLimit.min.y; y<=boundingLimit.max.y; ++y ) {
-//                available.insert( utils::Point(x,y) );
-//            }
-//        }
-//        std::set< utils::Point > added;
-//        for ( std::size_t i=0; i<itemsNum; ++i ) {
-//            const std::size_t vIndex = rand() % available.size();
-//            auto avpos = available.begin();
-//            std::advance( avpos, vIndex );
-//            added.insert( *avpos );
-//            available.erase( avpos );
-//        }
-//        setSlab( added, room );
-//        return added.size();
-
-        VeinGenerator vein;
-        const utils::Point center = boundingLimit.center();
-        vein.add( center );
-        while ( vein.added.size() < itemsNum ) {
-            const std::size_t vIndex = rand() % vein.available.size();
-            const utils::Point point = vein.getAvailable( vIndex );
-            if ( boundingLimit.isInside( point ) == false ) {
-                continue ;
-            }
-            vein.add( point );
-        }
-        setSlab( vein.added, room );
-        return vein.added.size();
-    }
-
     PlayerType Level::getOwner( const std::size_t x, const std::size_t y ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
@@ -545,6 +500,109 @@ namespace adiktedpp {
 
     void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
         setCreature( point.x, point.y, subIndex, creature, number );
+    }
+
+    /// ============================================================
+
+    std::size_t Level::setVein( const utils::Rect& boundingLimit, const SlabType room, const std::size_t itemsNum ) {
+        if ( itemsNum < 1 ) {
+            return 0;
+        }
+        const int area = boundingLimit.area();
+        if ( area < 0 ) {
+            return 0;
+        }
+        if ( itemsNum >= (std::size_t) area ) {
+            setSlab( boundingLimit, room );
+            return (std::size_t) area;
+        }
+
+//        std::set< utils::Point > available;
+//        for ( int x=boundingLimit.min.x; x<=boundingLimit.max.x; ++x ) {
+//            for ( int y=boundingLimit.min.y; y<=boundingLimit.max.y; ++y ) {
+//                available.insert( utils::Point(x,y) );
+//            }
+//        }
+//        std::set< utils::Point > added;
+//        for ( std::size_t i=0; i<itemsNum; ++i ) {
+//            const std::size_t vIndex = rand() % available.size();
+//            auto avpos = available.begin();
+//            std::advance( avpos, vIndex );
+//            added.insert( *avpos );
+//            available.erase( avpos );
+//        }
+//        setSlab( added, room );
+//        return added.size();
+
+        VeinGenerator vein;
+        const utils::Point center = boundingLimit.center();
+        vein.add( center );
+        while ( vein.added.size() < itemsNum ) {
+            const std::size_t vIndex = rand() % vein.available.size();
+            const utils::Point point = vein.getAvailable( vIndex );
+            if ( boundingLimit.isInside( point ) == false ) {
+                continue ;
+            }
+            vein.add( point );
+        }
+        setSlab( vein.added, room );
+        return vein.added.size();
+    }
+
+    void Level::setRoom( const utils::Rect& position, const adiktedpp::SlabType room, const adiktedpp::PlayerType owner, const bool fortify ) {
+        if ( room != adiktedpp::SlabType::ST_DUNGHEART ) {
+            setSlab( position, room, owner );
+            if ( fortify ) {
+                this->fortify( position, owner );
+            }
+            return ;
+        }
+        if ( position.width() > 3 && position.height() > 3 ) {
+            setSlab( position, adiktedpp::SlabType::ST_CLAIMED, owner );
+            const utils::Point center = position.center();
+            const utils::Rect shrink(center, 3, 3);
+            setSlab( shrink, room, owner );
+        } else {
+            setSlab( position, room, owner );
+        }
+        if ( fortify ) {
+            this->fortify( position, owner );
+        }
+    }
+
+    void Level::fortify( const utils::Point& point, const adiktedpp::PlayerType owner ) {
+        for ( int x = point.x-1; x<= point.x+1; ++x ) {
+            for ( int y = point.y-1; y<= point.y+1; ++y ) {
+                const adiktedpp::SlabType currSlab = getSlab( x, y );
+                if ( adiktedpp::isEarth( currSlab ) ) {
+                    setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
+                }
+            }
+        }
+    }
+
+    void Level::fortify( const utils::Rect& room, const adiktedpp::PlayerType owner ) {
+        for ( int x = room.min.x-1; x<= room.max.x+1; ++x ) {
+            for ( int y = room.min.y-1; y<= room.max.y+1; ++y ) {
+                const adiktedpp::SlabType currSlab = getSlab( x, y );
+                if ( adiktedpp::isEarth( currSlab ) ) {
+                    setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
+                }
+            }
+        }
+    }
+
+    void Level::digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify ) {
+        const std::vector<utils::Point> points = line( from, to );
+        for ( const utils::Point& item: points ) {
+            const adiktedpp::SlabType currSlab = getSlab( item );
+            if ( adiktedpp::isEarth( currSlab ) || adiktedpp::isWall( currSlab ) || (currSlab == adiktedpp::SlabType::ST_ROCK) ) {
+                setSlab( item, adiktedpp::SlabType::ST_CLAIMED, owner );
+                if ( fortify ) {
+                    this->fortify( item, owner );
+                }
+            }
+        }
     }
 
     /// ============================================================

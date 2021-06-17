@@ -22,7 +22,7 @@ else()
     add_library( ${TARGET_NAME} SHARED ${cpp_files} )
 endif()
 
-target_link_libraries( ${TARGET_NAME} ${adikted_LIBRARY} )
+target_link_libraries( ${TARGET_NAME} ${adikted_LIBRARY} utils )
 
 set_target_properties( ${TARGET_NAME} PROPERTIES PUBLIC_HEADER "${h_files}" )
 

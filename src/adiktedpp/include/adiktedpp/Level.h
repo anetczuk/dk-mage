@@ -122,8 +122,6 @@ namespace adiktedpp {
 
         void setSlabOutline( const utils::Rect& rect, const SlabType type );
 
-        std::size_t setVein( const utils::Rect& rect, const SlabType room, const std::size_t itemsNum );
-
         PlayerType getOwner( const std::size_t x, const std::size_t y );
 
         void setOwner( const std::size_t x, const std::size_t y, const PlayerType owner );
@@ -139,6 +137,18 @@ namespace adiktedpp {
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );
 
         void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );
+
+        /// ===========================================================================
+
+        std::size_t setVein( const utils::Rect& rect, const SlabType room, const std::size_t itemsNum );
+
+        void setRoom( const utils::Rect& position, const SlabType room, const PlayerType owner, const bool fortify );
+
+        void fortify( const utils::Point& point, const PlayerType owner );
+
+        void fortify( const utils::Rect& room, const PlayerType owner );
+
+        void digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify );
 
         /// ===========================================================================
 

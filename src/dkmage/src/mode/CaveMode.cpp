@@ -5,91 +5,13 @@
 
 #include "dkmage/mode/CaveMode.h"
 
+#include "dkmage/Draw.h"
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
 #include "adiktedpp/Script.h"
 
 #include <random>
-
-
-static void fortifyRoom( adiktedpp::Level& level, const Rect& position, const adiktedpp::PlayerType owner ) {
-    for ( int x = position.min.x-1; x<= position.max.x+1; ++x ) {
-        for ( int y = position.min.y-1; y<= position.max.y+1; ++y ) {
-            const adiktedpp::SlabType currSlab = level.getSlab( x, y );
-            if ( adiktedpp::isEarth( currSlab ) ) {
-                level.setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
-            }
-        }
-    }
-}
-
-static void fortifyRoom( adiktedpp::Level& level, const Point& position, const adiktedpp::PlayerType owner ) {
-    for ( int x = position.x-1; x<= position.x+1; ++x ) {
-        for ( int y = position.y-1; y<= position.y+1; ++y ) {
-            const adiktedpp::SlabType currSlab = level.getSlab( x, y );
-            if ( adiktedpp::isEarth( currSlab ) ) {
-                level.setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
-            }
-        }
-    }
-}
-
-static void digLine( adiktedpp::Level& level, const Point& from, const Point& to, const adiktedpp::PlayerType owner, const bool fortify ) {
-    const std::vector<Point> points = line( from, to );
-    for ( const Point& item: points ) {
-        const adiktedpp::SlabType currSlab = level.getSlab( item );
-        if ( adiktedpp::isEarth( currSlab ) || adiktedpp::isWall( currSlab ) || (currSlab == adiktedpp::SlabType::ST_ROCK) ) {
-            level.setSlab( item, adiktedpp::SlabType::ST_CLAIMED, owner );
-            if ( fortify ) {
-                fortifyRoom( level, item, owner );
-            }
-        }
-    }
-}
-
-static void drawRoom( adiktedpp::Level& level, const Rect& position,
-               const adiktedpp::SlabType room, const adiktedpp::PlayerType owner, const bool fortify )
-{
-    if ( room != adiktedpp::SlabType::ST_DUNGHEART ) {
-        level.setSlab( position, room, owner );
-        if ( fortify ) {
-            fortifyRoom( level, position, owner );
-        }
-        return ;
-    }
-    if ( position.width() > 3 && position.height() > 3 ) {
-        level.setSlab( position, adiktedpp::SlabType::ST_CLAIMED, owner );
-        const Point center = position.center();
-        const Rect shrink(center, 3, 3);
-        level.setSlab( shrink, room, owner );
-    } else {
-        level.setSlab( position, room, owner );
-    }
-    if ( fortify ) {
-        fortifyRoom( level, position, owner );
-    }
-}
-
-static void drawDungeon( adiktedpp::Level& level, dkmage::generator::Dungeon& dungeon ) {
-    const adiktedpp::PlayerType owner = dungeon.owner();
-    const bool fortify = dungeon.fortify();
-    std::vector< dkmage::generator::Room* > roomsList = dungeon.rooms();
-    for ( const dkmage::generator::Room* item: roomsList ) {
-        /// set room
-        const Rect& position = item->position();
-        const adiktedpp::SlabType itemType = item->type();
-        drawRoom( level, position, itemType, owner, fortify );
-
-        /// draw corridors
-        const Point& itemCenter = item->position().center();
-        std::vector< dkmage::generator::Room* > connectedList = dungeon.connectedRooms( *item );
-        for ( const dkmage::generator::Room* connected: connectedList ) {
-            const Point& connectedCenter = connected->position().center();
-            digLine( level, itemCenter, connectedCenter, owner, fortify );
-        }
-    }
-}
 
 
 namespace dkmage {
