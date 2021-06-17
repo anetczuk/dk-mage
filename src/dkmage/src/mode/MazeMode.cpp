@@ -16,21 +16,21 @@ static void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze ) {
     const utils::Rect mapRect = level.mapRect();
     const utils::Point start = mapRect.center() - utils::Point( xDimm / 2 + 1, yDimm / 2 + 1 );
 
-    ///const utils::Point start( 41 - gDimm / 2, 41 - gDimm / 2 );
     const utils::Point end = start + utils::Point( xDimm + 1, yDimm + 1 );
-    level.setSlab( utils::Rect( start, end ), adiktedpp::SlabType::ST_ROCK );
+    level.setSlabOutline( utils::Rect( start, end ), adiktedpp::SlabType::ST_ROCK );
 
     const utils::Point corner = start + utils::Point( 1, 1 );
     for ( std::size_t y=0; y<yDimm; ++y ) {
         for ( std::size_t x=0; x<xDimm; ++x ) {
             const bool val = maze.state( x, y );
-            if ( val ) {
-                /// open
-                level.setSlab( corner + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
-            } else {
+            if ( val == false ) {
                 /// closed
                 level.setSlab( corner + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
             }
+//            else {
+//                /// open
+//                level.setSlab( corner + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
+//            }
         }
     }
 }

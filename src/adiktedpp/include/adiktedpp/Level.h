@@ -120,6 +120,8 @@ namespace adiktedpp {
 
         void setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner );
 
+        void setSlabOutline( const utils::Rect& rect, const SlabType type );
+
         std::size_t setVein( const utils::Rect& rect, const SlabType room, const std::size_t itemsNum );
 
         PlayerType getOwner( const std::size_t x, const std::size_t y );

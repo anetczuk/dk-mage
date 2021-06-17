@@ -155,6 +155,13 @@ namespace utils {
             max.y = std::max( max.y, rect.max.y );
         }
 
+        void grow( const int delta ) {
+            min.x -= delta;
+            min.y -= delta;
+            max.x += delta;
+            max.y += delta;
+        }
+
         bool isInside( const int minCoord, const int maxCoord ) const {
             if ( min.x < minCoord || min.x > maxCoord ) {
                 return false;

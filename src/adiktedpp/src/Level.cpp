@@ -141,12 +141,10 @@ namespace adiktedpp {
     }
 
     void Level::generateEmpty() {
-        setSlab( 0, 0, 0, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
-        setSlab( 0, MAP_SIZE_DKSTD_Y-1, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
-        setSlab( MAP_SIZE_DKSTD_X-1, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
-        setSlab( 0, 0, MAP_SIZE_DKSTD_X-1, 0, SlabType::ST_ROCK );
-
-        setSlab( 1, 1, MAP_SIZE_DKSTD_X-2, MAP_SIZE_DKSTD_Y-2, SlabType::ST_EARTH );
+        utils::Rect rect( 0, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1 );
+        setSlabOutline( rect, SlabType::ST_ROCK );
+        rect.grow( -1 );
+        setSlab( rect, SlabType::ST_EARTH );
     }
 
     void Level::generateRandomMap() {
@@ -390,6 +388,13 @@ namespace adiktedpp {
             available.insert( point );
         }
     };
+
+    void Level::setSlabOutline( const utils::Rect& rect, const SlabType type ) {
+        setSlab( rect.min.x, rect.min.y, rect.min.x, rect.max.y, type );
+        setSlab( rect.min.x, rect.min.y, rect.max.x, rect.min.y, type );
+        setSlab( rect.min.x, rect.max.y, rect.max.x, rect.max.y, type );
+        setSlab( rect.max.x, rect.min.y, rect.max.x, rect.max.y, type );
+    }
 
     std::size_t Level::setVein( const utils::Rect& boundingLimit, const SlabType room, const std::size_t itemsNum ) {
         if ( itemsNum < 1 ) {
