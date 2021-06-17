@@ -99,6 +99,18 @@ TEST_CASE( "Rect_center" ) {
         CHECK( center.x == 0 );
         CHECK( center.y == 0 );
     }
+    {
+        const Rect rect( 3, 3, 3, 3 );
+        const Point center = rect.center();
+        CHECK( center.x == 3 );
+        CHECK( center.y == 3 );
+    }
+    {
+        const Rect rect( 3, 3, 5, 5 );
+        const Point center = rect.center();
+        CHECK( center.x == 4 );
+        CHECK( center.y == 4 );
+    }
 }
 
 TEST_CASE( "Rect_distance" ) {
