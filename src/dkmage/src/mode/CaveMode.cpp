@@ -13,7 +13,7 @@
 #include <random>
 
 
-void fortifyRoom( adiktedpp::Level& level, const Rect& position, const adiktedpp::PlayerType owner ) {
+static void fortifyRoom( adiktedpp::Level& level, const Rect& position, const adiktedpp::PlayerType owner ) {
     for ( int x = position.min.x-1; x<= position.max.x+1; ++x ) {
         for ( int y = position.min.y-1; y<= position.max.y+1; ++y ) {
             const adiktedpp::SlabType currSlab = level.getSlab( x, y );
@@ -24,7 +24,7 @@ void fortifyRoom( adiktedpp::Level& level, const Rect& position, const adiktedpp
     }
 }
 
-void fortifyRoom( adiktedpp::Level& level, const Point& position, const adiktedpp::PlayerType owner ) {
+static void fortifyRoom( adiktedpp::Level& level, const Point& position, const adiktedpp::PlayerType owner ) {
     for ( int x = position.x-1; x<= position.x+1; ++x ) {
         for ( int y = position.y-1; y<= position.y+1; ++y ) {
             const adiktedpp::SlabType currSlab = level.getSlab( x, y );
@@ -35,7 +35,7 @@ void fortifyRoom( adiktedpp::Level& level, const Point& position, const adiktedp
     }
 }
 
-void digLine( adiktedpp::Level& level, const Point& from, const Point& to, const adiktedpp::PlayerType owner, const bool fortify ) {
+static void digLine( adiktedpp::Level& level, const Point& from, const Point& to, const adiktedpp::PlayerType owner, const bool fortify ) {
     const std::vector<Point> points = line( from, to );
     for ( const Point& item: points ) {
         const adiktedpp::SlabType currSlab = level.getSlab( item );
@@ -48,7 +48,7 @@ void digLine( adiktedpp::Level& level, const Point& from, const Point& to, const
     }
 }
 
-void drawRoom( adiktedpp::Level& level, const Rect& position,
+static void drawRoom( adiktedpp::Level& level, const Rect& position,
                const adiktedpp::SlabType room, const adiktedpp::PlayerType owner, const bool fortify )
 {
     if ( room != adiktedpp::SlabType::ST_DUNGHEART ) {
@@ -71,7 +71,7 @@ void drawRoom( adiktedpp::Level& level, const Rect& position,
     }
 }
 
-void drawDungeon( adiktedpp::Level& level, dkmage::generator::Dungeon& dungeon ) {
+static void drawDungeon( adiktedpp::Level& level, dkmage::generator::Dungeon& dungeon ) {
     const adiktedpp::PlayerType owner = dungeon.owner();
     const bool fortify = dungeon.fortify();
     std::vector< dkmage::generator::Room* > roomsList = dungeon.rooms();

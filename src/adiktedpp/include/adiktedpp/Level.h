@@ -71,7 +71,11 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
+        utils::Rect mapRect() const;
+
         void startNewMap();
+
+        void generateEmpty();
 
         void generateRandomMap();
 

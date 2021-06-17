@@ -129,11 +129,24 @@ namespace adiktedpp {
         set_data_path( level, dataPath );
     }
 
+    utils::Rect Level::mapRect() const {
+        return utils::Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
+    }
+
     void Level::startNewMap() {
         LEVEL* level = data->lvl;
         free_map( level );
         start_new_map( level );
         setInfo();
+    }
+
+    void Level::generateEmpty() {
+        setSlab( 0, 0, 0, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
+        setSlab( 0, MAP_SIZE_DKSTD_Y-1, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
+        setSlab( MAP_SIZE_DKSTD_X-1, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1, SlabType::ST_ROCK );
+        setSlab( 0, 0, MAP_SIZE_DKSTD_X-1, 0, SlabType::ST_ROCK );
+
+        setSlab( 1, 1, MAP_SIZE_DKSTD_X-2, MAP_SIZE_DKSTD_Y-2, SlabType::ST_EARTH );
     }
 
     void Level::generateRandomMap() {
