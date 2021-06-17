@@ -143,6 +143,17 @@ namespace adiktedpp {
         setInfo();
     }
 
+    void Level::generateRandomMap( const std::size_t areaLimit ) {
+        while ( true ) {
+            generateRandomMap();
+            fillSeparatedAreas( areaLimit );
+            if ( countSeparatedAreas() < 1 ) {
+                break ;
+            }
+            LOG() << "found inaccessible areas -- restarting generation";
+        }
+    }
+
     bool Level::verifyMap( const bool silent ) {
         LEVEL* level = data->lvl;
         struct IPOINT_2D errpt = {-1,-1};

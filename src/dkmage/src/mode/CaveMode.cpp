@@ -108,13 +108,7 @@ namespace dkmage {
             }
 
             void generateLevel() {
-                level.generateRandomMap();
-                level.fillSeparatedAreas( 9 );
-                if ( level.countSeparatedAreas() > 0 ) {
-                    LOG() << "found inaccessible areas -- restarting generation";
-                    generateLevel();
-                    return ;
-                }
+                level.generateRandomMap( 9 );
 
                 dkmage::generator::Dungeon dungeon;
                 dungeon.limitNorth = 1;
