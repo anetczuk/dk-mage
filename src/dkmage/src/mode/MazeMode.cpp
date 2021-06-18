@@ -5,35 +5,10 @@
 
 #include "dkmage/mode/MazeMode.h"
 
+#include "dkmage/Draw.h"
 #include "dkmage/generator/Maze.h"
+#include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
-
-
-static void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze ) {
-    const std::size_t xDimm = maze.dimmensionX();
-    const std::size_t yDimm = maze.dimmensionY();
-
-    const utils::Rect mapRect = level.mapRect();
-    const utils::Point start = mapRect.center() - utils::Point( xDimm / 2 + 1, yDimm / 2 + 1 );
-
-    const utils::Point end = start + utils::Point( xDimm + 1, yDimm + 1 );
-    level.setSlabOutline( utils::Rect( start, end ), adiktedpp::SlabType::ST_ROCK );
-
-    const utils::Point corner = start + utils::Point( 1, 1 );
-    for ( std::size_t y=0; y<yDimm; ++y ) {
-        for ( std::size_t x=0; x<xDimm; ++x ) {
-            const bool val = maze.state( x, y );
-            if ( val == false ) {
-                /// closed
-                level.setSlab( corner + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
-            }
-//            else {
-//                /// open
-//                level.setSlab( corner + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
-//            }
-        }
-    }
-}
 
 
 namespace dkmage {
@@ -52,21 +27,33 @@ namespace dkmage {
             }
 
             void generateLevel() {
-                level.generateEmpty();
-//                level.generateRandomMap( 9 );
+//                level.generateEmpty();
+                level.generateRandomMap( 9 );
 
                 generator::Maze maze;
-                maze.generate( 42, 24 );
+                maze.generate( 41, 20 );
 
                 drawMaze( level, maze );
+
+                dkmage::generator::Dungeon dungeon;
+                dungeon.limitNorth = 1;
+                dungeon.limitSouth = 0;
+                dungeon.fortify( true );
+
+                dungeon.generate( 1, 5 );
+//                dungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 3, false, 1 );
+                dungeon.moveToBottomEdge( 0 );
+
+//                LOG() << "dungeon:\n" << dungeon.print();
+
+                drawDungeon( level, dungeon );
 
                 /// =================
 
                 const bool valid = level.verifyMap();
-                LOG() << "is map valid: " << valid;
                 if ( valid == false ) {
                     LOG() << "detected invalid map -- restarting generation";
-//                    generateLevel();
+                    generateLevel();
                     return ;
                 }
             }

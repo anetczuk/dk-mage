@@ -178,7 +178,6 @@ namespace dkmage {
                 /// =================
 
                 const bool valid = level.verifyMap();
-                LOG() << "is map valid: " << valid;
                 if ( valid == false ) {
                     LOG() << "detected invalid map -- restarting generation";
                     generateLevel();

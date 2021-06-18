@@ -20,8 +20,21 @@ namespace dkmage {
         class MazeNode {
         public:
             bool open;
-            MazeNode(): open(false) {
+            bool visited;
+
+            MazeNode(): open(false), visited(false) {
             }
+
+            void setOpen() {
+                open = true;
+                visited = true;
+            }
+
+            void setClosed() {
+                open = false;
+                visited = true;
+            }
+
         };
 
         /**
@@ -47,10 +60,11 @@ namespace dkmage {
         class MazeGraph {
         public:
 
-            std::size_t dimmX;
-            std::size_t dimmY;
+            std::size_t dimmX;                              /// number of nodes in 'graph' object
+            std::size_t dimmY;                              /// number of nodes in 'graph' object
             DungeonGraph< MazeNode, MazeEdge > graph;
             std::vector< MazeNode* > nodes;
+            std::vector< bool > grid;
 
 
             MazeGraph(): dimmX( 0 ), dimmY( 0 ) {
@@ -76,91 +90,31 @@ namespace dkmage {
                 if ( dimmX < 1 ) {
                     return 0;
                 }
-                return dimmX * 2 - 1;
+                return dimmX * 2 + 1;
             }
 
             std::size_t dimmensionY() const {
                 if ( dimmY < 1 ) {
                     return 0;
                 }
-                return dimmY * 2 - 1;
+                return dimmY * 2 + 1;
             }
 
             bool state( const std::size_t x, const std::size_t y ) {
-                if ( dimmX < 1 ) {
+                const std::size_t xDimm = dimmensionX();
+                if ( x >= xDimm ) {
                     return false;
                 }
-                if ( dimmY < 1 ) {
+                const std::size_t yDimm = dimmensionY();
+                if ( y >= yDimm ) {
                     return false;
                 }
-                const std::size_t dx2 = dimmX * 2 - 1;
-                if ( x >= dx2 ) {
-                    return false;
-                }
-                const std::size_t dy2 = dimmY * 2 - 1;
-                if ( y >= dy2 ) {
-                    return false;
-                }
-
-                const std::size_t cx = dx2 - x - 1;
-                const std::size_t cy = dy2 - y - 1;
-
-                if ( cx % 2 == 0 ) {
-                    /// x -- node
-                    const std::size_t xNode = cx / 2;
-                    const std::size_t yNode = cy / 2;
-                    const std::size_t nIndex = yNode * dimmX + xNode;
-                    MazeNode* node = nodes[ nIndex ];
-                    if ( cy % 2 == 0 ) {
-                        /// y -- node
-                        return node->open;
-                    }
-                    /// y -- edge
-                    MazeEdge* edge = graph.getEdge( *node, Direction::D_NORTH );
-                    return edge->open;
-                }
-
-                /// x -- edge
-                if ( cy % 2 == 0 ) {
-                    /// y -- node
-                    const std::size_t xNode = cx / 2;
-                    const std::size_t yNode = cy / 2;
-                    const std::size_t nIndex = yNode * dimmX + xNode;
-                    MazeNode* node = nodes[ nIndex ];
-                    MazeEdge* edge = graph.getEdge( *node, Direction::D_EAST );
-                    return edge->open;
-                } else {
-                    /// y -- edge -- on diagonal -- always false
-                    return false;
-                }
-
+                const std::size_t cy = yDimm - y - 1;
+                return grid[ cy * xDimm + x ];
             }
 
             MazeNode* node( const std::size_t index ) {
                 return nodes[ index ];
-            }
-
-            /// returns directions that are not open
-            MazeNode* openNext( const MazeNode& node ) {
-                std::vector< MazeNode* > closed;
-                std::vector< Direction > dirs = graph.availableDirections( node );
-                for ( const Direction dir: dirs ) {
-                    MazeNode* target = graph.getItem( node, dir );
-                    if ( target->open ) {
-                        continue ;
-                    }
-                    closed.push_back( target );
-                }
-                const std::size_t cSize = closed.size();
-                if ( cSize < 1 ) {
-                    return nullptr;
-                }
-                const std::size_t nextIndex = rand() % cSize;
-                MazeNode* nextNode = closed[ nextIndex ];
-                nextNode->open = true;
-                MazeEdge* edge = graph.getEdge( node, *nextNode );
-                edge->open = true;
-                return nextNode;
             }
 
             void generate() {
@@ -174,7 +128,7 @@ namespace dkmage {
                     return ;
                 }
 
-                generateGrid();
+                generateGraph();
 
                 std::stack< MazeNode* > list;
                 {
@@ -184,7 +138,7 @@ namespace dkmage {
                 }
                 while ( list.empty() == false ) {
                     MazeNode* currNode = list.top();
-                    currNode->open = true;
+                    currNode->setOpen();
                     MazeNode* nextNode = openNext( *currNode );
                     if ( nextNode == nullptr ) {
                         /// no unvisited neighbour
@@ -193,73 +147,57 @@ namespace dkmage {
                     }
                     list.push( nextNode );
                 }
+
+                prepareGrid();
             }
 
-            std::string print() {
-                std::stringstream stream;
-
-                const std::size_t xDimm = dimmensionX();
-                const std::size_t yDimm = dimmensionY();
-                for ( std::size_t y=0; y<yDimm; ++y ) {
-                    for ( std::size_t x=0; x<xDimm; ++x ) {
-                        const bool val = state( x, y );
-                        stream << val << " ";
+            /// returns directions that are not open
+            MazeNode* openNext( const MazeNode& node ) {
+                std::vector< MazeNode* > closed;
+                std::vector< Direction > dirs = graph.availableDirections( node );
+                for ( const Direction dir: dirs ) {
+                    MazeNode* target = graph.getItem( node, dir );
+                    if ( target->visited ) {
+                        continue ;
                     }
-                    stream << "\n";
+                    closed.push_back( target );
                 }
-
-    //                for ( std::size_t y=0; y<dimm; ++y ) {
-    //                    /// nodes row
-    //                    for ( std::size_t x=0; x<dimm; ++x ) {
-    //                        MazeNode* node = nodes[ y * dimm + x ];
-    //                        stream << node->open << " ";
-    //                        MazeEdge* edge = graph.getEdge( *node, Direction::D_EAST );
-    //                        if ( edge != nullptr ) {
-    //                            stream << edge->open << " ";
-    //                        }
-    //                    }
-    //                    stream << "\n";
-    //                    if ( y >= (dimm-1) ) {
-    //                        continue ;
-    //                    }
-    //                    /// edges row
-    //                    for ( std::size_t x=0; x<dimm; ++x ) {
-    //                        MazeNode* node = nodes[ y * dimm + x ];
-    //                        MazeEdge* edge = graph.getEdge( *node, Direction::D_NORTH );
-    //                        stream << edge->open << "   ";
-    //                    }
-    //                    stream << "\n";
-    //                }
-
-                return stream.str();
+                const std::size_t cSize = closed.size();
+                if ( cSize < 1 ) {
+                    return nullptr;
+                }
+                const std::size_t nextIndex = rand() % cSize;
+                MazeNode* nextNode = closed[ nextIndex ];
+                nextNode->setOpen();
+                MazeEdge* edge = graph.getEdge( node, *nextNode );
+                edge->open = true;
+                return nextNode;
             }
+
+            std::string print();
 
 
         protected:
 
-            void generateGrid() {
-                {
-                    /// create first row
-                    MazeNode* prevNode = graph.addItem();
-                    nodes[0] = prevNode;
-                    for ( std::size_t x=1; x<dimmX; ++x ) {
-                        prevNode = graph.addItem( *prevNode, Direction::D_EAST );
-                        nodes[x] = prevNode;
-                    }
+            void generateGraph();
+
+            void prepareGrid();
+
+            std::size_t innerDimmX() const {
+                if ( dimmX < 1 ) {
+                    return 0;
                 }
-                for ( std::size_t y=1; y<dimmY; ++y ) {
-                    MazeNode* prevNode = graph.addItem();
-                    MazeNode* prevRow  = nodes[ (y-1) * dimmX + 0 ];
-                    graph.addEdge( *prevNode, *prevRow, Direction::D_SOUTH );
-                    nodes[ y * dimmX + 0 ] = prevNode;
-                    for ( std::size_t x=1; x<dimmX; ++x ) {
-                        prevNode = graph.addItem( *prevNode, Direction::D_EAST );
-                        MazeNode* prevRow  = nodes[ (y-1) * dimmX + x ];
-                        graph.addEdge( *prevNode, *prevRow, Direction::D_SOUTH );
-                        nodes[ y * dimmX + x ] = prevNode;
-                    }
-                }
+                return dimmX * 2 - 1;
             }
+
+            std::size_t innerDimmY() const {
+                if ( dimmY < 1 ) {
+                    return 0;
+                }
+                return dimmY * 2 - 1;
+            }
+
+            bool innerState( const std::size_t x, const std::size_t y );
 
         };
 
