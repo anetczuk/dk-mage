@@ -118,9 +118,49 @@ namespace dkmage {
             }
         }
 
+        /// returns directions that are not open
+        MazeNode* MazeGraph::openNext( const MazeNode& node ) {
+            std::vector< MazeNode* > closed;
+            std::vector< Direction > dirs = graph.availableDirections( node );
+            for ( const Direction dir: dirs ) {
+                MazeNode* target = graph.getItem( node, dir );
+                if ( target->visited ) {
+                    continue ;
+                }
+                closed.push_back( target );
+            }
+            const std::size_t cSize = closed.size();
+            if ( cSize < 1 ) {
+                return nullptr;
+            }
+            const std::size_t nextIndex = rand() % cSize;
+            MazeNode* nextNode = closed[ nextIndex ];
+            nextNode->setOpen();
+            MazeEdge* edge = graph.getEdge( node, *nextNode );
+            edge->open = true;
+            return nextNode;
+        }
+
 
         /// =====================================================================
 
+
+        bool Maze::state( const std::size_t x, const std::size_t y ) {
+            const std::size_t xDimm = dimmensionX();
+            if ( x >= xDimm ) {
+                return false;
+            }
+            const std::size_t yDimm = dimmensionY();
+            if ( y >= yDimm ) {
+                return false;
+            }
+            const std::size_t cy = yDimm - y - 1;
+            const std::size_t index = cy * xDimm + x;
+            if ( index >= grid.size() ) {
+                return false;
+            }
+            return grid[ index ];
+        }
 
         void Maze::generate( const std::size_t baseDimmension ) {
             graph.resize( baseDimmension );
@@ -139,24 +179,60 @@ namespace dkmage {
             const std::size_t yDimm = dimmensionY();
             grid.resize( xDimm * yDimm, false );
 
-            const std::size_t dx2 = graph.dimmensionX();
-            const std::size_t dy2 = graph.dimmensionY();
+            const std::size_t graphDimmX = graph.dimmensionX();
+            const std::size_t graphDimmY = graph.dimmensionY();
 
-            for ( std::size_t y=0; y<dy2; ++y ) {
-                for ( std::size_t x=0; x<dx2; ++x ) {
-                    const std::size_t gIndex = (y + 1) * xDimm + (x + 1);
-                    grid[ gIndex ] = graph.state( x, y );
+            for ( std::size_t y=0; y<graphDimmY; ++y ) {
+                for ( std::size_t x=0; x<graphDimmX; ++x ) {
+                    if ( graph.state( x, y ) == false ) {
+                        continue ;
+                    }
+                    openPassage( x, y );
                 }
             }
 
-            const std::size_t enterNodeIndex = graph.dimmX / 2;
+            /// open entrances
+            const std::size_t enterIndex = xDimm / 2;
+            grid[ enterIndex ] = true;
             {
-                const std::size_t centerState = enterNodeIndex * 2 + 1;
+                const std::size_t centerState = (yDimm - 1) * xDimm + enterIndex;
                 grid[ centerState ] = true;
             }
-            {
-                const std::size_t centerState = (yDimm - 1) * xDimm + enterNodeIndex * 2 + 1;
-                grid[ centerState ] = true;
+        }
+
+        void Maze::openPassage( const std::size_t sX, const std::size_t sY ) {
+            const std::size_t gx = sX / 2 * (corridorSize + 1);
+            const std::size_t gy = sY / 2 * (corridorSize + 1);
+            if ( sX % 2 == 0 ) {
+                if ( sY % 2 == 0 ) {
+                    /// corridor -- node
+                    open( gx, gy, corridorSize, corridorSize );
+                } else {
+                    /// vertical -- north edge
+                    open( gx, gy + corridorSize, corridorSize, 1 );
+                }
+            } else {
+                if ( sY % 2 == 0 ) {
+                    /// horizontal -- east edge
+                    open( gx + corridorSize, gy, 1, corridorSize );
+                } else {
+                    /// diagonal -- do nothing
+                }
+            }
+        }
+
+        void Maze::open( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange ) {
+            const std::size_t xDimm = dimmensionX();
+            for ( std::size_t dy=0; dy<yRange; ++dy) {
+                for ( std::size_t dx=0; dx<xRange; ++dx) {
+                    const std::size_t cx = gx + dx;
+                    const std::size_t cy = gy + dy;
+                    const std::size_t gIndex = (cy + 1) * xDimm + (cx + 1);
+//                    if ( gIndex >= grid.size() ) {
+//                        continue ;
+//                    }
+                    grid[ gIndex ] = true;
+                }
             }
         }
 

@@ -31,7 +31,10 @@ namespace dkmage {
                 level.generateRandomMap( 9 );
 
                 generator::Maze maze;
-                maze.generate( 41, 12 );
+                maze.corridorSize = 3;
+                maze.generate( 21, 6 );
+//                maze.corridorSize = 1;
+//                maze.generate( 41, 12 );
 
                 drawMaze( level, maze );
 

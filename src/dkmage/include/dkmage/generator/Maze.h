@@ -85,6 +85,7 @@ namespace dkmage {
                 nodes.resize( dimmX * dimmY );
             }
 
+            /// counts nodes and edges
             std::size_t dimmensionX() const {
                 if ( dimmX < 1 ) {
                     return 0;
@@ -92,6 +93,7 @@ namespace dkmage {
                 return dimmX * 2 - 1;
             }
 
+            /// counts nodes and edges
             std::size_t dimmensionY() const {
                 if ( dimmY < 1 ) {
                     return 0;
@@ -100,10 +102,6 @@ namespace dkmage {
             }
 
             bool state( const std::size_t x, const std::size_t y );
-
-            MazeNode* node( const std::size_t index ) {
-                return nodes[ index ];
-            }
 
             void generate() {
                 nodes.clear();
@@ -121,7 +119,7 @@ namespace dkmage {
                 std::stack< MazeNode* > list;
                 {
                     const std::size_t center = dimmX / 2;
-                    MazeNode* currNode = node( center );
+                    MazeNode* currNode = nodes[ center ];
                     list.push( currNode );
                 }
                 while ( list.empty() == false ) {
@@ -137,35 +135,15 @@ namespace dkmage {
                 }
             }
 
-            /// returns directions that are not open
-            MazeNode* openNext( const MazeNode& node ) {
-                std::vector< MazeNode* > closed;
-                std::vector< Direction > dirs = graph.availableDirections( node );
-                for ( const Direction dir: dirs ) {
-                    MazeNode* target = graph.getItem( node, dir );
-                    if ( target->visited ) {
-                        continue ;
-                    }
-                    closed.push_back( target );
-                }
-                const std::size_t cSize = closed.size();
-                if ( cSize < 1 ) {
-                    return nullptr;
-                }
-                const std::size_t nextIndex = rand() % cSize;
-                MazeNode* nextNode = closed[ nextIndex ];
-                nextNode->setOpen();
-                MazeEdge* edge = graph.getEdge( node, *nextNode );
-                edge->open = true;
-                return nextNode;
-            }
-
             std::string print();
 
 
         protected:
 
             void generateGraph();
+
+            /// returns directions that are not open
+            MazeNode* openNext( const MazeNode& node );
 
         };
 
@@ -181,41 +159,27 @@ namespace dkmage {
 
         public:
 
-//            std::size_t corridorSize;
+            std::size_t corridorSize;
 
 
-            Maze() {
-//            Maze(): corridorSize(1) {
+            Maze(): corridorSize(1) {
             }
 
             std::size_t dimmensionX() const {
-                const std::size_t dx = graph.dimmensionX();
-                if ( dx < 1 ) {
+                if ( graph.dimmX < 1 ) {
                     return 0;
                 }
-                return dx + 2;
+                return (corridorSize + 1) * graph.dimmX + 1;
             }
 
             std::size_t dimmensionY() const {
-                const std::size_t dy = graph.dimmensionY();
-                if ( dy < 1 ) {
+                if ( graph.dimmY < 1 ) {
                     return 0;
                 }
-                return dy + 2;
+                return (corridorSize + 1) * graph.dimmY + 1;
             }
 
-            bool state( const std::size_t x, const std::size_t y ) {
-                const std::size_t xDimm = dimmensionX();
-                if ( x >= xDimm ) {
-                    return false;
-                }
-                const std::size_t yDimm = dimmensionY();
-                if ( y >= yDimm ) {
-                    return false;
-                }
-                const std::size_t cy = yDimm - y - 1;
-                return grid[ cy * xDimm + x ];
-            }
+            bool state( const std::size_t x, const std::size_t y );
 
             void generate( const std::size_t baseDimmension );
 
@@ -225,6 +189,10 @@ namespace dkmage {
         protected:
 
             void prepareGrid();
+
+            void openPassage( const std::size_t sX, const std::size_t sY );
+
+            void open( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange );
 
         };
 
