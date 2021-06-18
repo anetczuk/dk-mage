@@ -64,7 +64,6 @@ namespace dkmage {
             std::size_t dimmY;                              /// number of nodes in 'graph' object
             DungeonGraph< MazeNode, MazeEdge > graph;
             std::vector< MazeNode* > nodes;
-            std::vector< bool > grid;
 
 
             MazeGraph(): dimmX( 0 ), dimmY( 0 ) {
@@ -90,28 +89,17 @@ namespace dkmage {
                 if ( dimmX < 1 ) {
                     return 0;
                 }
-                return dimmX * 2 + 1;
+                return dimmX * 2 - 1;
             }
 
             std::size_t dimmensionY() const {
                 if ( dimmY < 1 ) {
                     return 0;
                 }
-                return dimmY * 2 + 1;
+                return dimmY * 2 - 1;
             }
 
-            bool state( const std::size_t x, const std::size_t y ) {
-                const std::size_t xDimm = dimmensionX();
-                if ( x >= xDimm ) {
-                    return false;
-                }
-                const std::size_t yDimm = dimmensionY();
-                if ( y >= yDimm ) {
-                    return false;
-                }
-                const std::size_t cy = yDimm - y - 1;
-                return grid[ cy * xDimm + x ];
-            }
+            bool state( const std::size_t x, const std::size_t y );
 
             MazeNode* node( const std::size_t index ) {
                 return nodes[ index ];
@@ -147,8 +135,6 @@ namespace dkmage {
                     }
                     list.push( nextNode );
                 }
-
-                prepareGrid();
             }
 
             /// returns directions that are not open
@@ -181,24 +167,6 @@ namespace dkmage {
 
             void generateGraph();
 
-            void prepareGrid();
-
-            std::size_t innerDimmX() const {
-                if ( dimmX < 1 ) {
-                    return 0;
-                }
-                return dimmX * 2 - 1;
-            }
-
-            std::size_t innerDimmY() const {
-                if ( dimmY < 1 ) {
-                    return 0;
-                }
-                return dimmY * 2 - 1;
-            }
-
-            bool innerState( const std::size_t x, const std::size_t y );
-
         };
 
 
@@ -208,28 +176,55 @@ namespace dkmage {
         class Maze {
 
             MazeGraph graph;
+            std::vector< bool > grid;
 
 
         public:
 
+//            std::size_t corridorSize;
+
+
             Maze() {
+//            Maze(): corridorSize(1) {
             }
 
             std::size_t dimmensionX() const {
-                return graph.dimmensionX();
+                const std::size_t dx = graph.dimmensionX();
+                if ( dx < 1 ) {
+                    return 0;
+                }
+                return dx + 2;
             }
 
             std::size_t dimmensionY() const {
-                return graph.dimmensionY();
+                const std::size_t dy = graph.dimmensionY();
+                if ( dy < 1 ) {
+                    return 0;
+                }
+                return dy + 2;
             }
 
             bool state( const std::size_t x, const std::size_t y ) {
-                return graph.state( x, y );
+                const std::size_t xDimm = dimmensionX();
+                if ( x >= xDimm ) {
+                    return false;
+                }
+                const std::size_t yDimm = dimmensionY();
+                if ( y >= yDimm ) {
+                    return false;
+                }
+                const std::size_t cy = yDimm - y - 1;
+                return grid[ cy * xDimm + x ];
             }
 
             void generate( const std::size_t baseDimmension );
 
             void generate( const std::size_t dimmX, const std::size_t dimmY );
+
+
+        protected:
+
+            void prepareGrid();
 
         };
 

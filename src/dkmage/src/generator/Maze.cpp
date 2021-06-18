@@ -9,18 +9,18 @@
 namespace dkmage {
     namespace generator {
 
-        bool MazeGraph::innerState( const std::size_t x, const std::size_t y ) {
+        bool MazeGraph::state( const std::size_t x, const std::size_t y ) {
             if ( dimmX < 1 ) {
                 return false;
             }
             if ( dimmY < 1 ) {
                 return false;
             }
-            const std::size_t dx2 = innerDimmX();
+            const std::size_t dx2 = dimmensionX();
             if ( x >= dx2 ) {
                 return false;
             }
-            const std::size_t dy2 = innerDimmY();
+            const std::size_t dy2 = dimmensionY();
             if ( y >= dy2 ) {
                 return false;
             }
@@ -118,22 +118,38 @@ namespace dkmage {
             }
         }
 
-        void MazeGraph::prepareGrid() {
+
+        /// =====================================================================
+
+
+        void Maze::generate( const std::size_t baseDimmension ) {
+            graph.resize( baseDimmension );
+            graph.generate();
+            prepareGrid();
+        }
+
+        void Maze::generate( const std::size_t dimmX, const std::size_t dimmY ) {
+            graph.resize( dimmX, dimmY );
+            graph.generate();
+            prepareGrid();
+        }
+
+        void Maze::prepareGrid() {
             const std::size_t xDimm = dimmensionX();
             const std::size_t yDimm = dimmensionY();
             grid.resize( xDimm * yDimm, false );
 
-            const std::size_t dx2 = innerDimmX();
-            const std::size_t dy2 = innerDimmY();
+            const std::size_t dx2 = graph.dimmensionX();
+            const std::size_t dy2 = graph.dimmensionY();
 
             for ( std::size_t y=0; y<dy2; ++y ) {
                 for ( std::size_t x=0; x<dx2; ++x ) {
                     const std::size_t gIndex = (y + 1) * xDimm + (x + 1);
-                    grid[ gIndex ] = innerState( x, y );
+                    grid[ gIndex ] = graph.state( x, y );
                 }
             }
 
-            const std::size_t enterNodeIndex = dimmX / 2;
+            const std::size_t enterNodeIndex = graph.dimmX / 2;
             {
                 const std::size_t centerState = enterNodeIndex * 2 + 1;
                 grid[ centerState ] = true;
@@ -142,21 +158,6 @@ namespace dkmage {
                 const std::size_t centerState = (yDimm - 1) * xDimm + enterNodeIndex * 2 + 1;
                 grid[ centerState ] = true;
             }
-        }
-
-
-        /// =====================================================================
-
-
-        void Maze::generate( const std::size_t baseDimmension ) {
-            graph.resize( baseDimmension );
-            graph.generate();
-//            LOG() << "graph:\n" << graph.print();
-        }
-
-        void Maze::generate( const std::size_t dimmX, const std::size_t dimmY ) {
-            graph.resize( dimmX, dimmY );
-            graph.generate();
         }
 
     } /* namespace generator */
