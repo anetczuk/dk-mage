@@ -129,7 +129,11 @@ namespace adiktedpp {
         set_data_path( level, dataPath );
     }
 
-    utils::Rect Level::mapRect() const {
+    utils::Rect Level::mapSize() {
+        return utils::Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
+    }
+
+    utils::Rect Level::mapRect() {
         return utils::Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
     }
 
@@ -648,10 +652,6 @@ namespace adiktedpp {
         }
         message_info("Bitmap \"%s\" created.",bmpfname);
         return true;
-    }
-
-    utils::Rect Level::mapSize() {
-        return utils::Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
     }
 
     void Level::setInfo() {

@@ -57,7 +57,7 @@ namespace dkmage {
         const Point veinCenter = veinRect.center();
 
         int veinDir = 1;
-        const utils::Rect mapSize = adiktedpp::Level::mapSize();
+        const utils::Rect mapSize = level.mapSize();
         if ( veinCenter.y > mapSize.center().y / 2 ) {
             /// on south
             veinDir = 1;

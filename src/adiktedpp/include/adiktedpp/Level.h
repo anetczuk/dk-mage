@@ -71,7 +71,9 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
-        utils::Rect mapRect() const;
+        static utils::Rect mapSize();
+
+        static utils::Rect mapRect();
 
         void startNewMap();
 
@@ -158,9 +160,6 @@ namespace adiktedpp {
         void generateBmp();
 
         bool generateBmp( const std::string& path );
-
-
-        static utils::Rect mapSize();
 
 
     private:
