@@ -160,6 +160,9 @@ namespace adiktedpp {
         bool generateBmp( const std::string& path );
 
 
+        static utils::Rect mapSize();
+
+
     private:
 
         void setInfo();

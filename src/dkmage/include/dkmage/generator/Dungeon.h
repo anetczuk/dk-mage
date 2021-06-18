@@ -135,11 +135,21 @@ namespace dkmage {
                 return graph.itemByindex( index );
             }
 
+            utils::Point roomCenter( const std::size_t index ) {
+                Room* aRoom = room( index );
+                if ( aRoom == nullptr ) {
+                    return utils::Point();
+                }
+                return aRoom->position().center();
+            }
+
             std::vector< Room* > connectedRooms( const Room& room ) {
                 return graph.connectedItems( room );
             }
 
             std::vector< Room* > findRoom( const adiktedpp::SlabType roomType );
+
+            Room* findRoomFirst( const adiktedpp::SlabType roomType );
 
             void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 

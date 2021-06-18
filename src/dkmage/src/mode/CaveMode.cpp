@@ -46,24 +46,18 @@ namespace dkmage {
                 drawDungeon( level, dungeon );
 
                 {
-                    dkmage::generator::Room* first = dungeon.room(0);
-                    const Point firstCenter = first->position().center();
+                    const Point firstCenter = dungeon.roomCenter( 0 );
                     const Rect bbox = dungeon.boundingBox();
 
                     /// add neutral portal
                     const Point portalCenter( bbox.max.x + 16, firstCenter.y );
                     const Rect portalRect( portalCenter, 3, 3 );
                     level.setSlab( portalRect, adiktedpp::SlabType::ST_PORTAL );
-            //        level.setSlabRoom( portalRect, adiktedpp::SlabType::ST_PORTAL, adiktedpp::PlayerType::PT_UNSET );
 
-                    /// add gold ore
+                    /// add gold vein
                     const Point veinCenter( bbox.min.x - 20, firstCenter.y - 1 );
                     const Rect veinRect( veinCenter, 9, 5 );
-                    const Point gemCenter( veinCenter.x, veinCenter.y + 3 );
-                    const Rect gemRect( gemCenter, 3, 3 );
-                    level.setSlab( gemRect, adiktedpp::SlabType::ST_ROCK );
-                    level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
-                    level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, 30 );
+                    drawGoldVein( level, veinRect, 1 );
 
                     /// add other
                     Point pos = firstCenter + Point(0, 2);
@@ -74,13 +68,12 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y+2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 4 );
 //                    level.setCreature( firstCenter.x+2, firstCenter.y, 4, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
 
-            //        /// fill treasure with gold
-            //        std::vector< dkmage::generator::Room* > treasureRooms = dungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
-            //        if ( treasureRooms.empty() == false ) {
-            //            dkmage::generator::Room* treasure = treasureRooms.front();
-            //            const Rect& roomRect = treasure->position();
-            //            level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
-            //        }
+//                    /// fill treasure with gold
+//                    dkmage::generator::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    if ( treasure != nullptr ) {
+//                        const Rect& roomRect = treasure->position();
+//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+//                    }
                 }
 
 
@@ -100,31 +93,25 @@ namespace dkmage {
                 drawDungeon( level, enemyDungeon );
 
                 {
-                    dkmage::generator::Room* first = enemyDungeon.room(0);
-                    const Point firstCenter = first->position().center();
+                    const Point firstCenter = enemyDungeon.roomCenter( 0 );
                     const Rect bbox = enemyDungeon.boundingBox();
 
                     /// add gold ore
                     const Point veinCenter( bbox.max.x + 12, firstCenter.y + 1 );
                     const Rect veinRect( veinCenter, 9, 5 );
-                    const Point gemCenter( veinCenter.x, veinCenter.y - 2 );        /// 3 faces
-                    const Rect gemRect( gemCenter, 3, 3 );
-                    level.setSlab( gemRect, adiktedpp::SlabType::ST_ROCK );
-                    level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, 30 );
-                    level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
+                    drawGoldVein( level, veinRect, 3 );
 
                     /// add other
                     level.setCreature( firstCenter.x, firstCenter.y+2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
                     level.setCreature( firstCenter.x, firstCenter.y+2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
-            //        /// fill treasure with gold
-            //        std::vector< dkmage::generator::Room* > treasureRooms = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
-            //        if ( treasureRooms.empty() == false ) {
-            //            dkmage::generator::Room* treasure = treasureRooms.front();
-            //            const Rect& roomRect = treasure->position();
-            //            level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
-            //        }
+//                    /// fill treasure with gold
+//                    dkmage::generator::Room* treasure = enemyDungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    if ( treasure != nullptr ) {
+//                        const Rect& roomRect = treasure->position();
+//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+//                    }
                 }
 
             //    LOG() << "items:\n" << level.printItems();

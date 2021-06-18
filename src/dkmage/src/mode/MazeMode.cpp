@@ -31,7 +31,7 @@ namespace dkmage {
                 level.generateRandomMap( 9 );
 
                 generator::Maze maze;
-                maze.generate( 41, 20 );
+                maze.generate( 41, 12 );
 
                 drawMaze( level, maze );
 
@@ -47,6 +47,72 @@ namespace dkmage {
 //                LOG() << "dungeon:\n" << dungeon.print();
 
                 drawDungeon( level, dungeon );
+
+                {
+                    const Point firstCenter = dungeon.roomCenter( 0 );
+                    const Rect bbox = dungeon.boundingBox();
+
+                    /// add neutral portal
+                    const Point portalCenter( bbox.max.x + 16, firstCenter.y );
+                    const Rect portalRect( portalCenter, 3, 3 );
+                    level.setSlab( portalRect, adiktedpp::SlabType::ST_PORTAL );
+
+                    /// add gold vein
+                    const Point veinCenter( bbox.min.x - 20, firstCenter.y - 1 );
+                    const Rect veinRect( veinCenter, 9, 5 );
+                    drawGoldVein( level, veinRect, 1 );
+
+                    /// add other
+                    Point pos = firstCenter + Point(0, 2);
+                    level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
+                    level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+                    level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+
+//                    /// fill treasure with gold
+//                    dkmage::generator::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    if ( treasure != nullptr ) {
+//                        const Rect& roomRect = treasure->position();
+//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+//                    }
+                }
+
+
+            //    dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
+                dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
+                enemyDungeon.limitNorth = 0;
+                enemyDungeon.limitSouth = 1;
+                enemyDungeon.fortify( true );
+
+//                enemyDungeon.generate( 6, 5 );
+                enemyDungeon.generate( 12, 5 );
+                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_PORTAL, 3 );
+                enemyDungeon.moveToTopEdge( 0 );
+
+            //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
+
+                drawDungeon( level, enemyDungeon );
+
+                {
+                    const Point firstCenter = enemyDungeon.roomCenter( 0 );
+                    const Rect bbox = enemyDungeon.boundingBox();
+
+                    /// add gold ore
+                    const Point veinCenter( bbox.max.x + 12, firstCenter.y + 1 );
+                    const Rect veinRect( veinCenter, 9, 5 );
+                    drawGoldVein( level, veinRect, 3 );
+
+                    /// add other
+                    level.setCreature( firstCenter.x, firstCenter.y+2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+                    level.setCreature( firstCenter.x, firstCenter.y+2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+//                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
+
+//                    /// fill treasure with gold
+//                    dkmage::generator::Room* treasure = enemyDungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    if ( treasure != nullptr ) {
+//                        const Rect& roomRect = treasure->position();
+//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+//                    }
+                }
 
                 /// =================
 

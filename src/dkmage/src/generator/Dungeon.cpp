@@ -82,6 +82,14 @@ namespace dkmage {
             return ret;
         }
 
+        Room* Dungeon::findRoomFirst( const adiktedpp::SlabType roomType ) {
+            std::vector< Room* > rooms = findRoom( roomType );
+            if ( rooms.empty() ) {
+                return nullptr;
+            }
+            return rooms[0];
+        }
+
         void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
             std::vector< Room* > roomsList = graph.itemsList();
             while ( roomsList.empty() == false ) {
