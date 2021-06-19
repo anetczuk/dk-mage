@@ -19,19 +19,20 @@ namespace dkmage {
          */
         class MazeNode {
         public:
-            bool open;
+
+            enum class Type {
+                T_EARTH
+//                ,
+//                T_LAVA
+            };
+
             bool visited;
+            Type type;
 
-            MazeNode(): open(false), visited(false) {
+            MazeNode(): visited(false), type(Type::T_EARTH) {
             }
 
-            void setOpen() {
-                open = true;
-                visited = true;
-            }
-
-            void setClosed() {
-                open = false;
+            void setVisited() {
                 visited = true;
             }
 
@@ -124,7 +125,10 @@ namespace dkmage {
                 }
                 while ( list.empty() == false ) {
                     MazeNode* currNode = list.top();
-                    currNode->setOpen();
+//                    if ( currNode->visited == false ) {
+//                        /// randomize type
+//                    }
+                    currNode->setVisited();
                     MazeNode* nextNode = openNext( *currNode );
                     if ( nextNode == nullptr ) {
                         /// no unvisited neighbour

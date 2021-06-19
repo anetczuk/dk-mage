@@ -33,7 +33,7 @@ namespace dkmage {
                 MazeNode* node = nodes[ nIndex ];
                 if ( y % 2 == 0 ) {
                     /// y -- node
-                    return node->open;
+                    return true;
                 }
                 /// y -- edge
                 MazeEdge* edge = graph.getEdge( *node, Direction::D_NORTH );
@@ -135,7 +135,6 @@ namespace dkmage {
             }
             const std::size_t nextIndex = rand() % cSize;
             MazeNode* nextNode = closed[ nextIndex ];
-            nextNode->setOpen();
             MazeEdge* edge = graph.getEdge( node, *nextNode );
             edge->open = true;
             return nextNode;
@@ -193,11 +192,8 @@ namespace dkmage {
 
             /// open entrances
             const std::size_t enterIndex = xDimm / 2;
-            grid[ enterIndex ] = true;
-            {
-                const std::size_t centerState = (yDimm - 1) * xDimm + enterIndex;
-                grid[ centerState ] = true;
-            }
+            open( enterIndex - 1 - corridorSize/2, -1, corridorSize, 1 );
+            open( enterIndex - 1 - corridorSize/2, yDimm - 2, corridorSize, 1 );
         }
 
         void Maze::openPassage( const std::size_t sX, const std::size_t sY ) {
