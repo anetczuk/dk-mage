@@ -8,6 +8,8 @@
 
 #include "dkmage/generator/DungeonGraph.h"
 
+#include "utils/Rect.h"
+
 #include <stack>
 
 
@@ -28,8 +30,9 @@ namespace dkmage {
 
             bool visited;
             Type type;
+            int distanceToEntry;
 
-            MazeNode(): visited(false), type(Type::T_EARTH) {
+            MazeNode(): visited(false), type(Type::T_EARTH), distanceToEntry(-1) {
             }
 
             void setVisited() {
@@ -104,40 +107,13 @@ namespace dkmage {
 
             bool state( const std::size_t x, const std::size_t y );
 
-            void generate() {
-                nodes.clear();
-                nodes.resize( dimmX * dimmY );
+            void generate();
 
-                if ( dimmX < 1 ) {
-                    return ;
-                }
-                if ( dimmY < 1 ) {
-                    return ;
-                }
+            void calculateDistances( const std::size_t nx, const std::size_t ny );
 
-                generateGraph();
+            std::size_t getFurthest();
 
-                std::stack< MazeNode* > list;
-                {
-                    const std::size_t center = dimmX / 2;
-                    MazeNode* currNode = nodes[ center ];
-                    list.push( currNode );
-                }
-                while ( list.empty() == false ) {
-                    MazeNode* currNode = list.top();
-//                    if ( currNode->visited == false ) {
-//                        /// randomize type
-//                    }
-                    currNode->setVisited();
-                    MazeNode* nextNode = openNext( *currNode );
-                    if ( nextNode == nullptr ) {
-                        /// no unvisited neighbour
-                        list.pop();
-                        continue ;
-                    }
-                    list.push( nextNode );
-                }
-            }
+            std::size_t getFurthest( const std::size_t nx, const std::size_t ny );
 
             std::string print();
 
@@ -169,6 +145,18 @@ namespace dkmage {
             Maze(): corridorSize(1) {
             }
 
+            std::size_t corridorsNum() const {
+                return graph.dimmX * graph.dimmY;
+            }
+
+            std::size_t nodesX() const {
+                return graph.dimmX;
+            }
+
+            std::size_t nodesY() const {
+                return graph.dimmY;
+            }
+
             std::size_t dimmensionX() const {
                 if ( graph.dimmX < 1 ) {
                     return 0;
@@ -188,6 +176,12 @@ namespace dkmage {
             void generate( const std::size_t baseDimmension );
 
             void generate( const std::size_t dimmX, const std::size_t dimmY );
+
+            utils::Rect nodeRect( const std::size_t nx, const std::size_t ny );
+
+            utils::Rect getFurthest();
+
+            utils::Rect getFurthest( const std::size_t nx, const std::size_t ny );
 
 
         protected:

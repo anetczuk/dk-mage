@@ -23,11 +23,19 @@ namespace dkmage {
 
     void drawGoldVein( adiktedpp::Level& level, const utils::Rect& veinRect, const std::size_t gemFaces );
 
-    /// draw 5 traps in 3x3 rectangle
-    void drawTrap3x3A( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
+    /// draw 5 traps in 3x3 rectangle (X shape)
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
 
-    /// draw 4 traps in 3x3 rectangle
-    void drawTrap3x3B( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
+    /// draw 4 traps in 3x3 rectangle (diamond shape)
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
+
+    /// draw 4 traps in 3x3 rectangle (corners)
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
+
+    void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::SubTypeItem specialItem );
 
 } /* namespace dkmage */
 

@@ -94,12 +94,16 @@ namespace dkmage {
         }
     }
 
-    void drawTrap3x3A( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType ) {
         const utils::Rect rect( trapCenter, 3, 3 );
-        level.setSlab( rect, adiktedpp::SlabType::ST_EARTH );
+        level.setSlab( rect, fillType );
+        drawTrap3x3X( level, trapCenter, trap );
+    }
 
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
         level.setSlab( trapCenter, adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter, 4, trap );
+
         level.setSlab( trapCenter + utils::Point(-1,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
         level.setSlab( trapCenter + utils::Point( 1,-1), adiktedpp::SlabType::ST_PATH );
@@ -110,10 +114,13 @@ namespace dkmage {
         level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
     }
 
-    void drawTrap3x3B( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType ) {
         const utils::Rect rect( trapCenter, 3, 3 );
-        level.setSlab( rect, adiktedpp::SlabType::ST_EARTH );
+        level.setSlab( rect, fillType );
+        drawTrap3x3Diamond( level, trapCenter, trap );
+    }
 
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
         level.setSlab( trapCenter + utils::Point( 1, 0), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1, 0), 4, trap );
         level.setSlab( trapCenter + utils::Point(-1, 0), adiktedpp::SlabType::ST_PATH );
@@ -122,6 +129,30 @@ namespace dkmage {
         level.setTrap( trapCenter + utils::Point( 0,-1), 4, trap );
         level.setSlab( trapCenter + utils::Point( 0, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 0, 1), 4, trap );
+    }
+
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType ) {
+        const utils::Rect rect( trapCenter, 3, 3 );
+        level.setSlab( rect, fillType );
+        drawTrap3x3Corners( level, trapCenter, trap );
+    }
+
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
+        level.setSlab( trapCenter + utils::Point( 1, 1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
+        level.setSlab( trapCenter + utils::Point(-1, 1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
+        level.setSlab( trapCenter + utils::Point( 1,-1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
+        level.setSlab( trapCenter + utils::Point(-1,-1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
+    }
+
+    void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::SubTypeItem specialItem ) {
+        const utils::Rect rect( specialCenter, 3, 3 );
+        level.setSlab( rect, adiktedpp::SlabType::ST_PATH );
+        level.setItem( specialCenter, 4, specialItem );
+        drawTrap3x3Diamond( level, specialCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
     }
 
 } /* namespace dkmage */

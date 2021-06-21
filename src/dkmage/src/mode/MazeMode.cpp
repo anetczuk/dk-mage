@@ -10,6 +10,10 @@
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
+#include "adiktedpp/Script.h"
+
+#include "utils/Rand.h"
+
 
 namespace dkmage {
     namespace mode {
@@ -36,7 +40,92 @@ namespace dkmage {
 //                maze.corridorSize = 1;
 //                maze.generate( 41, 12 );
 
-                drawMaze( level, maze );
+                const std::size_t xDimm = maze.dimmensionX();
+                const std::size_t yDimm = maze.dimmensionY();
+
+                const utils::Rect mapRect = level.mapRect();
+                const utils::Point mazeStart = mapRect.center() - utils::Point( xDimm / 2, yDimm / 2 );
+
+                drawMaze( level, maze, mazeStart );
+
+                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
+                const std::size_t trapsSize = damageTraps.size();
+
+                const std::size_t corrNum = maze.corridorsNum();
+                const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
+                for ( std::size_t i=0; i<trapsChambers; ++i ) {
+                    const std::size_t cIndex = rand() % corrNum;
+                    const std::size_t nx = cIndex % maze.nodesX();
+                    const std::size_t ny = cIndex / maze.nodesX();
+                    utils::Rect nodeRect = maze.nodeRect( nx, ny );
+                    nodeRect.move( mazeStart );
+                    const utils::Point nodeCenter = nodeRect.center();
+
+                    const std::size_t trapIndex = rand() % trapsSize;
+                    const adiktedpp::SubTypeTrap trapType = utils::randSetItem( damageTraps, trapIndex );
+
+                    if ( maze.corridorSize == 1 ) {
+                        level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
+                        level.setTrap( nodeCenter, 4, trapType );
+                    } else if ( maze.corridorSize == 3 ) {
+                        const std::size_t chamberIndex = rand() % 3;
+                        switch( chamberIndex ) {
+                        case 0: {
+                            drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        case 1: {
+                            drawTrap3x3Diamond( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        case 2: {
+                            drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        }
+                    }
+                }
+
+                {
+                    const utils::Rect furthest = maze.getFurthest( 0, 0 );
+                    if ( furthest.valid() ) {
+                        const utils::Rect node = furthest.moved( mazeStart );
+                        const utils::Point nodeCenter = node.center();
+                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+                {
+                    const utils::Rect furthest = maze.getFurthest( 0, 5 );
+                    if ( furthest.valid() ) {
+                        const utils::Rect node = furthest.moved( mazeStart );
+                        const utils::Point nodeCenter = node.center();
+                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+                {
+                    const utils::Rect furthest = maze.getFurthest( 20, 0 );
+                    if ( furthest.valid() ) {
+                        const utils::Rect node = furthest.moved( mazeStart );
+                        const utils::Point nodeCenter = node.center();
+                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+                {
+                    const utils::Rect furthest = maze.getFurthest( 20, 5 );
+                    if ( furthest.valid() ) {
+                        const utils::Rect node = furthest.moved( mazeStart );
+                        const utils::Point nodeCenter = node.center();
+                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPREVMAP );
+                    }
+                }
+                {
+                    const utils::Rect furthest = maze.getFurthest();
+                    if ( furthest.valid() ) {
+                        const utils::Rect node = furthest.moved( mazeStart );
+                        const utils::Point nodeCenter = node.center();
+                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPMULTPLY );
+                    }
+                }
 
                 dkmage::generator::Dungeon dungeon;
                 dungeon.limitNorth = 1;
@@ -117,11 +206,50 @@ namespace dkmage {
 //                    }
                 }
 
+                /// === scripting ===
+
+                adiktedpp::Script script( level );
+
+                script.addLine( "SET_GENERATE_SPEED( 500 )" );
+
+                script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
+                script.addLine( "MAX_CREATURES( PLAYER0, 30 )" );
+                script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
+
+                script.addLine( "START_MONEY( PLAYER0, 20000 )" );               /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER1, 100000 )" );              /// does not show in treasure
+
+                script.addLine( "" );
+                script.setEvilCreaturesPool( 30 );
+                script.addLine( "" );
+                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL );
+//                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
+                script.addLine( "" );
+                script.setRoomsStandard();
+//                script.setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
+                script.addLine( "" );
+                script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
+                script.addLine( "" );
+                script.setTrapsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
+                script.addLine( "" );
+                script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
+//                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
+                script.addLine( "" );
+//                script.addLine( "MAGIC_AVAILABLE( ALL_PLAYERS, POWER_DESTROY_WALLS, 1, 1 )" );
+
+                script.addLine( "" );
+                script.addLine( "REM --- main script ---" );
+                script.addLine( "" );
+                script.setWinConditionStandard( adiktedpp::PlayerType::PT_0 );
+
+                script.rebuild();
+
                 /// =================
 
                 const bool valid = level.verifyMap();
                 if ( valid == false ) {
                     LOG() << "detected invalid map -- restarting generation";
+//                    storePreview( "level.bmp" );
                     generateLevel();
                     return ;
                 }

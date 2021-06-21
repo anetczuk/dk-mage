@@ -30,6 +30,8 @@ namespace adiktedpp {
         STT_DUMMY7    = 0x0C
     };
 
+    const std::set< SubTypeTrap >& DamageTraps();
+
 }
 
 
