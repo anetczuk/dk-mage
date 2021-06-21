@@ -465,6 +465,14 @@ namespace adiktedpp {
         LEVEL* level = data->lvl;
         const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
         const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
+
+        /// remove already existing items in given position
+        const int things_count = get_thing_subnums( level, sx, sy );
+        for (int k=things_count-1; k>=0; --k) {
+            thing_del( level, sx, sy, k );
+        }
+
+        /// create new item
         unsigned char * thing = create_item_adv( level, sx, sy, (unsigned char) item );
         if ( thing == nullptr ) {
             return ;
