@@ -301,7 +301,7 @@ namespace adiktedpp {
     }
 
     void Script::setTrapsAvailable( const PlayerType player, const int available ) {
-        std::set< SubTypeItem > list = Traps();
+        std::set< SubTypeItem > list = TrapBoxes();
         for ( const SubTypeItem item: list ) {
             std::stringstream stream;
             if ( available < 0 ) {

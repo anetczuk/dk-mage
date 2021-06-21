@@ -126,7 +126,7 @@ namespace adiktedpp {
         STI_SPMKSAFE  = 0x5c,                      /// special: make safe
         STI_SPHIDNWRL = 0x5d,                      /// special: hidden world
 
-        /// traps
+        /// traps boxes
         STI_TBBOULDER = 0x5e,
         STI_TBALARM   = 0x5f,
         STI_TBPOISONG = 0x60,
@@ -173,7 +173,7 @@ namespace adiktedpp {
         STI_SPCUSTOM  = 0x85                        /// statue sitting idol with number 6
     };
 
-    const std::set< SubTypeItem >& Traps();
+    const std::set< SubTypeItem >& TrapBoxes();
 
     const std::set< SubTypeItem >& Spells();
 

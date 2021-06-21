@@ -8,7 +8,7 @@
 
 namespace adiktedpp {
 
-    const std::set< SubTypeItem >& Traps() {
+    const std::set< SubTypeItem >& TrapBoxes() {
         static std::set< SubTypeItem > traps;
         if ( traps.empty() ) {
             traps.insert( SubTypeItem::STI_TBBOULDER );

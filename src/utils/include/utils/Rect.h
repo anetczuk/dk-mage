@@ -96,6 +96,16 @@ namespace utils {
         Rect( const int minX, const int minY, const int maxX, const int maxY ): min(minX, minY), max(maxX, maxY) {
         }
 
+        bool valid() const {
+            if ( width() < 1 ) {
+                return false;
+            }
+            if ( height() < 1 ) {
+                return false;
+            }
+            return true;
+        }
+
         int width() const {
             return ( max.x - min.x + 1);
         }

@@ -484,6 +484,26 @@ namespace adiktedpp {
         }
     }
 
+    void Level::setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap ) {
+        setTrap( point.x, point.y, subIndex, trap );
+    }
+
+    void Level::setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
+        LEVEL* level = data->lvl;
+        const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
+        const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
+        unsigned char * thing = create_trap( level, sx, sy, (unsigned char) trap );
+        if ( thing == nullptr ) {
+            return ;
+        }
+        thing_add( level, thing );
+    }
+
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
