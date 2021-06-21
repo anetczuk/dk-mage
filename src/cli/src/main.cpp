@@ -6,7 +6,7 @@
 #include "cli/Generator.h"
 #include "cli/Config.h"
 
-#include "utils/Seed.h"
+#include "utils/Rand.h"
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
@@ -63,6 +63,9 @@ int main( int argc, char** argv ) {
             return 1;
         }
 
+        const std::string dataPath = config.readDataPath();
+        typeGenerator->setDataPath( dataPath );
+
         {
             /// generate level
             LOG() << "using map generator: '" << mapType << "'";
@@ -82,8 +85,6 @@ int main( int argc, char** argv ) {
             /// store preview image
             const std::string& bmpFile = outbmpArg.getValue();
             if ( bmpFile.empty() == false ) {
-                const std::string dataPath = config.readDataPath();
-                typeGenerator->setDataPath( dataPath );
                 typeGenerator->storePreview( bmpFile );
             }
         }
