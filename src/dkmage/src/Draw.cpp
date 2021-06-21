@@ -31,23 +31,20 @@ namespace dkmage {
         }
     }
 
-    void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze ) {
+    void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze, const utils::Point& minPoint ) {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
-
-        const utils::Rect mapRect = level.mapRect();
-        const utils::Point start = mapRect.center() - utils::Point( xDimm / 2, yDimm / 2 );
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {
                 const bool val = maze.state( x, y );
                 if ( val == false ) {
                     /// closed
-                    level.setSlab( start + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
+                    level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
                 }
                 else {
                     /// open
-                    level.setSlab( start + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
+                    level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
                 }
             }
         }
@@ -95,6 +92,36 @@ namespace dkmage {
             LOG() << "unhandled gem faces size: " << gemFaces;
         }
         }
+    }
+
+    void drawTrap3x3A( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
+        const utils::Rect rect( trapCenter, 3, 3 );
+        level.setSlab( rect, adiktedpp::SlabType::ST_EARTH );
+
+        level.setSlab( trapCenter, adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter, 4, trap );
+        level.setSlab( trapCenter + utils::Point(-1,-1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
+        level.setSlab( trapCenter + utils::Point( 1,-1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
+        level.setSlab( trapCenter + utils::Point(-1, 1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
+        level.setSlab( trapCenter + utils::Point( 1, 1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
+    }
+
+    void drawTrap3x3B( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
+        const utils::Rect rect( trapCenter, 3, 3 );
+        level.setSlab( rect, adiktedpp::SlabType::ST_EARTH );
+
+        level.setSlab( trapCenter + utils::Point( 1, 0), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 1, 0), 4, trap );
+        level.setSlab( trapCenter + utils::Point(-1, 0), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point(-1, 0), 4, trap );
+        level.setSlab( trapCenter + utils::Point( 0,-1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 0,-1), 4, trap );
+        level.setSlab( trapCenter + utils::Point( 0, 1), adiktedpp::SlabType::ST_PATH );
+        level.setTrap( trapCenter + utils::Point( 0, 1), 4, trap );
     }
 
 } /* namespace dkmage */
