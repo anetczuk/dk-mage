@@ -135,20 +135,14 @@ namespace dkmage {
                 script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL );
 //                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
                 script.addLine( "" );
-                script.setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_TREASURE, adiktedpp::AvailableMode::AM_ENABLED );
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LAIR, adiktedpp::AvailableMode::AM_ENABLED );
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_HATCHERY, adiktedpp::AvailableMode::AM_ENABLED );
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LIBRARY, adiktedpp::AvailableMode::AM_ENABLED );
+                script.setRoomsStandard();
 //                script.setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
                 script.addLine( "" );
                 script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
                 script.addLine( "" );
                 script.setTrapsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
                 script.addLine( "" );
-                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
-                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SubTypeItem::STI_SPELLIMP, adiktedpp::AvailableMode::AM_ENABLED );
-                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SubTypeItem::STI_SPELLSOE, adiktedpp::AvailableMode::AM_DISABLED );
+                script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
 //                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
                 script.addLine( "" );
 //                script.addLine( "MAGIC_AVAILABLE( ALL_PLAYERS, POWER_DESTROY_WALLS, 1, 1 )" );
@@ -156,9 +150,7 @@ namespace dkmage {
                 script.addLine( "" );
                 script.addLine( "REM --- main script ---" );
                 script.addLine( "" );
-                script.addLine( "IF( PLAYER0, ALL_DUNGEONS_DESTROYED == 1 )" );
-                script.addLine( "    WIN_GAME" );
-                script.addLine( "ENDIF" );
+                script.setWinConditionStandard( adiktedpp::PlayerType::PT_0 );
 
                 script.rebuild();
 

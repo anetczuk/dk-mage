@@ -56,6 +56,8 @@ namespace adiktedpp {
 
         void setRoomAvailable( const PlayerType player, const SlabType room, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
+        void setRoomsStandard();
+
         /**
          * "available" parameter meaning:
          *      - negative -- disabled
@@ -75,6 +77,10 @@ namespace adiktedpp {
         void setMagicAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
         void setMagicAvailable( const PlayerType player, const SubTypeItem spell, const AvailableMode mode = AvailableMode::AM_DISABLED );
+
+        void setMagicStandard( const PlayerType player );
+
+        void setWinConditionStandard( const PlayerType player );
 
 
     private:

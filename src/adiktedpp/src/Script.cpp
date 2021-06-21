@@ -284,6 +284,14 @@ namespace adiktedpp {
         addLine( line );
     }
 
+    void Script::setRoomsStandard() {
+        setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
+        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_TREASURE, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LAIR, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_HATCHERY, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LIBRARY, adiktedpp::AvailableMode::AM_ENABLED );
+    }
+
     void Script::setDoorsAvailable( const PlayerType player, const int available ) {
         std::set< SlabType > list = Doors();
         for ( const SlabType item: list ) {
@@ -346,6 +354,19 @@ namespace adiktedpp {
         }
         const std::string& line = stream.str();
         addLine( line );
+    }
+
+    void Script::setMagicStandard( const PlayerType player ) {
+        setMagicAvailable( player, adiktedpp::AvailableMode::AM_POSSIBLE );
+        setMagicAvailable( player, adiktedpp::SubTypeItem::STI_SPELLIMP, adiktedpp::AvailableMode::AM_ENABLED );
+        setMagicAvailable( player, adiktedpp::SubTypeItem::STI_SPELLSOE, adiktedpp::AvailableMode::AM_DISABLED );
+    }
+
+    void Script::setWinConditionStandard( const PlayerType player ) {
+        std::stringstream stream;
+        addLine( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
+        addLine( std::string() + "    WIN_GAME" );
+        addLine( std::string() + "ENDIF" );
     }
 
     void Script::convertToTextArray() {
