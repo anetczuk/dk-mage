@@ -9,6 +9,7 @@
 /// inclusion: #include "adiktedpp/SubTypeItem.h"
 
 #include <set>
+#include <ostream>
 
 
 namespace adiktedpp {
@@ -172,6 +173,155 @@ namespace adiktedpp {
         STI_STATUE5   = 0x84,                       /// statue sitting idol with number 5
         STI_SPCUSTOM  = 0x85                        /// statue sitting idol with number 6
     };
+
+    inline std::ostream& operator<<( std::ostream& os, const SubTypeItem data ) {
+        switch( data ) {
+        case SubTypeItem::STI_NULL:           { os << "STI_NULL"; return os; }
+        case SubTypeItem::STI_BARREL:         { os << "STI_BARREL"; return os; }
+        case SubTypeItem::STI_TORCH:          { os << "STI_TORCH"; return os; }
+        case SubTypeItem::STI_GOLDCHEST:      { os << "STI_GOLDCHEST"; return os; }
+        case SubTypeItem::STI_TEMPLESTA:      { os << "STI_TEMPLESTA"; return os; }
+        case SubTypeItem::STI_DNHEART:        { os << "STI_DNHEART"; return os; }
+        case SubTypeItem::STI_GOLD:           { os << "STI_GOLD"; return os; }
+        case SubTypeItem::STI_TORCHUN:        { os << "STI_TORCHUN"; return os; }
+        case SubTypeItem::STI_STATUEWO:       { os << "STI_STATUEWO"; return os; }
+        case SubTypeItem::STI_CHICKNGRW:      { os << "STI_CHICKNGRW"; return os; }
+        case SubTypeItem::STI_CHICKN:         { os << "STI_CHICKN"; return os; }
+        case SubTypeItem::STI_SPELLHOE:       { os << "STI_SPELLHOE"; return os; }
+        case SubTypeItem::STI_SPELLIMP:       { os << "STI_SPELLIMP"; return os; }
+        case SubTypeItem::STI_SPELLMUST:      { os << "STI_SPELLMUST"; return os; }
+        case SubTypeItem::STI_SPELLSLAP:      { os << "STI_SPELLSLAP"; return os; }
+        case SubTypeItem::STI_SPELLSOE:       { os << "STI_SPELLSOE"; return os; }
+        case SubTypeItem::STI_SPELLCTA:       { os << "STI_SPELLCTA"; return os; }
+        case SubTypeItem::STI_SPELLCAVI:      { os << "STI_SPELLCAVI"; return os; }
+        case SubTypeItem::STI_SPELLHEAL:      { os << "STI_SPELLHEAL"; return os; }
+        case SubTypeItem::STI_SPELLHLDA:      { os << "STI_SPELLHLDA"; return os; }
+        case SubTypeItem::STI_SPELLLIGH:      { os << "STI_SPELLLIGH"; return os; }
+        case SubTypeItem::STI_SPELLSPDC:      { os << "STI_SPELLSPDC"; return os; }
+        case SubTypeItem::STI_SPELLPROT:      { os << "STI_SPELLPROT"; return os; }
+        case SubTypeItem::STI_SPELLCONC:      { os << "STI_SPELLCONC"; return os; }
+
+        case SubTypeItem::STI_NULL1:          { os << "STI_NULL1"; return os; }
+        case SubTypeItem::STI_NULL2:          { os << "STI_NULL2"; return os; }
+
+        case SubTypeItem::STI_ANVIL:          { os << "STI_ANVIL"; return os; }
+        case SubTypeItem::STI_PRISONBAR:      { os << "STI_PRISONBAR"; return os; }
+        case SubTypeItem::STI_CANDLSTCK:      { os << "STI_CANDLSTCK"; return os; }
+        case SubTypeItem::STI_GRAVSTONE:      { os << "STI_GRAVSTONE"; return os; }
+        case SubTypeItem::STI_STATUHORN:      { os << "STI_STATUHORN"; return os; }
+        case SubTypeItem::STI_TRAINPOST:      { os << "STI_TRAINPOST"; return os; }
+        case SubTypeItem::STI_TORTSPIKE:      { os << "STI_TORTSPIKE"; return os; }
+        case SubTypeItem::STI_TEMPLESPN:      { os << "STI_TEMPLESPN"; return os; }
+
+        case SubTypeItem::STI_POTION1:        { os << "STI_POTION1"; return os; }
+        case SubTypeItem::STI_POTION2:        { os << "STI_POTION2"; return os; }
+        case SubTypeItem::STI_POTION3:        { os << "STI_POTION3"; return os; }
+        case SubTypeItem::STI_PWHAND:         { os << "STI_PWHAND"; return os; }
+        case SubTypeItem::STI_PWHANDGRB:      { os << "STI_PWHANDGRB"; return os; }
+        case SubTypeItem::STI_PWHANDWHP:      { os << "STI_PWHANDWHP"; return os; }
+        case SubTypeItem::STI_CHICKNSTB:      { os << "STI_CHICKNSTB"; return os; }
+        case SubTypeItem::STI_CHICKNWOB:      { os << "STI_CHICKNWOB"; return os; }
+        case SubTypeItem::STI_CHICKNCRK:      { os << "STI_CHICKNCRK"; return os; }
+        case SubTypeItem::STI_GOLDL:          { os << "STI_GOLDL"; return os; }
+        case SubTypeItem::STI_SPINNKEY:       { os << "STI_SPINNKEY"; return os; }
+        case SubTypeItem::STI_SPELLDISE:      { os << "STI_SPELLDISE"; return os; }
+        case SubTypeItem::STI_SPELLCHKN:      { os << "STI_SPELLCHKN"; return os; }
+        case SubTypeItem::STI_SPELLDWAL:      { os << "STI_SPELLDWAL"; return os; }
+        case SubTypeItem::STI_SPELLTBMB:      { os << "STI_SPELLTBMB"; return os; }
+        case SubTypeItem::STI_HEROGATE:       { os << "STI_HEROGATE"; return os; }
+        case SubTypeItem::STI_SPINNKEY2:      { os << "STI_SPINNKEY2"; return os; }
+
+        case SubTypeItem::STI_ARMOUR:         { os << "STI_ARMOUR"; return os; }
+        case SubTypeItem::STI_GLDHOARD1:      { os << "STI_GLDHOARD1"; return os; }
+        case SubTypeItem::STI_GLDHOARD2:      { os << "STI_GLDHOARD2"; return os; }
+        case SubTypeItem::STI_GLDHOARD3:      { os << "STI_GLDHOARD3"; return os; }
+        case SubTypeItem::STI_GLDHOARD4:      { os << "STI_GLDHOARD4"; return os; }
+        case SubTypeItem::STI_GLDHOARD5:      { os << "STI_GLDHOARD5"; return os; }
+
+        case SubTypeItem::STI_LAIRWIZRD:      { os << "STI_LAIRWIZRD"; return os; }
+        case SubTypeItem::STI_LAIRBARBR:      { os << "STI_LAIRBARBR"; return os; }
+        case SubTypeItem::STI_LAIRARCHR:      { os << "STI_LAIRARCHR"; return os; }
+        case SubTypeItem::STI_LAIRMONK:       { os << "STI_LAIRMONK"; return os; }
+        case SubTypeItem::STI_LAIRDWRFA:      { os << "STI_LAIRDWRFA"; return os; }
+        case SubTypeItem::STI_LAIRKNGHT:      { os << "STI_LAIRKNGHT"; return os; }
+        case SubTypeItem::STI_LAIRAVATR:      { os << "STI_LAIRAVATR"; return os; }
+        case SubTypeItem::STI_LAIRTUNLR:      { os << "STI_LAIRTUNLR"; return os; }
+        case SubTypeItem::STI_LAIRWITCH:      { os << "STI_LAIRWITCH"; return os; }
+        case SubTypeItem::STI_LAIRGIANT:      { os << "STI_LAIRGIANT"; return os; }
+        case SubTypeItem::STI_LAIRFAIRY:      { os << "STI_LAIRFAIRY"; return os; }
+        case SubTypeItem::STI_LAIRTHEFT:      { os << "STI_LAIRTHEFT"; return os; }
+        case SubTypeItem::STI_LAIRSAMUR:      { os << "STI_LAIRSAMUR"; return os; }
+        case SubTypeItem::STI_LAIRHORNY:      { os << "STI_LAIRHORNY"; return os; }
+        case SubTypeItem::STI_LAIRSKELT:      { os << "STI_LAIRSKELT"; return os; }
+        case SubTypeItem::STI_LAIRGOBLN:      { os << "STI_LAIRGOBLN"; return os; }
+        case SubTypeItem::STI_LAIRDRAGN:      { os << "STI_LAIRDRAGN"; return os; }
+        case SubTypeItem::STI_LAIRDEMSP:      { os << "STI_LAIRDEMSP"; return os; }
+        case SubTypeItem::STI_LAIRFLY:        { os << "STI_LAIRFLY"; return os; }
+        case SubTypeItem::STI_LAIRDKMIS:      { os << "STI_LAIRDKMIS"; return os; }
+        case SubTypeItem::STI_LAIRSORCR:      { os << "STI_LAIRSORCR"; return os; }
+        case SubTypeItem::STI_LAIRBILDM:      { os << "STI_LAIRBILDM"; return os; }
+        case SubTypeItem::STI_LAIRIMP:        { os << "STI_LAIRIMP"; return os; }
+        case SubTypeItem::STI_LAIRBUG:        { os << "STI_LAIRBUG"; return os; }
+        case SubTypeItem::STI_LAIRVAMP:       { os << "STI_LAIRVAMP"; return os; }
+        case SubTypeItem::STI_LAIRSPIDR:      { os << "STI_LAIRSPIDR"; return os; }
+        case SubTypeItem::STI_LAIRHLHND:      { os << "STI_LAIRHLHND"; return os; }
+        case SubTypeItem::STI_LAIRGHOST:      { os << "STI_LAIRGHOST"; return os; }
+        case SubTypeItem::STI_LAIRTENTC:      { os << "STI_LAIRTENTC"; return os; }
+
+        case SubTypeItem::STI_SPREVMAP:       { os << "STI_SPREVMAP"; return os; }
+        case SubTypeItem::STI_SPRESURCT:      { os << "STI_SPRESURCT"; return os; }
+        case SubTypeItem::STI_SPTRANSFR:      { os << "STI_SPTRANSFR"; return os; }
+        case SubTypeItem::STI_SPSTEALHR:      { os << "STI_SPSTEALHR"; return os; }
+        case SubTypeItem::STI_SPMULTPLY:      { os << "STI_SPMULTPLY"; return os; }
+        case SubTypeItem::STI_SPINCLEV:       { os << "STI_SPINCLEV"; return os; }
+        case SubTypeItem::STI_SPMKSAFE:       { os << "STI_SPMKSAFE"; return os; }
+        case SubTypeItem::STI_SPHIDNWRL:      { os << "STI_SPHIDNWRL"; return os; }
+        case SubTypeItem::STI_TBBOULDER:      { os << "STI_TBBOULDER"; return os; }
+        case SubTypeItem::STI_TBALARM:        { os << "STI_TBALARM"; return os; }
+        case SubTypeItem::STI_TBPOISONG:      { os << "STI_TBPOISONG"; return os; }
+        case SubTypeItem::STI_TBLIGHTNG:      { os << "STI_TBLIGHTNG"; return os; }
+        case SubTypeItem::STI_TBWRDOFPW:      { os << "STI_TBWRDOFPW"; return os; }
+        case SubTypeItem::STI_TBLAVA:         { os << "STI_TBLAVA"; return os; }
+        case SubTypeItem::STI_TBDUMMY2:       { os << "STI_TBDUMMY2"; return os; }
+        case SubTypeItem::STI_TBDUMMY3:       { os << "STI_TBDUMMY3"; return os; }
+        case SubTypeItem::STI_TBDUMMY4:       { os << "STI_TBDUMMY4"; return os; }
+        case SubTypeItem::STI_TBDUMMY5:       { os << "STI_TBDUMMY5"; return os; }
+        case SubTypeItem::STI_TBDUMMY6:       { os << "STI_TBDUMMY6"; return os; }
+        case SubTypeItem::STI_TBDUMMY7:       { os << "STI_TBDUMMY7"; return os; }
+        case SubTypeItem::STI_DBWOOD:         { os << "STI_DBWOOD"; return os; }
+        case SubTypeItem::STI_DBBRACE:        { os << "STI_DBBRACE"; return os; }
+        case SubTypeItem::STI_DBSTEEL:        { os << "STI_DBSTEEL"; return os; }
+        case SubTypeItem::STI_DBMAGIC:        { os << "STI_DBMAGIC"; return os; }
+        case SubTypeItem::STI_WBITEM:         { os << "STI_WBITEM"; return os; }
+        case SubTypeItem::STI_HEARTFLMR:      { os << "STI_HEARTFLMR"; return os; }
+        case SubTypeItem::STI_DISEASE:        { os << "STI_DISEASE"; return os; }
+        case SubTypeItem::STI_SCAVNGEYE:      { os << "STI_SCAVNGEYE"; return os; }
+        case SubTypeItem::STI_WRKSHPMCH:      { os << "STI_WRKSHPMCH"; return os; }
+        case SubTypeItem::STI_GURDFLAGR:      { os << "STI_GURDFLAGR"; return os; }
+        case SubTypeItem::STI_GURDFLAGB:      { os << "STI_GURDFLAGB"; return os; }
+        case SubTypeItem::STI_GURDFLAGG:      { os << "STI_GURDFLAGG"; return os; }
+        case SubTypeItem::STI_GURDFLAGY:      { os << "STI_GURDFLAGY"; return os; }
+        case SubTypeItem::STI_FLAGPOST:       { os << "STI_FLAGPOST"; return os; }
+        case SubTypeItem::STI_HEARTFLMB:      { os << "STI_HEARTFLMB"; return os; }
+        case SubTypeItem::STI_HEARTFLMG:      { os << "STI_HEARTFLMG"; return os; }
+        case SubTypeItem::STI_HEARTFLMY:      { os << "STI_HEARTFLMY"; return os; }
+        case SubTypeItem::STI_PWSIGHT:        { os << "STI_PWSIGHT"; return os; }
+        case SubTypeItem::STI_PWLIGHTNG:      { os << "STI_PWLIGHTNG"; return os; }
+        case SubTypeItem::STI_TORTURER:       { os << "STI_TORTURER"; return os; }
+        case SubTypeItem::STI_LAIRORC:        { os << "STI_LAIRORC"; return os; }
+        case SubTypeItem::STI_PWHANDGLD:      { os << "STI_PWHANDGLD"; return os; }
+        case SubTypeItem::STI_SPINNCOIN:      { os << "STI_SPINNCOIN"; return os; }
+        case SubTypeItem::STI_STATUE2:        { os << "STI_STATUE2"; return os; }
+        case SubTypeItem::STI_STATUE3:        { os << "STI_STATUE3"; return os; }
+        case SubTypeItem::STI_STATUE4:        { os << "STI_STATUE4"; return os; }
+        case SubTypeItem::STI_STATUE5:        { os << "STI_STATUE5"; return os; }
+        case SubTypeItem::STI_SPCUSTOM:       { os << "STI_SPCUSTOM"; return os; }
+        case SubTypeItem::STI_SPELLARMG:      { os << "STI_SPELLARMG"; return os; }
+        }
+        os << "UNKNOWN[" << (int) data << "]";
+        return os;
+    }
+
 
     const std::set< SubTypeItem >& TrapBoxes();
 
