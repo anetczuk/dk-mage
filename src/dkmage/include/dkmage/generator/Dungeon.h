@@ -6,6 +6,7 @@
 #ifndef DKMAGE_INCLUDE_DKMAGE_GENERATOR_DUNGEON_H_
 #define DKMAGE_INCLUDE_DKMAGE_GENERATOR_DUNGEON_H_
 
+#include "dkmage/generator/Spatialtem.h"
 #include "dkmage/generator/DungeonGraph.h"
 
 #include "adiktedpp/SlabType.h"
@@ -92,7 +93,7 @@ namespace dkmage {
         /**
          *
          */
-        class Dungeon {
+        class Dungeon: public Spatialtem {
 
             DungeonGraph< Room, NoEdgeData > graph;
             adiktedpp::PlayerType player;
@@ -167,32 +168,18 @@ namespace dkmage {
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
-            /// size of dungeon
-            Rect boundingBox();
-
             bool isCollision( const Rect& rect );
 
-            void move( const int offsetX, const int offsetY ) {
+            /// size of dungeon
+            Rect boundingBox() const override;
+
+            void move( const int offsetX, const int offsetY ) override {
                 std::vector< Room* > roomsList = graph.itemsList();
                 for ( Room* item: roomsList ) {
                     Rect& pos = item->position();
                     pos.move( offsetX, offsetY );
                 }
             }
-
-            void move( const Point offset ) {
-                move( offset.x, offset.y );
-            }
-
-            void centerize();
-
-            void centerizeOn( const int x, const int y );
-
-            /// method prevents moving to world edge
-            void moveToTopEdge( const std::size_t distanceFromEdge );
-
-            /// method prevents moving to world edge
-            void moveToBottomEdge( const std::size_t distanceFromEdge );
 
             std::string print();
 

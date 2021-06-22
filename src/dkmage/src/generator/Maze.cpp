@@ -309,17 +309,6 @@ namespace dkmage {
             minPoint += utils::Point( offsetX, offsetY );
         }
 
-        void Maze::centerize() {
-            const utils::Rect bbox = boundingBox();
-            const utils::Point center = bbox.center();
-            move( -center.x, -center.y );
-        }
-
-        void Maze::centerize( const int x, const int y ) {
-            centerize();
-            move( x, y );
-        }
-
         bool Maze::state( const std::size_t x, const std::size_t y ) const {
             const std::size_t xDimm = dimmensionX();
             if ( x >= xDimm ) {
@@ -348,11 +337,6 @@ namespace dkmage {
             prepareGrid();
             graph.calculateDistances( graph.dimmX / 2, 0 );
             graph.calculateDistances( graph.dimmX / 2, graph.dimmY - 1 );
-        }
-
-        void Maze::centerizeOn( const utils::Point& point ) {
-            centerize();
-            move( point.x, point.y );
         }
 
         utils::Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) const {

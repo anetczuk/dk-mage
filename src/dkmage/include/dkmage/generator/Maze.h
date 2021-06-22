@@ -6,6 +6,7 @@
 #ifndef DKMAGE_INCLUDE_DKMAGE_GENERATOR_MAZE_H_
 #define DKMAGE_INCLUDE_DKMAGE_GENERATOR_MAZE_H_
 
+#include "dkmage/generator/Spatialtem.h"
 #include "dkmage/generator/DungeonGraph.h"
 
 #include "utils/Rect.h"
@@ -132,7 +133,7 @@ namespace dkmage {
         /**
          *
          */
-        class Maze {
+        class Maze: public Spatialtem {
 
             MazeGraph graph;
             std::vector< bool > grid;
@@ -174,25 +175,15 @@ namespace dkmage {
             }
 
             /// size of maze
-            utils::Rect boundingBox() const;
+            utils::Rect boundingBox() const override;
 
-            void move( const int offsetX, const int offsetY );
-
-            void move( const utils::Point offset ) {
-                move( offset.x, offset.y );
-            }
-
-            void centerize();
-
-            void centerize( const int x, const int y );
+            void move( const int offsetX, const int offsetY ) override;
 
             bool state( const std::size_t x, const std::size_t y ) const;
 
             void generate( const std::size_t baseDimmension );
 
             void generate( const std::size_t dimmX, const std::size_t dimmY );
-
-            void centerizeOn( const utils::Point& point );
 
             utils::Rect nodeRect( const std::size_t nx, const std::size_t ny ) const;
 
