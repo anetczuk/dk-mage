@@ -19,7 +19,7 @@ namespace dkmage {
 
     void drawDungeon( adiktedpp::Level& level, const dkmage::generator::Dungeon& dungeon );
 
-    void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze, const utils::Point& minPoint );
+    void drawMaze( adiktedpp::Level& level, const dkmage::generator::Maze& maze );
 
     void drawGoldVein( adiktedpp::Level& level, const utils::Rect& veinRect, const std::size_t gemFaces );
 

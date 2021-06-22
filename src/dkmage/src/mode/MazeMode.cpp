@@ -40,89 +40,46 @@ namespace dkmage {
 //                maze.corridorSize = 1;
 //                maze.generate( 41, 12 );
 
-                const std::size_t xDimm = maze.dimmensionX();
-                const std::size_t yDimm = maze.dimmensionY();
-
                 const utils::Rect mapRect = level.mapRect();
-                const utils::Point mazeStart = mapRect.center() - utils::Point( xDimm / 2, yDimm / 2 );
+                const utils::Point mapCenter = mapRect.center();
+                maze.centerizeOn( mapCenter );
 
-                drawMaze( level, maze, mazeStart );
+                drawMaze( level, maze );
 
-                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
-                const std::size_t trapsSize = damageTraps.size();
-
-                const std::size_t corrNum = maze.corridorsNum();
-                const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
-                for ( std::size_t i=0; i<trapsChambers; ++i ) {
-                    const std::size_t cIndex = rand() % corrNum;
-                    const std::size_t nx = cIndex % maze.nodesX();
-                    const std::size_t ny = cIndex / maze.nodesX();
-                    utils::Rect nodeRect = maze.nodeRect( nx, ny );
-                    nodeRect.move( mazeStart );
-                    const utils::Point nodeCenter = nodeRect.center();
-
-                    const std::size_t trapIndex = rand() % trapsSize;
-                    const adiktedpp::SubTypeTrap trapType = utils::randSetItem( damageTraps, trapIndex );
-
-                    if ( maze.corridorSize == 1 ) {
-                        level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
-                        level.setTrap( nodeCenter, 4, trapType );
-                    } else if ( maze.corridorSize == 3 ) {
-                        const std::size_t chamberIndex = rand() % 3;
-                        switch( chamberIndex ) {
-                        case 0: {
-                            drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
-                            break ;
-                        }
-                        case 1: {
-                            drawTrap3x3Diamond( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
-                            break ;
-                        }
-                        case 2: {
-                            drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
-                            break ;
-                        }
-                        }
-                    }
-                }
+                generateMazeTraps( maze );
 
                 {
                     const utils::Rect furthest = maze.getFurthest( 0, 0 );
                     if ( furthest.valid() ) {
-                        const utils::Rect node = furthest.moved( mazeStart );
-                        const utils::Point nodeCenter = node.center();
+                        const utils::Point nodeCenter = furthest.center();
                         drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
                     }
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 0, 5 );
                     if ( furthest.valid() ) {
-                        const utils::Rect node = furthest.moved( mazeStart );
-                        const utils::Point nodeCenter = node.center();
+                        const utils::Point nodeCenter = furthest.center();
                         drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
                     }
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 20, 0 );
                     if ( furthest.valid() ) {
-                        const utils::Rect node = furthest.moved( mazeStart );
-                        const utils::Point nodeCenter = node.center();
+                        const utils::Point nodeCenter = furthest.center();
                         drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
                     }
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 20, 5 );
                     if ( furthest.valid() ) {
-                        const utils::Rect node = furthest.moved( mazeStart );
-                        const utils::Point nodeCenter = node.center();
+                        const utils::Point nodeCenter = furthest.center();
                         drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPREVMAP );
                     }
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest();
                     if ( furthest.valid() ) {
-                        const utils::Rect node = furthest.moved( mazeStart );
-                        const utils::Point nodeCenter = node.center();
+                        const utils::Point nodeCenter = furthest.center();
                         drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPMULTPLY );
                     }
                 }
@@ -252,6 +209,45 @@ namespace dkmage {
 //                    storePreview( "level.bmp" );
                     generateLevel();
                     return ;
+                }
+            }
+
+            void generateMazeTraps( generator::Maze& maze ) {
+                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
+                const std::size_t trapsSize = damageTraps.size();
+
+                const std::size_t corrNum = maze.corridorsNum();
+                const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
+                for ( std::size_t i=0; i<trapsChambers; ++i ) {
+                    const std::size_t cIndex = rand() % corrNum;
+                    const std::size_t nx = cIndex % maze.nodesX();
+                    const std::size_t ny = cIndex / maze.nodesX();
+                    const utils::Rect nodeRect = maze.nodeRect( nx, ny );
+                    const utils::Point nodeCenter = nodeRect.center();
+
+                    const std::size_t trapIndex = rand() % trapsSize;
+                    const adiktedpp::SubTypeTrap trapType = utils::randSetItem( damageTraps, trapIndex );
+
+                    if ( maze.corridorSize == 1 ) {
+                        level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
+                        level.setTrap( nodeCenter, 4, trapType );
+                    } else if ( maze.corridorSize == 3 ) {
+                        const std::size_t chamberIndex = rand() % 3;
+                        switch( chamberIndex ) {
+                        case 0: {
+                            drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        case 1: {
+                            drawTrap3x3Diamond( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        case 2: {
+                            drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                            break ;
+                        }
+                        }
+                    }
                 }
             }
 

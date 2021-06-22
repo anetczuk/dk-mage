@@ -31,9 +31,12 @@ namespace dkmage {
         }
     }
 
-    void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze, const utils::Point& minPoint ) {
+    void drawMaze( adiktedpp::Level& level, const dkmage::generator::Maze& maze ) {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
+
+        const utils::Rect bbox = maze.boundingBox();
+        const utils::Point& minPoint = bbox.min;
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {

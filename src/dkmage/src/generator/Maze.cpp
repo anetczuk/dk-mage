@@ -287,7 +287,40 @@ namespace dkmage {
         /// =====================================================================
 
 
-        bool Maze::state( const std::size_t x, const std::size_t y ) {
+        utils::Rect Maze::boundingBox() const {
+            const std::size_t rSize = graph.nodes.size();
+            if ( rSize < 1 ) {
+                return utils::Rect( minPoint, 0, 0 );
+            }
+
+            utils::Rect minMax = nodeRect( 0, 0 );
+            for ( std::size_t y=0; y<graph.dimmY; ++y ) {
+                for ( std::size_t x=0; x<graph.dimmX; ++x ) {
+                    const utils::Rect nRect = nodeRect( x, y );
+                    minMax.expand( nRect );
+                }
+            }
+
+            minMax.grow( 1 );           /// border of maze
+            return minMax;
+        }
+
+        void Maze::move( const int offsetX, const int offsetY ) {
+            minPoint += utils::Point( offsetX, offsetY );
+        }
+
+        void Maze::centerize() {
+            const utils::Rect bbox = boundingBox();
+            const utils::Point center = bbox.center();
+            move( -center.x, -center.y );
+        }
+
+        void Maze::centerize( const int x, const int y ) {
+            centerize();
+            move( x, y );
+        }
+
+        bool Maze::state( const std::size_t x, const std::size_t y ) const {
             const std::size_t xDimm = dimmensionX();
             if ( x >= xDimm ) {
                 return false;
@@ -317,12 +350,19 @@ namespace dkmage {
             graph.calculateDistances( graph.dimmX / 2, graph.dimmY - 1 );
         }
 
-        utils::Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) {
+        void Maze::centerizeOn( const utils::Point& point ) {
+            centerize();
+            move( point.x, point.y );
+        }
+
+        utils::Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) const {
             const std::size_t cx = nx * (corridorSize + 1) + 1;
             const std::size_t cy = ny * (corridorSize + 1) + 1;
             const utils::Point pointMin( cx, cy );
             const utils::Point pointMax = pointMin + utils::Point( corridorSize - 1, corridorSize - 1 );
-            return utils::Rect( pointMin, pointMax );
+            utils::Rect rect( pointMin, pointMax );
+            rect.move( minPoint );
+            return rect;
         }
 
         utils::Rect Maze::getFurthest() {

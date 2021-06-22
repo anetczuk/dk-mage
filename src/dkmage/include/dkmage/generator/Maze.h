@@ -107,6 +107,7 @@ namespace dkmage {
 
             bool state( const std::size_t x, const std::size_t y );
 
+            /// generate maze graph (nodes and links)
             void generate();
 
             void calculateDistances( const std::size_t nx, const std::size_t ny );
@@ -135,6 +136,7 @@ namespace dkmage {
 
             MazeGraph graph;
             std::vector< bool > grid;
+            utils::Point minPoint;
 
 
         public:
@@ -171,13 +173,28 @@ namespace dkmage {
                 return (corridorSize + 1) * graph.dimmY + 1;
             }
 
-            bool state( const std::size_t x, const std::size_t y );
+            /// size of maze
+            utils::Rect boundingBox() const;
+
+            void move( const int offsetX, const int offsetY );
+
+            void move( const utils::Point offset ) {
+                move( offset.x, offset.y );
+            }
+
+            void centerize();
+
+            void centerize( const int x, const int y );
+
+            bool state( const std::size_t x, const std::size_t y ) const;
 
             void generate( const std::size_t baseDimmension );
 
             void generate( const std::size_t dimmX, const std::size_t dimmY );
 
-            utils::Rect nodeRect( const std::size_t nx, const std::size_t ny );
+            void centerizeOn( const utils::Point& point );
+
+            utils::Rect nodeRect( const std::size_t nx, const std::size_t ny ) const;
 
             utils::Rect getFurthest();
 
