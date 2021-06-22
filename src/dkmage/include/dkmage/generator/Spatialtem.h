@@ -36,7 +36,6 @@ namespace dkmage {
 
             void centerizeOn( const utils::Point& point );
 
-
             /// method prevents moving to world edge
             void moveToTopEdge( const std::size_t distanceFromEdge );
 
