@@ -40,9 +40,7 @@ namespace dkmage {
 //                maze.corridorSize = 1;
 //                maze.generate( 41, 12 );
 
-                const utils::Rect mapRect = level.mapRect();
-                const utils::Point mapCenter = mapRect.center();
-                maze.centerizeOn( mapCenter );
+                maze.centerizeOnMap();
 
                 drawMaze( level, maze );
 
@@ -50,38 +48,23 @@ namespace dkmage {
 
                 {
                     const utils::Rect furthest = maze.getFurthest( 0, 0 );
-                    if ( furthest.valid() ) {
-                        const utils::Point nodeCenter = furthest.center();
-                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                    }
+                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 0, 5 );
-                    if ( furthest.valid() ) {
-                        const utils::Point nodeCenter = furthest.center();
-                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                    }
+                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 20, 0 );
-                    if ( furthest.valid() ) {
-                        const utils::Point nodeCenter = furthest.center();
-                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                    }
+                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest( 20, 5 );
-                    if ( furthest.valid() ) {
-                        const utils::Point nodeCenter = furthest.center();
-                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPREVMAP );
-                    }
+                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPREVMAP );
                 }
                 {
                     const utils::Rect furthest = maze.getFurthest();
-                    if ( furthest.valid() ) {
-                        const utils::Point nodeCenter = furthest.center();
-                        drawSpecial3x3( level, nodeCenter, adiktedpp::SubTypeItem::STI_SPMULTPLY );
-                    }
+                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
                 }
 
                 dkmage::generator::Dungeon dungeon;

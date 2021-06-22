@@ -37,6 +37,8 @@ namespace dkmage {
 
     void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::SubTypeItem specialItem );
 
+    void drawSpecial( adiktedpp::Level& level, const utils::Rect& chamber, const adiktedpp::SubTypeItem specialItem );
+
 } /* namespace dkmage */
 
 #endif /* DKMAGE_INCLUDE_DKMAGE_DRAW_H_ */

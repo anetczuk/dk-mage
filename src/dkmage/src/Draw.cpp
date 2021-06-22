@@ -153,9 +153,22 @@ namespace dkmage {
 
     void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::SubTypeItem specialItem ) {
         const utils::Rect rect( specialCenter, 3, 3 );
-        level.setSlab( rect, adiktedpp::SlabType::ST_PATH );
+        drawSpecial( level, rect, specialItem );
+    }
+
+    void drawSpecial( adiktedpp::Level& level, const utils::Rect& chamber, const adiktedpp::SubTypeItem specialItem ) {
+        if ( chamber.valid() == false ) {
+            LOG() << "invalid rect";
+            return ;
+        }
+        level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
+        const utils::Point specialCenter = chamber.center();
         level.setItem( specialCenter, 4, specialItem );
-        drawTrap3x3Diamond( level, specialCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
+        if ( chamber.width() == 3 && chamber.height() == 3 ) {
+            drawTrap3x3Diamond( level, specialCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
+            return ;
+        }
+        LOG() << "unsupported rect dimensions";
     }
 
 } /* namespace dkmage */

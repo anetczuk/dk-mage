@@ -32,6 +32,8 @@ namespace dkmage {
 
             void centerize();
 
+            void centerizeOnMap();
+
             void centerizeOn( const int x, const int y );
 
             void centerizeOn( const utils::Point& point );
