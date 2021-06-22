@@ -127,6 +127,10 @@ namespace dkmage {
                 return graph.size();
             }
 
+            std::vector< const Room* > rooms() const {
+                return graph.itemsList();
+            }
+
             std::vector< Room* > rooms() {
                 return graph.itemsList();
             }
@@ -141,6 +145,10 @@ namespace dkmage {
                     return utils::Point();
                 }
                 return aRoom->position().center();
+            }
+
+            std::vector< const Room* > connectedRooms( const Room& room ) const {
+                return graph.connectedItems( room );
             }
 
             std::vector< Room* > connectedRooms( const Room& room ) {
@@ -178,7 +186,7 @@ namespace dkmage {
 
             void centerize();
 
-            void centerize( const int x, const int y );
+            void centerizeOn( const int x, const int y );
 
             /// method prevents moving to world edge
             void moveToTopEdge( const std::size_t distanceFromEdge );

@@ -11,10 +11,10 @@
 
 namespace dkmage {
 
-    void drawDungeon( adiktedpp::Level& level, dkmage::generator::Dungeon& dungeon ) {
+    void drawDungeon( adiktedpp::Level& level, const dkmage::generator::Dungeon& dungeon ) {
         const adiktedpp::PlayerType owner = dungeon.owner();
         const bool fortify = dungeon.fortify();
-        std::vector< dkmage::generator::Room* > roomsList = dungeon.rooms();
+        std::vector< const dkmage::generator::Room* > roomsList = dungeon.rooms();
         for ( const dkmage::generator::Room* item: roomsList ) {
             /// set room
             const Rect& position = item->position();
@@ -23,7 +23,7 @@ namespace dkmage {
 
             /// draw corridors
             const Point& itemCenter = item->position().center();
-            std::vector< dkmage::generator::Room* > connectedList = dungeon.connectedRooms( *item );
+            std::vector< const dkmage::generator::Room* > connectedList = dungeon.connectedRooms( *item );
             for ( const dkmage::generator::Room* connected: connectedList ) {
                 const Point& connectedCenter = connected->position().center();
                 level.digLine( itemCenter, connectedCenter, owner, fortify );

@@ -17,7 +17,7 @@ namespace dkmage {
     }
 
 
-    void drawDungeon( adiktedpp::Level& level, dkmage::generator::Dungeon& dungeon );
+    void drawDungeon( adiktedpp::Level& level, const dkmage::generator::Dungeon& dungeon );
 
     void drawMaze( adiktedpp::Level& level, dkmage::generator::Maze& maze, const utils::Point& minPoint );
 

@@ -255,20 +255,20 @@ namespace dkmage {
             move( -center.x, -center.y );
         }
 
-        void Dungeon::centerize( const int x, const int y ) {
+        void Dungeon::centerizeOn( const int x, const int y ) {
             centerize();
             move( x, y );
         }
 
         void Dungeon::moveToTopEdge( const std::size_t distanceFromEdge ) {
-            centerize( 42, 42 );
+            centerizeOn( 42, 42 );
             const Rect bbox = boundingBox();
             const int yoffset = 0 - bbox.min.y + distanceFromEdge + 1;          /// +1 to prevent going outside map
             move( 0, yoffset );
         }
 
         void Dungeon::moveToBottomEdge( const std::size_t distanceFromEdge ) {
-            centerize( 42, 42 );
+            centerizeOn( 42, 42 );
             const Rect bbox = boundingBox();
             const int yoffset = 84 - bbox.max.y - distanceFromEdge - 1;         /// -1 to prevent going outside map
             move( 0, yoffset );

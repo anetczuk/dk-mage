@@ -216,12 +216,46 @@ namespace dkmage {
                 return &item;
             }
 
+            std::vector< const TNodeData* > itemsList() const {
+                std::vector< const TNodeData* > ret;
+                ret.reserve( size() );
+                for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
+                    const TNodeData* nItem = getItemPtr( n );
+                    if ( nItem == nullptr ) {
+                        continue ;
+                    }
+                    ret.push_back( nItem );
+                }
+                return ret;
+            }
+
             std::vector< TNodeData* > itemsList() {
                 std::vector< TNodeData* > ret;
                 ret.reserve( size() );
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TNodeData& nItem = getItem( n );
-                    ret.push_back( &nItem );
+                    TNodeData* nItem = getItemPtr( n );
+                    if ( nItem == nullptr ) {
+                        continue ;
+                    }
+                    ret.push_back( nItem );
+                }
+                return ret;
+            }
+
+            /// find nodes connected to given 'item'
+            std::vector< const TNodeData* > connectedItems( const TNodeData& item ) const {
+                const lemon::ListDigraph::Node itemNode = findNode( item );
+                if ( graph.valid( itemNode ) == false ) {
+                    return std::vector< const TNodeData* >();
+                }
+                std::vector< const TNodeData* > ret;
+                const std::vector<Direction>& directions = DirectionValues();
+                for ( const Direction dir: directions ) {
+                    const TNodeData* target = getItem( item, dir );
+                    if ( target == nullptr ) {
+                        continue ;
+                    }
+                    ret.push_back( target );
                 }
                 return ret;
             }
@@ -289,6 +323,18 @@ namespace dkmage {
                 return ( edge == lemon::INVALID );
             }
 
+            const TNodeData* getItem( const TNodeData& from, const Direction direction ) const {
+                const lemon::ListDigraph::Node itemNode = findNode( from );
+                if ( graph.valid( itemNode ) == false ) {
+                    return nullptr;
+                }
+                lemon::ListDigraph::Node targetNode = getNode( itemNode, direction );
+                if ( graph.valid( targetNode ) == false ) {
+                    return nullptr;
+                }
+                return getItemPtr( targetNode );
+            }
+
             TNodeData* getItem( const TNodeData& from, const Direction direction ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
@@ -298,8 +344,7 @@ namespace dkmage {
                 if ( graph.valid( targetNode ) == false ) {
                     return nullptr;
                 }
-                TNodeData& targetItem = getItem( targetNode );
-                return &targetItem;
+                return getItemPtr( targetNode );
             }
 
             TNodeData* addItem() {
@@ -408,7 +453,7 @@ namespace dkmage {
 
         protected:
 
-            lemon::ListDigraph::Node findNode( const TNodeData& item ) {
+            lemon::ListDigraph::Node findNode( const TNodeData& item ) const {
                 const TNodeData* itemPtr = &item;
                 for (lemon::ListDigraph::NodeIt n( graph ); n != lemon::INVALID; ++n) {
                     const TNodeData* currItem = getItemPtr( n );
@@ -419,7 +464,7 @@ namespace dkmage {
                 return lemon::ListDigraph::Node();            /// invalid node
             }
 
-            lemon::ListDigraph::Node getNode( const lemon::ListDigraph::Node& from, const Direction direction ) {
+            lemon::ListDigraph::Node getNode( const lemon::ListDigraph::Node& from, const Direction direction ) const {
                 lemon::ListDigraph::Arc edge = findEdge( from, direction );
                 if ( edge == lemon::INVALID ) {
                     return lemon::INVALID;
@@ -444,7 +489,7 @@ namespace dkmage {
                 return newNode;
             }
 
-            lemon::ListDigraph::Node targetNode( const lemon::ListDigraph::Arc& edge ) {
+            lemon::ListDigraph::Node targetNode( const lemon::ListDigraph::Arc& edge ) const {
                 return graph.target( edge );
             }
 
@@ -456,7 +501,7 @@ namespace dkmage {
                 edgesMap[ toEdge ] = GraphEdge( opposite( direction ), edgeData );
             }
 
-            lemon::ListDigraph::Arc findEdge( const lemon::ListDigraph::Node& from, const Direction direction ) {
+            lemon::ListDigraph::Arc findEdge( const lemon::ListDigraph::Node& from, const Direction direction ) const {
                 /// check node edges
                 for (lemon::ListDigraph::OutArcIt e(graph, from); e != lemon::INVALID; ++e) {
                     if ( edgesMap[ e ] == direction ) {
@@ -485,10 +530,18 @@ namespace dkmage {
                 return *roadPtr;
             }
 
+            const TNodeData* getItemPtr( const lemon::ListDigraph::Node& node ) const {
+                const GraphNode& roadPtr = nodesMap[ node ];
+                if ( roadPtr == nullptr ) {
+                    return nullptr;
+                }
+                return roadPtr.get();
+            }
+
             TNodeData* getItemPtr( const lemon::ListDigraph::Node& node ) {
                 GraphNode& roadPtr = nodesMap[ node ];
                 if ( roadPtr == nullptr ) {
-                    roadPtr.reset( new TNodeData() );
+                    return nullptr;
                 }
                 return roadPtr.get();
             }
