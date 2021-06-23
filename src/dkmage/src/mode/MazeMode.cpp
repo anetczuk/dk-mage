@@ -198,24 +198,32 @@ namespace dkmage {
             void generateMazeTraps( generator::Maze& maze ) {
                 const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
                 const std::size_t trapsSize = damageTraps.size();
+                const int maxDistance = maze.maxDistance();
 
                 const std::size_t corrNum = maze.corridorsNum();
+                std::set< std::size_t > indexSet;
+                for ( std::size_t i=0; i<corrNum; ++i ) {
+                    indexSet.insert( i );
+                }
+
                 const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
                 for ( std::size_t i=0; i<trapsChambers; ++i ) {
-                    const std::size_t cIndex = rand() % corrNum;
+                    const std::size_t setIndex = rand() % indexSet.size();
+                    const std::size_t cIndex = utils::getSetItem( indexSet, setIndex, true );
                     const std::size_t nx = cIndex % maze.nodesX();
                     const std::size_t ny = cIndex / maze.nodesX();
                     const utils::Rect nodeRect = maze.nodeRect( nx, ny );
                     const utils::Point nodeCenter = nodeRect.center();
+                    const int nodeDistance = maze.nodeDistance( nx, ny );
 
                     const std::size_t trapIndex = rand() % trapsSize;
-                    const adiktedpp::SubTypeTrap trapType = utils::randSetItem( damageTraps, trapIndex );
+                    const adiktedpp::SubTypeTrap trapType = utils::getSetItem( damageTraps, trapIndex );
 
                     if ( maze.corridorSize == 1 ) {
                         level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
                         level.setTrap( nodeCenter, 4, trapType );
                     } else if ( maze.corridorSize == 3 ) {
-                        const std::size_t chamberIndex = rand() % 3;
+                        const std::size_t chamberIndex = rand() % 5;
                         switch( chamberIndex ) {
                         case 0: {
                             drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
@@ -229,9 +237,35 @@ namespace dkmage {
                             drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
                             break ;
                         }
+                        default: {
+                            const double distanceFactor = (double) nodeDistance / maxDistance;
+                            randHeroTrap( maze, nodeCenter, distanceFactor );
+                            break ;
+                        }
                         }
                     }
                 }
+            }
+
+            void randHeroTrap( generator::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor ) {
+//                level.setVein( chamber, adiktedpp::SlabType::ST_PATH, cSize );
+                const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
+                level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
+
+                std::set< adiktedpp::SubTypeCreature > list = adiktedpp::HeroCreatures();
+                list.erase( adiktedpp::SubTypeCreature::STC_TUNELER );
+                list.erase( adiktedpp::SubTypeCreature::STC_KNIGHT );
+                list.erase( adiktedpp::SubTypeCreature::STC_AVATAR );
+                const std::size_t index1 = rand() % list.size();
+                const adiktedpp::SubTypeCreature creature1 = utils::getSetItem( list, index1 );
+                const std::size_t index2 = rand() % list.size();
+                const adiktedpp::SubTypeCreature creature2 = utils::getSetItem( list, index2 );
+
+                int creatureLevel = std::min( (int) distanceFactor * 9 + 1, 9 );        /// in range [1, 9]
+                creatureLevel = std::max( creatureLevel, 3 );                           /// in range [3, 9]
+
+                level.setCreature( chamber.center(), 3, creature1, 3, creatureLevel - 1, adiktedpp::PlayerType::PT_GOOD );
+                level.setCreature( chamber.center(), 5, creature2, 2, creatureLevel, adiktedpp::PlayerType::PT_GOOD );
             }
 
         };

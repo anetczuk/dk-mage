@@ -198,6 +198,31 @@ namespace dkmage {
             return (std::size_t) index;
         }
 
+        std::size_t MazeGraph::maxDistance() const {
+            int maxDist = -1;
+            for ( const MazeNode* item: nodes ) {
+                const int currDistance = item->distanceToEntry;
+                maxDist = std::max( maxDist, currDistance );
+            }
+            return maxDist;
+        }
+
+        int MazeGraph::nodeDistance( const std::size_t nx, const std::size_t ny ) const {
+            if ( nx >= dimmX ) {
+                return -1;
+            }
+            if ( ny >= dimmY ) {
+                return -1;
+            }
+
+            const std::size_t nIndex = ny * dimmX + nx;
+            const MazeNode* node = nodes[ nIndex ];
+            if ( node == nullptr ) {
+                return -1;
+            }
+            return node->distanceToEntry;
+        }
+
         std::string MazeGraph::print() {
            std::stringstream stream;
 
@@ -369,6 +394,14 @@ namespace dkmage {
             const std::size_t fx = foundIndex % graph.dimmX;        /// node coords
             const std::size_t fy = foundIndex / graph.dimmX;        /// node coords
             return nodeRect( fx, fy );
+        }
+
+        int Maze::maxDistance() const {
+            return graph.maxDistance();
+        }
+
+        int Maze::nodeDistance( const std::size_t nx, const std::size_t ny ) const {
+            return graph.nodeDistance( nx, ny );
         }
 
         void Maze::prepareGrid() {

@@ -141,9 +141,11 @@ namespace adiktedpp {
 
         void setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap );
 
-        void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );
+        void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
+                          const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
 
-        void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number=1 );
+        void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature,
+                          const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
 
         /// ===========================================================================
 

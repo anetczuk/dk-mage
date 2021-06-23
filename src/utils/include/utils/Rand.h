@@ -30,7 +30,7 @@ namespace utils {
     }
 
     template <typename T>
-    T randSetItem( const std::set<T>& container, const std::size_t index ) {
+    T getSetItem( const std::set<T>& container, const std::size_t index ) {
         auto iter = container.begin();
         std::advance( iter, index );
         if ( iter == container.end() ) {
@@ -40,7 +40,7 @@ namespace utils {
     }
 
     template <typename T>
-    T randSetItem( std::set<T>& container, const std::size_t index, const bool popItem ) {
+    T getSetItem( std::set<T>& container, const std::size_t index, const bool popItem ) {
         auto iter = container.begin();
         std::advance( iter, index );
         if ( iter == container.end() ) {

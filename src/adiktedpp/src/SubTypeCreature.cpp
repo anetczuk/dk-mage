@@ -33,4 +33,24 @@ namespace adiktedpp {
         return creatures;
     }
 
+    const std::set< SubTypeCreature >& HeroCreatures() {
+        static std::set< SubTypeCreature > creatures;
+        if ( creatures.empty() ) {
+            creatures.insert( SubTypeCreature::STC_WIZRD );
+            creatures.insert( SubTypeCreature::STC_BARBARIN );
+            creatures.insert( SubTypeCreature::STC_ARCHER );
+            creatures.insert( SubTypeCreature::STC_MONK );
+            creatures.insert( SubTypeCreature::STC_DWAFT );
+            creatures.insert( SubTypeCreature::STC_KNIGHT );
+            creatures.insert( SubTypeCreature::STC_AVATAR );
+            creatures.insert( SubTypeCreature::STC_TUNELER );
+            creatures.insert( SubTypeCreature::STC_WITCH );
+            creatures.insert( SubTypeCreature::STC_GIANT );
+            creatures.insert( SubTypeCreature::STC_FAIRY );
+            creatures.insert( SubTypeCreature::STC_THEFT );
+            creatures.insert( SubTypeCreature::STC_SMURI );
+        }
+        return creatures;
+    }
+
 }

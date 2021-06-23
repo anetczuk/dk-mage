@@ -117,6 +117,10 @@ namespace dkmage {
 
             std::size_t getFurthest( const std::size_t nx, const std::size_t ny );
 
+            std::size_t maxDistance() const;
+
+            int nodeDistance( const std::size_t nx, const std::size_t ny ) const;
+
             std::string print();
 
 
@@ -190,6 +194,10 @@ namespace dkmage {
             utils::Rect getFurthest();
 
             utils::Rect getFurthest( const std::size_t nx, const std::size_t ny );
+
+            int maxDistance() const;
+
+            int nodeDistance( const std::size_t nx, const std::size_t ny ) const;
 
 
         protected:

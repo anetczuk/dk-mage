@@ -512,7 +512,7 @@ namespace adiktedpp {
         thing_add( level, thing );
     }
 
-    void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
+    void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
@@ -526,12 +526,14 @@ namespace adiktedpp {
             if ( thing == nullptr ) {
                 return ;
             }
+            set_thing_level( thing, expLevel );
+            set_thing_owner( thing, (unsigned char) owner );
             thing_add( level, thing );
         }
     }
 
-    void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number ) {
-        setCreature( point.x, point.y, subIndex, creature, number );
+    void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+        setCreature( point.x, point.y, subIndex, creature, number, expLevel, owner );
     }
 
     /// ============================================================
