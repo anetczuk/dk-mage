@@ -44,28 +44,7 @@ namespace dkmage {
 
                 drawMaze( level, maze );
 
-                generateMazeTraps( maze );
-
-                {
-                    const utils::Rect furthest = maze.getFurthest( 0, 0 );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                }
-                {
-                    const utils::Rect furthest = maze.getFurthest( 0, 5 );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                }
-                {
-                    const utils::Rect furthest = maze.getFurthest( 20, 0 );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
-                }
-                {
-                    const utils::Rect furthest = maze.getFurthest( 20, 5 );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPREVMAP );
-                }
-                {
-                    const utils::Rect furthest = maze.getFurthest();
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
-                }
+                generateMazeItems( maze );
 
                 dkmage::generator::Dungeon dungeon;
                 dungeon.limitNorth = 1;
@@ -92,7 +71,7 @@ namespace dkmage {
                     /// add gold vein
                     const Point veinCenter( bbox.min.x - 20, firstCenter.y - 1 );
                     const Rect veinRect( veinCenter, 9, 5 );
-                    drawGoldVein( level, veinRect, 1 );
+                    drawGoldVein( level, veinRect, 2 );
 
                     /// add other
                     Point pos = firstCenter + Point(0, 2);
@@ -195,18 +174,55 @@ namespace dkmage {
                 }
             }
 
-            void generateMazeTraps( generator::Maze& maze ) {
-                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
-                const std::size_t trapsSize = damageTraps.size();
-                const int maxDistance = maze.maxDistance();
-
+            void generateMazeItems( generator::Maze& maze ) {
                 const std::size_t corrNum = maze.corridorsNum();
                 std::set< std::size_t > indexSet;
                 for ( std::size_t i=0; i<corrNum; ++i ) {
                     indexSet.insert( i );
                 }
 
+                {
+                    const std::size_t furthestIndex = maze.getFurthestIndex();
+                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
+                    }
+                }
+                {
+                    const std::size_t furthestIndex = maze.getFurthestIndex( 20, 5 );
+                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPREVMAP );
+                    }
+                }
+                {
+                    const std::size_t furthestIndex = maze.getFurthestIndex( 0, 0 );
+                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+                {
+                    const std::size_t furthestIndex = maze.getFurthestIndex( 0, 5 );
+                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+                {
+                    const std::size_t furthestIndex = maze.getFurthestIndex( 20, 0 );
+                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    }
+                }
+
+                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
+                const std::size_t trapsSize = damageTraps.size();
+                const int maxDistance = maze.maxDistance();
+
                 const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
+                LOG() << "generating traps chambers: " << trapsChambers;
                 for ( std::size_t i=0; i<trapsChambers; ++i ) {
                     const std::size_t setIndex = rand() % indexSet.size();
                     const std::size_t cIndex = utils::getSetItem( indexSet, setIndex, true );
@@ -238,7 +254,7 @@ namespace dkmage {
                             break ;
                         }
                         default: {
-                            const double distanceFactor = (double) nodeDistance / maxDistance;
+                            const double distanceFactor = ((double) nodeDistance) / maxDistance * 2.0;
                             randHeroTrap( maze, nodeCenter, distanceFactor );
                             break ;
                         }
@@ -261,7 +277,7 @@ namespace dkmage {
                 const std::size_t index2 = rand() % list.size();
                 const adiktedpp::SubTypeCreature creature2 = utils::getSetItem( list, index2 );
 
-                int creatureLevel = std::min( (int) distanceFactor * 9 + 1, 9 );        /// in range [1, 9]
+                int creatureLevel = std::min( (int)(distanceFactor * 9 + 1), 9 );              /// in range [1, 9]
                 creatureLevel = std::max( creatureLevel, 3 );                           /// in range [3, 9]
 
                 level.setCreature( chamber.center(), 3, creature1, 3, creatureLevel - 1, adiktedpp::PlayerType::PT_GOOD );

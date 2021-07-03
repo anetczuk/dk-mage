@@ -81,6 +81,17 @@ namespace dkmage {
             level.setSlab( gemCenter.x, gemCenter.y - veinDir * 1, adiktedpp::SlabType::ST_GOLD );          /// ensure available face
             break;
         }
+        case 2: {
+            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 2 faces
+            const Rect gemRect( gemCenter, 3, 3 );
+            level.setSlab( gemRect, adiktedpp::SlabType::ST_GOLD );
+            level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
+            level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
+            level.setSlab( gemCenter.x - 1, gemCenter.y + veinDir * 1,
+                           gemCenter.x + 1, gemCenter.y + veinDir * 1, adiktedpp::SlabType::ST_ROCK );
+            level.setSlab( gemCenter.x - 1, gemCenter.y, adiktedpp::SlabType::ST_ROCK );
+            break;
+        }
         case 3: {
             const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 3 faces
             const Rect gemRect( gemCenter, 3, 3 );

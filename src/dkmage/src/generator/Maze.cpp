@@ -364,6 +364,12 @@ namespace dkmage {
             graph.calculateDistances( graph.dimmX / 2, graph.dimmY - 1 );
         }
 
+        utils::Rect Maze::nodeRect( const std::size_t nIndex ) const {
+            const std::size_t nx = nIndex % graph.dimmX;
+            const std::size_t ny = nIndex / graph.dimmX;
+            return nodeRect( nx, ny );
+        }
+
         utils::Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) const {
             const std::size_t cx = nx * (corridorSize + 1) + 1;
             const std::size_t cy = ny * (corridorSize + 1) + 1;
@@ -372,6 +378,10 @@ namespace dkmage {
             utils::Rect rect( pointMin, pointMax );
             rect.move( minPoint );
             return rect;
+        }
+
+        std::size_t Maze::getFurthestIndex() {
+            return graph.getFurthest();
         }
 
         utils::Rect Maze::getFurthest() {
@@ -383,6 +393,10 @@ namespace dkmage {
             const std::size_t fx = foundIndex % graph.dimmX;        /// node coords
             const std::size_t fy = foundIndex / graph.dimmX;        /// node coords
             return nodeRect( fx, fy );
+        }
+
+        std::size_t Maze::getFurthestIndex( const std::size_t nx, const std::size_t ny ) {
+            return graph.getFurthest( nx, ny );
         }
 
         utils::Rect Maze::getFurthest( const std::size_t nx, const std::size_t ny ) {

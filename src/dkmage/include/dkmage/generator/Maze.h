@@ -189,9 +189,15 @@ namespace dkmage {
 
             void generate( const std::size_t dimmX, const std::size_t dimmY );
 
+            utils::Rect nodeRect( const std::size_t nIndex ) const;
+
             utils::Rect nodeRect( const std::size_t nx, const std::size_t ny ) const;
 
+            std::size_t getFurthestIndex();
+
             utils::Rect getFurthest();
+
+            std::size_t getFurthestIndex( const std::size_t nx, const std::size_t ny );
 
             utils::Rect getFurthest( const std::size_t nx, const std::size_t ny );
 
