@@ -96,6 +96,9 @@ namespace dkmage {
 
 //                enemyDungeon.generate( 6, 5 );
                 enemyDungeon.generate( 12, 5 );
+                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
                 enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_PORTAL, 3 );
                 enemyDungeon.moveToTopEdge( 0 );
 
@@ -117,12 +120,13 @@ namespace dkmage {
                     level.setCreature( firstCenter.x, firstCenter.y+2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
-//                    /// fill treasure with gold
-//                    dkmage::generator::Room* treasure = enemyDungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
-//                    if ( treasure != nullptr ) {
-//                        const Rect& roomRect = treasure->position();
-//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
-//                    }
+                    /// fill treasure with gold
+                    /// ( 25 + 25 + 25 + 25 ) * 1600 = 100 * 1600 = 160000
+                    const std::vector< dkmage::generator::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
+                    for ( const auto* treasure: treasures ) {
+                        const Rect& roomRect = treasure->position();
+                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+                    }
                 }
 
                 /// === scripting ===
@@ -132,11 +136,11 @@ namespace dkmage {
                 script.addLine( "SET_GENERATE_SPEED( 500 )" );
 
                 script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
-                script.addLine( "MAX_CREATURES( PLAYER0, 30 )" );
-                script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
+                script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
+                script.addLine( "MAX_CREATURES( PLAYER1, 60 )" );
 
                 script.addLine( "START_MONEY( PLAYER0, 20000 )" );               /// does not show in treasure
-                script.addLine( "START_MONEY( PLAYER1, 100000 )" );              /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER1, 0 )" );                   /// does not show in treasure
 
                 script.addLine( "" );
                 script.setEvilCreaturesPool( 30 );
