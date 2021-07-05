@@ -185,13 +185,13 @@ namespace dkmage {
                     indexSet.insert( i );
                 }
 
-                {
-                    const std::size_t furthestIndex = maze.getFurthestIndex();
-                    if ( indexSet.erase( furthestIndex ) > 0 ) {
-                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
-                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
-                    }
-                }
+//                {
+//                    const std::size_t furthestIndex = maze.getFurthestIndex();
+//                    if ( indexSet.erase( furthestIndex ) > 0 ) {
+//                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+//                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
+//                    }
+//                }
                 {
                     const std::size_t furthestIndex = maze.getFurthestIndex( 20, 5 );
                     if ( indexSet.erase( furthestIndex ) > 0 ) {
@@ -221,6 +221,16 @@ namespace dkmage {
                     }
                 }
 
+                {
+                    const std::set< std::size_t > deadEndList = maze.getDeadEnds();
+                    for ( std::size_t item: deadEndList ) {
+                        if ( indexSet.erase( item ) > 0 ) {
+                            const utils::Rect furthest = maze.nodeRect( item );
+                            drawGoldChests( level, furthest );
+                        }
+                    }
+                }
+
                 const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
                 const std::size_t trapsSize = damageTraps.size();
                 const int maxDistance = maze.maxDistance();
@@ -243,7 +253,7 @@ namespace dkmage {
                         level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
                         level.setTrap( nodeCenter, 4, trapType );
                     } else if ( maze.corridorSize == 3 ) {
-                        const std::size_t chamberIndex = rand() % 5;
+                        const std::size_t chamberIndex = rand() % 4;
                         switch( chamberIndex ) {
                         case 0: {
                             drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );

@@ -456,6 +456,7 @@ namespace adiktedpp {
         return stream.str();
     }
 
+    /// prevents setting two items inside the same subtile
     void Level::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map

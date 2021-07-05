@@ -111,6 +111,8 @@ namespace adiktedpp {
 
         void setSlab( const utils::Rect& rect, const SlabType type );
 
+        void setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner );
+
         void setSlab( const std::set< utils::Point >& positions, const SlabType type );
 
         void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
@@ -120,8 +122,6 @@ namespace adiktedpp {
         void setSlab( const std::size_t startX, const std::size_t startY,
                       const std::size_t endX,   const std::size_t endY,
                       const SlabType room, const PlayerType owner );
-
-        void setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner );
 
         void setSlabOutline( const utils::Rect& rect, const SlabType type );
 

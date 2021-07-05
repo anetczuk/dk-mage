@@ -79,6 +79,8 @@ namespace adiktedpp {
 
         /*UNTESTED - indices may differ by one */
         STI_ARMOUR    = 0x33,
+
+        /// gold for treasure room
         STI_GLDHOARD1 = 0x34,       /// small bag (800)
         STI_GLDHOARD2 = 0x35,       /// medium bag (1200)
         STI_GLDHOARD3 = 0x36,       /// big bag (1600)

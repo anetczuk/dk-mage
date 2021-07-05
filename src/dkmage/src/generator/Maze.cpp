@@ -66,8 +66,10 @@ namespace dkmage {
                 return ;
             }
 
+            /// prepare nodes grid and linking edges
             generateGraph();
 
+            /// open passages (remove walls)
             std::stack< MazeNode* > list;
             {
                 const std::size_t center = dimmX / 2;
@@ -126,26 +128,36 @@ namespace dkmage {
             }
         }
 
+        std::set< std::size_t > MazeGraph::getDeadEnds() {
+            std::set< std::size_t > ret;
+
+            for ( std::size_t i=0; i<nodes.size(); ++i ) {
+                MazeNode* item = nodes[i];
+                std::vector< Direction > dirs = openDirections( *item );
+                if ( dirs.size() != 1 ) {
+                    continue ;
+                }
+                /// dead-end
+                ret.insert( i );
+            }
+
+            return ret;
+        }
+
         std::size_t MazeGraph::getFurthest() {
             int furthestDistance   = -1;
-            MazeNode* furthestNode = nullptr;
+            std::size_t furthestIndex = (std::size_t) -1;
 
-            for ( MazeNode* item: nodes ) {
+            for ( std::size_t i=0; i<nodes.size(); ++i ) {
+                MazeNode* item = nodes[i];
                 const int currDistance = item->distanceToEntry;
                 if ( currDistance > furthestDistance ) {
                     furthestDistance = currDistance;
-                    furthestNode = item;
+                    furthestIndex = i;
                 }
             }
 
-            auto it = std::find( nodes.begin(), nodes.end(), furthestNode );
-            if ( it == nodes.end() ) {
-                LOG() << "invalid state";
-                return -1;
-            }
-
-            const int index = std::distance( nodes.begin(), it );
-            return (std::size_t) index;
+            return furthestIndex;
         }
 
         std::size_t MazeGraph::getFurthest( const std::size_t nx, const std::size_t ny ) {
@@ -286,7 +298,6 @@ namespace dkmage {
             }
         }
 
-        /// returns directions that are not open
         MazeNode* MazeGraph::openNext( const MazeNode& node ) {
             std::vector< MazeNode* > closed;
             std::vector< Direction > dirs = graph.availableDirections( node );
@@ -306,6 +317,22 @@ namespace dkmage {
             MazeEdge* edge = graph.getEdge( node, *nextNode );
             edge->open = true;
             return nextNode;
+        }
+
+        std::vector< Direction > MazeGraph::openDirections( const MazeNode& node ) {
+            std::vector< Direction > open;
+            std::vector< Direction > dirs = graph.availableDirections( node );
+            for ( const Direction dir: dirs ) {
+                const MazeEdge* edge = graph.getEdge( node, dir );
+                if ( edge == nullptr ) {
+                    continue ;
+                }
+                if ( edge->open == false ) {
+                    continue ;
+                }
+                open.push_back( dir );
+            }
+            return open;
         }
 
 
@@ -378,6 +405,10 @@ namespace dkmage {
             utils::Rect rect( pointMin, pointMax );
             rect.move( minPoint );
             return rect;
+        }
+
+        std::set< std::size_t > Maze::getDeadEnds() {
+            return graph.getDeadEnds();
         }
 
         std::size_t Maze::getFurthestIndex() {

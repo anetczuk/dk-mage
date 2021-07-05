@@ -12,6 +12,7 @@
 #include "utils/Rect.h"
 
 #include <stack>
+#include <set>
 
 
 namespace dkmage {
@@ -29,7 +30,7 @@ namespace dkmage {
 //                T_LAVA
             };
 
-            bool visited;
+            bool visited;                   /// is node processed by maze generator?
             Type type;
             int distanceToEntry;
 
@@ -47,7 +48,10 @@ namespace dkmage {
          */
         class MazeEdge {
         public:
-            bool open;
+
+            bool open;                          /// is there passage between chambers (wall removed)?
+
+
             MazeEdge(): open(false) {
             }
         };
@@ -113,6 +117,8 @@ namespace dkmage {
 
             void calculateDistances( const std::size_t nx, const std::size_t ny );
 
+            std::set< std::size_t > getDeadEnds();
+
             std::size_t getFurthest();
 
             std::size_t getFurthest( const std::size_t nx, const std::size_t ny );
@@ -126,10 +132,12 @@ namespace dkmage {
 
         protected:
 
+            /// prepare nodes grid and linking edges
             void generateGraph();
 
-            /// returns directions that are not open
             MazeNode* openNext( const MazeNode& node );
+
+            std::vector< Direction > openDirections( const MazeNode& node );
 
         };
 
@@ -192,6 +200,8 @@ namespace dkmage {
             utils::Rect nodeRect( const std::size_t nIndex ) const;
 
             utils::Rect nodeRect( const std::size_t nx, const std::size_t ny ) const;
+
+            std::set< std::size_t > getDeadEnds();
 
             std::size_t getFurthestIndex();
 

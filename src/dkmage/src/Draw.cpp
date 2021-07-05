@@ -108,6 +108,12 @@ namespace dkmage {
         }
     }
 
+    void drawGoldChests( adiktedpp::Level& level, const utils::Rect& treasureRect ) {
+        /// prevents picking up gold from unclaimed path
+        level.setSlab( treasureRect, adiktedpp::SlabType::ST_CLAIMED, adiktedpp::PlayerType::PT_GOOD );
+        level.setItem( treasureRect, 4, adiktedpp::SubTypeItem::STI_GOLDCHEST );
+    }
+
     void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType ) {
         const utils::Rect rect( trapCenter, 3, 3 );
         level.setSlab( rect, fillType );

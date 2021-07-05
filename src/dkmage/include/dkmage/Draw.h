@@ -23,6 +23,8 @@ namespace dkmage {
 
     void drawGoldVein( adiktedpp::Level& level, const utils::Rect& veinRect, const std::size_t gemFaces );
 
+    void drawGoldChests( adiktedpp::Level& level, const utils::Rect& treasureRect );
+
     /// draw 5 traps in 3x3 rectangle (X shape)
     void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
     void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
