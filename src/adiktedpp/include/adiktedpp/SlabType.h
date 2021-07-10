@@ -18,7 +18,7 @@ namespace adiktedpp {
     //TODO: make auto converter of '#define' list to enum
     enum class SlabType {
         ST_ROCK         = 0x00,             /// impassable
-        ST_GOLD         = 0x01,
+        ST_GOLD         = 0x01,             /// typically contains 1024 of gold (can be changed in rules.cfg of DK Fx)
         ST_EARTH        = 0x02,
         ST_TORCHDIRT    = 0x03,
         ST_WALLDRAPE    = 0x04,             /// fortified wall
@@ -31,7 +31,7 @@ namespace adiktedpp {
         ST_LAVA         = 0x0c,
         ST_WATER        = 0x0d,
         ST_PORTAL       = 0x0e,
-        ST_TREASURE     = 0x10,
+        ST_TREASURE     = 0x10,             /// can store up to 2250 gold
         ST_LIBRARY      = 0x12,
         ST_PRISONCASE   = 0x14,
         ST_TORTURE      = 0x16,

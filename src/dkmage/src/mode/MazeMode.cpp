@@ -76,6 +76,8 @@ namespace dkmage {
                     /// add other
                     Point pos = firstCenter + Point(0, 2);
                     level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
+                    level.setCreature( firstCenter.x, firstCenter.y-2, 1, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
+                    level.setCreature( firstCenter.x, firstCenter.y-2, 7, adiktedpp::SubTypeCreature::STC_SKELETON, 3 );
                     level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
                     level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
 
@@ -137,19 +139,25 @@ namespace dkmage {
 
                 script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
                 script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
-                script.addLine( "MAX_CREATURES( PLAYER1, 60 )" );
+                script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
 
                 script.addLine( "START_MONEY( PLAYER0, 20000 )" );               /// does not show in treasure
-                script.addLine( "START_MONEY( PLAYER1, 0 )" );                   /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER1, 100000 )" );                   /// does not show in treasure
 
                 script.addLine( "" );
-                script.setEvilCreaturesPool( 30 );
+                script.setHeroCreaturesPool( 20 );
+
                 script.addLine( "" );
-                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL );
-//                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
+                script.setHeroCreaturesAvailable( adiktedpp::PlayerType::PT_1 );
+
                 script.addLine( "" );
                 script.setRoomsStandard();
-//                script.setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
+
+                /// necromancer mode
+                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_0, false );
+    //            script.setCreaturePool( adiktedpp::SubTypeCreature::STC_SKELETON, 10 );
+                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_TORTURE, adiktedpp::AvailableMode::AM_DISABLED );
+
                 script.addLine( "" );
                 script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
                 script.addLine( "" );

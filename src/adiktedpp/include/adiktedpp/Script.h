@@ -49,8 +49,17 @@ namespace adiktedpp {
         /// set creature pool
         void setEvilCreaturesPool( const std::size_t number );
 
+        void setHeroCreaturesPool( const std::size_t number );
+
+        void setCreaturePool( const SubTypeCreature creature, const std::size_t number );
+
         /// set available creatures from pool
         void setEvilCreaturesAvailable( const PlayerType player, const bool available = true );
+
+        /// set available creatures from pool
+        void setHeroCreaturesAvailable( const PlayerType player, const bool available = true );
+
+        void setCreatureAvailable( const SubTypeCreature creature, const PlayerType player, const bool available = true );
 
         void setRoomsAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
 

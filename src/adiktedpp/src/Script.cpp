@@ -225,11 +225,23 @@ namespace adiktedpp {
         list.erase( SubTypeCreature::STC_VAMPIRE );
         list.erase( SubTypeCreature::STC_SKELETON );
         for ( const SubTypeCreature item: list ) {
-            std::stringstream stream;
-            stream << "ADD_CREATURE_TO_POOL( " << scriptName( item ) << ", " << number << " )";
-            const std::string& line = stream.str();
-            addLine( line );
+            setCreaturePool( item, number );
         }
+    }
+
+    void Script::setHeroCreaturesPool( const std::size_t number ) {
+        std::set< SubTypeCreature > list = HeroCreatures();
+        list.erase( SubTypeCreature::STC_AVATAR );
+        for ( const SubTypeCreature item: list ) {
+            setCreaturePool( item, number );
+        }
+    }
+
+    void Script::setCreaturePool( const SubTypeCreature creature, const std::size_t number ) {
+        std::stringstream stream;
+        stream << "ADD_CREATURE_TO_POOL( " << scriptName( creature ) << ", " << number << " )";
+        const std::string& line = stream.str();
+        addLine( line );
     }
 
     void Script::setEvilCreaturesAvailable( const PlayerType player, const bool available ) {
@@ -241,15 +253,27 @@ namespace adiktedpp {
         list.erase( SubTypeCreature::STC_VAMPIRE );
         list.erase( SubTypeCreature::STC_SKELETON );
         for ( const SubTypeCreature item: list ) {
-            std::stringstream stream;
-            if ( available ) {
-                stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 1, 1 )";
-            } else {
-                stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( item ) << ", 0, 0 )";
-            }
-            const std::string& line = stream.str();
-            addLine( line );
+            setCreatureAvailable( item, player, available );
         }
+    }
+
+    void Script::setHeroCreaturesAvailable( const PlayerType player, const bool available ) {
+        std::set< SubTypeCreature > list = HeroCreatures();
+        list.erase( SubTypeCreature::STC_AVATAR );
+        for ( const SubTypeCreature item: list ) {
+            setCreatureAvailable( item, player, available );
+        }
+    }
+
+    void Script::setCreatureAvailable( const SubTypeCreature creature, const PlayerType player, const bool available ) {
+        std::stringstream stream;
+        if ( available ) {
+            stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( creature ) << ", 1, 1 )";
+        } else {
+            stream << "CREATURE_AVAILABLE( " << scriptName( player ) << ", " << scriptName( creature ) << ", 0, 0 )";
+        }
+        const std::string& line = stream.str();
+        addLine( line );
     }
 
     void Script::setRoomsAvailable( const PlayerType player, const AvailableMode mode ) {
@@ -286,10 +310,10 @@ namespace adiktedpp {
 
     void Script::setRoomsStandard() {
         setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
-        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_TREASURE, adiktedpp::AvailableMode::AM_ENABLED );
-        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LAIR, adiktedpp::AvailableMode::AM_ENABLED );
-        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_HATCHERY, adiktedpp::AvailableMode::AM_ENABLED );
-        setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_LIBRARY, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_TREASURE, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_LAIR, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_HATCHERY, adiktedpp::AvailableMode::AM_ENABLED );
+        setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_LIBRARY, adiktedpp::AvailableMode::AM_ENABLED );
     }
 
     void Script::setDoorsAvailable( const PlayerType player, const int available ) {
