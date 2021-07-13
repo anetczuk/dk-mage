@@ -62,7 +62,7 @@ namespace dkmage {
                     /// add other
                     Point pos = firstCenter + Point(0, 2);
                     level.setSlab( pos, adiktedpp::SlabType::ST_CLAIMED, adiktedpp::PlayerType::PT_0 );
-                    level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
+//                    level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
                     level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
                     level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
 //                    level.setCreature( firstCenter.x, firstCenter.y+2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 4 );
