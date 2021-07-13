@@ -24,17 +24,10 @@ namespace dkmage {
         class MazeNode {
         public:
 
-            enum class Type {
-                T_EARTH
-//                ,
-//                T_LAVA
-            };
-
             bool visited;                   /// is node processed by maze generator?
-            Type type;
             int distanceToEntry;
 
-            MazeNode(): visited(false), type(Type::T_EARTH), distanceToEntry(-1) {
+            MazeNode(): visited(false), distanceToEntry(-1) {
             }
 
             void setVisited() {
@@ -146,9 +139,19 @@ namespace dkmage {
          *
          */
         class Maze: public Spatialtem {
+        public:
+
+            enum class PathType {
+                PT_ROCK,
+                PT_EARTH,
+                PT_LAVA
+            };
+
+
+        private:
 
             MazeGraph graph;
-            std::vector< bool > grid;
+            std::vector< Maze::PathType > grid;
             utils::Point minPoint;
 
 
@@ -191,7 +194,7 @@ namespace dkmage {
 
             void move( const int offsetX, const int offsetY ) override;
 
-            bool state( const std::size_t x, const std::size_t y ) const;
+            PathType state( const std::size_t x, const std::size_t y ) const;
 
             void generate( const std::size_t baseDimmension );
 
@@ -222,7 +225,11 @@ namespace dkmage {
 
             void openPassage( const std::size_t sX, const std::size_t sY );
 
+            void setWall( const std::size_t sX, const std::size_t sY, const PathType value );
+
             void open( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange );
+
+            void setGridValue( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange, const PathType value );
 
         };
 

@@ -11,17 +11,21 @@ namespace dkmage {
 
         bool MazeGraph::state( const std::size_t x, const std::size_t y ) {
             if ( dimmX < 1 ) {
+                /// empty graph
                 return false;
             }
             if ( dimmY < 1 ) {
+                /// empty graph
                 return false;
             }
             const std::size_t dx2 = dimmensionX();
             if ( x >= dx2 ) {
+                /// coord outside graph
                 return false;
             }
             const std::size_t dy2 = dimmensionY();
             if ( y >= dy2 ) {
+                /// coord outside graph
                 return false;
             }
 
@@ -49,10 +53,10 @@ namespace dkmage {
                 MazeNode* node = nodes[ nIndex ];
                 MazeEdge* edge = graph.getEdge( *node, Direction::D_EAST );
                 return edge->open;
-            } else {
-                /// y -- edge -- on diagonal -- always false
-                return false;
             }
+
+            /// y -- edge -- on diagonal -- always false
+            return false;
         }
 
         void MazeGraph::generate() {
@@ -361,18 +365,18 @@ namespace dkmage {
             minPoint += utils::Point( offsetX, offsetY );
         }
 
-        bool Maze::state( const std::size_t x, const std::size_t y ) const {
+        Maze::PathType Maze::state( const std::size_t x, const std::size_t y ) const {
             const std::size_t xDimm = dimmensionX();
             if ( x >= xDimm ) {
-                return false;
+                return Maze::PathType::PT_ROCK;
             }
             const std::size_t yDimm = dimmensionY();
             if ( y >= yDimm ) {
-                return false;
+                return Maze::PathType::PT_ROCK;
             }
             const std::size_t index = y * xDimm + x;
             if ( index >= grid.size() ) {
-                return false;
+                return Maze::PathType::PT_ROCK;
             }
             return grid[ index ];
         }
@@ -452,17 +456,25 @@ namespace dkmage {
         void Maze::prepareGrid() {
             const std::size_t xDimm = dimmensionX();
             const std::size_t yDimm = dimmensionY();
-            grid.resize( xDimm * yDimm, false );
+            grid.resize( xDimm * yDimm, PathType::PT_ROCK );
 
             const std::size_t graphDimmX = graph.dimmensionX();
             const std::size_t graphDimmY = graph.dimmensionY();
 
             for ( std::size_t y=0; y<graphDimmY; ++y ) {
                 for ( std::size_t x=0; x<graphDimmX; ++x ) {
-                    if ( graph.state( x, y ) == false ) {
+                    if ( graph.state( x, y ) ) {
+                        openPassage( x, y );
                         continue ;
                     }
-                    openPassage( x, y );
+
+                    /// generate lava or rock
+                    const std::size_t lavaWall = rand() % 2;
+                    if ( lavaWall == 1 ) {
+                        setWall( x, y, PathType::PT_LAVA );
+                    }
+
+                    // otherwise rock by default
                 }
             }
 
@@ -493,7 +505,31 @@ namespace dkmage {
             }
         }
 
+        void Maze::setWall( const std::size_t sX, const std::size_t sY, const PathType value ) {
+            const std::size_t gx = sX / 2 * (corridorSize + 1);
+            const std::size_t gy = sY / 2 * (corridorSize + 1);
+            if ( sX % 2 == 0 ) {
+                if ( sY % 2 == 0 ) {
+                    /// corridor -- node -- do nothing
+                } else {
+                    /// vertical -- north edge
+                    setGridValue( gx, gy + corridorSize, corridorSize, 1, value );
+                }
+            } else {
+                if ( sY % 2 == 0 ) {
+                    /// horizontal -- east edge
+                    setGridValue( gx + corridorSize, gy, 1, corridorSize, value );
+                } else {
+                    /// diagonal -- do nothing
+                }
+            }
+        }
+
         void Maze::open( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange ) {
+            setGridValue( gx, gy, xRange, yRange, PathType::PT_EARTH );
+        }
+
+        void Maze::setGridValue( const std::size_t gx, const std::size_t gy, const std::size_t xRange, const std::size_t yRange, const PathType value ) {
             const std::size_t xDimm = dimmensionX();
             for ( std::size_t dy=0; dy<yRange; ++dy) {
                 for ( std::size_t dx=0; dx<xRange; ++dx) {
@@ -503,7 +539,7 @@ namespace dkmage {
 //                    if ( gIndex >= grid.size() ) {
 //                        continue ;
 //                    }
-                    grid[ gIndex ] = true;
+                    grid[ gIndex ] = value;
                 }
             }
         }

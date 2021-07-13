@@ -141,8 +141,8 @@ namespace dkmage {
                 script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
                 script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
 
-                script.addLine( "START_MONEY( PLAYER0, 20000 )" );               /// does not show in treasure
-                script.addLine( "START_MONEY( PLAYER1, 100000 )" );                   /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER0, 20000 )" );                  /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER1, 100000 )" );                 /// does not show in treasure
 
                 script.addLine( "" );
                 script.setHeroCreaturesPool( 20 );
@@ -152,6 +152,7 @@ namespace dkmage {
 
                 script.addLine( "" );
                 script.setRoomsStandard();
+                script.setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_BRIDGE, adiktedpp::AvailableMode::AM_DISABLED );
 
                 /// necromancer mode
                 script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_0, false );
@@ -160,8 +161,11 @@ namespace dkmage {
 
                 script.addLine( "" );
                 script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
+
                 script.addLine( "" );
                 script.setTrapsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
+                script.setTrapAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SubTypeItem::STI_TBLAVA, -1 );
+
                 script.addLine( "" );
                 script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
 //                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
@@ -239,7 +243,8 @@ namespace dkmage {
                     }
                 }
 
-                const std::set< adiktedpp::SubTypeTrap >& damageTraps = adiktedpp::DamageTraps();
+                std::set< adiktedpp::SubTypeTrap > damageTraps = adiktedpp::DamageTraps();
+                damageTraps.erase( adiktedpp::SubTypeTrap::STT_LAVA );                          /// remove lava traps, because bridges are disabled
                 const std::size_t trapsSize = damageTraps.size();
                 const int maxDistance = maze.maxDistance();
 

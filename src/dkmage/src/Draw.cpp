@@ -40,14 +40,23 @@ namespace dkmage {
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {
-                const bool val = maze.state( x, y );
-                if ( val == false ) {
+                const dkmage::generator::Maze::PathType val = maze.state( x, y );
+                switch ( val ) {
+                case dkmage::generator::Maze::PathType::PT_ROCK: {
                     /// closed
                     level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
+                    break ;
                 }
-                else {
+                case dkmage::generator::Maze::PathType::PT_EARTH: {
                     /// open
                     level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
+                    break ;
+                }
+                case dkmage::generator::Maze::PathType::PT_LAVA: {
+                    /// closed
+                    level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_LAVA );
+                    break ;
+                }
                 }
             }
         }
