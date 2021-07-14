@@ -8,7 +8,7 @@
 
 namespace adiktedpp {
 
-    const std::set< SubTypeCreature >& EvilCreatures() {
+    const std::set< SubTypeCreature >& SubTypeCreatureEvil() {
         static std::set< SubTypeCreature > creatures;
         if ( creatures.empty() ) {
             creatures.insert( SubTypeCreature::STC_HORNY );
@@ -33,7 +33,7 @@ namespace adiktedpp {
         return creatures;
     }
 
-    const std::set< SubTypeCreature >& HeroCreatures() {
+    const std::set< SubTypeCreature >& SubTypeCreatureHero() {
         static std::set< SubTypeCreature > creatures;
         if ( creatures.empty() ) {
             creatures.insert( SubTypeCreature::STC_WIZRD );

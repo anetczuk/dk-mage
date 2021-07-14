@@ -8,7 +8,7 @@
 
 namespace adiktedpp {
 
-    const std::set< SlabType >& Rooms() {
+    const std::set< SlabType >& SlabRooms() {
         static std::set< SlabType > rooms;
         if ( rooms.empty() ) {
             rooms.insert( SlabType::ST_TREASURE );
@@ -29,7 +29,7 @@ namespace adiktedpp {
         return rooms;
     }
 
-    const std::set< SlabType >& Doors() {
+    const std::set< SlabType >& SlabDoors() {
         static std::set< SlabType > doors;
         if ( doors.empty() ) {
             doors.insert( SlabType::ST_DOORWOOD1 );

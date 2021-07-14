@@ -21,7 +21,7 @@ namespace adiktedpp {
         return traps;
     }
 
-    const std::set< SubTypeItem >& Spells() {
+    const std::set< SubTypeItem >& SubTypeItemSpells() {
         static std::set< SubTypeItem > traps;
         if ( traps.empty() ) {
             traps.insert( SubTypeItem::STI_SPELLIMP );      /// disabled by default

@@ -10,7 +10,7 @@
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
-#include "adiktedpp/Script.h"
+#include "adiktedpp/script/Script.h"
 
 #include "utils/Rand.h"
 
@@ -133,7 +133,7 @@ namespace dkmage {
 
                 /// === scripting ===
 
-                adiktedpp::Script script( level );
+                adiktedpp::script::Script script( level );
 
                 script.addLine( "SET_GENERATE_SPEED( 500 )" );
 
@@ -147,24 +147,31 @@ namespace dkmage {
                 script.addLine( "" );
                 script.setHeroCreaturesPool( 20 );
 
-                script.addLine( "" );
-                script.setHeroCreaturesAvailable( adiktedpp::PlayerType::PT_1 );
+                adiktedpp::script::CreatureAvailableState availableCreatures;
+                adiktedpp::script::RoomsAvailableState availableRooms;
 
-                script.addLine( "" );
-                script.setRoomsStandard();
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SlabType::ST_BRIDGE, adiktedpp::AvailableMode::AM_DISABLED );
+                availableCreatures.setHeroAvailable( adiktedpp::PlayerType::PT_1 );
+
+                availableRooms.setStandard();
+                availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
                 /// necromancer mode
-                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_0, false );
-    //            script.setCreaturePool( adiktedpp::SubTypeCreature::STC_SKELETON, 10 );
-                script.setRoomAvailable( adiktedpp::PlayerType::PT_0, adiktedpp::SlabType::ST_TORTURE, adiktedpp::AvailableMode::AM_DISABLED );
+                availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
+                availableRooms.setStateMode( adiktedpp::PlayerType::PT_0, adiktedpp::script::Room::R_TORTURE, adiktedpp::script::AvailableMode::AM_DISABLED );
+
+                script.addLine( "" );
+                script.set( availableCreatures );
+                script.addLine( "" );
+                script.set( availableRooms );
 
                 script.addLine( "" );
                 script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
 
                 script.addLine( "" );
-                script.setTrapsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
-                script.setTrapAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::SubTypeItem::STI_TBLAVA, -1 );
+                adiktedpp::script::TrapAvailableState availableTraps;
+                availableTraps.setAllAvailable( adiktedpp::PlayerType::PT_ALL, true );
+                availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Trap::T_LAVA, false );
+                script.set( availableTraps );
 
                 script.addLine( "" );
                 script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
@@ -295,7 +302,7 @@ namespace dkmage {
                 const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
                 level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
 
-                std::set< adiktedpp::SubTypeCreature > list = adiktedpp::HeroCreatures();
+                std::set< adiktedpp::SubTypeCreature > list = adiktedpp::SubTypeCreatureHero();
                 list.erase( adiktedpp::SubTypeCreature::STC_TUNELER );
                 list.erase( adiktedpp::SubTypeCreature::STC_KNIGHT );
                 list.erase( adiktedpp::SubTypeCreature::STC_AVATAR );

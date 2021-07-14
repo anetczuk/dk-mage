@@ -53,9 +53,9 @@ namespace adiktedpp {
 
 
     /// all evil creatures
-    const std::set< SubTypeCreature >& EvilCreatures();
+    const std::set< SubTypeCreature >& SubTypeCreatureEvil();
 
-    const std::set< SubTypeCreature >& HeroCreatures();
+    const std::set< SubTypeCreature >& SubTypeCreatureHero();
 
 }
 

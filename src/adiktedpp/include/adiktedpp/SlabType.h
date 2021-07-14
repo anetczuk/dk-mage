@@ -102,9 +102,9 @@ namespace adiktedpp {
         return os;
     }
 
-    const std::set< SlabType >& Rooms();
+    const std::set< SlabType >& SlabRooms();
 
-    const std::set< SlabType >& Doors();
+    const std::set< SlabType >& SlabDoors();
 
     inline bool isEarth( const SlabType type ) {
         switch( type ) {

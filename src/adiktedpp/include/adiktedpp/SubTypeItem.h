@@ -327,7 +327,7 @@ namespace adiktedpp {
 
     const std::set< SubTypeItem >& TrapBoxes();
 
-    const std::set< SubTypeItem >& Spells();
+    const std::set< SubTypeItem >& SubTypeItemSpells();
 
 }
 

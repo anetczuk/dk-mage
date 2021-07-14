@@ -9,7 +9,7 @@
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
-#include "adiktedpp/Script.h"
+#include "adiktedpp/script/Script.h"
 
 #include <random>
 
@@ -118,7 +118,7 @@ namespace dkmage {
 
                 /// === scripting ===
 
-                adiktedpp::Script script( level );
+                adiktedpp::script::Script script( level );
 
                 script.addLine( "SET_GENERATE_SPEED( 500 )" );
 
