@@ -57,8 +57,8 @@ namespace adiktedpp {
 
             template <typename TValue>
             void set( const AvailableCommandStateMap<TValue>& stateMap ) {
-                auto iter1 = stateMap.data.begin();
-                for ( ; iter1 != stateMap.data.end(); ++iter1 ) {
+                auto iter1 = stateMap.begin();
+                for ( ; iter1 != stateMap.end(); ++iter1 ) {
                     const adiktedpp::PlayerType player = iter1->first;
                     const auto& submap = iter1->second;
 

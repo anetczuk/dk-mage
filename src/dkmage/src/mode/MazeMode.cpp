@@ -147,17 +147,22 @@ namespace dkmage {
                 script.addLine( "" );
                 script.setHeroCreaturesPool( 20 );
 
-                adiktedpp::script::CreatureAvailableState availableCreatures;
-                adiktedpp::script::RoomsAvailableState availableRooms;
+                const std::set< adiktedpp::PlayerType > availablePlayers = { adiktedpp::PlayerType::PT_0, adiktedpp::PlayerType::PT_1 };
 
+                adiktedpp::script::CreatureAvailableState availableCreatures( availablePlayers );
                 availableCreatures.setHeroAvailable( adiktedpp::PlayerType::PT_1 );
+                availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
 
+                adiktedpp::script::RoomsAvailableState availableRooms( availablePlayers );
                 availableRooms.setStandard();
                 availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
                 /// necromancer mode
-                availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
                 availableRooms.setStateMode( adiktedpp::PlayerType::PT_0, adiktedpp::script::Room::R_TORTURE, adiktedpp::script::AvailableMode::AM_DISABLED );
+
+                adiktedpp::script::TrapAvailableState availableTraps( availablePlayers );
+                availableTraps.setAllAvailable( adiktedpp::PlayerType::PT_ALL, true );
+                availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Trap::T_LAVA, false );
 
                 script.addLine( "" );
                 script.set( availableCreatures );
@@ -168,9 +173,6 @@ namespace dkmage {
                 script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
 
                 script.addLine( "" );
-                adiktedpp::script::TrapAvailableState availableTraps;
-                availableTraps.setAllAvailable( adiktedpp::PlayerType::PT_ALL, true );
-                availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Trap::T_LAVA, false );
                 script.set( availableTraps );
 
                 script.addLine( "" );

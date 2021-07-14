@@ -9,6 +9,21 @@
 namespace adiktedpp {
     namespace script {
 
+        const std::set< adiktedpp::PlayerType >& Players() {
+            static std::set< adiktedpp::PlayerType > container;
+            if ( container.empty() ) {
+                container.insert( adiktedpp::PlayerType::PT_0 );
+                container.insert( adiktedpp::PlayerType::PT_1 );
+                container.insert( adiktedpp::PlayerType::PT_2 );
+                container.insert( adiktedpp::PlayerType::PT_3 );
+                container.insert( adiktedpp::PlayerType::PT_GOOD );
+                container.insert( adiktedpp::PlayerType::PT_ALL );
+            }
+            return container;
+        }
+
+        /// =======================================================
+
         void RoomsAvailableState::setAllAvailable( const PlayerType player, const AvailableMode mode ) {
             const std::set< Room >& list = Rooms();
             for ( const Room item: list ) {
@@ -48,6 +63,17 @@ namespace adiktedpp {
             const std::set< Door >& list = Doors();
             for ( const Door item: list ) {
                 setStateAmount( player, item, amount );
+            }
+        }
+
+        void TrapAvailableState::setAllAvailable( const PlayerType player, const bool available ) {
+            const std::set< Trap >& list = Traps();
+            for ( const Trap item: list ) {
+                if ( available ) {
+                    setStateMode( player, item, AvailableMode::AM_POSSIBLE );
+                } else {
+                    setStateMode( player, item, AvailableMode::AM_DISABLED );
+                }
             }
         }
 

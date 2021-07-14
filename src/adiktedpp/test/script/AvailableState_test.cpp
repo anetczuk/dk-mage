@@ -51,12 +51,29 @@ TEST_CASE("RoomsAvailableState_notdefined", "[classic]") {
     REQUIRE( state == nullptr );
 }
 
-TEST_CASE("RoomsAvailableState_allplayer", "[classic]") {
+TEST_CASE("RoomsAvailableState_allplayer_explode", "[classic]") {
     RoomsAvailableState commandState;
 
     commandState.setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
+    commandState.setStateMode( adiktedpp::PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
+    CHECK( commandState.size() == 5 );
 
-    const AvailableState* state = commandState.getState( adiktedpp::PlayerType::PT_0, Room::R_GRAVEYARD );
+    const AvailableState* state = commandState.getState( adiktedpp::PlayerType::PT_1, Room::R_GRAVEYARD );
+    REQUIRE( state != nullptr );
+    CHECK( state->accessible == 1 );
+    CHECK( state->available  == 0 );
+}
+
+TEST_CASE("RoomsAvailableState_allplayer_erase", "[classic]") {
+    RoomsAvailableState commandState;
+
+    commandState.setStateMode( adiktedpp::PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
+    CHECK( commandState.size() == 1 );
+
+    commandState.setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
+    CHECK( commandState.size() == 1 );
+
+    const AvailableState* state = commandState.getState( adiktedpp::PlayerType::PT_ALL, Room::R_GRAVEYARD );
     REQUIRE( state != nullptr );
     CHECK( state->accessible == 1 );
     CHECK( state->available  == 0 );
