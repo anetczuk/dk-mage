@@ -98,9 +98,9 @@ namespace dkmage {
 
 //                enemyDungeon.generate( 6, 5 );
                 enemyDungeon.generate( 12, 5 );
-                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
-                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
-                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+//                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+//                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
+//                enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_TREASURE, 5 );
                 enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_PORTAL, 3 );
                 enemyDungeon.moveToTopEdge( 0 );
 
@@ -123,7 +123,6 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
                     /// fill treasure with gold
-                    /// ( 25 + 25 + 25 + 25 ) * 1600 = 100 * 1600 = 160000
                     const std::vector< dkmage::generator::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
                     for ( const auto* treasure: treasures ) {
                         const Rect& roomRect = treasure->position();
@@ -141,8 +140,8 @@ namespace dkmage {
                 script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
                 script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
 
-                script.addLine( "START_MONEY( PLAYER0, 20000 )" );                  /// does not show in treasure
-                script.addLine( "START_MONEY( PLAYER1, 100000 )" );                 /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER0,  20000 )" );                 /// does not show in treasure
+                script.addLine( "START_MONEY( PLAYER1, 250000 )" );                 /// does not show in treasure
 
                 script.addLine( "" );
                 script.setHeroCreaturesPool( 20 );
@@ -151,13 +150,13 @@ namespace dkmage {
 
                 adiktedpp::script::CreatureAvailableState availableCreatures( availablePlayers );
                 availableCreatures.setHeroAvailable( adiktedpp::PlayerType::PT_1 );
-                availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
 
                 adiktedpp::script::RoomsAvailableState availableRooms( availablePlayers );
                 availableRooms.setStandard();
                 availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
                 /// necromancer mode
+                availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
                 availableRooms.setStateMode( adiktedpp::PlayerType::PT_0, adiktedpp::script::Room::R_TORTURE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
                 adiktedpp::script::TrapAvailableState availableTraps( availablePlayers );
@@ -166,6 +165,7 @@ namespace dkmage {
 
                 script.addLine( "" );
                 script.set( availableCreatures );
+
                 script.addLine( "" );
                 script.set( availableRooms );
 
@@ -177,10 +177,8 @@ namespace dkmage {
 
                 script.addLine( "" );
                 script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
-//                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
-                script.addLine( "" );
-//                script.addLine( "MAGIC_AVAILABLE( ALL_PLAYERS, POWER_DESTROY_WALLS, 1, 1 )" );
 
+                script.addLine( "" );
                 script.addLine( "" );
                 script.addLine( "REM --- main script ---" );
                 script.addLine( "" );
