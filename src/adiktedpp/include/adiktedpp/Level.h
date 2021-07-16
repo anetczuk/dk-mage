@@ -82,10 +82,6 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
-        static utils::Rect mapSize();
-
-        static utils::Rect mapRect();
-
         void startNewMap();
 
         void generateEmpty();
@@ -173,6 +169,8 @@ namespace adiktedpp {
 
         void fortify( const utils::Rect& room, const PlayerType owner );
 
+        void digLine( const utils::Point& from, const utils::Point& to );
+
         void digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify );
 
         /// ===========================================================================
@@ -183,6 +181,11 @@ namespace adiktedpp {
         void generateBmp();
 
         bool generateBmp( const std::string& path );
+
+
+        static utils::Rect mapSize();
+
+        static utils::Rect mapRect();
 
 
     private:

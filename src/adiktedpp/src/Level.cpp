@@ -646,6 +646,16 @@ namespace adiktedpp {
         }
     }
 
+    void Level::digLine( const utils::Point& from, const utils::Point& to ) {
+        const std::vector<utils::Point> points = line( from, to );
+        for ( const utils::Point& item: points ) {
+            const adiktedpp::SlabType currSlab = getSlab( item );
+            if ( adiktedpp::isEarth( currSlab ) || adiktedpp::isWall( currSlab ) || (currSlab == adiktedpp::SlabType::ST_ROCK) ) {
+                setSlab( item, adiktedpp::SlabType::ST_PATH );
+            }
+        }
+    }
+
     void Level::digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify ) {
         const std::vector<utils::Point> points = line( from, to );
         for ( const utils::Point& item: points ) {
