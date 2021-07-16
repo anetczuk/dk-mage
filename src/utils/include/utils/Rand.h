@@ -6,6 +6,8 @@
 #ifndef UTILS_INCLUDE_UTILS_RAND_H_
 #define UTILS_INCLUDE_UTILS_RAND_H_
 
+/// inclusion: #include "utils/Rand.h"
+
 #include <random>
 #include <string>
 #include <set>

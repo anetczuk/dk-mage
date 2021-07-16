@@ -31,7 +31,6 @@ namespace dkmage {
             }
 
             void generateLevel() {
-//                level.generateEmpty();
                 level.generateRandomMap( 9 );
 
                 generator::Maze maze;
@@ -46,6 +45,7 @@ namespace dkmage {
 
                 generateMazeItems( maze );
 
+                /// =========== prepare dungeons ===========
                 dkmage::generator::Dungeon dungeon;
                 dungeon.limitNorth = 1;
                 dungeon.limitSouth = 0;
@@ -57,6 +57,7 @@ namespace dkmage {
 
 //                LOG() << "dungeon:\n" << dungeon.print();
 
+                /// dungeon have to be drawn before placing items inside it's rooms
                 drawDungeon( level, dungeon );
 
                 {
@@ -106,6 +107,7 @@ namespace dkmage {
 
             //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
 
+                /// dungeon have to be drawn before placing items inside it's rooms
                 drawDungeon( level, enemyDungeon );
 
                 {
@@ -302,20 +304,10 @@ namespace dkmage {
                 const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
                 level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
 
-                std::set< adiktedpp::SubTypeCreature > list = adiktedpp::SubTypeCreatureHero();
-                list.erase( adiktedpp::SubTypeCreature::STC_TUNELER );
-                list.erase( adiktedpp::SubTypeCreature::STC_KNIGHT );
-                list.erase( adiktedpp::SubTypeCreature::STC_AVATAR );
-                const std::size_t index1 = rand() % list.size();
-                const adiktedpp::SubTypeCreature creature1 = utils::getSetItem( list, index1 );
-                const std::size_t index2 = rand() % list.size();
-                const adiktedpp::SubTypeCreature creature2 = utils::getSetItem( list, index2 );
+                int creatureLevel = std::min( (int)(distanceFactor * 9 + 1), 9 );          /// in range [1, 9]
+                creatureLevel = std::max( creatureLevel, 3 );                              /// in range [3, 9]
 
-                int creatureLevel = std::min( (int)(distanceFactor * 9 + 1), 9 );              /// in range [1, 9]
-                creatureLevel = std::max( creatureLevel, 3 );                           /// in range [3, 9]
-
-                level.setCreature( chamber.center(), 3, creature1, 3, creatureLevel - 1, adiktedpp::PlayerType::PT_GOOD );
-                level.setCreature( chamber.center(), 5, creature2, 2, creatureLevel, adiktedpp::PlayerType::PT_GOOD );
+                drawHeroTrap( level, nodeCenter, creatureLevel );
             }
 
         };

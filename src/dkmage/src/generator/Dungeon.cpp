@@ -92,6 +92,16 @@ namespace dkmage {
 
         void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
             std::vector< Room* > roomsList = graph.itemsList();
+            if ( roomsList.empty()) {
+                /// no rooms in dungeon
+                Room* root = graph.addItem();
+                root->resize( roomSize );
+                Rect& basePos = root->position();
+                basePos.centerize();
+                root->type( roomType );
+                root->owner( player );
+                return ;
+            }
             while ( roomsList.empty() == false ) {
                 const std::size_t rRoom = rand() % roomsList.size();
                 Room* selected = remove_at( roomsList, rRoom );
@@ -207,13 +217,9 @@ namespace dkmage {
                 roomsType.push_back( adiktedpp::SlabType::ST_TEMPLE );
                 roomsType.push_back( adiktedpp::SlabType::ST_SCAVENGER );
             }
-            {
-                Room* root = graph.addItem();
-                root->resize( roomSize );
-                Rect& basePos = root->position();
-                basePos.centerize();
-                root->type( adiktedpp::SlabType::ST_DUNGHEART );
-                root->owner( player );
+            if ( graph.size() < 1 ) {
+                /// create dungeon heart
+                addRandomRoom( adiktedpp::SlabType::ST_DUNGHEART, roomSize );
             }
             for (std::size_t i=1; i<roomsNum; ++i) {
                 const std::size_t roomIndex = ( i - 1 ) % roomsType.size();

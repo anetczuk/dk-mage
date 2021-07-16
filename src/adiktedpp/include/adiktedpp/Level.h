@@ -42,6 +42,16 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
+        bool autoUpdateObjects() const;
+
+        void autoUpdateObjects( const bool newVal );
+
+        bool autoUpdateDatclm() const;
+
+        void autoUpdateDatclm( const bool newVal );
+
+        /// ===========================================================================
+
         /// returns path of recent attempt to load map (fname)
         std::string inputFileName() const;
 
@@ -149,7 +159,13 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
-        std::size_t setVein( const utils::Rect& rect, const SlabType room, const std::size_t itemsNum );
+        std::size_t setChamber( const utils::Rect& rect, const SlabType type ) {
+            const std::size_t chamberSize = rect.area() * 0.7;
+            return setChamber( rect, type, chamberSize );
+        }
+
+        /// generate random chamber
+        std::size_t setChamber( const utils::Rect& rect, const SlabType type, const std::size_t itemsNum );
 
         void setRoom( const utils::Rect& position, const SlabType room, const PlayerType owner, const bool fortify );
 

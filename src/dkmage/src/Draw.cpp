@@ -8,6 +8,8 @@
 #include "dkmage/generator/Dungeon.h"
 #include "dkmage/generator/Maze.h"
 
+#include "utils/Rand.h"
+
 
 namespace dkmage {
 
@@ -78,14 +80,14 @@ namespace dkmage {
         const std::size_t veinSize = veinRect.area() * 0.7;
         switch( gemFaces ) {
         case 0: {
-            level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
+            level.setChamber( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
             break;
         }
         case 1: {
             const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );
             const Rect gemRect( gemCenter, 3, 3 );
             level.setSlab( gemRect, adiktedpp::SlabType::ST_ROCK );
-            level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
+            level.setChamber( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
             level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
             level.setSlab( gemCenter.x, gemCenter.y - veinDir * 1, adiktedpp::SlabType::ST_GOLD );          /// ensure available face
             break;
@@ -94,7 +96,7 @@ namespace dkmage {
             const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 2 faces
             const Rect gemRect( gemCenter, 3, 3 );
             level.setSlab( gemRect, adiktedpp::SlabType::ST_GOLD );
-            level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
+            level.setChamber( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
             level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
             level.setSlab( gemCenter.x - 1, gemCenter.y + veinDir * 1,
                            gemCenter.x + 1, gemCenter.y + veinDir * 1, adiktedpp::SlabType::ST_ROCK );
@@ -105,7 +107,7 @@ namespace dkmage {
             const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 3 faces
             const Rect gemRect( gemCenter, 3, 3 );
             level.setSlab( gemRect, adiktedpp::SlabType::ST_GOLD );
-            level.setVein( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
+            level.setChamber( veinRect, adiktedpp::SlabType::ST_GOLD, veinSize );
             level.setSlab( gemCenter, adiktedpp::SlabType::ST_GEMS );
             level.setSlab( gemCenter.x - 1, gemCenter.y + veinDir * 1,
                            gemCenter.x + 1, gemCenter.y + veinDir * 1, adiktedpp::SlabType::ST_ROCK );
@@ -195,6 +197,22 @@ namespace dkmage {
             return ;
         }
         LOG() << "unsupported rect dimensions";
+    }
+
+    void drawHeroTrap( adiktedpp::Level& level, const utils::Point& point, const int creatureLevel ) {
+        const int cLevel = std::min( std::max( creatureLevel, 1 ), 9 );
+
+        std::set< adiktedpp::SubTypeCreature > list = adiktedpp::SubTypeCreatureHero();
+        list.erase( adiktedpp::SubTypeCreature::STC_TUNELER );
+        list.erase( adiktedpp::SubTypeCreature::STC_KNIGHT );
+        list.erase( adiktedpp::SubTypeCreature::STC_AVATAR );
+        const std::size_t index1 = rand() % list.size();
+        const adiktedpp::SubTypeCreature creature1 = utils::getSetItem( list, index1 );
+        const std::size_t index2 = rand() % list.size();
+        const adiktedpp::SubTypeCreature creature2 = utils::getSetItem( list, index2 );
+
+        level.setCreature( point, 3, creature1, 3, cLevel - 1, adiktedpp::PlayerType::PT_GOOD );
+        level.setCreature( point, 5, creature2, 2, cLevel, adiktedpp::PlayerType::PT_GOOD );
     }
 
 } /* namespace dkmage */

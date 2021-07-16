@@ -67,6 +67,24 @@ namespace adiktedpp {
         return data->lvl;
     }
 
+    /// ===========================================================================
+
+    bool Level::autoUpdateObjects() const {
+        return get_obj_auto_update( data->lvl );
+    }
+    void Level::autoUpdateObjects( const bool newVal ) {
+        set_obj_auto_update( data->lvl, newVal );
+    }
+
+    bool Level::autoUpdateDatclm() const {
+        return get_datclm_auto_update( data->lvl );
+    }
+    void Level::autoUpdateDatclm( const bool newVal ) {
+        set_datclm_auto_update( data->lvl, newVal );
+    }
+
+    /// ===========================================================================
+
     std::string Level::inputFileName() const {
         LEVEL* level = data->lvl;
         if ( level == nullptr ) {
@@ -540,7 +558,7 @@ namespace adiktedpp {
 
     /// ============================================================
 
-    std::size_t Level::setVein( const utils::Rect& boundingLimit, const SlabType room, const std::size_t itemsNum ) {
+    std::size_t Level::setChamber( const utils::Rect& boundingLimit, const SlabType type, const std::size_t itemsNum ) {
         if ( itemsNum < 1 ) {
             return 0;
         }
@@ -549,7 +567,7 @@ namespace adiktedpp {
             return 0;
         }
         if ( itemsNum >= (std::size_t) area ) {
-            setSlab( boundingLimit, room );
+            setSlab( boundingLimit, type );
             return (std::size_t) area;
         }
 
@@ -567,7 +585,7 @@ namespace adiktedpp {
 //            added.insert( *avpos );
 //            available.erase( avpos );
 //        }
-//        setSlab( added, room );
+//        setSlab( added, type );
 //        return added.size();
 
         VeinGenerator vein;
@@ -581,7 +599,7 @@ namespace adiktedpp {
             }
             vein.add( point );
         }
-        setSlab( vein.added, room );
+        setSlab( vein.added, type );
         return vein.added.size();
     }
 

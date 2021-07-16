@@ -26,8 +26,8 @@ namespace adiktedpp {
         ST_WALLWTWINS   = 0x06,             /// fortified wall
         ST_WALLWWOMAN   = 0x07,             /// fortified wall
         ST_WALLPAIRSHR  = 0x08,             /// fortified wall
-        ST_PATH         = 0x0a,
-        ST_CLAIMED      = 0x0b,
+        ST_PATH         = 0x0a,             /// unclaimed passage
+        ST_CLAIMED      = 0x0b,             /// claimed passage
         ST_LAVA         = 0x0c,
         ST_WATER        = 0x0d,
         ST_PORTAL       = 0x0e,

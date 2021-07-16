@@ -93,6 +93,9 @@ namespace adiktedpp {
 
         void MagicAvailableState::setStandard( const PlayerType player ) {
             setAllAvailable( player, AvailableMode::AM_POSSIBLE );
+            setStateMode( player, Spell::S_POWER_HAND, AvailableMode::AM_ENABLED );
+            setStateMode( player, Spell::S_POWER_POSSESS, AvailableMode::AM_ENABLED );
+            setStateMode( player, Spell::S_POWER_SLAP, AvailableMode::AM_ENABLED );
             setStateMode( player, Spell::S_POWER_IMP, AvailableMode::AM_ENABLED );
             setStateMode( player, Spell::S_POWER_SIGHT, AvailableMode::AM_DISABLED );
         }

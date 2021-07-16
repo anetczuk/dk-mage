@@ -41,6 +41,9 @@ namespace dkmage {
 
     void drawSpecial( adiktedpp::Level& level, const utils::Rect& chamber, const adiktedpp::SubTypeItem specialItem );
 
+    /// 'creatureLevel' in range [0, 9] (9 is maximum level possible)
+    void drawHeroTrap( adiktedpp::Level& level, const utils::Point& point, const int creatureLevel );
+
 } /* namespace dkmage */
 
 #endif /* DKMAGE_INCLUDE_DKMAGE_DRAW_H_ */
