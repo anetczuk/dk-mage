@@ -6,7 +6,7 @@
 #include "dkmage/mode/CaveMode.h"
 
 #include "dkmage/Draw.h"
-#include "dkmage/generator/Dungeon.h"
+#include "dkmage/spatial/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
 #include "adiktedpp/script/Script.h"
@@ -128,7 +128,7 @@ namespace dkmage {
             }
 
             void preparePlayerDungeon() {
-                dkmage::generator::Dungeon dungeon( adiktedpp::PlayerType::PT_0 );
+                dkmage::spatial::Dungeon dungeon( adiktedpp::PlayerType::PT_0 );
                  dungeon.limitNorth = 1;
                  dungeon.limitSouth = 0;
                  dungeon.fortify( true );
@@ -171,7 +171,7 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x+2, firstCenter.y, 4, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
 
 //                    /// fill treasure with gold
-//                    dkmage::generator::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    dkmage::spatial::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
 //                    if ( treasure != nullptr ) {
 //                        const Rect& roomRect = treasure->position();
 //                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
@@ -179,8 +179,8 @@ namespace dkmage {
             }
 
             void prepareEnemyDungeon() {
-            //    dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
-                dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
+            //    dkmage::spatial::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
+                dkmage::spatial::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
                 enemyDungeon.limitNorth = 0;
                 enemyDungeon.limitSouth = 2;
                 enemyDungeon.fortify( true );
@@ -217,7 +217,7 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
                 /// fill treasure with gold
-                const std::vector< dkmage::generator::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
+                const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
                 for ( const auto* treasure: treasures ) {
                     const Rect& roomRect = treasure->position();
                     level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );

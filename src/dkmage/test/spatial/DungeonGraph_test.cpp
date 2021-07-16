@@ -5,11 +5,11 @@
 
 #include "catch2/catch.hpp"
 
-#include "dkmage/generator/DungeonGraph.h"
+#include "dkmage/spatial/DungeonGraph.h"
 
 
 using namespace dkmage;
-using namespace generator;
+using namespace spatial;
 
 
 namespace {

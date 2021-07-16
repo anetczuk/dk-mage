@@ -3,13 +3,13 @@
 // *
 // */
 //
-//#include "dkmage/generator/Maze.h"
+//#include "dkmage/spatial/Maze.h"
 //
 //
 //namespace dkmage {
-//    namespace generator {
+//    namespace spatial {
 //
 //        ///
 //
-//    } /* namespace generator */
+//    } /* namespace spatial */
 //} /* namespace dkmage */

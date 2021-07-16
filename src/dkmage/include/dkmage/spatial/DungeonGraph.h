@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef DKMAGE_INCLUDE_DKMAGE_GENERATOR_DUNGEONGRAPH_H_
-#define DKMAGE_INCLUDE_DKMAGE_GENERATOR_DUNGEONGRAPH_H_
+#ifndef DKMAGE_INCLUDE_DKMAGE_SPATIAL_DUNGEONGRAPH_H_
+#define DKMAGE_INCLUDE_DKMAGE_SPATIAL_DUNGEONGRAPH_H_
 
 #include "utils/Log.h"
 
@@ -14,7 +14,7 @@
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         /**
          *
@@ -551,7 +551,7 @@ namespace dkmage {
 
         };
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */
 
-#endif /* DKMAGE_INCLUDE_DKMAGE_GENERATOR_DUNGEONGRAPH_H_ */
+#endif /* DKMAGE_INCLUDE_DKMAGE_SPATIAL_DUNGEONGRAPH_H_ */

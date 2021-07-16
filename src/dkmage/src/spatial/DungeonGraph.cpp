@@ -3,11 +3,11 @@
  *
  */
 
-#include "dkmage/generator/DungeonGraph.h"
+#include "dkmage/spatial/DungeonGraph.h"
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         const std::vector<Direction>& DirectionValues() {
             static std::vector<Direction> ret;
@@ -20,5 +20,5 @@ namespace dkmage {
             return ret;
         }
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */

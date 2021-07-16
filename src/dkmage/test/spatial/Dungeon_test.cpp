@@ -5,11 +5,11 @@
 
 #include "catch2/catch.hpp"
 
-#include "dkmage/generator/Dungeon.h"
+#include "dkmage/spatial/Dungeon.h"
 
 
 using namespace dkmage;
-using namespace generator;
+using namespace spatial;
 
 
 TEST_CASE( "Dungeon_boundingBox" ) {

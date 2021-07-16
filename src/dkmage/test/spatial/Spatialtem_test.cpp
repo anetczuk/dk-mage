@@ -3,13 +3,13 @@
 // *
 // */
 //
-//#include "dkmage/generator/Spatialtem.h"
+//#include "dkmage/spatial/Spatialtem.h"
 //
 //
 //namespace dkmage {
-//    namespace generator {
+//    namespace spatial {
 //
 //        ///
 //
-//    } /* namespace generator */
+//    } /* namespace spatial */
 //} /* namespace dkmage */

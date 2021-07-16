@@ -11,15 +11,15 @@
 
 namespace dkmage {
 
-    namespace generator {
+    namespace spatial {
         class Dungeon;
         class Maze;
     }
 
 
-    void drawDungeon( adiktedpp::Level& level, const dkmage::generator::Dungeon& dungeon );
+    void drawDungeon( adiktedpp::Level& level, const dkmage::spatial::Dungeon& dungeon );
 
-    void drawMaze( adiktedpp::Level& level, const dkmage::generator::Maze& maze );
+    void drawMaze( adiktedpp::Level& level, const dkmage::spatial::Maze& maze );
 
     void drawGoldVein( adiktedpp::Level& level, const utils::Rect& veinRect, const std::size_t gemFaces );
 

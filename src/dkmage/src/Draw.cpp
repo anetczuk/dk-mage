@@ -5,19 +5,19 @@
 
 #include "dkmage/Draw.h"
 
-#include "dkmage/generator/Dungeon.h"
-#include "dkmage/generator/Maze.h"
+#include "dkmage/spatial/Dungeon.h"
+#include "dkmage/spatial/Maze.h"
 
 #include "utils/Rand.h"
 
 
 namespace dkmage {
 
-    void drawDungeon( adiktedpp::Level& level, const dkmage::generator::Dungeon& dungeon ) {
+    void drawDungeon( adiktedpp::Level& level, const dkmage::spatial::Dungeon& dungeon ) {
         const adiktedpp::PlayerType owner = dungeon.owner();
         const bool fortify = dungeon.fortify();
-        std::vector< const dkmage::generator::Room* > roomsList = dungeon.rooms();
-        for ( const dkmage::generator::Room* item: roomsList ) {
+        std::vector< const dkmage::spatial::Room* > roomsList = dungeon.rooms();
+        for ( const dkmage::spatial::Room* item: roomsList ) {
             /// set room
             const Rect& position = item->position();
             const adiktedpp::SlabType itemType = item->type();
@@ -25,15 +25,15 @@ namespace dkmage {
 
             /// draw corridors
             const Point& itemCenter = item->position().center();
-            std::vector< const dkmage::generator::Room* > connectedList = dungeon.connectedRooms( *item );
-            for ( const dkmage::generator::Room* connected: connectedList ) {
+            std::vector< const dkmage::spatial::Room* > connectedList = dungeon.connectedRooms( *item );
+            for ( const dkmage::spatial::Room* connected: connectedList ) {
                 const Point& connectedCenter = connected->position().center();
                 level.digLine( itemCenter, connectedCenter, owner, fortify );
             }
         }
     }
 
-    void drawMaze( adiktedpp::Level& level, const dkmage::generator::Maze& maze ) {
+    void drawMaze( adiktedpp::Level& level, const dkmage::spatial::Maze& maze ) {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
 
@@ -42,19 +42,19 @@ namespace dkmage {
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {
-                const dkmage::generator::Maze::PathType val = maze.state( x, y );
+                const dkmage::spatial::Maze::PathType val = maze.state( x, y );
                 switch ( val ) {
-                case dkmage::generator::Maze::PathType::PT_ROCK: {
+                case dkmage::spatial::Maze::PathType::PT_ROCK: {
                     /// closed
                     level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_ROCK );
                     break ;
                 }
-                case dkmage::generator::Maze::PathType::PT_EARTH: {
+                case dkmage::spatial::Maze::PathType::PT_EARTH: {
                     /// open
                     level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_EARTH );
                     break ;
                 }
-                case dkmage::generator::Maze::PathType::PT_LAVA: {
+                case dkmage::spatial::Maze::PathType::PT_LAVA: {
                     /// closed
                     level.setSlab( minPoint + utils::Point( x, y ), adiktedpp::SlabType::ST_LAVA );
                     break ;

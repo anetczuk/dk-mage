@@ -3,11 +3,11 @@
  *
  */
 
-#ifndef DKMAGE_INCLUDE_DKMAGE_GENERATOR_MAZE_H_
-#define DKMAGE_INCLUDE_DKMAGE_GENERATOR_MAZE_H_
+#ifndef DKMAGE_INCLUDE_DKMAGE_SPATIAL_MAZE_H_
+#define DKMAGE_INCLUDE_DKMAGE_SPATIAL_MAZE_H_
 
-#include "dkmage/generator/Spatialtem.h"
-#include "dkmage/generator/DungeonGraph.h"
+#include "dkmage/spatial/Spatialtem.h"
+#include "dkmage/spatial/DungeonGraph.h"
 
 #include "utils/Rect.h"
 
@@ -16,7 +16,7 @@
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         /**
          *
@@ -233,7 +233,7 @@ namespace dkmage {
 
         };
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */
 
-#endif /* DKMAGE_INCLUDE_DKMAGE_GENERATOR_MAZE_H_ */
+#endif /* DKMAGE_INCLUDE_DKMAGE_SPATIAL_MAZE_H_ */

@@ -3,13 +3,13 @@
  *
  */
 
-#include "dkmage/generator/Dungeon.h"
+#include "dkmage/spatial/Dungeon.h"
 
 #include <random>
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         template <typename T>
         T remove_at( std::vector<T>& v, typename std::vector<T>::size_type n ) {
@@ -284,5 +284,5 @@ namespace dkmage {
             return stream.str();
         }
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */

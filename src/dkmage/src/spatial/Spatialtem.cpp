@@ -3,13 +3,13 @@
  *
  */
 
-#include "dkmage/generator/Spatialtem.h"
+#include "dkmage/spatial/Spatialtem.h"
 
 #include "adiktedpp/Level.h"
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         Spatialtem::Spatialtem() {
         }
@@ -51,5 +51,5 @@ namespace dkmage {
             move( 0, yoffset );
         }
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */

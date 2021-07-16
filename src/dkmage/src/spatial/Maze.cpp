@@ -3,11 +3,11 @@
  *
  */
 
-#include "dkmage/generator/Maze.h"
+#include "dkmage/spatial/Maze.h"
 
 
 namespace dkmage {
-    namespace generator {
+    namespace spatial {
 
         bool MazeGraph::state( const std::size_t x, const std::size_t y ) {
             if ( dimmX < 1 ) {
@@ -544,5 +544,5 @@ namespace dkmage {
             }
         }
 
-    } /* namespace generator */
+    } /* namespace spatial */
 } /* namespace dkmage */

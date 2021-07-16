@@ -6,8 +6,8 @@
 #include "dkmage/mode/MazeMode.h"
 
 #include "dkmage/Draw.h"
-#include "dkmage/generator/Maze.h"
-#include "dkmage/generator/Dungeon.h"
+#include "dkmage/spatial/Maze.h"
+#include "dkmage/spatial/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
 
 #include "adiktedpp/script/Script.h"
@@ -33,7 +33,7 @@ namespace dkmage {
             void generateLevel() {
                 level.generateRandomMap( 9 );
 
-                generator::Maze maze;
+                spatial::Maze maze;
                 maze.corridorSize = 3;
                 maze.generate( 21, 6 );
 //                maze.corridorSize = 1;
@@ -116,7 +116,7 @@ namespace dkmage {
                 }
             }
 
-            void generateMazeItems( generator::Maze& maze ) {
+            void generateMazeItems( spatial::Maze& maze ) {
                 const std::size_t corrNum = maze.corridorsNum();
                 std::set< std::size_t > indexSet;
                 for ( std::size_t i=0; i<corrNum; ++i ) {
@@ -216,7 +216,7 @@ namespace dkmage {
                 }
             }
 
-            void randHeroTrap( generator::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor ) {
+            void randHeroTrap( spatial::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor ) {
 //                level.setVein( chamber, adiktedpp::SlabType::ST_PATH, cSize );
                 const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
                 level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
@@ -228,7 +228,7 @@ namespace dkmage {
             }
 
             void preparePlayerDungeon() {
-                dkmage::generator::Dungeon dungeon;
+                dkmage::spatial::Dungeon dungeon;
                 dungeon.limitNorth = 1;
                 dungeon.limitSouth = 0;
                 dungeon.fortify( true );
@@ -266,7 +266,7 @@ namespace dkmage {
                 level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
 
 //                    /// fill treasure with gold
-//                    dkmage::generator::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    dkmage::spatial::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
 //                    if ( treasure != nullptr ) {
 //                        const Rect& roomRect = treasure->position();
 //                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
@@ -274,8 +274,8 @@ namespace dkmage {
             }
 
             void prepareEnemyDungeon() {
-            //    dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
-                dkmage::generator::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
+            //    dkmage::spatial::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
+                dkmage::spatial::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_1 );
                 enemyDungeon.limitNorth = 0;
                 enemyDungeon.limitSouth = 2;
                 enemyDungeon.fortify( true );
@@ -315,7 +315,7 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
                 /// fill treasure with gold
-                const std::vector< dkmage::generator::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
+                const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
                 for ( const auto* treasure: treasures ) {
                     const Rect& roomRect = treasure->position();
                     level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
