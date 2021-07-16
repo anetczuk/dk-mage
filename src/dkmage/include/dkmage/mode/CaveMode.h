@@ -6,7 +6,7 @@
 #ifndef DKMAGE_INCLUDE_DKMAGE_MODE_CAVEMODE_H_
 #define DKMAGE_INCLUDE_DKMAGE_MODE_CAVEMODE_H_
 
-#include "dkmage/LevelGenerator.h"
+#include "dkmage/BaseLevelGenerator.h"
 
 
 namespace dkmage {
@@ -15,10 +15,21 @@ namespace dkmage {
         /**
          *
          */
-        class CaveMode: public LevelGeneratorWrapper {
+        class CaveMode: public BaseLevelGenerator {
         public:
 
-            CaveMode();
+            void generate( const std::size_t seed ) override;
+
+
+        protected:
+
+            void generateLevel();
+
+            void generateCaves( const std::size_t cavesNum );
+
+            void preparePlayerDungeon();
+
+            void prepareEnemyDungeon();
 
         };
 
