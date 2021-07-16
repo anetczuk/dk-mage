@@ -5,9 +5,6 @@
 
 #include "dkmage/Generator.h"
 
-#include "dkmage/mode/CaveMode.h"
-#include "dkmage/mode/MazeMode.h"
-
 
 namespace dkmage {
 
@@ -29,11 +26,6 @@ namespace dkmage {
     Generator& Generator::instance() {
         static Generator generator;
         return generator;
-    }
-
-    Generator::Generator() {
-        add< dkmage::mode::CaveMode >( "cave" );
-        add< dkmage::mode::MazeMode >( "maze" );
     }
 
 } /* namespace cli */

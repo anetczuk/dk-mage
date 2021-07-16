@@ -46,16 +46,37 @@ namespace dkmage {
 
         dkmage::LevelGenerator* get( const std::string& type );
 
+
         static Generator& instance();
+
+        template <typename T>
+        static void registerMode( const std::string& code ) {
+            Generator& generator = instance();
+            generator.add<T>( code );
+        }
 
 
     private:
 
-        Generator();
+        Generator() = default;
 
         template <typename T>
         void add( const std::string& code ) {
             genMap[ code ].reset( new Item<T>() );
+        }
+
+    };
+
+
+    /**
+     *
+     */
+    template <typename T>
+    class GeneratorRegister {
+    public:
+
+        GeneratorRegister( const std::string& code ) {
+            Generator::registerMode<T>( code );
         }
 
     };

@@ -9,6 +9,7 @@
 #include "dkmage/spatial/Maze.h"
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
+#include "dkmage/Generator.h"
 
 #include "adiktedpp/script/Script.h"
 
@@ -330,6 +331,12 @@ namespace dkmage {
 
         MazeMode::MazeMode(): LevelGeneratorWrapper( new MazeModeImplementaton() ) {
         }
+
+
+        /// =======================================================
+
+
+        static GeneratorRegister<MazeMode> registerMode( "maze" );
 
     } /* namespace mode */
 } /* namespace dkmage */

@@ -8,6 +8,7 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
+#include "dkmage/Generator.h"
 
 #include "adiktedpp/script/Script.h"
 
@@ -234,6 +235,12 @@ namespace dkmage {
 
         CaveMode::CaveMode(): LevelGeneratorWrapper( new CaveModeImplementaton() ) {
         }
+
+
+        /// =======================================================
+
+
+        static GeneratorRegister<CaveMode> registerMode( "cave" );
 
     } /* namespace mode */
 } /* namespace dkmage */
