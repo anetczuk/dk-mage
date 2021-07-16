@@ -11,6 +11,8 @@
 
 #include "adiktedpp/script/Script.h"
 
+#include "utils/Rand.h"
+
 #include <random>
 
 
@@ -80,7 +82,7 @@ namespace dkmage {
 
                 script.rebuild();
 
-                /// =================
+                /// ========================================================
 
                 const bool valid = level.verifyMap();
                 if ( valid == false ) {
@@ -93,13 +95,27 @@ namespace dkmage {
             void generateCaves( const std::size_t cavesNum ) {
                 const utils::Rect mapRect = adiktedpp::Level::mapRect();
                 const utils::Point mapCenter = mapRect.center();
-
                 const Rect region( mapCenter, 70, 42 );
-//                level.setSlab( room, adiktedpp::SlabType::ST_LAVA );
 
-                for ( std::size_t i=0; i<cavesNum; ++i ) {
-                    const int rX = rand() % region.width();
-                    const int rY = rand() % region.height();
+                const int regionArea = region.area();
+                if ( regionArea < 0 ) {
+                    LOG() << "invalid region area: " << regionArea;
+                    return ;
+                }
+
+                std::set< std::size_t > indexSet;
+                for ( int i=0; i<regionArea; ++i ) {
+                    indexSet.insert( i );
+                }
+
+                const std::size_t trapsNum = std::min( (std::size_t)regionArea, cavesNum );
+
+                for ( std::size_t i=0; i<trapsNum; ++i ) {
+                    const int itemIndex = rand() % indexSet.size();
+                    const int regionIndex = utils::getSetItem( indexSet, itemIndex, true );
+                    const int rX = regionIndex % region.width();
+                    const int rY = regionIndex / region.width();
+
                     const utils::Point caveCenter = region.min + utils::Point( rX, rY );
                     const utils::Rect chamber( caveCenter, 5, 5 );
                     level.setChamber( chamber, adiktedpp::SlabType::ST_PATH, 12 );
