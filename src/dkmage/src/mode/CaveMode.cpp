@@ -22,7 +22,7 @@ namespace dkmage {
         /**
          *
          */
-        class CaveGenImplementaton: public BaseLevelGenerator {
+        class CaveModeImplementaton: public BaseLevelGenerator {
         public:
 
             void generate( const std::size_t seed ) override {
@@ -232,7 +232,7 @@ namespace dkmage {
         /// =======================================================
 
 
-        CaveMode::CaveMode(): LevelGeneratorWrapper( new CaveGenImplementaton() ) {
+        CaveMode::CaveMode(): LevelGeneratorWrapper( new CaveModeImplementaton() ) {
         }
 
     } /* namespace mode */

@@ -21,7 +21,7 @@ namespace dkmage {
         /**
          *
          */
-        class MazeGenImplementaton: public BaseLevelGenerator {
+        class MazeModeImplementaton: public BaseLevelGenerator {
         public:
 
             void generate( const std::size_t seed ) override {
@@ -328,7 +328,7 @@ namespace dkmage {
         /// =======================================================
 
 
-        MazeMode::MazeMode(): LevelGeneratorWrapper( new MazeGenImplementaton() ) {
+        MazeMode::MazeMode(): LevelGeneratorWrapper( new MazeModeImplementaton() ) {
         }
 
     } /* namespace mode */
