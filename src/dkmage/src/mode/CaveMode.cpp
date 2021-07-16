@@ -106,6 +106,11 @@ namespace dkmage {
                 const int rY = regionIndex / region.width();
 
                 const utils::Point caveCenter = region.min + utils::Point( rX, rY );
+                const adiktedpp::SlabType centerStab = level.getSlab( caveCenter );
+                if ( centerStab == adiktedpp::SlabType::ST_ROCK ) {
+                    continue ;
+                }
+
                 const utils::Rect chamber( caveCenter, 5, 5 );
                 level.setChamber( chamber, adiktedpp::SlabType::ST_PATH, 12 );
 
