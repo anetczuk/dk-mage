@@ -3,8 +3,9 @@
  *
  */
 
-#include "cli/Generator.h"
 #include "cli/Config.h"
+
+#include "dkmage/Generator.h"
 
 #include "utils/Rand.h"
 #include "utils/Log.h"
@@ -35,7 +36,7 @@ int main( int argc, char** argv ) {
     try {
         TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', "1.0.1" );
 
-        cli::Generator& generator = cli::Generator::instance();
+        dkmage::Generator& generator = dkmage::Generator::instance();
 
         TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
 

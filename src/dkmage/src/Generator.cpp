@@ -3,13 +3,13 @@
  *
  */
 
-#include "cli/Generator.h"
+#include "dkmage/Generator.h"
 
 #include "dkmage/mode/CaveMode.h"
 #include "dkmage/mode/MazeMode.h"
 
 
-namespace cli {
+namespace dkmage {
 
     std::vector< std::string > Generator::generatorsList() const {
         std::vector< std::string > list;

@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef CLI_INCLUDE_CLI_GENERATOR_H_
-#define CLI_INCLUDE_CLI_GENERATOR_H_
+#ifndef CLI_INCLUDE_DKMAGE_GENERATOR_H_
+#define CLI_INCLUDE_DKMAGE_GENERATOR_H_
 
 #include "dkmage/LevelGenerator.h"
 
@@ -14,7 +14,7 @@
 #include <string>
 
 
-namespace cli {
+namespace dkmage {
 
     /**
      *
