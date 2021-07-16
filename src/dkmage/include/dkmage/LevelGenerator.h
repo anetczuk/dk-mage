@@ -25,7 +25,7 @@ namespace dkmage {
 
         virtual void setDataPath( const std::string& dataPath ) = 0;
 
-        virtual void generate( const std::size_t seed ) = 0;
+        virtual void generateLevel() = 0;
 
         /**
          * "levelPath" is path without extension, e.g. "map00333" or "path/to/map/file"
@@ -56,9 +56,9 @@ namespace dkmage {
             implementation->setDataPath( dataPath );
         }
 
-        void generate( const std::size_t seed ) override {
+        void generateLevel() override {
             LevelGenerator* implementation = data.get();
-            implementation->generate( seed );
+            implementation->generateLevel();
         }
 
         void storeLevel( const std::string& levelPath ) override {

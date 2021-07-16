@@ -11,24 +11,41 @@
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
+#include <random>
 
 
-void generate( dkmage::LevelGenerator& generator, const std::string& seed ) {
+bool initializeRand( const std::string& seed ) {
     if ( seed.empty() ) {
         const unsigned int timeSeed = time(NULL);
         srand( timeSeed );
         const std::string newSeed = utils::genSeed();
         if ( newSeed.empty() ) {
             LOG() << "unable to generate seed";
-            return ;
+            return false;
         }
-        generate( generator, newSeed );
-        return ;
+        return true;
     }
 
     LOG() << "using seed '" << seed << "'";
     const std::size_t seedValue = std::hash< std::string >{}( seed );
-    generator.generate( seedValue );
+    srand( seedValue );
+
+    return true;
+}
+
+dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::string& mapType ) {
+    if ( mapType.compare("random") != 0 ) {
+        LOG() << "using map generator: '" << mapType << "'";
+        return generator.get( mapType );
+    }
+
+    /// random
+    const std::vector<std::string> typeAllowed = generator.generatorsList();
+    std::set<std::string> typeSet( typeAllowed.begin(), typeAllowed.end() );
+    typeSet.erase( "random" );
+    const std::size_t rIndex = rand() % typeSet.size();
+    const std::string newType = utils::getSetItem( typeSet, rIndex );
+    return getGenerator( generator, newType );
 }
 
 
@@ -40,9 +57,11 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
 
-        std::vector<std::string> typeAllowed = generator.generatorsList();                                          /// yes, copy
+        std::vector<std::string> typeAllowed = generator.generatorsList();
+        typeAllowed.push_back( "random" );
+
         TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
-        TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "cave", &typeAllowedVals, cmd );
+        TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "random", &typeAllowedVals, cmd );
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
@@ -57,8 +76,14 @@ int main( int argc, char** argv ) {
         const std::string& configPath = configArg.getValue();
         cli::Config config( configPath );
 
+        const std::string& mapSeed = seedArg.getValue();
+        if ( initializeRand( mapSeed ) == false ) {
+            LOG() << "unable to initialize random number generator with seed '" << mapSeed << "'";
+            return 1;
+        }
+
         const std::string& mapType = typeArg.getValue();
-        dkmage::LevelGenerator* typeGenerator = generator.get( mapType );
+        dkmage::LevelGenerator* typeGenerator = getGenerator( generator, mapType );
         if ( typeGenerator == nullptr ) {
             LOG() << "unable to find generator '" << mapType << "'";
             return 1;
@@ -67,12 +92,9 @@ int main( int argc, char** argv ) {
         const std::string dataPath = config.readDataPath();
         typeGenerator->setDataPath( dataPath );
 
-        {
-            /// generate level
-            LOG() << "using map generator: '" << mapType << "'";
-            const std::string& mapSeed = seedArg.getValue();
-            generate( *typeGenerator, mapSeed );
-        }
+        /// generate level
+        LOG() << "generating level";
+        typeGenerator->generateLevel();
 
         {
             /// store generated level
@@ -82,12 +104,10 @@ int main( int argc, char** argv ) {
             typeGenerator->storeLevel( outPath );
         }
 
-        {
-            /// store preview image
-            const std::string& bmpFile = outbmpArg.getValue();
-            if ( bmpFile.empty() == false ) {
-                typeGenerator->storePreview( bmpFile );
-            }
+        /// store preview image
+        const std::string& bmpFile = outbmpArg.getValue();
+        if ( bmpFile.empty() == false ) {
+            typeGenerator->storePreview( bmpFile );
         }
 
     } catch ( TCLAP::ArgException& e ) {

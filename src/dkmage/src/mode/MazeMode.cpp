@@ -19,12 +19,6 @@
 namespace dkmage {
     namespace mode {
 
-        void MazeMode::generate( const std::size_t seed ) {
-            LOG() << "generating level";
-            srand( seed );
-            generateLevel();
-        }
-
         void MazeMode::generateLevel() {
             level.generateRandomMap( 9 );
 
