@@ -20,6 +20,8 @@ LIB_PATH="$BUILD_PATH/libadikted"
 
 
 unzip_src() {
+    echo "extracting and overwriting sources"
+
     rm -rf "$BUILD_PATH"
     rm -rf "$INSTALL_PATH"
     
@@ -48,6 +50,8 @@ cp $LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
 
 build_windws() {
     ## building for Windows
+    echo "building for Windows"
+    
     make clean
     make all
     
@@ -65,6 +69,8 @@ build_windws
 
 build_linux() {
     ## building for Linux
+    echo "building for Linux"
+    
     make clean
     make all BUILD_FOR_LINUX=1
     
