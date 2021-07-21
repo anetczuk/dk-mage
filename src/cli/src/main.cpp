@@ -7,10 +7,14 @@
 
 #include "dkmage/Generator.h"
 
+#include "adiktedpp/Level.h"
+
 #include "utils/Rand.h"
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
+
+#include <filesystem>
 #include <random>
 
 
@@ -48,6 +52,18 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
     return getGenerator( generator, newType );
 }
 
+std::string findFreeMapName( const std::string& levelsPath ) {
+    for (std::size_t i=3333; i<100000; ++i ) {
+        const std::string mapName = adiktedpp::Level::prepareMapName( i );
+        const std::filesystem::path levelPath = levelsPath + "/" + mapName + ".dat";
+        if ( std::filesystem::exists( levelPath ) ) {
+            continue ;
+        }
+        return mapName;
+    }
+    return "";
+}
+
 
 int main( int argc, char** argv ) {
     try {
@@ -65,7 +81,13 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
-        TCLAP::ValueArg<std::string> outdirArg( "", "output", "Path to map's output directory", true, ".", "path string", cmd );
+        TCLAP::ValueArg<std::string> outputPathArg( "", "outputPath", "Path to map's output file (relative or absolute)", false, "", "path string" );
+        TCLAP::ValueArg<std::size_t> outputIdArg( "", "outputId", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
+        TCLAP::SwitchArg outputAutoArg( "", "outputAuto", "Finds unused map id and use it to store map", true );
+        TCLAP::EitherOf input;
+//        TCLAP::OneOf input;
+        input.add( outputPathArg ).add( outputIdArg ).add( outputAutoArg );
+        cmd.add( input );
 
         TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
 
@@ -96,12 +118,32 @@ int main( int argc, char** argv ) {
         LOG() << "generating level";
         typeGenerator->generateLevel();
 
-        {
+        LOG() << "generation completed";
+
+        if ( outputPathArg.isSet() ) {
             /// store generated level
             const std::string levelsPath = config.readLevelsPath();
-            const std::string& levelDir = outdirArg.getValue();
-            const std::string outPath = levelsPath + "/" + levelDir;
-            typeGenerator->storeLevel( outPath );
+            const std::string levelFile  = outputPathArg.getValue();         /// yes, copy
+            const std::filesystem::path levelPath = levelFile;
+            if ( levelPath.is_absolute() ) {
+                /// absolute path
+                typeGenerator->storeLevel( levelFile );
+            } else {
+                /// relative path
+                const std::string outPath = levelsPath + "/" + levelFile;
+                typeGenerator->storeLevel( outPath );
+            }
+        } else if ( outputIdArg.isSet() ) {
+            const std::string levelsPath  = config.readLevelsPath();
+            const std::size_t levelNumber = outputIdArg.getValue();
+            const std::string mapName     = adiktedpp::Level::prepareMapName( levelNumber );
+            const std::string levelFile   = levelsPath + "/" + mapName;
+            typeGenerator->storeLevel( levelFile );
+        } else {
+            const std::string levelsPath = config.readLevelsPath();
+            const std::string mapName    = findFreeMapName( levelsPath );
+            const std::string levelFile  = levelsPath + "/" + mapName;
+            typeGenerator->storeLevel( levelFile );
         }
 
         /// store preview image
@@ -114,7 +156,7 @@ int main( int argc, char** argv ) {
         LOG() << "error: " << e.error() << " for arg " << e.argId();
         return 1;
 
-    } catch ( std::runtime_error& e ) {
+    } catch ( std::exception& e ) {
         LOG() << "error: " << e.what();
         return 1;
     }

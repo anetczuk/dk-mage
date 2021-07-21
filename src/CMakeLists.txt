@@ -2,7 +2,9 @@
 ##
 ##
 
-cmake_minimum_required(VERSION 3.1.1)
+
+## 3.8 -- force C++ 17 standard
+cmake_minimum_required(VERSION 3.8)
 
 
 if( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}" )

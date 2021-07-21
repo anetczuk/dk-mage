@@ -156,6 +156,17 @@ namespace adiktedpp {
         return utils::Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
     }
 
+    std::string Level::prepareMapName( const std::size_t mapId ) {
+        if ( mapId > 99999 || mapId == 0 ) {
+            std::stringstream stream;
+            stream << "invalid argument -- map id outside range [1, 99999]: " << mapId;
+            throw std::invalid_argument( stream.str() );
+        }
+        std::stringstream name;
+        name << "map" << std::setw(5) << std::setfill('0') << mapId;
+        return name.str();
+    }
+
     void Level::startNewMap() {
         LEVEL* level = data->lvl;
         free_map( level );
@@ -216,11 +227,8 @@ namespace adiktedpp {
     }
 
     bool Level::loadMapById( const std::size_t mapId ) {
-        std::stringstream id;
-        /// example format: "Levels/MAP00001"
-        id << "Levels/MAP" << std::setw(5) << std::setfill('0') << mapId;
-        const std::string& idString = id.str();
-//        LOG() << idString;
+        const std::string idString = prepareMapName( mapId );
+        const std::string mapName = "levels/" + idString;
         return loadMapByPath( idString );
     }
 
@@ -240,11 +248,8 @@ namespace adiktedpp {
     }
 
     bool Level::saveMapById( const std::size_t mapId ) const {
-        std::stringstream id;
-        /// example format: "Levels/MAP00001"
-        id << "Levels/MAP" << std::setw(5) << std::setfill('0') << mapId;
-        const std::string& idString = id.str();
-//        LOG() << idString;
+        const std::string idString = prepareMapName( mapId );
+        const std::string mapName = "levels/" + idString;
         return saveMapByPath( idString );
     }
 

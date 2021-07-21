@@ -28,7 +28,7 @@ namespace dkmage {
         virtual void generateLevel() = 0;
 
         /**
-         * "levelPath" is path without extension, e.g. "map00333" or "path/to/map/file"
+         * "levelPath" is path without extension, e.g. "map00333" or "path/to/map00333"
          * in both cases various files will be created by adding extension to "levelPath"
          */
         virtual void storeLevel( const std::string& levelPath ) = 0;

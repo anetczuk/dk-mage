@@ -68,12 +68,12 @@ namespace adiktedpp {
 
         /// ===========================================================================
 
-        /// map ide template to load: "Levels/MAP{mapId}"
+        /// map ide template to load: "levels/MAP{mapId}"
         bool loadMapById( const std::size_t mapId );
 
         /// if relative path is given, then it refers to current working directory or
         /// directory of executable
-        /// example of map path: "Levels/MAP00001"
+        /// example of map path: "levels/MAP00001"
         bool loadMapByPath( const std::string& mapPath );
 
         bool saveMapById( const std::size_t mapId ) const;
@@ -186,6 +186,8 @@ namespace adiktedpp {
         static utils::Rect mapSize();
 
         static utils::Rect mapRect();
+
+        static std::string prepareMapName( const std::size_t mapId );
 
 
     private:
