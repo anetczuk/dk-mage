@@ -8,6 +8,7 @@
 #include "dkmage/Generator.h"
 
 #include "adiktedpp/Level.h"
+#include "adiktedpp/Version.h"
 
 #include "utils/Rand.h"
 #include "utils/Log.h"
@@ -67,7 +68,7 @@ std::string findFreeMapName( const std::string& levelsPath ) {
 
 int main( int argc, char** argv ) {
     try {
-        TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', "1.0.1" );
+        TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', adiktedpp::VERSION_FULL_STRING );
 
         dkmage::Generator& generator = dkmage::Generator::instance();
 
