@@ -3,6 +3,16 @@
 Generate maps Dungeon Keeper 1 PC game.
 
 
+## Supported map types
+
+Following map types are supported:
+- *cave*
+- *maze*
+
+[![*cave* mode](doc/cave-small.png "*cave* mode")](doc/cave-big.png)
+[![*maze* mode](doc/maze-small.png "*maze* mode")](doc/maze-big.png)
+
+
 ## Building under Linux
 
 Following packages are required to build application under Linux:
@@ -10,6 +20,8 @@ Following packages are required to build application under Linux:
 - *gcc-mingw-w64-i686*
 - *binutils-mingw-w64-i686*
 They can be installed by following command `sudo apt install gcc-mingw-w64-i686 gcc-mingw-w64-i686 binutils-mingw-w64-i686`.
+
+Moreover compiler have to support *C++17* standard.
 
 Next step is to install application dependencies. It can be done by executing script `./external/build.sh`. Script, among other things, will build *libadikted*.
 
@@ -27,3 +39,4 @@ For example calling `./configure/release_gcc.sh` will create `build/release_gcc`
 - generation of caves: (http://roguebasin.roguelikedevelopment.org/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels)
 - Dungeon Keeper 2 mapper: (https://www.killerbeesoftware.com/dk2/)
 - Diablo map generator explained: (https://www.boristhebrave.com/2019/07/14/dungeon-generation-in-diablo-1/)
+- TCLAP library: (http://tclap.sourceforge.net/)
