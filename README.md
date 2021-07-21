@@ -3,7 +3,7 @@
 Generate maps Dungeon Keeper 1 PC game.
 
 
-## Supported map types
+## Generated map types
 
 Following map types are supported:
 - *cave*
