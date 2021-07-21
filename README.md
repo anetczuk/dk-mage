@@ -5,12 +5,19 @@ Generate maps Dungeon Keeper 1 PC game.
 
 ## Generated map types
 
-Following map types are supported:
+Following map types cam be generated:
 - *cave*
 - *maze*
 
 [![*cave* mode](doc/cave-small.png "*cave* mode")](doc/cave-big.png)
 [![*maze* mode](doc/maze-small.png "*maze* mode")](doc/maze-big.png)
+
+
+## Running generator
+
+Before first run open and edit `config.ini` file placed along main executable. Inside the file fill required variables (paths to game directories).
+
+For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in game's directory ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help`.
 
 
 ## Building under Linux
@@ -39,4 +46,6 @@ For example calling `./configure/release_gcc.sh` will create `build/release_gcc`
 - generation of caves: (http://roguebasin.roguelikedevelopment.org/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels)
 - Dungeon Keeper 2 mapper: (https://www.killerbeesoftware.com/dk2/)
 - Diablo map generator explained: (https://www.boristhebrave.com/2019/07/14/dungeon-generation-in-diablo-1/)
+
+### Various libraries
 - TCLAP library: (http://tclap.sourceforge.net/)
