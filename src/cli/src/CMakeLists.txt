@@ -11,6 +11,7 @@ list( APPEND PUBLIC_HEADERS "../include" )
 #include_directories( ${LEMON_INCLUDE_DIR} )
 include_directories( "${EXTERNAL_DIR}/tclap/install/include" )          ## header-only library
 include_directories( "${EXTERNAL_DIR}/inih/install/include" )
+include_directories( "${EXTERNAL_DIR}/filesystem/filesystem" )
 include_directories( "../../utils/include" )
 include_directories( "../../adiktedpp/include" )
 include_directories( "../../dkmage/include" )

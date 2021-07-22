@@ -14,9 +14,17 @@
 #include "utils/Log.h"
 
 #include <tclap/CmdLine.h>
+#include <ghc/filesystem.hpp>
 
-#include <filesystem>
+//#include <filesystem>
 #include <random>
+
+
+using ghc::filesystem::path;
+using ghc::filesystem::exists;
+
+//using std::filesystem::path;
+//using std::filesystem::exists;
 
 
 bool initializeRand( const std::string& seed ) {
@@ -56,8 +64,8 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
 std::string findFreeMapName( const std::string& levelsPath ) {
     for (std::size_t i=3333; i<100000; ++i ) {
         const std::string mapName = adiktedpp::Level::prepareMapName( i );
-        const std::filesystem::path levelPath = levelsPath + "/" + mapName + ".dat";
-        if ( std::filesystem::exists( levelPath ) ) {
+        const path levelPath = levelsPath + "/" + mapName + ".dat";
+        if ( exists( levelPath ) ) {
             continue ;
         }
         return mapName;
@@ -125,7 +133,7 @@ int main( int argc, char** argv ) {
             /// store generated level
             const std::string levelsPath = config.readLevelsPath();
             const std::string levelFile  = outputPathArg.getValue();         /// yes, copy
-            const std::filesystem::path levelPath = levelFile;
+            const path levelPath = levelFile;
             if ( levelPath.is_absolute() ) {
                 /// absolute path
                 typeGenerator->storeLevel( levelFile );
