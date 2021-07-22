@@ -33,8 +33,8 @@ unzip_src() {
 
     unzip -o "$SCRIPT_DIR/$SRC_ARCHIVE" -d "$UNZIP_DIR"
     
-    ## cpy fixes
-    if [ -d "$SCRIPT_DIR/fix" ]; then
+    ## copy fixes
+    if compgen -G "$SCRIPT_DIR/fix/*" > /dev/null; then
         cp $SCRIPT_DIR/fix/* "$LIB_PATH"
     fi
 }
