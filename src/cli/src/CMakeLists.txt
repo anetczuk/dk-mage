@@ -29,8 +29,8 @@ target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
 
 
 install( TARGETS ${TARGET_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib
-         ARCHIVE DESTINATION lib
-         PUBLIC_HEADER DESTINATION include/${TARGET_NAME}
+         RUNTIME DESTINATION "."
+         LIBRARY DESTINATION "."
+         ARCHIVE DESTINATION "."
+#         PUBLIC_HEADER DESTINATION include/${TARGET_NAME}
 )
