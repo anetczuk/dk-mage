@@ -26,7 +26,7 @@ Following packages are required to build application under Linux:
 - *g++-mingw-w64-i686*
 - *gcc-mingw-w64-i686*
 - *binutils-mingw-w64-i686*
-They can be installed by following command `sudo apt install gcc-mingw-w64-i686 gcc-mingw-w64-i686 binutils-mingw-w64-i686`.
+They can be installed by following command `sudo apt install g++-mingw-w64-i686 gcc-mingw-w64-i686 binutils-mingw-w64-i686`.
 
 Moreover compiler have to support *C++17* standard.
 
