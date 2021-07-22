@@ -26,7 +26,7 @@ namespace dkmage {
             D_WEST
         };
 
-        inline std::ostream& operator<<( std::ostream& os, const Direction& data ) {
+        inline std::ostream& operator<<( std::ostream& os, const Direction data ) {
             switch( data ) {
             case Direction::D_NORTH: {
                 os << "D_NORTH";
@@ -141,6 +141,11 @@ namespace dkmage {
          */
         class NoEdgeData {
         };
+
+        inline std::ostream& operator<<( std::ostream& os, const NoEdgeData& /*data*/ ) {
+            /// do nothing
+            return os;
+        }
 
 
         /**
@@ -511,7 +516,7 @@ namespace dkmage {
                         return e;
                     }
                 }
-                return lemon::ListDigraph::Arc();
+                return lemon::ListDigraph::Arc( lemon::INVALID );
             }
 
             lemon::ListDigraph::Arc findEdge( const lemon::ListDigraph::Node& from, const lemon::ListDigraph::Node& to ) {
@@ -522,7 +527,7 @@ namespace dkmage {
                         return e;
                     }
                 }
-                return lemon::ListDigraph::Arc();
+                return lemon::ListDigraph::Arc( lemon::INVALID );
             }
 
             TNodeData& getItem( const lemon::ListDigraph::Node& node ) {
