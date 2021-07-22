@@ -3,7 +3,7 @@
 ##
 
 
-find_package( LEMON REQUIRED )
+#find_package( LEMON REQUIRED )                     ## currently configured as external project
 
 
 include_directories( ${LEMON_INCLUDE_DIR} )

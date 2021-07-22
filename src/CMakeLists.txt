@@ -21,7 +21,6 @@ list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 
 list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/adikted/install" )
 list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/catch2/install/lib/cmake" )
-list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/lemon/install" )
 
 
 include( CMakeCompileFlags.txt )
@@ -68,6 +67,26 @@ add_definitions( -DKEEPER_LEVELS_PATH="${KEEPER_LEVELS}" )
 
 
 ## ================= build =================
+
+include(ExternalProject)
+
+
+ExternalProject_Add( lemon_project
+                     SOURCE_DIR ${EXTERNAL_DIR}/lemon/src/lemon-1.3.1
+                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/lemon_project
+                     CMAKE_ARGS -DLEMON_THREADING="None" -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/lemon_project
+                    )
+                     
+ExternalProject_Get_Property( lemon_project install_dir )
+set( LEMON_INCLUDE_DIR ${install_dir}/include )
+set( LEMON_BINARY_DIR ${install_dir}/lib )
+
+## create additional library forcing other libraries to wait until external project is installed
+add_library( lemon UNKNOWN IMPORTED )
+set_target_properties( lemon PROPERTIES IMPORTED_LOCATION ${LEMON_BINARY_DIR}/libemon.a )
+add_dependencies( lemon lemon_project )
+
+set( LEMON_LIBRARY lemon )
 
 
 if( CMAKE_TESTING_ENABLED )   
