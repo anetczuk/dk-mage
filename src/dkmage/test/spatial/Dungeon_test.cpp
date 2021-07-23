@@ -24,10 +24,12 @@ TEST_CASE( "Dungeon_boundingBox" ) {
 }
 
 TEST_CASE( "Dungeon_boundingBox_02" ) {
-    srand( 2 );
-
     Dungeon dungeon;
-    dungeon.generate(2, 5);
+    Room* room1 = dungeon.addRoom( adiktedpp::SlabType::ST_DUNGHEART, 5 );
+    REQUIRE( room1 != nullptr );
+    Room* room2 = dungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 5, *room1, Direction::D_WEST );
+    REQUIRE( room2 != nullptr );
+
     const Rect rect = dungeon.boundingBox();
     REQUIRE( rect.area() == 55 );               /// 2x25 + 5
     CHECK( rect.min.x == -8 );

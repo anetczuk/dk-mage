@@ -160,7 +160,7 @@ namespace dkmage {
 
             Room* findRoomFirst( const adiktedpp::SlabType roomType );
 
-            void addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
+            Room* addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 
             Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
 

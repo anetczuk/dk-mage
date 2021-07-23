@@ -90,7 +90,7 @@ namespace dkmage {
             return rooms[0];
         }
 
-        void Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
+        Room* Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
             std::vector< Room* > roomsList = graph.itemsList();
             if ( roomsList.empty()) {
                 /// no rooms in dungeon
@@ -100,7 +100,7 @@ namespace dkmage {
                 basePos.centerize();
                 root->type( roomType );
                 root->owner( player );
-                return ;
+                return root;
             }
             while ( roomsList.empty() == false ) {
                 const std::size_t rRoom = rand() % roomsList.size();
@@ -130,17 +130,18 @@ namespace dkmage {
                 while ( availableDirs.empty() == false ) {
                     const std::size_t rDir = rand() % availableDirs.size();
                     const Direction newDir = remove_at( availableDirs, rDir );
-                    const Room* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
+                    Room* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
                     if ( added != nullptr ) {
-                        return ;
+                        return added;
                     }
                 }
             }
             LOG() << "unable to add room: " << roomType;
+            return nullptr;
         }
 
         Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize ) {
-            const Rect newRect( roomSize, roomSize );
+            Rect newRect( roomSize, roomSize );
             if ( isCollision( newRect ) ) {
                 /// collision detected
                 return nullptr;
@@ -148,10 +149,14 @@ namespace dkmage {
 
             Room* newRoom = graph.addItem();
             if ( newRoom == nullptr ) {
-                return newRoom;
+                return nullptr;
             }
 
             /// new node added
+            if ( graph.size() == 1 ) {
+                /// only room in dungeon -- centerize root
+                newRect.centerize();
+            }
             newRoom->position() = newRect;
             newRoom->type( roomType );
             newRoom->owner( player );
