@@ -36,7 +36,7 @@ bool initializeRand( const std::string& seed ) {
             LOG() << "unable to generate seed";
             return false;
         }
-        return true;
+        return initializeRand( newSeed );
     }
 
     LOG() << "using seed '" << seed << "'";
