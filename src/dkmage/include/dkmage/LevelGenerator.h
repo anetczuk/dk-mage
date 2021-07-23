@@ -41,6 +41,31 @@ namespace dkmage {
     /**
      *
      */
+    class EmptyLevelGenerator: public LevelGenerator {
+    public:
+
+        void setDataPath( const std::string& /*dataPath*/ ) override {
+            /// do nothing
+        }
+
+        void generateLevel() override {
+            /// do nothing
+        }
+
+        void storeLevel( const std::string& /*levelPath*/ ) override {
+            /// do nothing
+        }
+
+        void storePreview( const std::string& /*filePath*/ ) override {
+            /// do nothing
+        }
+
+    };
+
+
+    /**
+     *
+     */
     class LevelGeneratorWrapper: public LevelGenerator {
 
         std::unique_ptr< LevelGenerator > data;

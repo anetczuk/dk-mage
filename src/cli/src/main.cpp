@@ -6,12 +6,15 @@
 #include "cli/Config.h"
 
 #include "dkmage/Generator.h"
+#include "dkmage/mode/CaveMode.h"
+#include "dkmage/mode/MazeMode.h"
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Version.h"
 
 #include "utils/Rand.h"
 #include "utils/Log.h"
+#include "utils/GlobalScope.h"
 
 #include <tclap/CmdLine.h>
 #include <ghc/filesystem.hpp>
@@ -25,6 +28,12 @@ using ghc::filesystem::exists;
 
 //using std::filesystem::path;
 //using std::filesystem::exists;
+
+
+GLOBAL_SCOPE() {
+    dkmage::Generator::registerMode<dkmage::mode::CaveMode>( "cave" );
+    dkmage::Generator::registerMode<dkmage::mode::MazeMode>( "maze" );
+}
 
 
 bool initializeRand( const std::string& seed ) {
@@ -53,9 +62,14 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
     }
 
     /// random
+    LOG() << "getting random map generator";
     const std::vector<std::string> typeAllowed = generator.generatorsList();
     std::set<std::string> typeSet( typeAllowed.begin(), typeAllowed.end() );
     typeSet.erase( "random" );
+    if ( typeSet.empty() ) {
+        LOG() << "could not get generator: no generator candidate";
+        return nullptr;
+    }
     const std::size_t rIndex = rand() % typeSet.size();
     const std::string newType = utils::getSetItem( typeSet, rIndex );
     return getGenerator( generator, newType );
@@ -105,6 +119,7 @@ int main( int argc, char** argv ) {
         /// ---------------------------------------------------------
 
         const std::string& configPath = configArg.getValue();
+        LOG() << "loading config file: " << configPath;
         cli::Config config( configPath );
 
         const std::string& mapSeed = seedArg.getValue();
@@ -116,7 +131,7 @@ int main( int argc, char** argv ) {
         const std::string& mapType = typeArg.getValue();
         dkmage::LevelGenerator* typeGenerator = getGenerator( generator, mapType );
         if ( typeGenerator == nullptr ) {
-            LOG() << "unable to find generator '" << mapType << "'";
+            LOG() << "unable to handle generator '" << mapType << "'";
             return 1;
         }
 

@@ -9,7 +9,6 @@
 #include "dkmage/spatial/Maze.h"
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/BaseLevelGenerator.h"
-#include "dkmage/Generator.h"
 
 #include "adiktedpp/script/Script.h"
 
@@ -34,12 +33,14 @@ namespace dkmage {
 
             generateMazeItems( maze );
 
+            LOG() << "preparing dungeons";
             preparePlayerDungeon();
 
             prepareEnemyDungeon();
 
             /// =========== scripting ===========
 
+            LOG() << "preparing script";
             adiktedpp::script::Script script( level );
 
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
@@ -310,12 +311,6 @@ namespace dkmage {
                 level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
             }
         }
-
-
-        /// =======================================================
-
-
-        static GeneratorRegister<MazeMode> registerMode( "maze" );
 
     } /* namespace mode */
 } /* namespace dkmage */
