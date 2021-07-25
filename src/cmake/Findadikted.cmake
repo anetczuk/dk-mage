@@ -13,8 +13,8 @@ if ( NOT adikted_INCLUDE_DIR OR (NOT adikted_LIBRARY_RELEASE AND NOT adikted_LIB
     
     ## library filename have to have "lib" prefix
     FIND_LIBRARY(adikted_LIBRARY_RELEASE
-      NAMES adikted adikted${CMAKE_SHARED_LIBRARY_SUFFIX}
-      HINTS "$ENV{adikted_DIR} ${adikted_DIR}"
+        NAMES adikted adikted${CMAKE_SHARED_LIBRARY_SUFFIX}
+        HINTS $ENV{adikted_DIR} ${adikted_DIR}
     )
     
     ## library filename have to have "lib" prefix
