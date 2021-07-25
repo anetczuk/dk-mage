@@ -25,7 +25,7 @@ unzip_src() {
     
     ## copy fixes
     if compgen -G "$SCRIPT_DIR/fix/*" > /dev/null; then
-        cp $SCRIPT_DIR/fix/* "$SRC_PATH"
+        cp -r $SCRIPT_DIR/fix/* "$SRC_PATH"
     fi
 }
 
