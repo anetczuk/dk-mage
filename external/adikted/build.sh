@@ -37,7 +37,7 @@ unzip_src_makefile() {
     
     ## copy fixes
     if compgen -G "$SCRIPT_DIR/fix/*" > /dev/null; then
-        cp $SCRIPT_DIR/fix/* "$BUILD_LIB_PATH"
+        cp -r $SCRIPT_DIR/fix/* "$BUILD_PATH"
     fi
     
     cp $BUILD_LIB_PATH/*.h "$INSTALL_PATH/include/libadikted"
@@ -59,7 +59,7 @@ unzip_src() {
     
     ## copy fixes
     if compgen -G "$SCRIPT_DIR/fix/*" > /dev/null; then
-        cp $SCRIPT_DIR/fix/* "$SRC_LIB_PATH"
+        cp -r $SCRIPT_DIR/fix/* "$SRC_PATH"
     fi
 }
 
