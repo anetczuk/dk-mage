@@ -36,6 +36,11 @@ To generate build system call one of scripts placed in `./configure` directory. 
 For example calling `./configure/release_gcc.sh` will create `build/release_gcc` directory. To build the application then go to `build/release_gcc` and run `make`.
 
 
+## Examples of various used techniques:
+
+- *CMake*'s `FetchContent` and proper configuration for `add_directory` (`target_include_directories`)
+
+
 ## References:
 
 - Mapmaker's Documentation: (https://lubiki.keeperklan.com/dk1_docs/)
