@@ -30,8 +30,6 @@ public:
 
 
     LevelMock(): Level(), scoped( initialize_messages() ) {
-        const std::string& keeperData = getKeeperDataPath();
-        setDataPath( keeperData );
     }
 
     void generateTestBmp( const std::size_t rescale = 3 ) {

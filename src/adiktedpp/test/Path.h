@@ -17,13 +17,13 @@ inline std::string getTestDataPath( const std::string& subPath ) {
     #endif
 }
 
-inline std::string getKeeperDataPath() {
-    #if defined(KEEPER_DATA_PATH)
-        return std::string(KEEPER_DATA_PATH);
-    #else
-        return "";
-    #endif
-}
+//inline std::string getKeeperDataPath() {
+//    #if defined(KEEPER_DATA_PATH)
+//        return std::string(KEEPER_DATA_PATH);
+//    #else
+//        return "";
+//    #endif
+//}
 
 
 #endif /* ADIKTEDPP_TEST_PATH_H_ */
