@@ -382,8 +382,8 @@ namespace adiktedpp {
     }
 
     struct VeinGenerator {
-        std::set< utils::Point > available;
-        std::set< utils::Point > added;
+        std::set< utils::Point > available;             /// points to use
+        std::set< utils::Point > added;                 /// points already visited/added
 
         void add( const utils::Point& point ) {
             if ( added.count( point ) > 0 ) {
@@ -406,8 +406,9 @@ namespace adiktedpp {
         utils::Point getAvailable( const std::size_t availableIndex ) {
             auto avpos = available.begin();
             std::advance( avpos, availableIndex );
+            const utils::Point point = *avpos;              /// yes, copy
             available.erase( avpos );
-            return *avpos;
+            return point;
         }
 
         void addAvailable( const utils::Point& point ) {
@@ -416,6 +417,22 @@ namespace adiktedpp {
             }
             available.insert( point );
         }
+
+        std::string print() const {
+            std::stringstream stream;
+            stream << "av: ";
+            for ( const utils::Point& item: available ) {
+                stream << item << " ";
+            }
+            stream << "\n";
+            stream << "add: ";
+            for ( const utils::Point& item: added ) {
+                stream << item << " ";
+            }
+            stream << "\n";
+            return stream.str();
+        }
+
     };
 
     void Level::setSlabOutline( const utils::Rect& rect, const SlabType type ) {
@@ -598,7 +615,8 @@ namespace adiktedpp {
         const utils::Point center = boundingLimit.center();
         vein.add( center );
         while ( vein.added.size() < itemsNum ) {
-            const std::size_t vIndex = rand() % vein.available.size();
+            const std::size_t avSize = vein.available.size();
+            const std::size_t vIndex = rand() % avSize;
             const utils::Point point = vein.getAvailable( vIndex );
             if ( boundingLimit.isInside( point ) == false ) {
                 continue ;
