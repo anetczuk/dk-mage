@@ -3,8 +3,10 @@
 ##
 
 
-## 3.8 -- force C++ 17 standard
-cmake_minimum_required(VERSION 3.8)
+## 3.8  -- force C++ 17 standard
+## 3.11 -- FetchContent
+## 3.14 -- FetchContent_MakeAvailable
+cmake_minimum_required( VERSION 3.14 )
 
 
 if( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}" )
@@ -68,33 +70,27 @@ add_definitions( -DKEEPER_LEVELS_PATH="${KEEPER_LEVELS}" )
 
 ## ================= build =================
 
-include(ExternalProject)
+include( FetchContent )
+
+### build adikted project
+FetchContent_Declare( adikted
+                      SOURCE_DIR ${EXTERNAL_DIR}/adikted/src/ADiKtEd-master/libadikted
+)
+FetchContent_MakeAvailable( adikted )
 
 
-ExternalProject_Add( lemon_project
-                     SOURCE_DIR ${EXTERNAL_DIR}/lemon/src/lemon-1.3.1
-                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/lemon_project
-                     CMAKE_ARGS -DLEMON_THREADING="None" -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/lemon_project
-                    )
-                     
-ExternalProject_Get_Property( lemon_project install_dir )
-set( LEMON_INCLUDE_DIR ${install_dir}/include )
-set( LEMON_BINARY_DIR ${install_dir}/lib )
-
-## create additional library forcing other libraries to wait until external project is installed
-add_library( lemon UNKNOWN IMPORTED )
-set_target_properties( lemon PROPERTIES IMPORTED_LOCATION ${LEMON_BINARY_DIR}/libemon.a )
-add_dependencies( lemon lemon_project )
-
-set( LEMON_LIBRARY lemon )
+### build lemon project
+FetchContent_Declare( lemon
+                      SOURCE_DIR ${EXTERNAL_DIR}/lemon/src/lemon-1.3.1
+)
+set( LEMON_THREADING "None" )
+FetchContent_MakeAvailable( lemon )
 
 
 if( CMAKE_TESTING_ENABLED )   
     find_package( Catch2 REQUIRED )
 endif()
 
-
-include_directories( "utils/include" )
 
 add_subdirectory( utils )
 add_subdirectory( adiktedpp )
