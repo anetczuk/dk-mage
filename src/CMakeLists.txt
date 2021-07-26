@@ -59,7 +59,8 @@ FetchContent_Declare( adikted
                       SOURCE_DIR ${EXTERNAL_DIR}/adikted/src/ADiKtEd-master/libadikted
 )
 FetchContent_MakeAvailable( adikted )
-
+## install( TARGETS adikted LIBRARY DESTINATION "." )
+       
 
 ### build lemon project
 FetchContent_Declare( lemon
