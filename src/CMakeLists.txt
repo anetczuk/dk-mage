@@ -58,6 +58,9 @@ include( FetchContent )
 FetchContent_Declare( adikted
                       SOURCE_DIR ${EXTERNAL_DIR}/adikted/src/ADiKtEd-master/libadikted
 )
+IF(WIN32)
+    set( adikted_TYPE STATIC )
+ENDIF()
 FetchContent_MakeAvailable( adikted )
 ## install( TARGETS adikted LIBRARY DESTINATION "." )
        

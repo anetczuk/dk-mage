@@ -12,8 +12,9 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set( CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Install path prefix" FORCE )
 endif()
 
-
 set( CMAKE_DEBUG_POSTFIX _d )
+
+## set( CMAKE_INSTALL_DEFAULT_COMPONENT_NAME binaries )
 
 
 ##
