@@ -8,6 +8,14 @@
 
 /// inclusion: #include "Path.h"
 
+#include <ghc/filesystem.hpp>
+
+
+using ghc::filesystem::path;
+using ghc::filesystem::exists;
+using ghc::filesystem::current_path;
+using ghc::filesystem::create_directories;
+
 
 inline std::string getTestDataPath( const std::string& subPath ) {
     #if defined(TEST_DATA_PATH)
@@ -15,6 +23,13 @@ inline std::string getTestDataPath( const std::string& subPath ) {
     #else
         return subPath;
     #endif
+}
+
+inline path getTestOutputPath() {
+    path currPath = current_path() / TEST_MODULE_NAME;
+    currPath += "_output";
+    create_directories( currPath );
+    return currPath;
 }
 
 //inline std::string getKeeperDataPath() {

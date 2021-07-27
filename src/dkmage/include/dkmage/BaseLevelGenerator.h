@@ -26,7 +26,7 @@ namespace dkmage {
         adiktedpp::Level level;
 
 
-        BaseLevelGenerator(): messages( "cli.log.txt" ) {
+        BaseLevelGenerator(): messages( "adikted.log.txt" ) {
         }
 
         void setDataPath( const std::string& dataPath ) override {

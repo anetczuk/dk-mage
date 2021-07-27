@@ -78,7 +78,9 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
 std::string findFreeMapName( const std::string& levelsPath ) {
     for (std::size_t i=3333; i<100000; ++i ) {
         const std::string mapName = adiktedpp::Level::prepareMapName( i );
-        const path levelPath = levelsPath + "/" + mapName + ".dat";
+        path levelPath( levelsPath );
+        levelPath /= mapName;
+        levelPath += ".dat";
         if ( exists( levelPath ) ) {
             continue ;
         }

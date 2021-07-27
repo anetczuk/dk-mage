@@ -3,6 +3,7 @@
  */
 
 #include "catch2/catch.hpp"
+#include "Path.h"
 
 #include "adiktedpp/Level.h"
 
@@ -15,9 +16,17 @@
 using namespace adiktedpp;
 
 
-inline ScopeMessages initialize_messages() {
+inline std::string get_test_log() {
+    path outputPath = getTestOutputPath();
     const std::string testName = Catch::getResultCapture().getCurrentTestName();
-    return ScopeMessages( testName, ".log" );
+    outputPath /= testName;
+    outputPath += std::string(".log");
+    return outputPath.native();
+}
+
+inline ScopeMessages initialize_messages() {
+    const std::string outputFile = get_test_log();
+    return ScopeMessages( outputFile );
 }
 
 
@@ -61,7 +70,7 @@ TEST_CASE("Level_setLevelsPath", "[classic]") {
 }
 
 TEST_CASE("Level_dataPath_unload", "[classic]") {
-    ScopeMessages  messages = initialize_messages();
+    ScopeMessages messages = initialize_messages();
 
     Level level;
     const std::string path = level.dataPath();

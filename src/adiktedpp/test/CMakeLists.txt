@@ -11,11 +11,13 @@ set( TARGET_NAME adiktedpp_tests )
 
 
 include_directories( "../include" )
+include_directories( "${EXTERNAL_DIR}/filesystem/filesystem" )
 
 
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
+add_definitions( -DTEST_MODULE_NAME="${TARGET_NAME}" )
 add_definitions( -DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data" )
 
 
@@ -30,7 +32,7 @@ else()
     set( EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET_NAME}" )
 endif()
 
-set( EXECUTABLE_WORKDIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET_NAME}_output" )
+set( EXECUTABLE_WORKDIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
 generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
 #generate_to_file( ../../run_tests.sh.in run_tests.sh )
