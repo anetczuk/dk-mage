@@ -31,6 +31,8 @@ using ghc::filesystem::exists;
 
 
 GLOBAL_SCOPE() {
+    utils::Logger::setLogFile( "dkmage.log.txt" );
+
     dkmage::Generator::registerMode<dkmage::mode::CaveMode>( "cave" );
     dkmage::Generator::registerMode<dkmage::mode::MazeMode>( "maze" );
 }

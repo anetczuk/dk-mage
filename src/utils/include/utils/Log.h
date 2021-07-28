@@ -25,14 +25,15 @@ namespace utils {
         Logger( const char* file, const int lane ): file(file), lane(lane) {
             buffer << file << "(" << lane << "): ";
         }
-        ~Logger() {
-            buffer << "\n";
-            std::cerr << buffer.str();
-        }
+
+        ~Logger();
 
         std::ostream& stream() {
             return buffer;
         }
+
+        static void setLogFile( const std::string& logFile );
+
     };
 
 }
