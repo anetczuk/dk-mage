@@ -57,7 +57,7 @@ include( FetchContent )
 ### build inih project (header only)
 FetchContent_Declare( inih
                       URL ${EXTERNAL_DIR}/inih/inih-master.zip
-                      SOURCE_DIR _deps/inih-src/inih
+                      SOURCE_DIR ${FETCHCONTENT_BASE_DIR}/inih-src/inih
 )
 FetchContent_Populate( inih )
 set( inih_INCLUDE_DIR "${inih_SOURCE_DIR}/.." )
@@ -65,14 +65,15 @@ set( inih_INCLUDE_DIR "${inih_SOURCE_DIR}/.." )
 
 ### build adikted project
 FetchContent_Declare( adikted
-                      SOURCE_DIR ${EXTERNAL_DIR}/adikted/src/ADiKtEd-master/libadikted
+                      URL ${EXTERNAL_DIR}/adikted/ADiKtEd-master.zip
+                      SOURCE_SUBDIR libadikted
 )
 IF(WIN32)
     set( adikted_TYPE STATIC )
 ENDIF()
 FetchContent_MakeAvailable( adikted )
 ## install( TARGETS adikted LIBRARY DESTINATION "." )
-       
+
 
 ### build lemon project
 FetchContent_Declare( lemon
