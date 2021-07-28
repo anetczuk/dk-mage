@@ -50,9 +50,18 @@ if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 
-## ================= build =================
+## ================= building dependencies =================
 
 include( FetchContent )
+
+### build inih project (header only)
+FetchContent_Declare( inih
+                      URL ${EXTERNAL_DIR}/inih/inih-master.zip
+                      SOURCE_DIR _deps/inih-src/inih
+)
+FetchContent_Populate( inih )
+set( inih_INCLUDE_DIR "${inih_SOURCE_DIR}/.." )
+
 
 ### build adikted project
 FetchContent_Declare( adikted
@@ -72,6 +81,8 @@ FetchContent_Declare( lemon
 set( LEMON_THREADING "None" )
 FetchContent_MakeAvailable( lemon )
 
+
+## ================= building modules =================
 
 if( CMAKE_TESTING_ENABLED )   
     find_package( Catch2 REQUIRED )

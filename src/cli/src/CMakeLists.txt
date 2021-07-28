@@ -9,7 +9,7 @@ set( TARGET_NAME dkmagecli )
 list( APPEND PUBLIC_HEADERS "../include" )
 
 include_directories( "${EXTERNAL_DIR}/tclap/install/include" )          ## header-only library
-include_directories( "${EXTERNAL_DIR}/inih/install/include" )
+include_directories( ${inih_INCLUDE_DIR} )
 include_directories( "${EXTERNAL_DIR}/filesystem/filesystem" )
 include_directories( ${PUBLIC_HEADERS} )
 

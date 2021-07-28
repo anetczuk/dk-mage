@@ -14,7 +14,5 @@ $script_path/lemon/build.sh
 
 $script_path/tclap/build.sh
 
-$script_path/inih/build.sh
-
 
 echo "building done"
