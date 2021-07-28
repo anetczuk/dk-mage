@@ -17,7 +17,7 @@ inline std::string get_test_log() {
     const std::string testName = Catch::getResultCapture().getCurrentTestName();
     outputPath /= testName;
     outputPath += std::string(".log");
-    return outputPath.native();
+    return outputPath.u8string();
 }
 
 
