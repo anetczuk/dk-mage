@@ -22,9 +22,7 @@ namespace utils {
 
     public:
 
-        Logger( const char* file, const int lane ): file(file), lane(lane) {
-            buffer << file << "(" << lane << "): ";
-        }
+        Logger( const char* file, const int lane );
 
         ~Logger();
 

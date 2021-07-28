@@ -6,6 +6,9 @@
 set( TARGET_NAME utils )
 
 
+include_directories( "${EXTERNAL_DIR}/filesystem/filesystem" )
+
+
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
