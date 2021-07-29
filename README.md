@@ -30,10 +30,8 @@ They can be installed by following command `sudo apt install g++-mingw-w64-i686 
 
 Moreover compiler have to support *C++17* standard.
 
-Next step is to install application dependencies. It can be done by executing script `./external/build.sh`. Script, among other things, will build *libadikted*.
-
-To generate build system call one of scripts placed in `./configure` directory. It will create proper folder in `build` directory.
-For example calling `./configure/release_gcc.sh` will create `build/release_gcc` directory. To build the application then go to `build/release_gcc` and run `make`.
+To generate build system execute one of scripts placed in `./configure` directory. It will create proper folder in `build` directory.
+For example calling `./configure/lin_release_gcc.sh` will create `build/lin_release_gcc` directory. To build the application then go to `build/lin_release_gcc` and run `make`.
 
 
 ## Examples of various used techniques:
