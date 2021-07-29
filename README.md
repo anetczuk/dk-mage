@@ -50,5 +50,10 @@ For example calling `./configure/lin_release_gcc.sh` will create `build/lin_rele
 - Dungeon Keeper 2 mapper: (https://www.killerbeesoftware.com/dk2/)
 - Diablo map generator explained: (https://www.boristhebrave.com/2019/07/14/dungeon-generation-in-diablo-1/)
 
-### Various libraries
-- TCLAP library: (http://tclap.sourceforge.net/)
+### external libraries
+- ADiKtEd: handling DK's file formats (https://github.com/dkfans/ADiKtEd)
+- filesystem: pre C++17 `std::filesystem` compatible implementation (https://github.com/gulrak/filesystem)
+- LEMON: graphs implementation (https://lemon.cs.elte.hu)
+- TCLAP: command line args processing (http://tclap.sourceforge.net/)
+- inih: INI files parser (https://github.com/jtilly/inih)
+- Catch2: testing framework for unit-tests (https://github.com/catchorg/Catch2)
