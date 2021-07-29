@@ -25,6 +25,7 @@
 
 using ghc::filesystem::path;
 using ghc::filesystem::exists;
+using ghc::filesystem::current_path;
 
 //using std::filesystem::path;
 //using std::filesystem::exists;
@@ -116,15 +117,24 @@ int main( int argc, char** argv ) {
         input.add( outputPathArg ).add( outputIdArg ).add( outputAutoArg );
         cmd.add( input );
 
-        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
+        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "config.ini", "path string", cmd );
 
         cmd.parse( argc, argv );
 
         /// ---------------------------------------------------------
 
-        const std::string& configPath = configArg.getValue();
-        LOG() << "loading config file: " << configPath;
+        std::string configPath = configArg.getValue();
+        if ( configArg.isSet() == false ) {
+            /// config parameter not given -- read default file
+            path currPath = current_path() / configPath;
+            configPath = currPath.u8string();
+        }
         cli::Config config( configPath );
+        if ( config.isValid() == false ) {
+            LOG() << "unable to parse config file '" << configPath << "'";
+            return 1;
+        }
+        LOG() << "loaded config file: " << configPath;
 
         const std::string& mapSeed = seedArg.getValue();
         if ( initializeRand( mapSeed ) == false ) {

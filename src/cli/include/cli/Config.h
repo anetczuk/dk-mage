@@ -23,6 +23,8 @@ namespace cli {
 
         Config( const std::string& configPath = "" );
 
+        bool isValid() const;
+
         std::string readDataPath() const {
             return readFieldString( "data", "data_path" );
         }

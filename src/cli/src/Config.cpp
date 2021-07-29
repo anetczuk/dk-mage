@@ -15,6 +15,19 @@ namespace cli {
     Config::Config( const std::string& configPath ): configPath( configPath ) {
     }
 
+    bool Config::isValid() const {
+        if ( configPath.empty() ) {
+            return false;
+        }
+
+        INIReader reader( configPath );
+        if (reader.ParseError() != 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     std::string Config::readFieldString( const std::string& section, const std::string& field ) const {
         if ( configPath.empty() ) {
             return "";
