@@ -87,12 +87,16 @@ set( LEMON_THREADING "None" )
 FetchContent_MakeAvailable( lemon )
 
 
-## ================= building modules =================
-
-if( CMAKE_TESTING_ENABLED )   
-    find_package( Catch2 REQUIRED )
+### build catch2 project
+if( CMAKE_TESTING_ENABLED )
+    FetchContent_Declare( catch2
+                          URL ${EXTERNAL_DIR}/catch2/Catch2-2.13.6.zip
+    )
+    FetchContent_MakeAvailable( catch2 )
 endif()
 
+
+## ================= building modules =================
 
 add_subdirectory( utils )
 add_subdirectory( adiktedpp )
