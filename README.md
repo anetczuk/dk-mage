@@ -22,8 +22,6 @@ For simple generation just execute `dkmagecli` to generate random map. Generated
 
 ## Building under Linux
 
-To compile the sourcecode use any C++ compiler supporting *C++17* standard.
-
 To generate build system execute one of scripts placed in `./configure` directory. It will create proper folder in `build` directory.
 For example calling `./configure/lin_release_gcc.sh` will create `build/lin_release_gcc` directory. To build the application then go to `build/lin_release_gcc` and run `make`.
 

@@ -23,12 +23,12 @@ set( CMAKE_DEBUG_POSTFIX _d )
 if (CMAKE_VERSION VERSION_LESS "3.1")
     ## handled by gcc and clang
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c17" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14" )
 else()
     ## supported by CMake 3.1 and above
     set( CMAKE_C_STANDARD 99 )
     set( CMAKE_C_STANDARD_REQUIRED ON )
-    set( CMAKE_CXX_STANDARD 17 )
+    set( CMAKE_CXX_STANDARD 14 )
     set( CMAKE_CXX_STANDARD_REQUIRED ON )
 endif()
 
