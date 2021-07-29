@@ -17,7 +17,52 @@ Following map types can be generated:
 
 Before first run open and edit `config.ini` file placed along main executable. Inside the file fill required variables (paths to game directories).
 
-For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in game's directory ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help`.
+For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in game's directory ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help`:
+
+```
+USAGE: 
+
+   dkmagecli  [-h] [--version] [--outputAuto|--outputId <int>|--outputPath
+              <path string>] [--config <path string>] [--outbmp <path
+              string>] [--seed <any string>] [--type <cave|maze|random>]
+
+
+Where: 
+
+   --config <path string>
+     Path to configuration INI file
+
+   --type <cave|maze|random>
+     Map type
+
+   --seed <any string>
+     Generation seed
+
+   --outbmp <path string>
+     Path to map's output BMP file
+
+   Either of:
+      --outputPath <path string>
+        Path to map's output file (relative or absolute)
+
+      --outputId <int>
+        Id of output map (will be placed in game's level directory)
+
+      --outputAuto
+        Finds unused map id and use it to store map
+
+   --,  --ignore_rest
+     Ignores the rest of the labeled arguments following this flag.
+
+   --version
+     Displays version information and exits.
+
+   -h,  --help
+     Displays usage information and exits.
+
+   Map and scenario generator for Dungeon Keeper 1 PC game
+
+```
 
 
 ## Building under Linux
