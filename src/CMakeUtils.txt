@@ -96,3 +96,4 @@ function(copy_package_libraries package_name output_dir)
 endfunction()
 
 
+add_custom_target( purge COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/purge.cmake )
