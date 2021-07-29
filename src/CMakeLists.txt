@@ -78,6 +78,9 @@ IF(WIN32)
     set( adikted_TYPE STATIC )
 ENDIF()
 FetchContent_MakeAvailable( adikted )
+if ( CMAKE_COMPILER_IS_GNUCC )
+    target_compile_options( adikted PRIVATE "-w" )
+endif()
 ## install( TARGETS adikted LIBRARY DESTINATION "." )
 
 
@@ -91,6 +94,9 @@ FetchContent_Declare( lemon
 )
 set( LEMON_THREADING "None" )
 FetchContent_MakeAvailable( lemon )
+if ( CMAKE_COMPILER_IS_GNUCC )
+    target_compile_options( lemon PRIVATE "-w" )
+endif()
 
 
 ### build tclap project
