@@ -69,6 +69,6 @@ add_subdirectory( dkmage )
 add_subdirectory( cli )
 
 
-if( NOT EXISTS "bin/config.ini" )
-    configure_file( config.ini.in bin/config.ini @ONLY )
+if( NOT EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini" )
+    configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini @ONLY )
 endif()
