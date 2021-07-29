@@ -10,9 +10,6 @@ endif()
 set( TARGET_NAME dkmage_tests )
 
 
-include_directories( "../include" )
-
-
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
@@ -21,8 +18,8 @@ add_definitions( -DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data" )
 
 
 add_executable( ${TARGET_NAME} ${cpp_files} )
+target_include_directories( ${TARGET_NAME} PRIVATE ../include )
 target_link_libraries( ${TARGET_NAME} PUBLIC dkmage PRIVATE Catch2::Catch2 )
-#target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
 
 
 if (WIN32)

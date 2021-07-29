@@ -6,9 +6,6 @@
 set( TARGET_NAME utils )
 
 
-include_directories( "${EXTERNAL_DIR}/filesystem/filesystem" )
-
-
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
@@ -19,7 +16,7 @@ else()
     add_library( ${TARGET_NAME} SHARED ${cpp_files} )
 endif()
 
-target_include_directories( ${TARGET_NAME} PUBLIC "../include" )
+target_include_directories( ${TARGET_NAME} PUBLIC ../include ${filesystem_SOURCE_DIR} )
 target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
 
 

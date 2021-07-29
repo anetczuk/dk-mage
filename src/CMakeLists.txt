@@ -51,7 +51,16 @@ endif()
 
 include( FetchContent )
 
-### build inih project (header only)
+
+### build filesystem project (headers only)
+#FetchContent_Declare( filesystem
+#                      SOURCE_DIR ${EXTERNAL_DIR}/filesystem/filesystem
+#)
+#FetchContent_MakeAvailable( filesystem )
+set( filesystem_SOURCE_DIR "${EXTERNAL_DIR}/filesystem/filesystem" )
+
+
+### build inih project (headers only)
 FetchContent_Declare( inih
                       URL ${EXTERNAL_DIR}/inih/inih-master.zip
                       SOURCE_DIR ${FETCHCONTENT_BASE_DIR}/inih-src/inih
@@ -94,6 +103,7 @@ FetchContent_Declare( tclap
                       PATCH_COMMAND ${tclap_patch_command}
 )
 FetchContent_MakeAvailable( tclap )
+set( tclap_INCLUDE_DIR ${tclap_SOURCE_DIR}/include )
 
 
 ### build catch2 project
