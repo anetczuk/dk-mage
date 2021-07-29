@@ -1,0 +1,12 @@
+##
+## generator's configuration file
+##
+
+[data]
+
+## path to game's 'data' directory
+data_path=
+
+## path to game's 'levels' directory
+levels_path=
+

@@ -67,3 +67,8 @@ add_subdirectory( utils )
 add_subdirectory( adiktedpp )
 add_subdirectory( dkmage )
 add_subdirectory( cli )
+
+
+if( NOT EXISTS "bin/config.ini" )
+    configure_file( config.ini.in bin/config.ini @ONLY )
+endif()
