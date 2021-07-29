@@ -5,12 +5,12 @@ Generate maps Dungeon Keeper 1 PC game.
 
 ## Generated map types
 
-Following map types cam be generated:
-- *cave*
-- *maze*
+Following map types can be generated:
+- *cave* -- open area with chambers in center with hidden enemy creatures
+- *maze* -- big maze in center of map with hidden trasures and traps
 
-[![*cave* mode](doc/cave-small.png "*cave* mode")](doc/cave-big.png)
-[![*maze* mode](doc/maze-small.png "*maze* mode")](doc/maze-big.png)
+[![*cave* type](doc/cave-small.png "*cave* type")](doc/cave-big.png)
+[![*maze* type](doc/maze-small.png "*maze* type")](doc/maze-big.png)
 
 
 ## Running generator
@@ -22,16 +22,16 @@ For simple generation just execute `dkmagecli` to generate random map. Generated
 
 ## Building under Linux
 
-Following packages are required to build application under Linux:
+To compile the sourcecode use any C++ compiler supporting *C++17* standard.
+
+To generate build system execute one of scripts placed in `./configure` directory. It will create proper folder in `build` directory.
+For example calling `./configure/lin_release_gcc.sh` will create `build/lin_release_gcc` directory. To build the application then go to `build/lin_release_gcc` and run `make`.
+
+Following packages are required to build application under Linux for Windows platform:
 - *g++-mingw-w64-i686*
 - *gcc-mingw-w64-i686*
 - *binutils-mingw-w64-i686*
 They can be installed by following command `sudo apt install g++-mingw-w64-i686 gcc-mingw-w64-i686 binutils-mingw-w64-i686`.
-
-Moreover compiler have to support *C++17* standard.
-
-To generate build system execute one of scripts placed in `./configure` directory. It will create proper folder in `build` directory.
-For example calling `./configure/lin_release_gcc.sh` will create `build/lin_release_gcc` directory. To build the application then go to `build/lin_release_gcc` and run `make`.
 
 
 ## Examples of various used techniques:
