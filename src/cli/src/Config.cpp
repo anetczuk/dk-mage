@@ -21,11 +21,17 @@ namespace cli {
         }
 
         INIReader reader( configPath );
-        if (reader.ParseError() != 0) {
+        const int lineNum = reader.ParseError();
+        if ( lineNum == 0) {
+            return true;
+        }
+        if ( lineNum < 0 ) {
+            LOG() << "can't open ini file";
             return false;
         }
 
-        return true;
+        LOG() << "parse error at line " << lineNum;
+        return false;
     }
 
     std::string Config::readFieldString( const std::string& section, const std::string& field ) const {
