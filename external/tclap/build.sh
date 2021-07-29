@@ -23,6 +23,11 @@ mkdir -p "$BUILD_PATH"
 
 tar xjf "$SCRIPT_DIR/$SRC_ARCHIVE" -C "$SCRIPT_DIR/src"
 
+## copy fixes
+if compgen -G "$SCRIPT_DIR/fix/*" > /dev/null; then
+    cp -r $SCRIPT_DIR/fix/* "$SRC_PATH"
+fi
+
 
 mkdir -p "$INSTALL_PATH"
 cd "$BUILD_PATH"

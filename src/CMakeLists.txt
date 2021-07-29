@@ -21,9 +21,6 @@ SET( EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external" )
 
 list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 
-list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/adikted/install" )
-list( APPEND CMAKE_PREFIX_PATH "${EXTERNAL_DIR}/catch2/install/lib/cmake" )
-
 
 include( CMakeCompileFlags.txt )
 
@@ -85,6 +82,18 @@ FetchContent_Declare( lemon
 )
 set( LEMON_THREADING "None" )
 FetchContent_MakeAvailable( lemon )
+
+
+### build tclap project
+set( tclap_UNPACK_DIR ${FETCHCONTENT_BASE_DIR}/tclap-src )
+set( tclap_patch_command ${CMAKE_COMMAND} -DDESTINATION_DIR=${tclap_UNPACK_DIR}/ -P ${EXTERNAL_DIR}/tclap/patch.cmake )
+set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
+FetchContent_Declare( tclap
+                      URL ${EXTERNAL_DIR}/tclap/tclap-1.4.0-rc1.tar.bz2
+                      SOURCE_DIR ${tclap_UNPACK_DIR}
+                      PATCH_COMMAND ${tclap_patch_command}
+)
+FetchContent_MakeAvailable( tclap )
 
 
 ### build catch2 project
