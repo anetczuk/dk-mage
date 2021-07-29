@@ -8,7 +8,7 @@ set( TARGET_NAME dkmagecli )
 
 ### build tclap project
 set( tclap_UNPACK_DIR ${FETCHCONTENT_BASE_DIR}/tclap-src )
-set( tclap_patch_command ${CMAKE_COMMAND} -DDESTINATION_DIR=${tclap_UNPACK_DIR}/ -P ${EXTERNAL_DIR}/tclap/patch.cmake )
+set( tclap_patch_command ${CMAKE_COMMAND} -DSOURCE_DIR=${EXTERNAL_DIR}/tclap/fix/ -DDESTINATION_DIR=${tclap_UNPACK_DIR}/ -P ${PROJECT_SOURCE_DIR}/cmake/patch.cmake )
 set( BUILD_TESTING OFF CACHE BOOL "" FORCE )
 FetchContent_Declare( tclap
                       URL ${EXTERNAL_DIR}/tclap/tclap-1.4.0-rc1.tar.bz2

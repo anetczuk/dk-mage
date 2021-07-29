@@ -8,7 +8,7 @@ set( TARGET_NAME dkmage )
 
 ### build lemon project
 set( lemon_UNPACK_DIR ${FETCHCONTENT_BASE_DIR}/lemon-src )
-set( lemon_patch_command ${CMAKE_COMMAND} -DDESTINATION_DIR=${lemon_UNPACK_DIR}/ -P ${EXTERNAL_DIR}/lemon/patch.cmake )
+set( lemon_patch_command ${CMAKE_COMMAND} -DSOURCE_DIR=${EXTERNAL_DIR}/lemon/fix/ -DDESTINATION_DIR=${lemon_UNPACK_DIR}/ -P ${PROJECT_SOURCE_DIR}/cmake/patch.cmake )
 FetchContent_Declare( lemon
                       URL ${EXTERNAL_DIR}/lemon/lemon-1.3.1.zip
                       SOURCE_DIR ${lemon_UNPACK_DIR}
