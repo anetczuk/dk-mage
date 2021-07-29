@@ -6,6 +6,21 @@
 set( TARGET_NAME adiktedpp )
 
 
+### build adikted project
+FetchContent_Declare( adikted
+                      URL ${EXTERNAL_DIR}/adikted/ADiKtEd-master.zip
+                      SOURCE_SUBDIR libadikted
+)
+IF(WIN32)
+    set( adikted_TYPE STATIC )
+ENDIF()
+FetchContent_MakeAvailable( adikted )
+if ( CMAKE_COMPILER_IS_GNUCC )
+    target_compile_options( adikted PRIVATE "-w" )
+endif()
+## install( TARGETS adikted LIBRARY DESTINATION "." )
+
+
 file(GLOB_RECURSE cpp_files *.cpp )
 
 

@@ -6,6 +6,21 @@
 set( TARGET_NAME dkmage )
 
 
+### build lemon project
+set( lemon_UNPACK_DIR ${FETCHCONTENT_BASE_DIR}/lemon-src )
+set( lemon_patch_command ${CMAKE_COMMAND} -DDESTINATION_DIR=${lemon_UNPACK_DIR}/ -P ${EXTERNAL_DIR}/lemon/patch.cmake )
+FetchContent_Declare( lemon
+                      URL ${EXTERNAL_DIR}/lemon/lemon-1.3.1.zip
+                      SOURCE_DIR ${lemon_UNPACK_DIR}
+                      PATCH_COMMAND ${lemon_patch_command}
+)
+set( LEMON_THREADING "None" )
+FetchContent_MakeAvailable( lemon )
+if ( CMAKE_COMPILER_IS_GNUCC )
+    target_compile_options( lemon PRIVATE "-w" )
+endif()
+
+
 file(GLOB_RECURSE cpp_files *.cpp )
 
 

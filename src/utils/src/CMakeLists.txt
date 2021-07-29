@@ -6,6 +6,14 @@
 set( TARGET_NAME utils )
 
 
+### build filesystem project (headers only)
+#FetchContent_Declare( filesystem
+#                      SOURCE_DIR ${EXTERNAL_DIR}/filesystem/filesystem
+#)
+#FetchContent_MakeAvailable( filesystem )
+set( filesystem_SOURCE_DIR "${EXTERNAL_DIR}/filesystem/filesystem" )
+
+
 file(GLOB_RECURSE cpp_files *.cpp )
 
 
