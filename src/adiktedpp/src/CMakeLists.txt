@@ -9,12 +9,18 @@ set( TARGET_NAME adiktedpp )
 ### build adikted project
 FetchContent_Declare( adikted
                       URL ${EXTERNAL_DIR}/adikted/ADiKtEd-master.zip
-                      SOURCE_SUBDIR libadikted
+## It has been found that 'SOURCE_SUBDIR' does not work under WLS (Ubuntu 20 & cmake 3.16). 
+## Workaround is to maunally execute 'FetchContent_Populate()' instead of 'FetchContent_MakeAvailable()'.
+##                      SOURCE_SUBDIR libadikted
 )
 IF(WIN32)
     set( adikted_TYPE STATIC )
 ENDIF()
-FetchContent_MakeAvailable( adikted )
+FetchContent_GetProperties( adikted )
+if( NOT adikted_POPULATED )   
+    FetchContent_Populate( adikted )
+    add_subdirectory( ${adikted_SOURCE_DIR}/libadikted ${adikted_BINARY_DIR} )
+endif()
 if ( CMAKE_COMPILER_IS_GNUCC )
     target_compile_options( adikted PRIVATE "-w" )
 endif()
