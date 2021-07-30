@@ -117,7 +117,7 @@ int main( int argc, char** argv ) {
         input.add( outputPathArg ).add( outputIdArg ).add( outputAutoArg );
         cmd.add( input );
 
-        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "config.ini", "path string", cmd );
+        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
 
         cmd.parse( argc, argv );
 
