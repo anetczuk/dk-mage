@@ -126,7 +126,7 @@ int main( int argc, char** argv ) {
         std::string configPath = configArg.getValue();
         if ( configArg.isSet() == false ) {
             /// config parameter not given -- read default file
-            path currPath = current_path() / configPath;
+            path currPath = current_path() / path( argv[0] ).parent_path() / configPath;
             configPath = currPath.string();
         }
         cli::Config config( configPath );
