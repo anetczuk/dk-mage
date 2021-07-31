@@ -26,6 +26,7 @@
 using ghc::filesystem::path;
 using ghc::filesystem::exists;
 using ghc::filesystem::current_path;
+using ghc::filesystem::create_directories;
 
 //using std::filesystem::path;
 //using std::filesystem::exists;
@@ -158,7 +159,7 @@ int main( int argc, char** argv ) {
 
         LOG() << "generation completed";
 
-        std::string outputLevelFile = "";
+        path outputLevelFile = "";
         if ( outputPathArg.isSet() ) {
             /// store generated level
             const std::string levelsPath = config.readLevelsPath();
@@ -196,8 +197,10 @@ int main( int argc, char** argv ) {
         }
 
         if ( outputLevelFile.empty() == false ) {
+            create_directories( outputLevelFile.parent_path() );                      /// create parent directories
             typeGenerator->storeLevel( outputLevelFile );
-            typeGenerator->storePreview( outputLevelFile + ".bmp" );
+            const std::string outputBmp = outputLevelFile.string() + ".bmp";
+            typeGenerator->storePreview( outputBmp );
         } else {
             LOG() << "unable to store level: empty path";
         }
@@ -205,6 +208,8 @@ int main( int argc, char** argv ) {
         /// store preview image
         const std::string& bmpFile = outbmpArg.getValue();
         if ( bmpFile.empty() == false ) {
+            path outputBmp = bmpFile;
+            create_directories( outputBmp.parent_path() );                      /// create parent directories
             typeGenerator->storePreview( bmpFile );
         }
 
