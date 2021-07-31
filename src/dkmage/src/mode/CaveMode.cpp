@@ -7,13 +7,10 @@
 
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
-#include "dkmage/BaseLevelGenerator.h"
 
 #include "adiktedpp/script/Script.h"
 
 #include "utils/Rand.h"
-
-#include <random>
 
 
 namespace dkmage {

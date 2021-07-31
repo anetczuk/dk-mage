@@ -8,7 +8,6 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Maze.h"
 #include "dkmage/spatial/Dungeon.h"
-#include "dkmage/BaseLevelGenerator.h"
 
 #include "adiktedpp/script/Script.h"
 

@@ -3,7 +3,7 @@
 // *
 // */
 //
-//#include "Maze.h"
+//#include "dkmage/mode/Maze.h"
 //
 //
 //namespace dkmage {
