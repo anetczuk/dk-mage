@@ -26,11 +26,11 @@ namespace cli {
         bool isValid() const;
 
         std::string readDataPath() const {
-            return readFieldString( "data", "data_path" );
+            return readFieldString( "general", "data_path" );
         }
 
         std::string readLevelsPath() const {
-            return readFieldString( "data", "levels_path", true );
+            return readFieldString( "general", "levels_path", true );
         }
 
 

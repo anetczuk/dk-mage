@@ -2,12 +2,12 @@
 ## Generator's configuration file.
 ##
 
-[data]
+[general]
 
-## Path to DK1 Original or Gold version 'data' directory.
+## Path to DK1 Original or Gold version 'data' directory. Field is required.
 data_path=
 
-## Generated maps default output directory.
+## Generated maps default output directory. Field optional (maps will be stored to work directory if empty).
 ## The behaviour can be overriden by "--outputPath" cmd parameter.
 levels_path=
 
