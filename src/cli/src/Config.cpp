@@ -34,7 +34,7 @@ namespace cli {
         return false;
     }
 
-    std::string Config::readFieldString( const std::string& section, const std::string& field ) const {
+    std::string Config::readFieldString( const std::string& section, const std::string& field, const bool allowEmpty ) const {
         if ( configPath.empty() ) {
             return "";
         }
@@ -46,6 +46,9 @@ namespace cli {
         }
 
         const std::string fieldData = reader.Get(section, field, "");
+        if ( allowEmpty ) {
+            return fieldData;
+        }
         if ( fieldData.empty() ) {
             const std::string message = std::string( "Can't read '" ) + field + "' field in '" + section + "' section";
             throw std::runtime_error( message );

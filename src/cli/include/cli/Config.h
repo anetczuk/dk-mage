@@ -30,13 +30,13 @@ namespace cli {
         }
 
         std::string readLevelsPath() const {
-            return readFieldString( "data", "levels_path" );
+            return readFieldString( "data", "levels_path", true );
         }
 
 
     private:
 
-        std::string readFieldString( const std::string& section, const std::string& field ) const;
+        std::string readFieldString( const std::string& section, const std::string& field, const bool allowEmpty = false ) const;
 
     };
 

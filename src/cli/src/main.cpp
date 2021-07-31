@@ -127,7 +127,7 @@ int main( int argc, char** argv ) {
         if ( configArg.isSet() == false ) {
             /// config parameter not given -- read default file
             path currPath = current_path() / configPath;
-            configPath = currPath.u8string();
+            configPath = currPath.string();
         }
         cli::Config config( configPath );
         if ( config.isValid() == false ) {
@@ -158,30 +158,48 @@ int main( int argc, char** argv ) {
 
         LOG() << "generation completed";
 
+        std::string outputLevelFile = "";
         if ( outputPathArg.isSet() ) {
             /// store generated level
             const std::string levelsPath = config.readLevelsPath();
             const std::string levelFile  = outputPathArg.getValue();         /// yes, copy
-            const path levelPath = levelFile;
-            if ( levelPath.is_absolute() ) {
-                /// absolute path
-                typeGenerator->storeLevel( levelFile );
+            const path outputFile = levelFile;
+            if ( outputFile.is_absolute() ) {
+                /// absolute command-line argument path
+                outputLevelFile = levelFile;
+            } else if ( levelsPath.empty() == false ) {
+                /// level_path not empty -- append relative path
+                const path outputPath = path(levelsPath) / levelFile;
+                outputLevelFile = outputPath.string();
             } else {
-                /// relative path
-                const std::string outPath = levelsPath + "/" + levelFile;
-                typeGenerator->storeLevel( outPath );
+                outputLevelFile = levelFile;
             }
         } else if ( outputIdArg.isSet() ) {
             const std::string levelsPath  = config.readLevelsPath();
             const std::size_t levelNumber = outputIdArg.getValue();
             const std::string mapName     = adiktedpp::Level::prepareMapName( levelNumber );
-            const std::string levelFile   = levelsPath + "/" + mapName;
-            typeGenerator->storeLevel( levelFile );
+            if ( levelsPath.empty() == false ) {
+                const path outputPath     = path(levelsPath) / mapName;
+                outputLevelFile           = outputPath.string();
+            } else {
+                outputLevelFile           = mapName;
+            }
         } else {
             const std::string levelsPath = config.readLevelsPath();
             const std::string mapName    = findFreeMapName( levelsPath );
-            const std::string levelFile  = levelsPath + "/" + mapName;
-            typeGenerator->storeLevel( levelFile );
+            if ( levelsPath.empty() == false ) {
+                const path outputPath     = path(levelsPath) / mapName;
+                outputLevelFile           = outputPath.string();
+            } else {
+                outputLevelFile           = mapName;
+            }
+        }
+
+        if ( outputLevelFile.empty() == false ) {
+            typeGenerator->storeLevel( outputLevelFile );
+            typeGenerator->storePreview( outputLevelFile + ".bmp" );
+        } else {
+            LOG() << "unable to store level: empty path";
         }
 
         /// store preview image
