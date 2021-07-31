@@ -247,8 +247,8 @@ namespace dkmage {
             drawGoldVein( level, veinRect, 2 );
 
             /// add other
-            Point pos = firstCenter + Point(0, 2);
-            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
+//            Point pos = firstCenter + Point(0, 2);
+//            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
             level.setCreature( firstCenter.x, firstCenter.y-2, 1, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
             level.setCreature( firstCenter.x, firstCenter.y-2, 7, adiktedpp::SubTypeCreature::STC_SKELETON, 3 );
             level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );

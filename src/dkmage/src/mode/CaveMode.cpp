@@ -43,11 +43,9 @@ namespace dkmage {
 
             script.addLine( "" );
             script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL );
-//                script.setEvilCreaturesAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_POSSIBLE );
 
             script.addLine( "" );
             script.setRoomsStandard();
-//                script.setRoomsAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
 
             script.addLine( "" );
             script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
@@ -57,7 +55,6 @@ namespace dkmage {
 
             script.addLine( "" );
             script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
-//                script.setMagicAvailable( adiktedpp::PlayerType::PT_ALL, adiktedpp::AvailableMode::AM_ENABLED );
 
             script.addLine( "" );
             script.addLine( "" );
