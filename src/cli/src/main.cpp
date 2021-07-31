@@ -110,12 +110,13 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
-        TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (relative or absolute)", false, "", "path string" );
+        TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
+        TCLAP::ValueArg<std::string> outputSubPathArg( "", "output_subpath", "Path to map's output file relative to 'level_path' config field", false, "", "path string" );
         TCLAP::ValueArg<std::size_t> outputIdArg( "", "output_id", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
         TCLAP::SwitchArg outputAutoArg( "", "output_auto", "Finds unused map id and use it to store map", true );
         TCLAP::EitherOf input;
 //        TCLAP::OneOf input;
-        input.add( outputPathArg ).add( outputIdArg ).add( outputAutoArg );
+        input.add( outputPathArg ).add( outputSubPathArg ).add( outputIdArg ).add( outputAutoArg );
         cmd.add( input );
 
         TCLAP::ValueArg<std::string> outbmpArg( "", "output_bmp", "Path to map's output BMP file", false, "", "path string", cmd );
@@ -159,21 +160,32 @@ int main( int argc, char** argv ) {
 
         LOG() << "generation completed";
 
+        /// store generated level
         path outputLevelFile = "";
         if ( outputPathArg.isSet() ) {
-            /// store generated level
-            const std::string levelsPath = config.readLevelsPath();
-            const std::string levelFile  = outputPathArg.getValue();         /// yes, copy
-            const path outputFile = levelFile;
-            if ( outputFile.is_absolute() ) {
+            /// store in absolute path or path relative to work dir
+            const path outputPath = outputPathArg.getValue();
+            if ( outputPath.is_absolute() ) {
                 /// absolute command-line argument path
-                outputLevelFile = levelFile;
+                outputLevelFile = outputPath;
+            } else {
+                /// relative path to work dir
+                const path output = current_path() / outputPath;
+                outputLevelFile = output.string();
+            }
+        } else if ( outputSubPathArg.isSet() ) {
+            /// store in path relative to 'levels_path'
+            const std::string levelsPath = config.readLevelsPath();
+            const path outputSubPath        = outputSubPathArg.getValue();
+            if ( outputSubPath.is_absolute() ) {
+                /// absolute command-line argument path
+                outputLevelFile = outputSubPath;
             } else if ( levelsPath.empty() == false ) {
                 /// level_path not empty -- append relative path
-                const path outputPath = path(levelsPath) / levelFile;
-                outputLevelFile = outputPath.string();
+                const path output = path(levelsPath) / outputSubPath;
+                outputLevelFile = output.string();
             } else {
-                outputLevelFile = levelFile;
+                outputLevelFile = outputSubPath;
             }
         } else if ( outputIdArg.isSet() ) {
             const std::string levelsPath  = config.readLevelsPath();
