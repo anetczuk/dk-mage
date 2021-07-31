@@ -69,6 +69,12 @@ add_subdirectory( dkmage )
 add_subdirectory( cli )
 
 
-if( NOT EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini" )
-    configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini @ONLY )
+set( CUSTOM_CONFIG_PATH "" CACHE FILEPATH "Path to custom config.ini" )
+if( EXISTS "${CUSTOM_CONFIG_PATH}" )
+    ## custom config -- copy
+    configure_file( ${CUSTOM_CONFIG_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini COPYONLY )
+else()
+    if( NOT EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini" )
+        configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini @ONLY )
+    endif()
 endif()
