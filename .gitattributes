@@ -1,0 +1,4 @@
+﻿# Autodetect text files -- it is required to fix endofline 
+# characters problem of conversion \n to \r\n in GitHub Desktop application under Windows during clone/checkout
+* text=auto
+* text eol=lf
