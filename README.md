@@ -22,9 +22,10 @@ For simple generation just execute `dkmagecli` to generate random map. Generated
 ```
 USAGE: 
 
-   dkmagecli  [-h] [--version] [--outputAuto|--outputId <int>|--outputPath
-              <path string>] [--config <path string>] [--outbmp <path
-              string>] [--seed <any string>] [--type <cave|maze|random>]
+   dkmagecli  [-h] [--version] [--output_auto|--output_id <int>|
+              --output_path <path string>] [--config <path string>]
+              [--output_bmp <path string>] [--seed <any string>] [--type
+              <cave|maze|random>]
 
 
 Where: 
@@ -38,17 +39,17 @@ Where:
    --seed <any string>
      Generation seed
 
-   --outbmp <path string>
+   --output_bmp <path string>
      Path to map's output BMP file
 
    Either of:
-      --outputPath <path string>
+      --output_path <path string>
         Path to map's output file (relative or absolute)
 
-      --outputId <int>
+      --output_id <int>
         Id of output map (will be placed in game's level directory)
 
-      --outputAuto
+      --output_auto
         Finds unused map id and use it to store map
 
    --,  --ignore_rest

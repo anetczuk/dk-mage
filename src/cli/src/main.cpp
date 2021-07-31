@@ -110,15 +110,15 @@ int main( int argc, char** argv ) {
 
         TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
-        TCLAP::ValueArg<std::string> outputPathArg( "", "outputPath", "Path to map's output file (relative or absolute)", false, "", "path string" );
-        TCLAP::ValueArg<std::size_t> outputIdArg( "", "outputId", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
-        TCLAP::SwitchArg outputAutoArg( "", "outputAuto", "Finds unused map id and use it to store map", true );
+        TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (relative or absolute)", false, "", "path string" );
+        TCLAP::ValueArg<std::size_t> outputIdArg( "", "output_id", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
+        TCLAP::SwitchArg outputAutoArg( "", "output_auto", "Finds unused map id and use it to store map", true );
         TCLAP::EitherOf input;
 //        TCLAP::OneOf input;
         input.add( outputPathArg ).add( outputIdArg ).add( outputAutoArg );
         cmd.add( input );
 
-        TCLAP::ValueArg<std::string> outbmpArg( "", "outbmp", "Path to map's output BMP file", false, "", "path string", cmd );
+        TCLAP::ValueArg<std::string> outbmpArg( "", "output_bmp", "Path to map's output BMP file", false, "", "path string", cmd );
 
         cmd.parse( argc, argv );
 
