@@ -212,8 +212,9 @@ int main( int argc, char** argv ) {
 
         if ( outputLevelFile.empty() == false ) {
             create_directories( outputLevelFile.parent_path() );                      /// create parent directories
-            typeGenerator->storeLevel( outputLevelFile );
-            const std::string outputBmp = outputLevelFile.string() + ".bmp";
+            const std::string output = outputLevelFile.string();
+            typeGenerator->storeLevel( output );
+            const std::string outputBmp = output + ".bmp";
             typeGenerator->storePreview( outputBmp );
         } else {
             LOG() << "unable to store level: empty path";
