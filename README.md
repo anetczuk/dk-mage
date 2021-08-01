@@ -6,9 +6,9 @@ Generate maps for Dungeon Keeper 1 PC game.
 ## Generated map types
 
 Following map types can be generated:
-- *cave* -- open area with chambers in center with hidden enemy creatures
-- *maze* -- big maze in center of map with hidden trasures and traps
-- *herofortress* -- siege of hero fortress
+- *cave* -- open area with chambers in center with hidden enemy creatures ([sample](doc/cave.zip))
+- *maze* -- big maze in center of map with hidden trasures and traps ([sample](doc/maze.zip))
+- *herofortress* -- siege of hero fortress ([sample](doc/herofortress.zip))
 - *random* -- randomly picks one of modes described above
 
 [![*cave* type](doc/cave-small.png "*cave* type")](doc/cave-big.png)
