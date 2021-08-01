@@ -114,6 +114,14 @@ namespace adiktedpp {
         }
     }
 
+    inline bool isPassage( const SlabType type ) {
+        switch( type ) {
+        case SlabType::ST_PATH:     return true;
+        case SlabType::ST_CLAIMED:  return true;
+        default: return false;
+        }
+    }
+
     inline bool isWall( const SlabType type ) {
         switch( type ) {
         case SlabType::ST_WALLDRAPE:     return true;

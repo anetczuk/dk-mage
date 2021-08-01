@@ -545,6 +545,12 @@ namespace adiktedpp {
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;
         }
+
+        const SlabType currSlab = getSlab( x, y );
+        if ( isPassage( currSlab ) == false ) {
+            setSlab( x, y, SlabType::ST_PATH );
+        }
+
         LEVEL* level = data->lvl;
         const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
         const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;

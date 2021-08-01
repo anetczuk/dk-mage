@@ -132,16 +132,11 @@ namespace dkmage {
     }
 
     void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
-        level.setSlab( trapCenter, adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter, 4, trap );
 
-        level.setSlab( trapCenter + utils::Point(-1,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
-        level.setSlab( trapCenter + utils::Point( 1,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
-        level.setSlab( trapCenter + utils::Point(-1, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
-        level.setSlab( trapCenter + utils::Point( 1, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
     }
 
@@ -152,13 +147,9 @@ namespace dkmage {
     }
 
     void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
-        level.setSlab( trapCenter + utils::Point( 1, 0), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1, 0), 4, trap );
-        level.setSlab( trapCenter + utils::Point(-1, 0), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1, 0), 4, trap );
-        level.setSlab( trapCenter + utils::Point( 0,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 0,-1), 4, trap );
-        level.setSlab( trapCenter + utils::Point( 0, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 0, 1), 4, trap );
     }
 
@@ -169,13 +160,9 @@ namespace dkmage {
     }
 
     void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap ) {
-        level.setSlab( trapCenter + utils::Point( 1, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
-        level.setSlab( trapCenter + utils::Point(-1, 1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
-        level.setSlab( trapCenter + utils::Point( 1,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
-        level.setSlab( trapCenter + utils::Point(-1,-1), adiktedpp::SlabType::ST_PATH );
         level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
     }
 
