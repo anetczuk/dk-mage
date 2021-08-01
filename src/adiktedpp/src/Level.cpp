@@ -4,6 +4,7 @@
 
 #include "adiktedpp/Level.h"
 
+#include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/Messages.h"
 #include "adiktedpp/ThingType.h"
 #include "adiktedpp/Version.h"
@@ -381,60 +382,6 @@ namespace adiktedpp {
         setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, room, owner );
     }
 
-    struct VeinGenerator {
-        std::set< utils::Point > available;             /// points to use
-        std::set< utils::Point > added;                 /// points already visited/added
-
-        void add( const utils::Point& point ) {
-            if ( added.count( point ) > 0 ) {
-                return ;
-            }
-            added.insert( point );
-            addAvailable( point + utils::Point(  1, 0 ) );
-            addAvailable( point + utils::Point( -1, 0 ) );
-            addAvailable( point + utils::Point( 0,  1 ) );
-            addAvailable( point + utils::Point( 0, -1 ) );
-            available.erase( point );
-        }
-
-        void add( const std::size_t availableIndex ) {
-            auto avpos = available.begin();
-            std::advance( avpos, availableIndex );
-            add( *avpos );
-        }
-
-        utils::Point getAvailable( const std::size_t availableIndex ) {
-            auto avpos = available.begin();
-            std::advance( avpos, availableIndex );
-            const utils::Point point = *avpos;              /// yes, copy
-            available.erase( avpos );
-            return point;
-        }
-
-        void addAvailable( const utils::Point& point ) {
-            if ( added.count( point ) > 0 ) {
-                return ;
-            }
-            available.insert( point );
-        }
-
-        std::string print() const {
-            std::stringstream stream;
-            stream << "av: ";
-            for ( const utils::Point& item: available ) {
-                stream << item << " ";
-            }
-            stream << "\n";
-            stream << "add: ";
-            for ( const utils::Point& item: added ) {
-                stream << item << " ";
-            }
-            stream << "\n";
-            return stream.str();
-        }
-
-    };
-
     void Level::setSlabOutline( const utils::Rect& rect, const SlabType type ) {
         setSlab( rect.min.x, rect.min.y, rect.min.x, rect.max.y, type );
         setSlab( rect.min.x, rect.min.y, rect.max.x, rect.min.y, type );
@@ -706,18 +653,9 @@ namespace adiktedpp {
 //        setSlab( added, type );
 //        return added.size();
 
-        VeinGenerator vein;
-        const utils::Point center = boundingLimit.center();
-        vein.add( center );
-        while ( vein.added.size() < itemsNum ) {
-            const std::size_t avSize = vein.available.size();
-            const std::size_t vIndex = rand() % avSize;
-            const utils::Point point = vein.getAvailable( vIndex );
-            if ( boundingLimit.isInside( point ) == false ) {
-                continue ;
-            }
-            vein.add( point );
-        }
+        LakeGenerator vein;
+        vein.generate( boundingLimit, itemsNum );
+
         setSlab( vein.added, type );
         return vein.added.size();
     }
@@ -767,7 +705,7 @@ namespace adiktedpp {
         }
     }
 
-    void Level::digLine( const utils::Point& from, const utils::Point& to ) {
+    void Level::digLine( const utils::Point& from, const utils::Point& to, const SlabType type ) {
         const std::vector<utils::Point> points = line( from, to );
         for ( const utils::Point& item: points ) {
             const adiktedpp::SlabType currSlab = getSlab( item );
@@ -776,7 +714,7 @@ namespace adiktedpp {
                  adiktedpp::isLiquid( currSlab ) ||
                  adiktedpp::isImpassable( currSlab ) )
             {
-                setSlab( item, adiktedpp::SlabType::ST_PATH );
+                setSlab( item, type );
             }
         }
     }

@@ -187,7 +187,7 @@ namespace adiktedpp {
 
         void fortify( const utils::Rect& room, const PlayerType owner );
 
-        void digLine( const utils::Point& from, const utils::Point& to );
+        void digLine( const utils::Point& from, const utils::Point& to, const SlabType type = adiktedpp::SlabType::ST_PATH );
 
         void digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify );
 
