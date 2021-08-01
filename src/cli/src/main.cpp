@@ -6,9 +6,6 @@
 #include "cli/Config.h"
 
 #include "dkmage/Generator.h"
-#include "dkmage/mode/CaveMode.h"
-#include "dkmage/mode/MazeMode.h"
-#include "dkmage/mode/HeroFortressMode.h"
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Version.h"
@@ -35,10 +32,6 @@ using ghc::filesystem::create_directories;
 
 GLOBAL_SCOPE() {
     utils::Logger::setLogFile( "dkmage.log.txt" );
-
-    dkmage::Generator::registerMode<dkmage::mode::CaveMode>( "cave" );
-    dkmage::Generator::registerMode<dkmage::mode::MazeMode>( "maze" );
-    dkmage::Generator::registerMode<dkmage::mode::HeroFortressMode>( "herofortress" );
 }
 
 
