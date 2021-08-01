@@ -62,7 +62,12 @@ namespace dkmage {
             script.set( availableTraps );
 
             script.addLine( "" );
-            script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
+//            script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
+            adiktedpp::script::MagicAvailableState availableMagic( availablePlayers );
+            availableMagic.setStandard( adiktedpp::PlayerType::PT_ALL );
+            availableMagic.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Spell::S_POWER_DESTROY_WALLS, adiktedpp::script::AvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Spell::S_POWER_ARMAGEDDON, adiktedpp::script::AvailableMode::AM_DISABLED );
+            script.set( availableMagic );
 
             script.addLine( "" );
             script.addLine( "" );
@@ -200,6 +205,7 @@ namespace dkmage {
 
             const Point trapCenter = traps->position().center();
             level.setDoor( trapCenter.x, trapCenter.y - 2, adiktedpp::SubTypeDoor::STD_IRON, true );
+            level.setDoor( trapCenter.x, trapCenter.y + 2, adiktedpp::SubTypeDoor::STD_IRON, true );
             drawTrap3x3Diamond( level, trapCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
             drawTrap3x3Corners( level, trapCenter, adiktedpp::SubTypeTrap::STT_LIGHTNG );
 
