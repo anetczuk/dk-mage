@@ -29,9 +29,7 @@ namespace dkmage {
 
         protected:
 
-//            void generateMazeItems( spatial::Maze& maze );
-//
-//            void randHeroTrap( spatial::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor );
+            void generateCaves( const std::size_t cavesNum );
 
             void preparePlayerDungeon();
 

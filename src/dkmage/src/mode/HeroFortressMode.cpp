@@ -10,16 +10,18 @@
 
 #include "adiktedpp/script/Script.h"
 
-//#include "utils/Rand.h"
+#include "utils/Rand.h"
 
 
 namespace dkmage {
     namespace mode {
 
         void HeroFortressMode::generateLevel() {
+            LOG() << "preparing map";
             level.generateRandomMap( 9 );
 
-            LOG() << "preparing dungeons";
+            generateCaves( 28 );
+
             preparePlayerDungeon();
 
             prepareEnemyDungeon();
@@ -83,6 +85,46 @@ namespace dkmage {
                 LOG() << "map problem found: unclaimable areas";
                 generateLevel();
                 return ;
+            }
+        }
+
+        void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {
+            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Point mapCenter = mapRect.center();
+            const Rect region( mapCenter + utils::Point(0, 8), 70, 33 );
+
+            const int regionArea = region.area();
+            if ( regionArea < 0 ) {
+                LOG() << "invalid region area: " << regionArea;
+                return ;
+            }
+
+            std::set< std::size_t > indexSet;
+            for ( int i=0; i<regionArea; ++i ) {
+                indexSet.insert( i );
+            }
+
+            const std::size_t trapsNum = std::min( (std::size_t)regionArea, cavesNum );
+
+            for ( std::size_t i=0; i<trapsNum; ++i ) {
+                const int itemIndex = rand() % indexSet.size();
+                const int regionIndex = utils::getSetItem( indexSet, itemIndex, true );
+                const int rX = regionIndex % region.width();
+                const int rY = regionIndex / region.width();
+
+                const utils::Point caveCenter = region.min + utils::Point( rX, rY );
+                const adiktedpp::SlabType centerStab = level.getSlab( caveCenter );
+                if ( centerStab == adiktedpp::SlabType::ST_ROCK ) {
+                    continue ;
+                }
+
+                const utils::Rect chamber( caveCenter, 5, 5 );
+                level.setChamber( chamber, adiktedpp::SlabType::ST_PATH, 12 );
+
+                const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
+                const double centerFactor = ( 1.0 - 2.0 * centerDistance / region.height() );        /// in range [0.5, 1.0]
+                const int creatureLevel = centerFactor * 7 + 3;
+                drawHeroTrap( level, caveCenter, creatureLevel );
             }
         }
 
