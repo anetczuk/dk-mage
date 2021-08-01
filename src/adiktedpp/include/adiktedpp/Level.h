@@ -93,8 +93,11 @@ namespace adiktedpp {
 
         bool verifyMap( const bool silent = false );
 
-        /// count separated chambers by impassable rocks
+        /// count separated chambers by impassable rocks and gems
         std::size_t countSeparatedAreas();
+
+        /// count separated claim areas by impassable rocks, gems, water and lava
+        std::size_t countClaimAreas();
 
         void fillSeparatedAreas( const std::size_t areaLimit );
 
@@ -152,8 +155,14 @@ namespace adiktedpp {
 
         void setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked = false );
 
+        void setCreatureAuto( const std::size_t x, const std::size_t y, const SubTypeCreature creature,
+                              const std::size_t number=1, const std::size_t expLevel=0 );
+
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+
+        void setCreatureAuto( const utils::Point& point, const SubTypeCreature creature,
+                              const std::size_t number=1, const std::size_t expLevel=0 );
 
         void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );

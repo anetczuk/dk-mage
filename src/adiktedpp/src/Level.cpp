@@ -610,6 +610,34 @@ namespace adiktedpp {
 //        thing_add( level, thing );
     }
 
+    void Level::setCreatureAuto( const std::size_t x, const std::size_t y, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
+        LEVEL* level = data->lvl;
+        std::size_t creaturesNum = number;
+        std::size_t sub = 0;
+        while ( sub < 9 && creaturesNum > 0 ) {
+            const std::size_t sx = x * MAP_SUBNUM_X + sub % MAP_SUBNUM_X;
+            const std::size_t sy = y * MAP_SUBNUM_Y + sub / MAP_SUBNUM_X;
+            ++sub;
+
+            const std::size_t insertNum = min( (std::size_t) 5, creaturesNum );
+            creaturesNum -= insertNum;
+
+            for (std::size_t i=0; i<insertNum; ++i) {
+                unsigned char * thing = create_creature( level, sx, sy, (unsigned char) creature );
+                if ( thing == nullptr ) {
+                    return ;
+                }
+                set_thing_level( thing, expLevel );
+                thing_add( level, thing );
+            }
+        }
+    }
+
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
@@ -628,6 +656,10 @@ namespace adiktedpp {
             set_thing_owner( thing, (unsigned char) owner );
             thing_add( level, thing );
         }
+    }
+
+    void Level::setCreatureAuto( const utils::Point& point, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel ) {
+        setCreatureAuto( point.x, point.y, creature, number, expLevel );
     }
 
     void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
@@ -932,7 +964,33 @@ namespace adiktedpp {
         /// mark rock
         for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
             for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
-                if ( getSlab(x, y) == SlabType::ST_ROCK ) {
+                const SlabType stub = getSlab(x, y);
+                if ( stub == SlabType::ST_ROCK || stub == SlabType::ST_GEMS ) {
+                    data.set(x, y, -1 );
+                }
+            }
+        }
+
+        /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
+
+        const std::vector< FillData::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+        const std::size_t aSize = areas.size();
+        if ( aSize == 0 ) {
+            return 0;
+        }
+        return (aSize - 1);
+    }
+
+    std::size_t Level::countClaimAreas() {
+        FillData data;
+        /// mark rock
+        for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
+            for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+                const SlabType stub = getSlab(x, y);
+                if ( stub == SlabType::ST_ROCK || stub == SlabType::ST_GEMS ) {
+                    data.set(x, y, -1 );
+                }
+                if ( stub == SlabType::ST_LAVA || stub == SlabType::ST_WATER ) {
                     data.set(x, y, -1 );
                 }
             }
