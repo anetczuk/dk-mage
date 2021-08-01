@@ -539,6 +539,10 @@ namespace adiktedpp {
         setTrap( point.x, point.y, subIndex, trap );
     }
 
+    void Level::setTrap( const utils::Point& point, const SubTypeTrap trap ) {
+        setTrap( point.x, point.y, trap );
+    }
+
     void Level::setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
@@ -559,6 +563,10 @@ namespace adiktedpp {
             return ;
         }
         thing_add( level, thing );
+    }
+
+    void Level::setTrap( const std::size_t x, const std::size_t y, const SubTypeTrap trap ) {
+        setTrap( x, y, 4, trap );
     }
 
     void Level::setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked ) {
@@ -739,7 +747,8 @@ namespace adiktedpp {
         for ( int x = point.x-1; x<= point.x+1; ++x ) {
             for ( int y = point.y-1; y<= point.y+1; ++y ) {
                 const adiktedpp::SlabType currSlab = getSlab( x, y );
-                if ( adiktedpp::isEarth( currSlab ) ) {
+                if ( adiktedpp::isEarth( currSlab ) ||
+                     adiktedpp::isLiquid( currSlab ) ) {
                     setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
                 }
             }
@@ -750,7 +759,8 @@ namespace adiktedpp {
         for ( int x = room.min.x-1; x<= room.max.x+1; ++x ) {
             for ( int y = room.min.y-1; y<= room.max.y+1; ++y ) {
                 const adiktedpp::SlabType currSlab = getSlab( x, y );
-                if ( adiktedpp::isEarth( currSlab ) ) {
+                if ( adiktedpp::isEarth( currSlab ) ||
+                     adiktedpp::isLiquid( currSlab ) ) {
                     setSlab( x, y, adiktedpp::SlabType::ST_WALLDRAPE, owner );
                 }
             }

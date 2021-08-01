@@ -32,9 +32,7 @@ namespace dkmage {
             adiktedpp::script::Script script( level );
 
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
-
             script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
-
             script.addLine( "START_MONEY( PLAYER0,  20000 )" );                 /// does not show in treasure
 
             script.addLine( "" );
@@ -204,10 +202,12 @@ namespace dkmage {
             drawDungeon( level, enemyDungeon );
 
             const Point trapCenter = traps->position().center();
+            level.setDoor( trapCenter.x, trapCenter.y - 4, adiktedpp::SubTypeDoor::STD_IRON, true );
+            level.setTrap( trapCenter.x, trapCenter.y - 3, adiktedpp::SubTypeTrap::STT_BOULDER );
             level.setDoor( trapCenter.x, trapCenter.y - 2, adiktedpp::SubTypeDoor::STD_IRON, true );
-            level.setDoor( trapCenter.x, trapCenter.y + 2, adiktedpp::SubTypeDoor::STD_IRON, true );
             drawTrap3x3Diamond( level, trapCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
             drawTrap3x3Corners( level, trapCenter, adiktedpp::SubTypeTrap::STT_LIGHTNG );
+            level.setDoor( trapCenter.x, trapCenter.y + 2, adiktedpp::SubTypeDoor::STD_IRON, true );
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
 

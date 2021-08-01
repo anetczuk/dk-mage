@@ -149,7 +149,11 @@ namespace adiktedpp {
 
         void setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap );
 
+        void setTrap( const std::size_t x, const std::size_t y, const SubTypeTrap trap );
+
         void setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap );
+
+        void setTrap( const utils::Point& point, const SubTypeTrap trap );
 
         void setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked = false );
 
