@@ -18,7 +18,7 @@ Following map types can be generated:
 
 ## Running generator
 
-Before first run open and edit `config.ini` file placed along main executable. Inside the file fill required variables (paths to game directories).
+Before first run edit `config.ini` placed along main executable. Inside the file fill required variables (paths to game directories).
 
 For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in `level_path` defined in config. If the path is game's directory then map will be ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help` or open [dkmagecli help](doc/dkmagecli-help.md)
 
