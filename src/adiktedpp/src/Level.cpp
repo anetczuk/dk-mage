@@ -555,6 +555,55 @@ namespace adiktedpp {
         thing_add( level, thing );
     }
 
+    void Level::setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked ) {
+        setDoor( point.x, point.y, door, locked );
+    }
+
+    void Level::setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked ) {
+        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            /// out of map
+            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            return ;
+        }
+
+        switch( door ) {
+        case SubTypeDoor::STD_WOOD: {
+            setSlab( x, y, SlabType::ST_DOORWOOD1 );
+            break ;
+        }
+        case SubTypeDoor::STD_BRACED: {
+            setSlab( x, y, SlabType::ST_DOORBRACE1 );
+            break ;
+        }
+        case SubTypeDoor::STD_IRON: {
+            setSlab( x, y, SlabType::ST_DOORIRON1 );
+            break ;
+        }
+        case SubTypeDoor::STD_MAGIC: {
+            setSlab( x, y, SlabType::ST_DOORMAGIC1 );
+            break ;
+        }
+        }
+
+        LEVEL* level = data->lvl;
+        const std::size_t sx = x * MAP_SUBNUM_X + 1;
+        const std::size_t sy = y * MAP_SUBNUM_Y + 1;
+
+        for ( int i=get_thing_subnums(level,sx,sy)-1; i >=0; --i) {
+            unsigned char *sec_thing = (unsigned char *) get_thing(level,sx,sy,i);
+            if ( is_door(sec_thing) ) {
+                set_door_lock( level, sec_thing, locked );
+            }
+        }
+
+//        unsigned char * thing = create_door( level, sx, sy, (unsigned char) door );
+//        if ( thing == nullptr ) {
+//            return ;
+//        }
+//        set_door_lock( level, thing, locked );
+//        thing_add( level, thing );
+    }
+
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map

@@ -9,6 +9,7 @@
 #include "adiktedpp/PlayerType.h"
 #include "adiktedpp/SubTypeItem.h"
 #include "adiktedpp/SubTypeTrap.h"
+#include "adiktedpp/SubTypeDoor.h"
 #include "adiktedpp/SubTypeCreature.h"
 
 #include "utils/Rect.h"
@@ -146,6 +147,10 @@ namespace adiktedpp {
         void setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap );
 
         void setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap );
+
+        void setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked = false );
+
+        void setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked = false );
 
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
