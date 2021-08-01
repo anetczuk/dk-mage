@@ -761,7 +761,11 @@ namespace adiktedpp {
         const std::vector<utils::Point> points = line( from, to );
         for ( const utils::Point& item: points ) {
             const adiktedpp::SlabType currSlab = getSlab( item );
-            if ( adiktedpp::isEarth( currSlab ) || adiktedpp::isWall( currSlab ) || (currSlab == adiktedpp::SlabType::ST_ROCK) ) {
+            if ( adiktedpp::isEarth( currSlab ) ||
+                 adiktedpp::isWall( currSlab ) ||
+                 adiktedpp::isLiquid( currSlab ) ||
+                 adiktedpp::isImpassable( currSlab ) )
+            {
                 setSlab( item, adiktedpp::SlabType::ST_PATH );
             }
         }
@@ -771,7 +775,11 @@ namespace adiktedpp {
         const std::vector<utils::Point> points = line( from, to );
         for ( const utils::Point& item: points ) {
             const adiktedpp::SlabType currSlab = getSlab( item );
-            if ( adiktedpp::isEarth( currSlab ) || adiktedpp::isWall( currSlab ) || (currSlab == adiktedpp::SlabType::ST_ROCK) ) {
+            if ( adiktedpp::isEarth( currSlab ) ||
+                 adiktedpp::isWall( currSlab ) ||
+                 adiktedpp::isLiquid( currSlab ) ||
+                 adiktedpp::isImpassable( currSlab ) )
+            {
                 setSlab( item, adiktedpp::SlabType::ST_CLAIMED, owner );
                 if ( fortify ) {
                     this->fortify( item, owner );
@@ -965,7 +973,7 @@ namespace adiktedpp {
         for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
             for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
                 const SlabType stub = getSlab(x, y);
-                if ( stub == SlabType::ST_ROCK || stub == SlabType::ST_GEMS ) {
+                if ( adiktedpp::isImpassable( stub ) ) {
                     data.set(x, y, -1 );
                 }
             }
@@ -987,10 +995,10 @@ namespace adiktedpp {
         for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
             for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
                 const SlabType stub = getSlab(x, y);
-                if ( stub == SlabType::ST_ROCK || stub == SlabType::ST_GEMS ) {
+                if ( adiktedpp::isImpassable( stub ) ) {
                     data.set(x, y, -1 );
                 }
-                if ( stub == SlabType::ST_LAVA || stub == SlabType::ST_WATER ) {
+                if ( adiktedpp::isLiquid( stub ) ) {
                     data.set(x, y, -1 );
                 }
             }
@@ -1011,7 +1019,8 @@ namespace adiktedpp {
         /// mark rock
         for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
             for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
-                if ( getSlab(x, y) == SlabType::ST_ROCK ) {
+                const SlabType stub = getSlab(x, y);
+                if ( adiktedpp::isImpassable( stub ) ) {
                     data.set(x, y, -1 );
                 }
             }

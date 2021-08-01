@@ -106,6 +106,15 @@ namespace adiktedpp {
 
     const std::set< SlabType >& SlabDoors();
 
+
+    inline bool isImpassable( const SlabType type ) {
+        switch( type ) {
+        case SlabType::ST_ROCK:  return true;
+        case SlabType::ST_GEMS:  return true;
+        default: return false;
+        }
+    }
+
     inline bool isEarth( const SlabType type ) {
         switch( type ) {
         case SlabType::ST_EARTH:     return true;
@@ -129,6 +138,14 @@ namespace adiktedpp {
         case SlabType::ST_WALLWTWINS:    return true;
         case SlabType::ST_WALLWWOMAN:    return true;
         case SlabType::ST_WALLPAIRSHR:   return true;
+        default: return false;
+        }
+    }
+
+    inline bool isLiquid( const SlabType type ) {
+        switch( type ) {
+        case SlabType::ST_WATER:    return true;
+        case SlabType::ST_LAVA:     return true;
         default: return false;
         }
     }
