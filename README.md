@@ -38,6 +38,7 @@ Following packages are required to proceed with build:
 - *cmake*
 - *gcc*
 - *g++*
+
 They can be installed by following command `sudo apt install cmake g++ gcc`.
 
 ### Windows target
@@ -48,6 +49,7 @@ Following packages are required to build application under Linux for Windows pla
 - *g++-mingw-w64-i686*
 - *gcc-mingw-w64-i686*
 - *binutils-mingw-w64-i686*
+
 They can be installed by following command `sudo apt install g++-mingw-w64-i686 gcc-mingw-w64-i686 binutils-mingw-w64-i686`.
 
 ### running unit tests
