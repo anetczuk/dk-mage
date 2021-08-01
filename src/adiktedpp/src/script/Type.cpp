@@ -199,6 +199,9 @@ namespace adiktedpp {
 
         std::ostream& operator<<( std::ostream& os, const Spell data ) {
             switch( data ) {
+            case Spell::S_POWER_HAND:           { os << "POWER_HAND"; return os; }
+            case Spell::S_POWER_SLAP:           { os << "POWER_SLAP"; return os; }
+            case Spell::S_POWER_POSSESS:        { os << "POWER_POSSESS"; return os; }
             case Spell::S_POWER_IMP:            { os << "POWER_IMP"; return os; }
             case Spell::S_POWER_OBEY:           { os << "POWER_OBEY"; return os; }
             case Spell::S_POWER_SIGHT:          { os << "POWER_SIGHT"; return os; }
@@ -214,9 +217,6 @@ namespace adiktedpp {
             case Spell::S_POWER_CHICKEN:        { os << "POWER_CHICKEN"; return os; }
             case Spell::S_POWER_DESTROY_WALLS:  { os << "POWER_DESTROY_WALLS"; return os; }
             case Spell::S_POWER_ARMAGEDDON:     { os << "POWER_ARMAGEDDON"; return os; }
-            case Spell::S_POWER_POSSESS:        { os << "POWER_POSSESS"; return os; }
-            case Spell::S_POWER_SLAP:           { os << "POWER_SLAP"; return os; }
-            case Spell::S_POWER_HAND:           { os << "POWER_HAND"; return os; }
             }
             os << "UNKNOWN_SPELL[" << (int) data << "]";
             return os;
@@ -225,6 +225,9 @@ namespace adiktedpp {
         const std::set< Spell >& Spells() {
             static std::set< Spell > container;
             if ( container.empty() ) {
+                container.insert( Spell::S_POWER_HAND );
+                container.insert( Spell::S_POWER_SLAP );
+                container.insert( Spell::S_POWER_POSSESS );
                 container.insert( Spell::S_POWER_IMP );
                 container.insert( Spell::S_POWER_OBEY );
                 container.insert( Spell::S_POWER_SIGHT );
@@ -240,9 +243,6 @@ namespace adiktedpp {
                 container.insert( Spell::S_POWER_CHICKEN );
                 container.insert( Spell::S_POWER_DESTROY_WALLS );
                 container.insert( Spell::S_POWER_ARMAGEDDON );
-                container.insert( Spell::S_POWER_POSSESS );
-                container.insert( Spell::S_POWER_SLAP );
-                container.insert( Spell::S_POWER_HAND );
             }
             return container;
         }

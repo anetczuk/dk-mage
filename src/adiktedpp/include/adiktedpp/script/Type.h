@@ -152,6 +152,9 @@ namespace adiktedpp {
          *
          */
         enum class Spell {
+            S_POWER_HAND,
+            S_POWER_SLAP,
+            S_POWER_POSSESS,
             S_POWER_IMP,
             S_POWER_OBEY,
             S_POWER_SIGHT,
@@ -166,10 +169,7 @@ namespace adiktedpp {
             S_POWER_DISEASE,
             S_POWER_CHICKEN,
             S_POWER_DESTROY_WALLS,
-            S_POWER_ARMAGEDDON,
-            S_POWER_POSSESS,
-            S_POWER_SLAP,
-            S_POWER_HAND
+            S_POWER_ARMAGEDDON
         };
 
         std::ostream& operator<<( std::ostream& os, const Spell data );
