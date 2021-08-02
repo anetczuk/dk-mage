@@ -249,6 +249,58 @@ namespace dkmage {
             return minMax;
         }
 
+        static void addOutline( std::set< Point >& container, const Rect& rect ) {
+            for ( int y = rect.min.y; y<= rect.max.y; ++y ) {
+                container.insert( Point(rect.min.x, y) );
+                container.insert( Point(rect.max.x, y) );
+            }
+            for ( int x = rect.min.x; x<= rect.max.x; ++x ) {
+                container.insert( Point(x, rect.min.y) );
+                container.insert( Point(x, rect.max.y) );
+            }
+        }
+
+        static void addLine( std::set< Point >& container, const utils::Point& from, const utils::Point& to ) {
+            const std::vector<utils::Point> points = line( from, to );
+            if ( points.empty() ) {
+                return ;
+            }
+            for ( const utils::Point& item: points ) {
+                container.insert( item + utils::Point( 2, 0) );
+                container.insert( item + utils::Point(-2, 0) );
+                container.insert( item + utils::Point( 0,  2) );
+                container.insert( item + utils::Point( 0, -2) );
+            }
+            {
+                const Rect first( points.front(), 5, 5 );
+                addOutline( container, first );
+                const Rect last( points.back(), 5, 5 );
+                addOutline( container, last );
+            }
+        }
+
+        std::set< Point > Dungeon::outline() const {
+            std::set< Point > ret;
+
+            std::vector< const dkmage::spatial::Room* > roomsList = rooms();
+            for ( const dkmage::spatial::Room* item: roomsList ) {
+                /// room
+                Rect position = item->position();
+                position.grow( 2 );
+                addOutline( ret, position );
+
+                /// corridors
+                const Point& itemCenter = item->position().center();
+                std::vector< const dkmage::spatial::Room* > connectedList = connectedRooms( *item );
+                for ( const dkmage::spatial::Room* connected: connectedList ) {
+                    const Point& connectedCenter = connected->position().center();
+                    addLine( ret, itemCenter, connectedCenter );
+                }
+            }
+
+            return ret;
+        }
+
         bool Dungeon::isCollision( const Rect& rect ) {
             std::vector< Room* > roomsList = graph.itemsList();
             for ( const Room* item: roomsList ) {

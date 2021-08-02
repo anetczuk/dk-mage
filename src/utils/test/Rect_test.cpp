@@ -11,6 +11,34 @@
 using namespace utils;
 
 
+TEST_CASE( "Point_less" ) {
+    {
+        Point p1(0,0);
+        Point p2(1,0);
+        const bool less = p1 < p2;
+        CHECK( less == true );
+    }
+    {
+        Point p1(0,0);
+        Point p2(0,1);
+        const bool less = p1 < p2;
+        CHECK( less == true );
+    }
+
+    {
+        Point p1(0,0);
+        Point p2(0,0);
+        const bool less = p1 < p2;
+        CHECK( less == false );
+    }
+    {
+        Point p1(1,0);
+        Point p2(0,1);
+        const bool less = p1 < p2;
+        CHECK( less == false );
+    }
+}
+
 TEST_CASE( "Point_distance" ) {
     {
         Point p1(0,0);

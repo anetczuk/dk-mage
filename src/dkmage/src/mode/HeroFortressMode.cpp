@@ -8,6 +8,7 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
 
+#include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/script/Script.h"
 
 #include "utils/Rand.h"
@@ -84,11 +85,11 @@ namespace dkmage {
                 generateLevel();
                 return ;
             }
-            if ( level.countClaimAreas() > 0 ) {
-                LOG() << "map problem found: unclaimable areas";
-                generateLevel();
-                return ;
-            }
+//            if ( level.countClaimAreas() > 0 ) {
+//                LOG() << "map problem found: unclaimable areas";
+//                generateLevel();
+//                return ;
+//            }
         }
 
         void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {
@@ -161,8 +162,8 @@ namespace dkmage {
             drawGoldVein( level, veinRect, 2 );
 
             /// add other
-//            Point pos = firstCenter + Point(0, 2);
-//            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
+            Point pos = firstCenter + Point(0, 2);
+            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_IMP, 8 );
 
 //                    /// fill treasure with gold
@@ -190,13 +191,24 @@ namespace dkmage {
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
 
-            Rect bbox = enemyDungeon.boundingBox();
-            bbox.grow( 2 );
-            level.setSlabOutline( bbox, adiktedpp::SlabType::ST_LAVA );
+            const std::set< utils::Point > outline = enemyDungeon.outline();
+            level.setSlab( outline, adiktedpp::SlabType::ST_LAVA );
 
-            Point bottom = bbox.center();
-            bottom.y = bbox.max.y;
-            level.setSlab( bottom, adiktedpp::SlabType::ST_EARTH );
+            Rect bbox = enemyDungeon.boundingBox();
+            bbox.grow( 4 );
+            bbox.growWidth( 8 );
+
+            adiktedpp::LakeGenerator lavaLake;
+            lavaLake.generateLake( bbox, 0.6 );
+            adiktedpp::LakeGenerator::grow( lavaLake.added, 1 );
+            level.setSlab( lavaLake.added, adiktedpp::SlabType::ST_LAVA );
+
+            {
+                /// make a bridge
+                const utils::Point trapsCenter = traps->position().center();
+                const utils::Point trapsExit   = trapsCenter + utils::Point(0, 6);
+                level.digLine( trapsCenter, trapsExit, adiktedpp::SlabType::ST_EARTH );
+            }
 
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, enemyDungeon );

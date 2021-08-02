@@ -173,6 +173,8 @@ namespace dkmage {
             /// size of dungeon
             Rect boundingBox() const override;
 
+            std::set< Point > outline() const;
+
             void move( const int offsetX, const int offsetY ) override {
                 std::vector< Room* > roomsList = graph.itemsList();
                 for ( Room* item: roomsList ) {

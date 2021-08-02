@@ -32,6 +32,9 @@ namespace utils {
             if ( x < data.x ) {
                 return true;
             }
+            if ( x > data.x ) {
+                return false;
+            }
             return ( y < data.y );
         }
 
@@ -170,6 +173,11 @@ namespace utils {
             min.y -= delta;
             max.x += delta;
             max.y += delta;
+        }
+
+        void growWidth( const int delta ) {
+            min.x -= delta;
+            max.x += delta;
         }
 
         bool isInside( const int minCoord, const int maxCoord ) const {

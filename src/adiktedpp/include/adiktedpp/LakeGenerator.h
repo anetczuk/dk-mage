@@ -51,6 +51,9 @@ namespace adiktedpp {
         }
 
 
+        static void grow( std::set< utils::Point >& data, const std::size_t delta );
+
+
     protected:
 
         void add( const utils::Point& point ) {
