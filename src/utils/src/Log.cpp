@@ -21,9 +21,7 @@ namespace utils {
     }
 
     Logger::Logger( const char* file, const int lane ): file(file), lane(lane) {
-        path filePath( file );
-        const std::string fileName = filePath.filename().u8string();
-        buffer << fileName << "(" << lane << "): ";
+        buffer << extractFileName( file ) << "(" << lane << "): ";
     }
 
     Logger::~Logger() {
@@ -38,6 +36,11 @@ namespace utils {
     void Logger::setLogFile( const std::string& logFile ) {
         std::ofstream& fileStream = get_file_stream();
         fileStream.open( logFile );
+    }
+
+    std::string Logger::extractFileName( const char* filePath ) {
+        path file( filePath );
+        return file.filename().u8string();
     }
 
 } /* namespace utils */

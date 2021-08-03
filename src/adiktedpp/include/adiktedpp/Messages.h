@@ -71,14 +71,7 @@ namespace adiktedpp {
 
         static bool& getActivatedFlag();
 
-        void checkActivated() {
-            bool& activated = getActivatedFlag();
-            if ( activated ) {
-                /// guard
-                throw std::runtime_error("scope message already created");
-            }
-            activated = true;
-        }
+        void checkActivated();
 
 
     public:

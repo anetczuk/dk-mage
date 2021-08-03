@@ -99,4 +99,15 @@ namespace adiktedpp {
         return activated;
     }
 
+    void ScopeMessages::checkActivated() {
+        bool& activated = getActivatedFlag();
+        if ( activated ) {
+            /// guard
+            std::stringstream stream;
+            stream << FILE_NAME << "scope message already created";
+            throw std::runtime_error( stream.str() );
+        }
+        activated = true;
+    }
+
 } /* namespace adiktedpp */

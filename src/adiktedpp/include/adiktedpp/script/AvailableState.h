@@ -10,6 +10,8 @@
 #include "adiktedpp/script/AvailableMode.h"
 #include "adiktedpp/PlayerType.h"
 
+#include "utils/Log.h"
+
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -238,7 +240,7 @@ namespace adiktedpp {
             void setStateRaw( const adiktedpp::PlayerType player, const TValue item, const int accessible, const int available ) {
                 if ( availablePlayers.count(player) < 1 ) {
                     std::stringstream stream;
-                    stream << "invalid argument -- unavailable player: " << player;
+                    stream << FILE_NAME << "invalid argument -- unavailable player: " << player;
                     throw std::invalid_argument( stream.str() );
                 }
 

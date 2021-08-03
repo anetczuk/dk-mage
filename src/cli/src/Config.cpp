@@ -41,8 +41,9 @@ namespace cli {
 
         INIReader reader( configPath );
         if (reader.ParseError() != 0) {
-            const std::string message = std::string( "Can't load '" ) + configPath + "'";
-            throw std::runtime_error( message );
+            std::stringstream stream;
+            stream << FILE_NAME << "Can't load '" << configPath << "'";
+            throw std::runtime_error( stream.str() );
         }
 
         const std::string fieldData = reader.Get(section, field, "");
@@ -50,8 +51,9 @@ namespace cli {
             return fieldData;
         }
         if ( fieldData.empty() ) {
-            const std::string message = std::string( "Can't read '" ) + field + "' field in '" + section + "' section";
-            throw std::runtime_error( message );
+            std::stringstream stream;
+            stream << FILE_NAME << "Can't read '" << field << "' field in '" << section << "' section";
+            throw std::runtime_error( stream.str() );
         }
         return fieldData;
     }

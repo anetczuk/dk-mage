@@ -37,8 +37,10 @@ namespace adiktedpp {
         case Slab::S_LAVA:   return raw::SlabType::ST_LAVA;
         case Slab::S_WATER:  return raw::SlabType::ST_WATER;
         }
-        LOG() << "unknown case";
-        return raw::SlabType::ST_PATH;
+        LOG() << "invalid argument: " << (int)slab;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)slab;
+        throw std::invalid_argument( stream.str() );
     }
 
     static Slab convertToSlab( const raw::SlabType slab ) {
@@ -52,8 +54,10 @@ namespace adiktedpp {
         case raw::SlabType::ST_GEMS:  return Slab::S_GEMS;
 
         default: {
-            LOG() << "unhandled case";
-            return Slab::S_GOLD;
+            LOG() << "invalid argument: " << (int)slab;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)slab;
+            throw std::invalid_argument( stream.str() );
         }
         }
     }
@@ -80,8 +84,10 @@ namespace adiktedpp {
         case Room::R_BRIDGE:        return raw::SlabType::ST_BRIDGE;
         case Room::R_GUARD_POST:    return raw::SlabType::ST_GUARDPOST;
         }
-        LOG() << "unknown case";
-        return raw::SlabType::ST_GEMS;
+        LOG() << "invalid argument: " << (int)room;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)room;
+        throw std::invalid_argument( stream.str() );
     }
 
     static raw::SubTypeTrap convertToRaw( const Trap trap ) {
@@ -93,8 +99,10 @@ namespace adiktedpp {
         case Trap::T_WORD_OF_POWER:  return raw::SubTypeTrap::STT_WORDPWR;
         case Trap::T_LAVA:           return raw::SubTypeTrap::STT_LAVA;
         }
-        LOG() << "unknown case";
-        return raw::SubTypeTrap::STT_ALARM;
+        LOG() << "invalid argument: " << (int)trap;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)trap;
+        throw std::invalid_argument( stream.str() );
     }
 
     static raw::SubTypeDoor convertToRaw( const Door door ) {
@@ -104,8 +112,10 @@ namespace adiktedpp {
         case Door::D_IRON:   return raw::SubTypeDoor::STD_IRON;
         case Door::D_MAGIC:  return raw::SubTypeDoor::STD_MAGIC;
         }
-        LOG() << "unknown case";
-        return raw::SubTypeDoor::STD_WOOD;
+        LOG() << "invalid argument: " << (int)door;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)door;
+        throw std::invalid_argument( stream.str() );
     }
 
     static raw::SubTypeCreature convertToRaw( const Creature creature ) {
@@ -142,8 +152,11 @@ namespace adiktedpp {
         case Creature::C_TENTACLE:       return raw::SubTypeCreature::STC_TENTCL;
         case Creature::C_ORC:            return raw::SubTypeCreature::STC_ORC;
         }
-        LOG() << "unknown case";
-        return raw::SubTypeCreature::STC_IMP;
+
+        LOG() << "invalid argument: " << (int)creature;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)creature;
+        throw std::invalid_argument( stream.str() );
     }
 
     static raw::SubTypeItem convertToRaw( const Item item ) {
@@ -165,8 +178,10 @@ namespace adiktedpp {
         case Item::I_SPECIAL_HIDNWRL:   return raw::SubTypeItem::STI_SPHIDNWRL;
 
         default: {
-            LOG() << "unhandled case";
-            return raw::SubTypeItem::STI_NULL;
+            LOG() << "invalid argument: " << (int)item;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)item;
+            throw std::invalid_argument( stream.str() );
         }
         }
     }
