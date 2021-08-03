@@ -218,12 +218,12 @@ namespace dkmage {
             drawDungeon( level, enemyDungeon );
 
             const Point trapCenter = traps->position().center();
-            level.setDoor( trapCenter.x, trapCenter.y - 4, Door::D_STEEL, true );
+            level.setDoor( trapCenter.x, trapCenter.y - 4, Door::D_IRON, true );
             level.setTrap( trapCenter.x, trapCenter.y - 3, Trap::T_BOULDER );
-            level.setDoor( trapCenter.x, trapCenter.y - 2, Door::D_STEEL, true );
+            level.setDoor( trapCenter.x, trapCenter.y - 2, Door::D_IRON, true );
             drawTrap3x3Diamond( level, trapCenter, Trap::T_BOULDER );
             drawTrap3x3Corners( level, trapCenter, Trap::T_LIGHTNING );
-            level.setDoor( trapCenter.x, trapCenter.y + 2, Door::D_STEEL, true );
+            level.setDoor( trapCenter.x, trapCenter.y + 2, Door::D_IRON, true );
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
 

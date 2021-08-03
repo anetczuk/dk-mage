@@ -15,7 +15,7 @@ namespace adiktedpp {
         case Room::R_DUNGEON_HEART:  { os << "DUNGEON_HEART"; return os; }
         case Room::R_PORTAL:         { os << "UNSUPPORTED_PORTAL"; return os; }
         case Room::R_TREASURE:       { os << "TREASURE"; return os; }
-        case Room::R_RESEARCH:       { os << "RESEARCH"; return os; }
+        case Room::R_LIBRARY:        { os << "RESEARCH"; return os; }
         case Room::R_PRISON:         { os << "PRISON"; return os; }
         case Room::R_TORTURE:        { os << "TORTURE"; return os; }
         case Room::R_TRAINING:       { os << "TRAINING"; return os; }
@@ -23,7 +23,7 @@ namespace adiktedpp {
         case Room::R_SCAVENGER:      { os << "SCAVENGER"; return os; }
         case Room::R_TEMPLE:         { os << "TEMPLE"; return os; }
         case Room::R_GRAVEYARD:      { os << "GRAVEYARD"; return os; }
-        case Room::R_GARDEN:         { os << "GARDEN"; return os; }
+        case Room::R_HATCHERY:       { os << "GARDEN"; return os; }
         case Room::R_LAIR:           { os << "LAIR"; return os; }
         case Room::R_BARRACKS:       { os << "BARRACKS"; return os; }
         case Room::R_BRIDGE:         { os << "BRIDGE"; return os; }
@@ -40,7 +40,7 @@ namespace adiktedpp {
             container.insert( Room::R_DUNGEON_HEART );
             container.insert( Room::R_PORTAL );
             container.insert( Room::R_TREASURE );
-            container.insert( Room::R_RESEARCH );
+            container.insert( Room::R_LIBRARY );
             container.insert( Room::R_PRISON );
             container.insert( Room::R_TORTURE );
             container.insert( Room::R_TRAINING );
@@ -48,7 +48,7 @@ namespace adiktedpp {
             container.insert( Room::R_SCAVENGER );
             container.insert( Room::R_TEMPLE );
             container.insert( Room::R_GRAVEYARD );
-            container.insert( Room::R_GARDEN );
+            container.insert( Room::R_HATCHERY );
             container.insert( Room::R_LAIR );
             container.insert( Room::R_BARRACKS );
             container.insert( Room::R_BRIDGE );
@@ -61,7 +61,7 @@ namespace adiktedpp {
         static std::set< Room > container;
         if ( container.empty() ) {
             container.insert( Room::R_TREASURE );
-            container.insert( Room::R_RESEARCH );
+            container.insert( Room::R_LIBRARY );
             container.insert( Room::R_PRISON );
             container.insert( Room::R_TORTURE );
             container.insert( Room::R_TRAINING );
@@ -69,7 +69,7 @@ namespace adiktedpp {
             container.insert( Room::R_SCAVENGER );
             container.insert( Room::R_TEMPLE );
             container.insert( Room::R_GRAVEYARD );
-            container.insert( Room::R_GARDEN );
+            container.insert( Room::R_HATCHERY );
             container.insert( Room::R_LAIR );
             container.insert( Room::R_BARRACKS );
             container.insert( Room::R_BRIDGE );
@@ -99,23 +99,23 @@ namespace adiktedpp {
         case Creature::C_THIEF:       { os << "THIEF"; return os; }
         case Creature::C_SAMURAI:     { os << "SAMURAI"; return os; }
 
-        case Creature::C_IMP:       { os << "IMP"; return os; }
-        case Creature::C_HORNY:       { os << "HORNY"; return os; }
-        case Creature::C_SKELETON:       { os << "SKELETON"; return os; }
-        case Creature::C_TROLL:       { os << "TROLL"; return os; }
-        case Creature::C_DRAGON:       { os << "DRAGON"; return os; }
-        case Creature::C_DEMONSPAWN:       { os << "DEMONSPAWN"; return os; }
-        case Creature::C_FLY:       { os << "FLY"; return os; }
-        case Creature::C_DARK_MISTRESS:       { os << "DARK_MISTRESS"; return os; }
-        case Creature::C_SORCEROR:       { os << "SORCEROR"; return os; }
-        case Creature::C_BILE_DEMON:       { os << "BILE_DEMON"; return os; }
-        case Creature::C_BUG:       { os << "BUG"; return os; }
+        case Creature::C_IMP:           { os << "IMP"; return os; }
+        case Creature::C_HORNY:         { os << "HORNY"; return os; }
+        case Creature::C_SKELETON:      { os << "SKELETON"; return os; }
+        case Creature::C_TROLL:         { os << "TROLL"; return os; }
+        case Creature::C_DRAGON:        { os << "DRAGON"; return os; }
+        case Creature::C_DEMONSPAWN:    { os << "DEMONSPAWN"; return os; }
+        case Creature::C_FLY:           { os << "FLY"; return os; }
+        case Creature::C_DARK_MISTRESS: { os << "DARK_MISTRESS"; return os; }
+        case Creature::C_WARLOCK:       { os << "SORCEROR"; return os; }
+        case Creature::C_BILE_DEMON:    { os << "BILE_DEMON"; return os; }
+        case Creature::C_BUG:           { os << "BUG"; return os; }
         case Creature::C_VAMPIRE:       { os << "VAMPIRE"; return os; }
-        case Creature::C_SPIDER:       { os << "SPIDER"; return os; }
-        case Creature::C_HELL_HOUND:       { os << "HELL_HOUND"; return os; }
-        case Creature::C_GHOST:       { os << "GHOST"; return os; }
-        case Creature::C_TENTACLE:       { os << "TENTACLE"; return os; }
-        case Creature::C_ORC:       { os << "ORC"; return os; }
+        case Creature::C_SPIDER:        { os << "SPIDER"; return os; }
+        case Creature::C_HELL_HOUND:    { os << "HELL_HOUND"; return os; }
+        case Creature::C_GHOST:         { os << "GHOST"; return os; }
+        case Creature::C_TENTACLE:      { os << "TENTACLE"; return os; }
+        case Creature::C_ORC:           { os << "ORC"; return os; }
         }
         os << "UNKNOWN_CEATURE[" << (int) data << "]";
         return os;
@@ -132,7 +132,7 @@ namespace adiktedpp {
             container.insert( Creature::C_DEMONSPAWN );
             container.insert( Creature::C_FLY );
             container.insert( Creature::C_DARK_MISTRESS );
-            container.insert( Creature::C_SORCEROR );
+            container.insert( Creature::C_WARLOCK );
             container.insert( Creature::C_BILE_DEMON );
             container.insert( Creature::C_BUG );
             container.insert( Creature::C_VAMPIRE );
@@ -174,7 +174,7 @@ namespace adiktedpp {
         switch( data ) {
         case Door::D_WOOD:           { os << "WOOD"; return os; }
         case Door::D_BRACED:         { os << "BRACED"; return os; }
-        case Door::D_STEEL:          { os << "STEEL"; return os; }
+        case Door::D_IRON:           { os << "STEEL"; return os; }
         case Door::D_MAGIC:          { os << "MAGIC"; return os; }
         }
         os << "UNKNOWN_DOOR[" << (int) data << "]";
@@ -186,7 +186,7 @@ namespace adiktedpp {
         if ( container.empty() ) {
             container.insert( Door::D_WOOD );
             container.insert( Door::D_BRACED );
-            container.insert( Door::D_STEEL );
+            container.insert( Door::D_IRON );
             container.insert( Door::D_MAGIC );
         }
         return container;

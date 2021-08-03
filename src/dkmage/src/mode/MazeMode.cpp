@@ -253,7 +253,7 @@ namespace dkmage {
             /// add other
 //            Point pos = firstCenter + Point(0, 2);
 //            level.setItem( pos, 4, SubTypeItem::STI_SPREVMAP );
-            level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, Creature::C_SORCEROR, 1 );
+            level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, Creature::C_WARLOCK, 1 );
             level.setCreature( firstCenter.x+1, firstCenter.y-2, 4, Creature::C_SKELETON, 3 );
             level.setCreatureAuto( firstCenter.x, firstCenter.y+2, Creature::C_IMP, 8 );
 

@@ -66,7 +66,7 @@ namespace adiktedpp {
         case Room::R_DUNGEON_HEART: return raw::SlabType::ST_DUNGHEART;
         case Room::R_PORTAL:        return raw::SlabType::ST_PORTAL;
         case Room::R_TREASURE:      return raw::SlabType::ST_TREASURE;
-        case Room::R_RESEARCH:      return raw::SlabType::ST_LIBRARY;
+        case Room::R_LIBRARY:       return raw::SlabType::ST_LIBRARY;
         case Room::R_PRISON:        return raw::SlabType::ST_PRISONCASE;
         case Room::R_TORTURE:       return raw::SlabType::ST_TORTURE;
         case Room::R_TRAINING:      return raw::SlabType::ST_TRAINING;
@@ -74,7 +74,7 @@ namespace adiktedpp {
         case Room::R_SCAVENGER:     return raw::SlabType::ST_SCAVENGER;
         case Room::R_TEMPLE:        return raw::SlabType::ST_TEMPLE;
         case Room::R_GRAVEYARD:     return raw::SlabType::ST_GRAVEYARD;
-        case Room::R_GARDEN:        return raw::SlabType::ST_HATCHERY;
+        case Room::R_HATCHERY:      return raw::SlabType::ST_HATCHERY;
         case Room::R_LAIR:          return raw::SlabType::ST_LAIR;
         case Room::R_BARRACKS:      return raw::SlabType::ST_BARRACKS;
         case Room::R_BRIDGE:        return raw::SlabType::ST_BRIDGE;
@@ -101,7 +101,7 @@ namespace adiktedpp {
         switch( door ) {
         case Door::D_WOOD:   return raw::SubTypeDoor::STD_WOOD;
         case Door::D_BRACED: return raw::SubTypeDoor::STD_BRACED;
-        case Door::D_STEEL:  return raw::SubTypeDoor::STD_IRON;
+        case Door::D_IRON:   return raw::SubTypeDoor::STD_IRON;
         case Door::D_MAGIC:  return raw::SubTypeDoor::STD_MAGIC;
         }
         LOG() << "unknown case";
@@ -132,7 +132,7 @@ namespace adiktedpp {
         case Creature::C_DEMONSPAWN:     return raw::SubTypeCreature::STC_SPAWN;
         case Creature::C_FLY:            return raw::SubTypeCreature::STC_FLY;
         case Creature::C_DARK_MISTRESS:  return raw::SubTypeCreature::STC_MISTRESS;
-        case Creature::C_SORCEROR:       return raw::SubTypeCreature::STC_WARLOCK;           //TODO: rename to warlock
+        case Creature::C_WARLOCK:        return raw::SubTypeCreature::STC_WARLOCK;
         case Creature::C_BILE_DEMON:     return raw::SubTypeCreature::STC_BILEDEMN;
         case Creature::C_BUG:            return raw::SubTypeCreature::STC_BEETLE;
         case Creature::C_VAMPIRE:        return raw::SubTypeCreature::STC_VAMPIRE;

@@ -35,8 +35,8 @@ namespace adiktedpp {
             setAllAvailable( PlayerType::PT_ALL, AvailableMode::AM_POSSIBLE );
             setStateMode( PlayerType::PT_ALL, Room::R_TREASURE, AvailableMode::AM_ENABLED );
             setStateMode( PlayerType::PT_ALL, Room::R_LAIR, AvailableMode::AM_ENABLED );
-            setStateMode( PlayerType::PT_ALL, Room::R_GARDEN, AvailableMode::AM_ENABLED );
-            setStateMode( PlayerType::PT_ALL, Room::R_RESEARCH, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_HATCHERY, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_LIBRARY, AvailableMode::AM_ENABLED );
         }
 
         void CreatureAvailableState::setEvilAvailable( const PlayerType player, const bool available ) {

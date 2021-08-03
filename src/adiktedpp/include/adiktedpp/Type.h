@@ -37,7 +37,7 @@ namespace adiktedpp {
         R_DUNGEON_HEART,
         R_PORTAL,
         R_TREASURE,
-        R_RESEARCH,             /// library     //TODO: rename to library
+        R_LIBRARY,
         R_PRISON,
         R_TORTURE,
         R_TRAINING,
@@ -45,7 +45,7 @@ namespace adiktedpp {
         R_SCAVENGER,
         R_TEMPLE,
         R_GRAVEYARD,
-        R_GARDEN,               /// hatchery        //TODO: rename to hatchery
+        R_HATCHERY,
         R_LAIR,
         R_BARRACKS,
         R_BRIDGE,
@@ -88,7 +88,7 @@ namespace adiktedpp {
         C_DEMONSPAWN,
         C_FLY,
         C_DARK_MISTRESS,
-        C_SORCEROR,             //TOD: rename to warlock
+        C_WARLOCK,
         C_BILE_DEMON,
         C_BUG,
         C_VAMPIRE,
@@ -115,7 +115,7 @@ namespace adiktedpp {
     enum class Door {
         D_WOOD,
         D_BRACED,
-        D_STEEL,                //TODO: rename to iron
+        D_IRON,
         D_MAGIC
     };
 

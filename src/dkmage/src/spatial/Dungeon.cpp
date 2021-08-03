@@ -216,9 +216,9 @@ namespace dkmage {
             {
                 roomsType.push_back( Room::R_TREASURE );
                 roomsType.push_back( Room::R_LAIR );
-                roomsType.push_back( Room::R_GARDEN );
+                roomsType.push_back( Room::R_HATCHERY );
                 roomsType.push_back( Room::R_TRAINING );
-                roomsType.push_back( Room::R_RESEARCH );
+                roomsType.push_back( Room::R_LIBRARY );
                 roomsType.push_back( Room::R_WORKSHOP );
                 roomsType.push_back( Room::R_PRISON );
                 roomsType.push_back( Room::R_TORTURE );
