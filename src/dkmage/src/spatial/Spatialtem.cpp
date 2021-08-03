@@ -21,7 +21,7 @@ namespace dkmage {
         }
 
         void Spatialtem::centerizeOnMap() {
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
             const utils::Point mapCenter = mapRect.center();
             centerizeOn( mapCenter );
         }
@@ -45,7 +45,7 @@ namespace dkmage {
 
         void Spatialtem::moveToBottomEdge( const std::size_t distanceFromEdge ) {
             centerizeOnMap();
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
             const utils::Rect bbox = boundingBox();
             const int yoffset = mapRect.max.y + 1 - bbox.max.y - distanceFromEdge - 1;         /// -1 to prevent going outside map
             move( 0, yoffset );

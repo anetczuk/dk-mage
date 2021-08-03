@@ -18,7 +18,7 @@ add_definitions( -DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data" )
 
 
 add_executable( ${TARGET_NAME} ${cpp_files} )
-target_include_directories( ${TARGET_NAME} PRIVATE ../include )
+target_include_directories( ${TARGET_NAME} PRIVATE ../include . )
 target_link_libraries( ${TARGET_NAME} PUBLIC adiktedpp Catch2::Catch2 )
 
 

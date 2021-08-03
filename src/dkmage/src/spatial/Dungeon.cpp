@@ -68,7 +68,7 @@ namespace dkmage {
         /// ============================================================
 
 
-        std::vector< Room* > Dungeon::findRoom( const adiktedpp::SlabType roomType ) {
+        std::vector< Room* > Dungeon::findRoom( const adiktedpp::Room roomType ) {
             std::vector< Room* > ret;
             std::vector< Room* > allRooms = graph.itemsList();
             for ( Room* item: allRooms ) {
@@ -82,7 +82,7 @@ namespace dkmage {
             return ret;
         }
 
-        Room* Dungeon::findRoomFirst( const adiktedpp::SlabType roomType ) {
+        Room* Dungeon::findRoomFirst( const adiktedpp::Room roomType ) {
             std::vector< Room* > rooms = findRoom( roomType );
             if ( rooms.empty() ) {
                 return nullptr;
@@ -90,7 +90,7 @@ namespace dkmage {
             return rooms[0];
         }
 
-        Room* Dungeon::addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
+        Room* Dungeon::addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
             std::vector< Room* > roomsList = graph.itemsList();
             if ( roomsList.empty()) {
                 /// no rooms in dungeon
@@ -140,7 +140,7 @@ namespace dkmage {
             return nullptr;
         }
 
-        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize ) {
+        Room* Dungeon::addRoom( const adiktedpp::Room roomType, const std::size_t roomSize ) {
             Rect newRect( roomSize, roomSize );
             if ( isCollision( newRect ) ) {
                 /// collision detected
@@ -163,7 +163,7 @@ namespace dkmage {
             return newRoom;
         }
 
-        Room* Dungeon::addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink, const std::size_t distance ) {
+        Room* Dungeon::addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink, const std::size_t distance ) {
             Rect newRect( roomSize, roomSize );
             const Rect& basePos = from.position();
             moveRect( newRect, basePos, direction, distance );
@@ -208,27 +208,27 @@ namespace dkmage {
         }
 
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
-            std::vector< adiktedpp::SlabType > roomsType;
+            std::vector< adiktedpp::Room > roomsType;
             {
-                roomsType.push_back( adiktedpp::SlabType::ST_TREASURE );
-                roomsType.push_back( adiktedpp::SlabType::ST_LAIR );
-                roomsType.push_back( adiktedpp::SlabType::ST_HATCHERY );
-                roomsType.push_back( adiktedpp::SlabType::ST_TRAINING );
-                roomsType.push_back( adiktedpp::SlabType::ST_LIBRARY );
-                roomsType.push_back( adiktedpp::SlabType::ST_WORKSHOP );
-                roomsType.push_back( adiktedpp::SlabType::ST_PRISONCASE );
-                roomsType.push_back( adiktedpp::SlabType::ST_TORTURE );
-                roomsType.push_back( adiktedpp::SlabType::ST_GRAVEYARD );
-                roomsType.push_back( adiktedpp::SlabType::ST_TEMPLE );
-                roomsType.push_back( adiktedpp::SlabType::ST_SCAVENGER );
+                roomsType.push_back( adiktedpp::Room::R_TREASURE );
+                roomsType.push_back( adiktedpp::Room::R_LAIR );
+                roomsType.push_back( adiktedpp::Room::R_GARDEN );
+                roomsType.push_back( adiktedpp::Room::R_TRAINING );
+                roomsType.push_back( adiktedpp::Room::R_RESEARCH );
+                roomsType.push_back( adiktedpp::Room::R_WORKSHOP );
+                roomsType.push_back( adiktedpp::Room::R_PRISON );
+                roomsType.push_back( adiktedpp::Room::R_TORTURE );
+                roomsType.push_back( adiktedpp::Room::R_GRAVEYARD );
+                roomsType.push_back( adiktedpp::Room::R_TEMPLE );
+                roomsType.push_back( adiktedpp::Room::R_SCAVENGER );
             }
             if ( graph.size() < 1 ) {
                 /// create dungeon heart
-                addRandomRoom( adiktedpp::SlabType::ST_DUNGHEART, roomSize );
+                addRandomRoom( adiktedpp::Room::R_DUNGEON_HEART, roomSize );
             }
             for (std::size_t i=1; i<roomsNum; ++i) {
                 const std::size_t roomIndex = ( i - 1 ) % roomsType.size();
-                const adiktedpp::SlabType newRoomType = roomsType[roomIndex];
+                const adiktedpp::Room newRoomType = roomsType[roomIndex];
                 /// randomize next room
                 addRandomRoom( newRoomType, roomSize );
             }

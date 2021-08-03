@@ -25,7 +25,7 @@ namespace adiktedpp {
         /// =======================================================
 
         void RoomsAvailableState::setAllAvailable( const PlayerType player, const AvailableMode mode ) {
-            const std::set< Room >& list = Rooms();
+            const std::set< Room >& list = RoomsRegular();
             for ( const Room item: list ) {
                 setStateMode( player, item, mode );
             }

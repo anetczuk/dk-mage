@@ -5,216 +5,174 @@
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_LEVEL_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_LEVEL_H_
 
-#include "adiktedpp/SlabType.h"
-#include "adiktedpp/PlayerType.h"
-#include "adiktedpp/SubTypeItem.h"
-#include "adiktedpp/SubTypeTrap.h"
-#include "adiktedpp/SubTypeDoor.h"
-#include "adiktedpp/SubTypeCreature.h"
+#include "adiktedpp/raw/RawLevel.h"
 
-#include "utils/Rect.h"
+#include "adiktedpp/Type.h"
 
-#include <memory>
-
-
-struct LEVEL;
+//#include "adiktedpp/SlabType.h"
+//#include "adiktedpp/PlayerType.h"
+//#include "adiktedpp/SubTypeItem.h"
+//#include "adiktedpp/SubTypeTrap.h"
+//#include "adiktedpp/SubTypeDoor.h"
+//#include "adiktedpp/SubTypeCreature.h"
+//
+//#include "utils/Rect.h"
+//
+//#include <memory>
 
 
 namespace adiktedpp {
-
-    struct LevelData;
-
 
     /**
      *
      */
     class Level {
 
-        std::unique_ptr<LevelData> data;
+        raw::RawLevel rawLevel;
 
 
     public:
 
-        Level();
+        LEVEL* rawData() {
+            return rawLevel.rawData();
+        }
 
-        ~Level();
+        void setDataPath( const std::string& path ) {
+            rawLevel.setDataPath( path );
+        }
 
-        LEVEL* rawData();
-
-        /// ===========================================================================
-
-        bool autoUpdateObjects() const;
-
-        void autoUpdateObjects( const bool newVal );
-
-        bool autoUpdateDatclm() const;
-
-        void autoUpdateDatclm( const bool newVal );
-
-        /// ===========================================================================
-
-        /// returns path of recent attempt to load map (fname)
-        std::string inputFileName() const;
-
-        /// returns path of recent successful load of map (savfname)
-        std::string outputFileName() const;
-
-        std::string levelsPath() const;
-
-        void setLevelsPath( const std::string& path );
-
-        std::string dataPath() const;
-
-        void setDataPath( const std::string& path );
-
-        /// ===========================================================================
+        /// ==============================================================================
 
         /// map ide template to load: "levels/MAP{mapId}"
-        bool loadMapById( const std::size_t mapId );
+        bool loadMapById( const std::size_t mapId ) {
+            return rawLevel.loadMapById( mapId );
+        }
 
         /// if relative path is given, then it refers to current working directory or
         /// directory of executable
         /// example of map path: "levels/MAP00001"
-        bool loadMapByPath( const std::string& mapPath );
+        bool loadMapByPath( const std::string& mapPath ) {
+            return rawLevel.loadMapByPath( mapPath );
+        }
 
-        bool saveMapById( const std::size_t mapId ) const;
+        bool saveMapById( const std::size_t mapId ) const {
+            return rawLevel.saveMapById( mapId );
+        }
 
-        bool saveMapByPath( const std::string& mapPath ) const;
+        bool saveMapByPath( const std::string& mapPath ) const {
+            return rawLevel.saveMapByPath( mapPath );
+        }
 
-        /// ===========================================================================
+        /// ==============================================================================
 
-        void startNewMap();
+        void setRescale( const std::size_t rescale ) {
+            rawLevel.setRescale( rescale );
+        }
 
-        void generateEmpty();
+        /// saves bmp next to map input file
+        void generateBmp() {
+            rawLevel.generateBmp();
+        }
 
-        void generateRandomMap();
+        bool generateBmp( const std::string& path ) {
+            return rawLevel.generateBmp( path );
+        }
 
-        void generateRandomMap( const std::size_t areaLimit );
+        /// ==============================================================================
 
-        bool verifyMap( const bool silent = false );
+        void startNewMap() {
+            rawLevel.startNewMap();
+        }
+
+        void generateEmpty() {
+            rawLevel.generateEmpty();
+        }
+
+        void generateRandomMap() {
+            rawLevel.generateRandomMap();
+        }
+
+        void generateRandomMap( const std::size_t areaLimit ) {
+            return rawLevel.generateRandomMap( areaLimit );
+        }
+
+        bool verifyMap( const bool silent = false ) {
+            return rawLevel.verifyMap( silent );
+        }
 
         /// count separated chambers by impassable rocks and gems
-        std::size_t countSeparatedAreas();
+        std::size_t countSeparatedAreas() {
+            return rawLevel.countSeparatedAreas();
+        }
 
         /// count separated claim areas by impassable rocks, gems, water and lava
-        std::size_t countClaimAreas();
+        std::size_t countClaimAreas() {
+            return rawLevel.countClaimAreas();
+        }
 
-        void fillSeparatedAreas( const std::size_t areaLimit );
+        void fillSeparatedAreas( const std::size_t areaLimit ) {
+            return rawLevel.fillSeparatedAreas( areaLimit );
+        }
 
-        /// ===========================================================================
+        /// ==============================================================================
 
-        SlabType getSlab( const std::size_t x, const std::size_t y );
+        Slab getSlab( const std::size_t x, const std::size_t y );
 
-        SlabType getSlab( const utils::Point& point );
+        Slab getSlab( const utils::Point& point );
 
-        bool isSlab( const std::size_t x, const std::size_t y, const SlabType slab );
+        void setSlab( const std::size_t x, const std::size_t y, const Slab type );
 
-        bool isSlab( const utils::Point& point, const SlabType slab );
+        void setSlab( const utils::Point& point, const Slab type );
 
-        void setSlab( const std::size_t x, const std::size_t y, const SlabType type );
+        void setSlab( const utils::Rect& rect, const Slab type );
 
-        void setSlab( const utils::Point& point, const SlabType type );
+        void setSlab( const std::set< utils::Point >& positions, const Slab type );
 
-        void setSlab( const std::size_t startX, const std::size_t startY,
-                      const std::size_t endX,   const std::size_t endY,
-                      const SlabType type );
+        void setClaimed( const utils::Point& point, PlayerType owner );
 
-        void setSlab( const utils::Rect& rect, const SlabType type );
+        void setClaimed( const utils::Rect& rect, PlayerType owner );
 
-        void setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner );
+        void setRoom( const utils::Rect& position, const Room room );
 
-        void setSlab( const std::set< utils::Point >& positions, const SlabType type );
+        void setRoom( const utils::Rect& position, const Room room, const PlayerType owner, const bool fortify );
 
-        void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
+        void setTrap( const std::size_t x, const std::size_t y, const Trap trap );
 
-        void setSlab( const utils::Point& point, const SlabType type, const PlayerType owner );
+        void setTrap( const utils::Point& point, const Trap trap );
 
-        void setSlab( const std::size_t startX, const std::size_t startY,
-                      const std::size_t endX,   const std::size_t endY,
-                      const SlabType room, const PlayerType owner );
+        void setTrap( const utils::Point& point, const std::size_t subIndex, const Trap trap );
 
-        void setSlabOutline( const utils::Rect& rect, const SlabType type );
+        void setDoor( const std::size_t x, const std::size_t y, const Door door, const bool locked = false );
 
-        PlayerType getOwner( const std::size_t x, const std::size_t y );
-
-        void setOwner( const std::size_t x, const std::size_t y, const PlayerType owner );
-
-        std::string printItems() const;
-
-        void setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item );
-
-        void setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );
-
-        void setItem( const utils::Rect& rect, const std::size_t subIndex, const SubTypeItem item );
-
-        void setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap );
-
-        void setTrap( const std::size_t x, const std::size_t y, const SubTypeTrap trap );
-
-        void setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap );
-
-        void setTrap( const utils::Point& point, const SubTypeTrap trap );
-
-        void setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked = false );
-
-        void setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked = false );
-
-        void setCreatureAuto( const std::size_t x, const std::size_t y, const SubTypeCreature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0 );
-
-        void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
+        void setCreature( const utils::Point& point, const std::size_t subIndex, const Creature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
 
-        void setCreatureAuto( const utils::Point& point, const SubTypeCreature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0 );
-
-        void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature,
+        void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
 
-        /// ===========================================================================
+        void setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature,
+                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
 
-        std::size_t setChamber( const utils::Rect& rect, const SlabType type ) {
+        void setCreatureAuto( const utils::Point& point, const Creature creature,
+                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+
+        void setItem( const utils::Point& point, const std::size_t subIndex, const Item item );
+
+        void setItem( const utils::Rect& rect, const std::size_t subIndex, const Item item );
+
+        /// ==============================================================================
+
+        std::size_t setCave( const utils::Rect& rect, const Slab type ) {
             const std::size_t chamberSize = rect.area() * 0.7;
-            return setChamber( rect, type, chamberSize );
+            return setCave( rect, type, chamberSize );
         }
 
         /// generate random chamber
-        std::size_t setChamber( const utils::Rect& rect, const SlabType type, const std::size_t itemsNum );
+        std::size_t setCave( const utils::Rect& rect, const Slab type, const std::size_t itemsNum );
 
-        void setRoom( const utils::Rect& position, const SlabType room, const PlayerType owner, const bool fortify );
-
-        void fortify( const utils::Point& point, const PlayerType owner );
-
-        void fortify( const utils::Rect& room, const PlayerType owner );
-
-        void digLine( const utils::Point& from, const utils::Point& to, const SlabType type = adiktedpp::SlabType::ST_PATH );
+        void digLine( const utils::Point& from, const utils::Point& to, const Slab type = Slab::S_PATH );
 
         void digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify );
-
-        /// ===========================================================================
-
-        void setRescale( const std::size_t rescale );
-
-        /// saves bmp next to map input file
-        void generateBmp();
-
-        bool generateBmp( const std::string& path );
-
-
-        static utils::Rect mapSize();
-
-        static utils::Rect mapRect();
-
-        static std::string prepareMapName( const std::size_t mapId );
-
-
-    private:
-
-        void setInfo();
-
-        void setAuthor( const std::string& info );
-
-        void setDesciption( const std::string& info );
 
     };
 

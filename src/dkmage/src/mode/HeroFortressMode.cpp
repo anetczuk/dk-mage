@@ -14,6 +14,9 @@
 #include "utils/Rand.h"
 
 
+using namespace adiktedpp;
+
+
 namespace dkmage {
     namespace mode {
 
@@ -30,7 +33,7 @@ namespace dkmage {
             /// =========== scripting ===========
 
             LOG() << "preparing script";
-            adiktedpp::script::Script script( level );
+            script::Script script( level );
 
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
             script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
@@ -38,41 +41,41 @@ namespace dkmage {
 
             script.addLine( "" );
             script.addLine( "" );
-            const std::set< adiktedpp::PlayerType > availablePlayers = { adiktedpp::PlayerType::PT_0 };
+            const std::set< PlayerType > availablePlayers = { PlayerType::PT_0 };
 
-            adiktedpp::script::CreatureAvailableState availableCreatures( availablePlayers );
-            availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0 );
+            script::CreatureAvailableState availableCreatures( availablePlayers );
+            availableCreatures.setEvilAvailable( PlayerType::PT_0 );
             script.set( availableCreatures );
 
             script.addLine( "" );
-            adiktedpp::script::RoomsAvailableState availableRooms( availablePlayers );
+            script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( PlayerType::PT_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
             script.set( availableRooms );
 
             script.addLine( "" );
-            script.setDoorsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
+            script.setDoorsAvailable( PlayerType::PT_ALL, 0 );
 
             script.addLine( "" );
-//            script.setTrapsAvailable( adiktedpp::PlayerType::PT_ALL, 0 );
-            adiktedpp::script::TrapAvailableState availableTraps( availablePlayers );
-            availableTraps.setAllAvailable( adiktedpp::PlayerType::PT_ALL, true );
-            availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Trap::T_LAVA, false );
+//            script.setTrapsAvailable( PlayerType::PT_ALL, 0 );
+            script::TrapAvailableState availableTraps( availablePlayers );
+            availableTraps.setAllAvailable( PlayerType::PT_ALL, true );
+            availableTraps.setStateFlag( PlayerType::PT_ALL, Trap::T_LAVA, false );
             script.set( availableTraps );
 
             script.addLine( "" );
-//            script.setMagicStandard( adiktedpp::PlayerType::PT_ALL );
-            adiktedpp::script::MagicAvailableState availableMagic( availablePlayers );
-            availableMagic.setStandard( adiktedpp::PlayerType::PT_ALL );
-            availableMagic.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Spell::S_POWER_DESTROY_WALLS, adiktedpp::script::AvailableMode::AM_DISABLED );
-            availableMagic.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Spell::S_POWER_ARMAGEDDON, adiktedpp::script::AvailableMode::AM_DISABLED );
+//            script.setMagicStandard( PlayerType::PT_ALL );
+            script::MagicAvailableState availableMagic( availablePlayers );
+            availableMagic.setStandard( PlayerType::PT_ALL );
+            availableMagic.setStateMode( PlayerType::PT_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( PlayerType::PT_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
             script.set( availableMagic );
 
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
-            script.setWinConditionStandard( adiktedpp::PlayerType::PT_0 );
+            script.setWinConditionStandard( PlayerType::PT_0 );
 
             script.rebuild();
 
@@ -93,7 +96,7 @@ namespace dkmage {
         }
 
         void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = raw::RawLevel::mapRect();
             const utils::Point mapCenter = mapRect.center();
             const Rect region( mapCenter + utils::Point(0, 8), 70, 33 );
 
@@ -117,13 +120,13 @@ namespace dkmage {
                 const int rY = regionIndex / region.width();
 
                 const utils::Point caveCenter = region.min + utils::Point( rX, rY );
-                const adiktedpp::SlabType centerStab = level.getSlab( caveCenter );
-                if ( centerStab == adiktedpp::SlabType::ST_ROCK ) {
+                const Slab centerStab = level.getSlab( caveCenter );
+                if ( centerStab == Slab::S_ROCK ) {
                     continue ;
                 }
 
                 const utils::Rect chamber( caveCenter, 5, 5 );
-                level.setChamber( chamber, adiktedpp::SlabType::ST_PATH, 12 );
+                level.setCave( chamber, Slab::S_PATH, 12 );
 
                 const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
                 const double centerFactor = ( 1.0 - 2.0 * centerDistance / region.height() );        /// in range [0.5, 1.0]
@@ -152,10 +155,10 @@ namespace dkmage {
             /// add neutral portal
             const Point portalCenter( bbox.max.x + 16, firstCenter.y );
             const Rect portalRect( portalCenter, 3, 3 );
-            level.setSlab( portalRect, adiktedpp::SlabType::ST_PORTAL );
+            level.setRoom( portalRect, Room::R_PORTAL );
 
             /// add gold vein
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = raw::RawLevel::mapRect();
             const int veinY = mapRect.max.y - 3;
             const Point veinCenter( bbox.min.x - 20, veinY );
             const Rect veinRect( veinCenter, 9, 5 );
@@ -163,81 +166,81 @@ namespace dkmage {
 
             /// add other
             Point pos = firstCenter + Point(0, 2);
-            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
-            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_IMP, 8 );
+            level.setItem( pos, 4, Item::I_SPECIAL_REVMAP );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 
 //                    /// fill treasure with gold
-//                    dkmage::spatial::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
+//                    dkmage::spatial::Room* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
 //                    if ( treasure != nullptr ) {
 //                        const Rect& roomRect = treasure->position();
-//                        level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+//                        level.setItem( roomRect, 4, SubTypeItem::STI_GLDHOARD3 );
 //                    }
         }
 
         void HeroFortressMode::prepareEnemyDungeon() {
-            dkmage::spatial::Dungeon enemyDungeon( adiktedpp::PlayerType::PT_GOOD );
+            dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
 
-            const dkmage::spatial::Room* heart = enemyDungeon.addRandomRoom( adiktedpp::SlabType::ST_DUNGHEART, 5 );
-            enemyDungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 3, *heart, dkmage::spatial::Direction::D_NORTH, true, 1 );
-            enemyDungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 3, *heart, dkmage::spatial::Direction::D_EAST, true, 1 );
-            enemyDungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 3, *heart, dkmage::spatial::Direction::D_WEST, true, 1 );
-            const dkmage::spatial::Room* southTr = enemyDungeon.addRoom( adiktedpp::SlabType::ST_TREASURE, 3, *heart, dkmage::spatial::Direction::D_SOUTH, true, 1 );
-            const dkmage::spatial::Room* traps   = enemyDungeon.addRoom( adiktedpp::SlabType::ST_CLAIMED, 3, *southTr, dkmage::spatial::Direction::D_SOUTH, true, 3 );
+            const dkmage::spatial::Room* heart = enemyDungeon.addRandomRoom( Room::R_DUNGEON_HEART, 5 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_NORTH, true, 1 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_EAST, true, 1 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_WEST, true, 1 );
+            const dkmage::spatial::Room* southTr = enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_SOUTH, true, 1 );
+            const dkmage::spatial::Room* traps   = enemyDungeon.addRoom( Room::R_CLAIMED, 3, *southTr, dkmage::spatial::Direction::D_SOUTH, true, 3 );
 
             enemyDungeon.moveToTopEdge( 8 );
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
 
             const std::set< utils::Point > outline = enemyDungeon.outline();
-            level.setSlab( outline, adiktedpp::SlabType::ST_LAVA );
+            level.setSlab( outline, Slab::S_LAVA );
 
             Rect bbox = enemyDungeon.boundingBox();
             bbox.grow( 4 );
             bbox.growWidth( 8 );
 
-            adiktedpp::LakeGenerator lavaLake;
+            LakeGenerator lavaLake;
             lavaLake.generateLake( bbox, 0.6 );
-            adiktedpp::LakeGenerator::grow( lavaLake.added, 1 );
-            level.setSlab( lavaLake.added, adiktedpp::SlabType::ST_LAVA );
+            LakeGenerator::grow( lavaLake.added, 1 );
+            level.setSlab( lavaLake.added, Slab::S_LAVA );
 
             {
                 /// make a bridge
                 const utils::Point trapsCenter = traps->position().center();
                 const utils::Point trapsExit   = trapsCenter + utils::Point(0, 6);
-                level.digLine( trapsCenter, trapsExit, adiktedpp::SlabType::ST_EARTH );
+                level.digLine( trapsCenter, trapsExit, Slab::S_EARTH );
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, enemyDungeon );
 
             const Point trapCenter = traps->position().center();
-            level.setDoor( trapCenter.x, trapCenter.y - 4, adiktedpp::SubTypeDoor::STD_IRON, true );
-            level.setTrap( trapCenter.x, trapCenter.y - 3, adiktedpp::SubTypeTrap::STT_BOULDER );
-            level.setDoor( trapCenter.x, trapCenter.y - 2, adiktedpp::SubTypeDoor::STD_IRON, true );
-            drawTrap3x3Diamond( level, trapCenter, adiktedpp::SubTypeTrap::STT_BOULDER );
-            drawTrap3x3Corners( level, trapCenter, adiktedpp::SubTypeTrap::STT_LIGHTNG );
-            level.setDoor( trapCenter.x, trapCenter.y + 2, adiktedpp::SubTypeDoor::STD_IRON, true );
+            level.setDoor( trapCenter.x, trapCenter.y - 4, Door::D_STEEL, true );
+            level.setTrap( trapCenter.x, trapCenter.y - 3, Trap::T_BOULDER );
+            level.setDoor( trapCenter.x, trapCenter.y - 2, Door::D_STEEL, true );
+            drawTrap3x3Diamond( level, trapCenter, Trap::T_BOULDER );
+            drawTrap3x3Corners( level, trapCenter, Trap::T_LIGHTNING );
+            level.setDoor( trapCenter.x, trapCenter.y + 2, Door::D_STEEL, true );
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
 
             /// add other
-            level.setCreatureAuto( firstCenter.x-2, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_SMURI, 7, 9 );
-            level.setCreatureAuto( firstCenter.x-1, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_THEFT, 9, 9 );
-            level.setCreatureAuto( firstCenter.x,   firstCenter.y-2, adiktedpp::SubTypeCreature::STC_FAIRY, 9, 9 );
-            level.setCreatureAuto( firstCenter.x+1, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_GIANT, 9, 9 );
-            level.setCreatureAuto( firstCenter.x+2, firstCenter.y-2, adiktedpp::SubTypeCreature::STC_BARBARIN, 9, 9 );
-            level.setCreatureAuto( firstCenter.x-2, firstCenter.y-1, adiktedpp::SubTypeCreature::STC_KNIGHT, 7, 9 );
-            level.setCreatureAuto( firstCenter.x+2, firstCenter.y-1, adiktedpp::SubTypeCreature::STC_MONK, 9, 9 );
-            level.setCreatureAuto( firstCenter.x-2, firstCenter.y, adiktedpp::SubTypeCreature::STC_WIZRD, 9, 9 );
+            level.setCreatureAuto( firstCenter.x-2, firstCenter.y-2, Creature::C_SAMURAI, 7, 9 );
+            level.setCreatureAuto( firstCenter.x-1, firstCenter.y-2, Creature::C_THIEF, 9, 9 );
+            level.setCreatureAuto( firstCenter.x,   firstCenter.y-2, Creature::C_FAIRY, 9, 9 );
+            level.setCreatureAuto( firstCenter.x+1, firstCenter.y-2, Creature::C_GIANT, 9, 9 );
+            level.setCreatureAuto( firstCenter.x+2, firstCenter.y-2, Creature::C_BARBARIAN, 9, 9 );
+            level.setCreatureAuto( firstCenter.x-2, firstCenter.y-1, Creature::C_KNIGHT, 7, 9 );
+            level.setCreatureAuto( firstCenter.x+2, firstCenter.y-1, Creature::C_MONK, 9, 9 );
+            level.setCreatureAuto( firstCenter.x-2, firstCenter.y, Creature::C_WIZARD, 9, 9 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
-            for ( const auto* treasure: treasures ) {
+            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
+            for ( const dkmage::spatial::Room* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
-                level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+                level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }
         }
 

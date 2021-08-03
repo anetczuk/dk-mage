@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/PlayerType.h"
 
+#include <sstream>
+
 
 namespace adiktedpp {
 

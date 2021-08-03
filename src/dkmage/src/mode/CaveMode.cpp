@@ -75,7 +75,7 @@ namespace dkmage {
         }
 
         void CaveMode::generateCaves( const std::size_t cavesNum ) {
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
             const utils::Point mapCenter = mapRect.center();
             const Rect region( mapCenter, 70, 35 );
 
@@ -99,13 +99,13 @@ namespace dkmage {
                 const int rY = regionIndex / region.width();
 
                 const utils::Point caveCenter = region.min + utils::Point( rX, rY );
-                const adiktedpp::SlabType centerStab = level.getSlab( caveCenter );
-                if ( centerStab == adiktedpp::SlabType::ST_ROCK ) {
+                const adiktedpp::Slab centerStab = level.getSlab( caveCenter );
+                if ( centerStab == adiktedpp::Slab::S_ROCK ) {
                     continue ;
                 }
 
                 const utils::Rect chamber( caveCenter, 5, 5 );
-                level.setChamber( chamber, adiktedpp::SlabType::ST_PATH, 12 );
+                level.setCave( chamber, adiktedpp::Slab::S_PATH, 12 );
 
                 const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
                 const double centerFactor = ( 1.0 - 2.0 * centerDistance / region.height() );        /// in range [0.5, 1.0]
@@ -135,10 +135,10 @@ namespace dkmage {
              /// add neutral portal
              const Point portalCenter( bbox.max.x + 16, firstCenter.y );
              const Rect portalRect( portalCenter, 3, 3 );
-             level.setSlab( portalRect, adiktedpp::SlabType::ST_PORTAL );
+             level.setRoom( portalRect, adiktedpp::Room::R_PORTAL );
 
              /// add gold vein
-             const utils::Rect mapRect = adiktedpp::Level::mapRect();
+             const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
              const int veinY = mapRect.max.y - 3;
              const Point leftVeinCenter( bbox.min.x - 20, veinY );
              const Rect leftVeinRect( leftVeinCenter, 9, 5 );
@@ -150,10 +150,9 @@ namespace dkmage {
 
              /// add other
              Point pos = firstCenter + Point(0, 2);
-             level.setSlab( pos, adiktedpp::SlabType::ST_CLAIMED, adiktedpp::PlayerType::PT_0 );
+             level.setClaimed( pos, adiktedpp::PlayerType::PT_0 );
 //                 level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
-             level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
-             level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, adiktedpp::Creature::C_IMP, 8 );
 //                    level.setCreature( firstCenter.x, firstCenter.y+2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 4 );
 //                    level.setCreature( firstCenter.x+2, firstCenter.y, 4, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
 
@@ -190,7 +189,7 @@ namespace dkmage {
             const Point portalCenter( bbox.min.x - 8, firstCenter.y );
             const Rect portalRect( portalCenter, 3, 3 );
             level.digLine( firstCenter, portalCenter, owner, true );
-            level.setRoom( portalRect, adiktedpp::SlabType::ST_PORTAL, owner, true );
+            level.setRoom( portalRect, adiktedpp::Room::R_PORTAL, owner, true );
 
             /// add gold ore
             const Point veinCenter( bbox.max.x + 12, 4 );
@@ -199,15 +198,14 @@ namespace dkmage {
             drawGoldVein( level, veinRect, 3 );
 
             /// add other
-            level.setCreature( firstCenter.x, firstCenter.y+2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
-            level.setCreature( firstCenter.x, firstCenter.y+2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y+2, adiktedpp::Creature::C_IMP, 8 );
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
-            for ( const auto* treasure: treasures ) {
+            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::Room::R_TREASURE );
+            for ( const dkmage::spatial::Room* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
-                level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+                level.setItem( roomRect, 4, adiktedpp::Item::I_GOLD_HOARD3 );
             }
 
 //                    LOG() << "items: " << level.printItems();

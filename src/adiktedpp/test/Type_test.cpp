@@ -3,4 +3,4 @@
 // *
 // */
 //
-//#include "adiktedpp/script/Type.h"
+//#include "adiktedpp/Type.h"

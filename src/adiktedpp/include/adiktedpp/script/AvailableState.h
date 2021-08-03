@@ -6,7 +6,8 @@
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_SCRIPT_AVAILABLESTATE_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_SCRIPT_AVAILABLESTATE_H_
 
-#include "adiktedpp/script/Type.h"
+#include "adiktedpp/Type.h"
+#include "adiktedpp/script/AvailableMode.h"
 #include "adiktedpp/PlayerType.h"
 
 #include <map>

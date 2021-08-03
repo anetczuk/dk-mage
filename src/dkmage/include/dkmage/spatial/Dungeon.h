@@ -9,7 +9,7 @@
 #include "dkmage/spatial/Spatialtem.h"
 #include "dkmage/spatial/DungeonGraph.h"
 
-#include "adiktedpp/SlabType.h"
+#include "adiktedpp/Type.h"
 #include "adiktedpp/PlayerType.h"
 
 #include "utils/Log.h"
@@ -33,7 +33,7 @@ namespace dkmage {
             Rect roomPosition;
 
             bool validType;
-            adiktedpp::SlabType roomType;
+            adiktedpp::Room roomType;
             adiktedpp::PlayerType roomOwner;
 
 
@@ -44,7 +44,7 @@ namespace dkmage {
 
 
             Room(): roomPosition(), validType(false),
-                roomType( adiktedpp::SlabType::ST_ROCK ),
+                roomType( adiktedpp::Room::R_TREASURE ),
                 roomOwner( adiktedpp::PlayerType::PT_0 ),
                 northCoord(0), eastCoord(0)
             {
@@ -66,11 +66,11 @@ namespace dkmage {
                 roomPosition = Rect( newSize, newSize );
             }
 
-            adiktedpp::SlabType type() const {
+            adiktedpp::Room type() const {
                 return roomType;
             }
 
-            void type( const adiktedpp::SlabType newType ) {
+            void type( const adiktedpp::Room newType ) {
                 roomType = newType;
             }
 
@@ -156,15 +156,15 @@ namespace dkmage {
                 return graph.connectedItems( room );
             }
 
-            std::vector< Room* > findRoom( const adiktedpp::SlabType roomType );
+            std::vector< Room* > findRoom( const adiktedpp::Room roomType );
 
-            Room* findRoomFirst( const adiktedpp::SlabType roomType );
+            Room* findRoomFirst( const adiktedpp::Room roomType );
 
-            Room* addRandomRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
+            Room* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 
-            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize );
+            Room* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize );
 
-            Room* addRoom( const adiktedpp::SlabType roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
+            Room* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 

@@ -61,15 +61,15 @@ namespace dkmage {
 
             adiktedpp::script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( adiktedpp::PlayerType::PT_ALL, adiktedpp::Room::R_BRIDGE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
             /// necromancer mode
             availableCreatures.setEvilAvailable( adiktedpp::PlayerType::PT_0, false );
-            availableRooms.setStateMode( adiktedpp::PlayerType::PT_0, adiktedpp::script::Room::R_TORTURE, adiktedpp::script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( adiktedpp::PlayerType::PT_0, adiktedpp::Room::R_TORTURE, adiktedpp::script::AvailableMode::AM_DISABLED );
 
             adiktedpp::script::TrapAvailableState availableTraps( availablePlayers );
             availableTraps.setAllAvailable( adiktedpp::PlayerType::PT_ALL, true );
-            availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::script::Trap::T_LAVA, false );
+            availableTraps.setStateFlag( adiktedpp::PlayerType::PT_ALL, adiktedpp::Trap::T_LAVA, false );
 
             script.addLine( "" );
             script.set( availableCreatures );
@@ -123,28 +123,28 @@ namespace dkmage {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 20, 5 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
                     const utils::Rect furthest = maze.nodeRect( furthestIndex );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPREVMAP );
+                    drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_REVMAP );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 0, 0 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
                     const utils::Rect furthest = maze.nodeRect( furthestIndex );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 0, 5 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
                     const utils::Rect furthest = maze.nodeRect( furthestIndex );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 20, 0 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
                     const utils::Rect furthest = maze.nodeRect( furthestIndex );
-                    drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPINCLEV );
+                    drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
 
@@ -158,8 +158,8 @@ namespace dkmage {
                 }
             }
 
-            std::set< adiktedpp::SubTypeTrap > damageTraps = adiktedpp::DamageTraps();
-            damageTraps.erase( adiktedpp::SubTypeTrap::STT_LAVA );                          /// remove lava traps, because bridges are disabled
+            std::set< adiktedpp::Trap > damageTraps = adiktedpp::Traps();
+            damageTraps.erase( adiktedpp::Trap::T_LAVA );                          /// remove lava traps, because bridges are disabled
             const std::size_t trapsSize = damageTraps.size();
             const int maxDistance = maze.maxDistance();
 
@@ -175,24 +175,24 @@ namespace dkmage {
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
                 const std::size_t trapIndex = rand() % trapsSize;
-                const adiktedpp::SubTypeTrap trapType = utils::getSetItem( damageTraps, trapIndex );
+                const adiktedpp::Trap trapType = utils::getSetItem( damageTraps, trapIndex );
 
                 if ( maze.corridorSize == 1 ) {
-                    level.setSlab( nodeCenter, adiktedpp::SlabType::ST_PATH );
+                    level.setSlab( nodeCenter, adiktedpp::Slab::S_PATH );
                     level.setTrap( nodeCenter, 4, trapType );
                 } else if ( maze.corridorSize == 3 ) {
                     const std::size_t chamberIndex = rand() % 4;
                     switch( chamberIndex ) {
                     case 0: {
-                        drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                        drawTrap3x3X( level, nodeCenter, trapType, adiktedpp::Slab::S_PATH );
                         break ;
                     }
                     case 1: {
-                        drawTrap3x3Diamond( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                        drawTrap3x3Diamond( level, nodeCenter, trapType, adiktedpp::Slab::S_PATH );
                         break ;
                     }
                     case 2: {
-                        drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::SlabType::ST_PATH );
+                        drawTrap3x3Corners( level, nodeCenter, trapType, adiktedpp::Slab::S_PATH );
                         break ;
                     }
                     default: {
@@ -208,7 +208,7 @@ namespace dkmage {
         void MazeMode::randHeroTrap( spatial::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor ) {
 //                level.setVein( chamber, adiktedpp::SlabType::ST_PATH, cSize );
             const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
-            level.setSlab( chamber, adiktedpp::SlabType::ST_PATH );
+            level.setSlab( chamber, adiktedpp::Slab::S_PATH );
 
             int creatureLevel = std::min( (int)(distanceFactor * 9 + 1), 9 );          /// in range [1, 9]
             creatureLevel = std::max( creatureLevel, 3 );                              /// in range [3, 9]
@@ -237,10 +237,10 @@ namespace dkmage {
             /// add neutral portal
             const Point portalCenter( bbox.max.x + 16, firstCenter.y );
             const Rect portalRect( portalCenter, 3, 3 );
-            level.setSlab( portalRect, adiktedpp::SlabType::ST_PORTAL );
+            level.setRoom( portalRect, adiktedpp::Room::R_PORTAL );
 
             /// add gold vein
-            const utils::Rect mapRect = adiktedpp::Level::mapRect();
+            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
             const int veinY = mapRect.max.y - 3;
             const Point veinCenter( bbox.min.x - 20, veinY );
             const Rect veinRect( veinCenter, 9, 5 );
@@ -249,10 +249,9 @@ namespace dkmage {
             /// add other
 //            Point pos = firstCenter + Point(0, 2);
 //            level.setItem( pos, 4, adiktedpp::SubTypeItem::STI_SPREVMAP );
-            level.setCreature( firstCenter.x, firstCenter.y-2, 1, adiktedpp::SubTypeCreature::STC_WARLOCK, 1 );
-            level.setCreature( firstCenter.x, firstCenter.y-2, 7, adiktedpp::SubTypeCreature::STC_SKELETON, 3 );
-            level.setCreature( firstCenter.x, firstCenter.y-2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
-            level.setCreature( firstCenter.x, firstCenter.y-2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+            level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, adiktedpp::Creature::C_SORCEROR, 1 );
+            level.setCreature( firstCenter.x+1, firstCenter.y-2, 4, adiktedpp::Creature::C_SKELETON, 3 );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y+2, adiktedpp::Creature::C_IMP, 8 );
 
 //                    /// fill treasure with gold
 //                    dkmage::spatial::Room* treasure = dungeon.findRoomFirst( adiktedpp::SlabType::ST_TREASURE );
@@ -290,7 +289,7 @@ namespace dkmage {
             const Point portalCenter( bbox.min.x - 8, firstCenter.y );
             const Rect portalRect( portalCenter, 3, 3 );
             level.digLine( firstCenter, portalCenter, owner, true );
-            level.setRoom( portalRect, adiktedpp::SlabType::ST_PORTAL, owner, true );
+            level.setRoom( portalRect, adiktedpp::Room::R_PORTAL, owner, true );
 
             /// add gold ore
             const Point veinCenter( bbox.max.x + 12, 4 );
@@ -299,15 +298,14 @@ namespace dkmage {
             drawGoldVein( level, veinRect, 3 );
 
             /// add other
-            level.setCreature( firstCenter.x, firstCenter.y+2, 3, adiktedpp::SubTypeCreature::STC_IMP, 4 );
-            level.setCreature( firstCenter.x, firstCenter.y+2, 5, adiktedpp::SubTypeCreature::STC_IMP, 4 );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y+2, adiktedpp::Creature::C_IMP, 8 );
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, adiktedpp::SubTypeCreature::STC_SKELETON, 1 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::SlabType::ST_TREASURE );
-            for ( const auto* treasure: treasures ) {
+            const std::vector< dkmage::spatial::Room* > treasures = enemyDungeon.findRoom( adiktedpp::Room::R_TREASURE );
+            for ( const dkmage::spatial::Room* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
-                level.setItem( roomRect, 4, adiktedpp::SubTypeItem::STI_GLDHOARD3 );
+                level.setItem( roomRect, 4, adiktedpp::Item::I_GOLD_HOARD3 );
             }
         }
 

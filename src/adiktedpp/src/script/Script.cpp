@@ -33,40 +33,40 @@ namespace adiktedpp {
             return "UNKNOWN_PLAYER";
         }
 
-        std::string scriptName( const SubTypeCreature item ) {
+        std::string scriptName( const raw::SubTypeCreature item ) {
             switch( item ) {
-            case SubTypeCreature::STC_WIZRD:    return "WIZARD";
-            case SubTypeCreature::STC_BARBARIN: return "BARBARIAN";
-            case SubTypeCreature::STC_ARCHER:   return "ARCHER";
-            case SubTypeCreature::STC_MONK:     return "MONK";
-            case SubTypeCreature::STC_DWAFT:    return "DWARFA";
-            case SubTypeCreature::STC_KNIGHT:   return "KNIGHT";
-            case SubTypeCreature::STC_AVATAR:   return "AVATAR";
-            case SubTypeCreature::STC_TUNELER:  return "TUNNELLER";
-            case SubTypeCreature::STC_WITCH:    return "WITCH";
-            case SubTypeCreature::STC_GIANT:    return "GIANT";
-            case SubTypeCreature::STC_FAIRY:    return "FAIRY";
-            case SubTypeCreature::STC_THEFT:    return "THIEF";
-            case SubTypeCreature::STC_SMURI:    return "SAMURAI";
+            case raw::SubTypeCreature::STC_WIZRD:    return "WIZARD";
+            case raw::SubTypeCreature::STC_BARBARIN: return "BARBARIAN";
+            case raw::SubTypeCreature::STC_ARCHER:   return "ARCHER";
+            case raw::SubTypeCreature::STC_MONK:     return "MONK";
+            case raw::SubTypeCreature::STC_DWAFT:    return "DWARFA";
+            case raw::SubTypeCreature::STC_KNIGHT:   return "KNIGHT";
+            case raw::SubTypeCreature::STC_AVATAR:   return "AVATAR";
+            case raw::SubTypeCreature::STC_TUNELER:  return "TUNNELLER";
+            case raw::SubTypeCreature::STC_WITCH:    return "WITCH";
+            case raw::SubTypeCreature::STC_GIANT:    return "GIANT";
+            case raw::SubTypeCreature::STC_FAIRY:    return "FAIRY";
+            case raw::SubTypeCreature::STC_THEFT:    return "THIEF";
+            case raw::SubTypeCreature::STC_SMURI:    return "SAMURAI";
 
-            case SubTypeCreature::STC_HORNY:    return "HORNY";
-            case SubTypeCreature::STC_SKELETON: return "SKELETON";
-            case SubTypeCreature::STC_TROLL:    return "TROLL";
-            case SubTypeCreature::STC_DRAGON:   return "DRAGON";
-            case SubTypeCreature::STC_SPAWN:    return "DEMONSPAWN";
-            case SubTypeCreature::STC_FLY:      return "FLY";
-            case SubTypeCreature::STC_MISTRESS: return "DARK_MISTRESS";
-            case SubTypeCreature::STC_WARLOCK:  return "SORCEROR";
-            case SubTypeCreature::STC_BILEDEMN: return "BILE_DEMON";
-            case SubTypeCreature::STC_IMP:      return "IMP";
-            case SubTypeCreature::STC_BEETLE:   return "BUG";
-            case SubTypeCreature::STC_VAMPIRE:  return "VAMPIRE";
-            case SubTypeCreature::STC_SPIDER:   return "SPIDER";
-            case SubTypeCreature::STC_HOUND:    return "HELL_HOUND";
-            case SubTypeCreature::STC_GHOST:    return "GHOST";
-            case SubTypeCreature::STC_TENTCL:   return "TENTACLE";
-            case SubTypeCreature::STC_ORC:      return "ORC";
-            case SubTypeCreature::STC_FLOAT:    return "FLOATING_SPIRIT";
+            case raw::SubTypeCreature::STC_HORNY:    return "HORNY";
+            case raw::SubTypeCreature::STC_SKELETON: return "SKELETON";
+            case raw::SubTypeCreature::STC_TROLL:    return "TROLL";
+            case raw::SubTypeCreature::STC_DRAGON:   return "DRAGON";
+            case raw::SubTypeCreature::STC_SPAWN:    return "DEMONSPAWN";
+            case raw::SubTypeCreature::STC_FLY:      return "FLY";
+            case raw::SubTypeCreature::STC_MISTRESS: return "DARK_MISTRESS";
+            case raw::SubTypeCreature::STC_WARLOCK:  return "SORCEROR";
+            case raw::SubTypeCreature::STC_BILEDEMN: return "BILE_DEMON";
+            case raw::SubTypeCreature::STC_IMP:      return "IMP";
+            case raw::SubTypeCreature::STC_BEETLE:   return "BUG";
+            case raw::SubTypeCreature::STC_VAMPIRE:  return "VAMPIRE";
+            case raw::SubTypeCreature::STC_SPIDER:   return "SPIDER";
+            case raw::SubTypeCreature::STC_HOUND:    return "HELL_HOUND";
+            case raw::SubTypeCreature::STC_GHOST:    return "GHOST";
+            case raw::SubTypeCreature::STC_TENTCL:   return "TENTACLE";
+            case raw::SubTypeCreature::STC_ORC:      return "ORC";
+            case raw::SubTypeCreature::STC_FLOAT:    return "FLOATING_SPIRIT";
             }
             return "UNKNOWN_CREATURE";
         }
@@ -194,27 +194,27 @@ namespace adiktedpp {
         }
 
         void Script::setEvilCreaturesPool( const std::size_t number ) {
-            std::set< SubTypeCreature > list = SubTypeCreatureEvil();
-            list.erase( SubTypeCreature::STC_HORNY );
-            list.erase( SubTypeCreature::STC_FLOAT );
-            list.erase( SubTypeCreature::STC_IMP );
-            list.erase( SubTypeCreature::STC_TENTCL );
-            list.erase( SubTypeCreature::STC_VAMPIRE );
-            list.erase( SubTypeCreature::STC_SKELETON );
-            for ( const SubTypeCreature item: list ) {
+            std::set< raw::SubTypeCreature > list = raw::SubTypeCreatureEvil();
+            list.erase( raw::SubTypeCreature::STC_HORNY );
+            list.erase( raw::SubTypeCreature::STC_FLOAT );
+            list.erase( raw::SubTypeCreature::STC_IMP );
+            list.erase( raw::SubTypeCreature::STC_TENTCL );
+            list.erase( raw::SubTypeCreature::STC_VAMPIRE );
+            list.erase( raw::SubTypeCreature::STC_SKELETON );
+            for ( const raw::SubTypeCreature item: list ) {
                 setCreaturePool( item, number );
             }
         }
 
         void Script::setHeroCreaturesPool( const std::size_t number ) {
-            std::set< SubTypeCreature > list = SubTypeCreatureHero();
-            list.erase( SubTypeCreature::STC_AVATAR );
-            for ( const SubTypeCreature item: list ) {
+            std::set< raw::SubTypeCreature > list = raw::SubTypeCreatureHero();
+            list.erase( raw::SubTypeCreature::STC_AVATAR );
+            for ( const raw::SubTypeCreature item: list ) {
                 setCreaturePool( item, number );
             }
         }
 
-        void Script::setCreaturePool( const SubTypeCreature creature, const std::size_t number ) {
+        void Script::setCreaturePool( const raw::SubTypeCreature creature, const std::size_t number ) {
             std::stringstream stream;
             stream << "ADD_CREATURE_TO_POOL( " << scriptName( creature ) << ", " << number << " )";
             const std::string& line = stream.str();

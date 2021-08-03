@@ -26,20 +26,20 @@ namespace dkmage {
     void drawGoldChests( adiktedpp::Level& level, const utils::Rect& treasureRect );
 
     /// draw 5 traps in 3x3 rectangle (X shape)
-    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
-    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap );
+    void drawTrap3x3X( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap, const adiktedpp::Slab fillType );
 
     /// draw 4 traps in 3x3 rectangle (diamond shape)
-    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
-    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap );
+    void drawTrap3x3Diamond( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap, const adiktedpp::Slab fillType );
 
     /// draw 4 traps in 3x3 rectangle (corners)
-    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap );
-    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::SubTypeTrap trap, const adiktedpp::SlabType fillType );
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap );
+    void drawTrap3x3Corners( adiktedpp::Level& level, const utils::Point& trapCenter, const adiktedpp::Trap trap, const adiktedpp::Slab fillType );
 
-    void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::SubTypeItem specialItem );
+    void drawSpecial3x3( adiktedpp::Level& level, const utils::Point& specialCenter, const adiktedpp::Item specialItem );
 
-    void drawSpecial( adiktedpp::Level& level, const utils::Rect& chamber, const adiktedpp::SubTypeItem specialItem );
+    void drawSpecial( adiktedpp::Level& level, const utils::Rect& chamber, const adiktedpp::Item specialItem );
 
     /// 'creatureLevel' in range [0, 9] (9 is maximum level possible)
     void drawHeroTrap( adiktedpp::Level& level, const utils::Point& point, const int creatureLevel );
