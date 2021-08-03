@@ -17,11 +17,11 @@ using namespace adiktedpp;
 
 namespace dkmage {
 
-    void drawDungeon( Level& level, const dkmage::spatial::Dungeon& dungeon ) {
+    void drawDungeon( Level& level, const spatial::Dungeon& dungeon ) {
         const PlayerType owner = dungeon.owner();
         const bool fortify = dungeon.fortify();
-        std::vector< const dkmage::spatial::DungeonRoom* > roomsList = dungeon.rooms();
-        for ( const dkmage::spatial::DungeonRoom* item: roomsList ) {
+        std::vector< const spatial::DungeonRoom* > roomsList = dungeon.rooms();
+        for ( const spatial::DungeonRoom* item: roomsList ) {
             /// set room
             const Rect& position = item->position();
             const Room itemType = item->type();
@@ -29,15 +29,15 @@ namespace dkmage {
 
             /// draw corridors
             const Point& itemCenter = item->position().center();
-            std::vector< const dkmage::spatial::DungeonRoom* > connectedList = dungeon.connectedRooms( *item );
-            for ( const dkmage::spatial::DungeonRoom* connected: connectedList ) {
+            std::vector< const spatial::DungeonRoom* > connectedList = dungeon.connectedRooms( *item );
+            for ( const spatial::DungeonRoom* connected: connectedList ) {
                 const Point& connectedCenter = connected->position().center();
                 level.digLine( itemCenter, connectedCenter, owner, fortify );
             }
         }
     }
 
-    void drawMaze( Level& level, const dkmage::spatial::Maze& maze ) {
+    void drawMaze( Level& level, const spatial::Maze& maze ) {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
 
@@ -46,19 +46,19 @@ namespace dkmage {
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {
-                const dkmage::spatial::Maze::PathType val = maze.state( x, y );
+                const spatial::Maze::PathType val = maze.state( x, y );
                 switch ( val ) {
-                case dkmage::spatial::Maze::PathType::PT_ROCK: {
+                case spatial::Maze::PathType::PT_ROCK: {
                     /// closed
                     level.setSlab( minPoint + Point( x, y ), Slab::S_ROCK );
                     break ;
                 }
-                case dkmage::spatial::Maze::PathType::PT_EARTH: {
+                case spatial::Maze::PathType::PT_EARTH: {
                     /// open
                     level.setSlab( minPoint + Point( x, y ), Slab::S_EARTH );
                     break ;
                 }
-                case dkmage::spatial::Maze::PathType::PT_LAVA: {
+                case spatial::Maze::PathType::PT_LAVA: {
                     /// closed
                     level.setSlab( minPoint + Point( x, y ), Slab::S_LAVA );
                     break ;

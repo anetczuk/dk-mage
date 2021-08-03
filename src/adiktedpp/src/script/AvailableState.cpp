@@ -6,9 +6,6 @@
 #include "adiktedpp/script/AvailableState.h"
 
 
-using namespace adiktedpp;
-
-
 namespace adiktedpp {
     namespace script {
 

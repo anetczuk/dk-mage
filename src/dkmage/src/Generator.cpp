@@ -16,7 +16,7 @@ namespace dkmage {
         return list;
     }
 
-    dkmage::LevelGenerator* Generator::get( const std::string& type ) {
+    LevelGenerator* Generator::get( const std::string& type ) {
         LevelGeneratorPtr& itemPtr = genMap[ type ];
         AbstractItem* item = itemPtr.get();
         return item->create();

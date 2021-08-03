@@ -23,6 +23,7 @@
 
 using namespace utils;
 using namespace adiktedpp;
+using namespace dkmage;
 
 using ghc::filesystem::path;
 using ghc::filesystem::exists;
@@ -57,7 +58,7 @@ bool initializeRand( const std::string& seed ) {
     return true;
 }
 
-dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::string& mapType ) {
+LevelGenerator* getGenerator( Generator& generator, const std::string& mapType ) {
     if ( mapType.compare("random") != 0 ) {
         LOG() << "using map generator: '" << mapType << "'";
         return generator.get( mapType );
@@ -96,7 +97,7 @@ int main( int argc, char** argv ) {
     try {
         TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', VERSION_FULL_STRING );
 
-        dkmage::Generator& generator = dkmage::Generator::instance();
+        Generator& generator = Generator::instance();
 
         TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
 
@@ -143,7 +144,7 @@ int main( int argc, char** argv ) {
         }
 
         const std::string& mapType = typeArg.getValue();
-        dkmage::LevelGenerator* typeGenerator = getGenerator( generator, mapType );
+        LevelGenerator* typeGenerator = getGenerator( generator, mapType );
         if ( typeGenerator == nullptr ) {
             LOG() << "unable to handle generator '" << mapType << "'";
             return 1;

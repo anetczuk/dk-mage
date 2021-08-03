@@ -137,7 +137,7 @@ namespace dkmage {
         }
 
         void HeroFortressMode::preparePlayerDungeon() {
-            dkmage::spatial::Dungeon dungeon;
+            spatial::Dungeon dungeon;
             dungeon.limitNorth = 1;
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
@@ -171,7 +171,7 @@ namespace dkmage {
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 
 //                    /// fill treasure with gold
-//                    dkmage::spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
+//                    spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
 //                    if ( treasure != nullptr ) {
 //                        const Rect& roomRect = treasure->position();
 //                        level.setItem( roomRect, 4, SubTypeItem::STI_GLDHOARD3 );
@@ -179,17 +179,17 @@ namespace dkmage {
         }
 
         void HeroFortressMode::prepareEnemyDungeon() {
-            dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
+            spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
 
-            const dkmage::spatial::DungeonRoom* heart = enemyDungeon.addRandomRoom( Room::R_DUNGEON_HEART, 5 );
-            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_NORTH, true, 1 );
-            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_EAST, true, 1 );
-            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_WEST, true, 1 );
-            const dkmage::spatial::DungeonRoom* southTr = enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, dkmage::spatial::Direction::D_SOUTH, true, 1 );
-            const dkmage::spatial::DungeonRoom* traps   = enemyDungeon.addRoom( Room::R_CLAIMED, 3, *southTr, dkmage::spatial::Direction::D_SOUTH, true, 3 );
+            const spatial::DungeonRoom* heart = enemyDungeon.addRandomRoom( Room::R_DUNGEON_HEART, 5 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, spatial::Direction::D_NORTH, true, 1 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, spatial::Direction::D_EAST, true, 1 );
+            enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, spatial::Direction::D_WEST, true, 1 );
+            const spatial::DungeonRoom* southTr = enemyDungeon.addRoom( Room::R_TREASURE, 3, *heart, spatial::Direction::D_SOUTH, true, 1 );
+            const spatial::DungeonRoom* traps   = enemyDungeon.addRoom( Room::R_CLAIMED, 3, *southTr, spatial::Direction::D_SOUTH, true, 3 );
 
             enemyDungeon.moveToTopEdge( 8 );
 
@@ -238,8 +238,8 @@ namespace dkmage {
             level.setCreatureAuto( firstCenter.x-2, firstCenter.y, Creature::C_WIZARD, 9, 9 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
-            for ( const dkmage::spatial::DungeonRoom* treasure: treasures ) {
+            const std::vector< spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
+            for ( const spatial::DungeonRoom* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }

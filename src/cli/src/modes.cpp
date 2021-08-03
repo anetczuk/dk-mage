@@ -12,8 +12,11 @@
 #include "utils/GlobalScope.h"
 
 
+using namespace dkmage;
+
+
 GLOBAL_SCOPE() {
-    dkmage::Generator::registerMode<dkmage::mode::CaveMode>( "cave" );
-    dkmage::Generator::registerMode<dkmage::mode::MazeMode>( "maze" );
-    dkmage::Generator::registerMode<dkmage::mode::HeroFortressMode>( "herofortress" );
+    Generator::registerMode< mode::CaveMode >( "cave" );
+    Generator::registerMode< mode::MazeMode >( "maze" );
+    Generator::registerMode< mode::HeroFortressMode >( "herofortress" );
 }

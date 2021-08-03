@@ -221,7 +221,7 @@ namespace dkmage {
         }
 
         void MazeMode::preparePlayerDungeon() {
-            dkmage::spatial::Dungeon dungeon;
+            spatial::Dungeon dungeon;
             dungeon.limitNorth = 1;
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
@@ -258,7 +258,7 @@ namespace dkmage {
             level.setCreatureAuto( firstCenter.x, firstCenter.y+2, Creature::C_IMP, 8 );
 
 //                    /// fill treasure with gold
-//                    dkmage::spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
+//                    spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
 //                    if ( treasure != nullptr ) {
 //                        const Rect& roomRect = treasure->position();
 //                        level.setItem( roomRect, 4, SubTypeItem::STI_GLDHOARD3 );
@@ -266,8 +266,8 @@ namespace dkmage {
         }
 
         void MazeMode::prepareEnemyDungeon() {
-        //    dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
-            dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
+        //    spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
+            spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
@@ -306,8 +306,8 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, SubTypeCreature::STC_SKELETON, 1 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
-            for ( const dkmage::spatial::DungeonRoom* treasure: treasures ) {
+            const std::vector< spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
+            for ( const spatial::DungeonRoom* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }

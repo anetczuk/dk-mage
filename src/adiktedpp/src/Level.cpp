@@ -23,7 +23,6 @@ extern "C" {
 
 
 using namespace utils;
-using namespace adiktedpp;
 
 
 namespace adiktedpp {

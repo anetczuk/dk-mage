@@ -17,9 +17,6 @@ extern "C" {
 }
 
 
-using namespace adiktedpp;
-
-
 namespace adiktedpp {
     namespace script {
 

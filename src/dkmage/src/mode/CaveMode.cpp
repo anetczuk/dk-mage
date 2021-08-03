@@ -119,58 +119,58 @@ namespace dkmage {
         }
 
         void CaveMode::preparePlayerDungeon() {
-            dkmage::spatial::Dungeon dungeon( PlayerType::PT_0 );
-             dungeon.limitNorth = 1;
-             dungeon.limitSouth = 0;
-             dungeon.fortify( true );
+            spatial::Dungeon dungeon( PlayerType::PT_0 );
+            dungeon.limitNorth = 1;
+            dungeon.limitSouth = 0;
+            dungeon.fortify( true );
 
-             dungeon.generate( 1, 5 );
-//                dungeon.addRandomRoom( SlabType::ST_TREASURE, 3, false, 1 );
-             dungeon.moveToBottomEdge( 4 );
+            dungeon.generate( 1, 5 );
+//               dungeon.addRandomRoom( SlabType::ST_TREASURE, 3, false, 1 );
+            dungeon.moveToBottomEdge( 4 );
 
-//                LOG() << "dungeon:\n" << dungeon.print();
+//               LOG() << "dungeon:\n" << dungeon.print();
 
-             /// dungeon have to be drawn before placing items inside it's rooms
-             drawDungeon( level, dungeon );
+            /// dungeon have to be drawn before placing items inside it's rooms
+            drawDungeon( level, dungeon );
 
-             const Point firstCenter = dungeon.roomCenter( 0 );
-             const Rect bbox = dungeon.boundingBox();
+            const Point firstCenter = dungeon.roomCenter( 0 );
+            const Rect bbox = dungeon.boundingBox();
 
-             /// add neutral portal
-             const Point portalCenter( bbox.max.x + 16, firstCenter.y );
-             const Rect portalRect( portalCenter, 3, 3 );
-             level.setRoom( portalRect, Room::R_PORTAL );
+            /// add neutral portal
+            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
+            const Rect portalRect( portalCenter, 3, 3 );
+            level.setRoom( portalRect, Room::R_PORTAL );
 
-             /// add gold vein
-             const Rect mapRect = raw::RawLevel::mapRect();
-             const int veinY = mapRect.max.y - 3;
-             const Point leftVeinCenter( bbox.min.x - 20, veinY );
-             const Rect leftVeinRect( leftVeinCenter, 9, 5 );
-             drawGoldVein( level, leftVeinRect, 1 );
+            /// add gold vein
+            const Rect mapRect = raw::RawLevel::mapRect();
+            const int veinY = mapRect.max.y - 3;
+            const Point leftVeinCenter( bbox.min.x - 20, veinY );
+            const Rect leftVeinRect( leftVeinCenter, 9, 5 );
+            drawGoldVein( level, leftVeinRect, 1 );
 
-             const Point rightVeinCenter( bbox.max.x + 28, veinY );
-             const Rect rightVeinRect( rightVeinCenter, 9, 6 );
-             drawGoldVein( level, rightVeinRect, 0 );
+            const Point rightVeinCenter( bbox.max.x + 28, veinY );
+            const Rect rightVeinRect( rightVeinCenter, 9, 6 );
+            drawGoldVein( level, rightVeinRect, 0 );
 
-             /// add other
-             Point pos = firstCenter + Point(0, 2);
-             level.setClaimed( pos, PlayerType::PT_0 );
-//                 level.setItem( pos, 4, SubTypeItem::STI_SPREVMAP );
-             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
-//                    level.setCreature( firstCenter.x, firstCenter.y+2, 4, SubTypeCreature::STC_SKELETON, 4 );
-//                    level.setCreature( firstCenter.x+2, firstCenter.y, 4, SubTypeCreature::STC_WARLOCK, 1 );
+            /// add other
+            Point pos = firstCenter + Point(0, 2);
+            level.setClaimed( pos, PlayerType::PT_0 );
+//                level.setItem( pos, 4, SubTypeItem::STI_SPREVMAP );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
+//                   level.setCreature( firstCenter.x, firstCenter.y+2, 4, SubTypeCreature::STC_SKELETON, 4 );
+//                   level.setCreature( firstCenter.x+2, firstCenter.y, 4, SubTypeCreature::STC_WARLOCK, 1 );
 
-//                    /// fill treasure with gold
-//                    dkmage::spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
-//                    if ( treasure != nullptr ) {
-//                        const Rect& roomRect = treasure->position();
-//                        level.setItem( roomRect, 4, SubTypeItem::STI_GLDHOARD3 );
-//                    }
+//                   /// fill treasure with gold
+//                   spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
+//                   if ( treasure != nullptr ) {
+//                       const Rect& roomRect = treasure->position();
+//                       level.setItem( roomRect, 4, SubTypeItem::STI_GLDHOARD3 );
+//                   }
         }
 
         void CaveMode::prepareEnemyDungeon() {
-        //    dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
-            dkmage::spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
+        //    spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
+            spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
@@ -206,8 +206,8 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, SubTypeCreature::STC_SKELETON, 1 );
 
             /// fill treasure with gold
-            const std::vector< dkmage::spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
-            for ( const dkmage::spatial::DungeonRoom* treasure: treasures ) {
+            const std::vector< spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
+            for ( const spatial::DungeonRoom* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }

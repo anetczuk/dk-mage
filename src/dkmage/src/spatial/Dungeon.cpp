@@ -286,8 +286,8 @@ namespace dkmage {
         std::set< Point > Dungeon::outline() const {
             std::set< Point > ret;
 
-            std::vector< const dkmage::spatial::DungeonRoom* > roomsList = rooms();
-            for ( const dkmage::spatial::DungeonRoom* item: roomsList ) {
+            std::vector< const spatial::DungeonRoom* > roomsList = rooms();
+            for ( const spatial::DungeonRoom* item: roomsList ) {
                 /// room
                 Rect position = item->position();
                 position.grow( 2 );
@@ -295,8 +295,8 @@ namespace dkmage {
 
                 /// corridors
                 const Point& itemCenter = item->position().center();
-                std::vector< const dkmage::spatial::DungeonRoom* > connectedList = connectedRooms( *item );
-                for ( const dkmage::spatial::DungeonRoom* connected: connectedList ) {
+                std::vector< const spatial::DungeonRoom* > connectedList = connectedRooms( *item );
+                for ( const spatial::DungeonRoom* connected: connectedList ) {
                     const Point& connectedCenter = connected->position().center();
                     addLine( ret, itemCenter, connectedCenter );
                 }

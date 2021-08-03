@@ -8,8 +8,8 @@
 #include "dkmage/spatial/Dungeon.h"
 
 
-using namespace dkmage;
 using namespace adiktedpp;
+using namespace dkmage;
 using namespace spatial;
 
 
