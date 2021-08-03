@@ -64,7 +64,7 @@ namespace dkmage {
 
         std::string DungeonRoom::print() const {
             std::stringstream stream;
-            stream << "position: " << position() << " type: " << roomType;
+            stream << "position: " << position() << " type: " << (int)roomType;
             return stream.str();
         }
 
@@ -140,7 +140,7 @@ namespace dkmage {
                     }
                 }
             }
-            LOG() << "unable to add room: " << roomType;
+            LOG() << "unable to add room: " << (int)roomType;
             return nullptr;
         }
 

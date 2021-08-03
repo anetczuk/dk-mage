@@ -76,7 +76,7 @@ namespace adiktedpp {
 
             void setHeroCreaturesPool( const std::size_t number );
 
-            void setCreaturePool( const raw::SubTypeCreature creature, const std::size_t number );
+            void setCreaturePool( const Creature creature, const std::size_t number );
 
             /// ================================================================================
 

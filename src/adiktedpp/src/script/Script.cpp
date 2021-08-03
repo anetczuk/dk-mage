@@ -33,42 +33,135 @@ namespace adiktedpp {
             return "UNKNOWN_PLAYER";
         }
 
-        std::string scriptName( const raw::SubTypeCreature item ) {
-            switch( item ) {
-            case raw::SubTypeCreature::STC_WIZRD:    return "WIZARD";
-            case raw::SubTypeCreature::STC_BARBARIN: return "BARBARIAN";
-            case raw::SubTypeCreature::STC_ARCHER:   return "ARCHER";
-            case raw::SubTypeCreature::STC_MONK:     return "MONK";
-            case raw::SubTypeCreature::STC_DWAFT:    return "DWARFA";
-            case raw::SubTypeCreature::STC_KNIGHT:   return "KNIGHT";
-            case raw::SubTypeCreature::STC_AVATAR:   return "AVATAR";
-            case raw::SubTypeCreature::STC_TUNELER:  return "TUNNELLER";
-            case raw::SubTypeCreature::STC_WITCH:    return "WITCH";
-            case raw::SubTypeCreature::STC_GIANT:    return "GIANT";
-            case raw::SubTypeCreature::STC_FAIRY:    return "FAIRY";
-            case raw::SubTypeCreature::STC_THEFT:    return "THIEF";
-            case raw::SubTypeCreature::STC_SMURI:    return "SAMURAI";
 
-            case raw::SubTypeCreature::STC_HORNY:    return "HORNY";
-            case raw::SubTypeCreature::STC_SKELETON: return "SKELETON";
-            case raw::SubTypeCreature::STC_TROLL:    return "TROLL";
-            case raw::SubTypeCreature::STC_DRAGON:   return "DRAGON";
-            case raw::SubTypeCreature::STC_SPAWN:    return "DEMONSPAWN";
-            case raw::SubTypeCreature::STC_FLY:      return "FLY";
-            case raw::SubTypeCreature::STC_MISTRESS: return "DARK_MISTRESS";
-            case raw::SubTypeCreature::STC_WARLOCK:  return "SORCEROR";
-            case raw::SubTypeCreature::STC_BILEDEMN: return "BILE_DEMON";
-            case raw::SubTypeCreature::STC_IMP:      return "IMP";
-            case raw::SubTypeCreature::STC_BEETLE:   return "BUG";
-            case raw::SubTypeCreature::STC_VAMPIRE:  return "VAMPIRE";
-            case raw::SubTypeCreature::STC_SPIDER:   return "SPIDER";
-            case raw::SubTypeCreature::STC_HOUND:    return "HELL_HOUND";
-            case raw::SubTypeCreature::STC_GHOST:    return "GHOST";
-            case raw::SubTypeCreature::STC_TENTCL:   return "TENTACLE";
-            case raw::SubTypeCreature::STC_ORC:      return "ORC";
-            case raw::SubTypeCreature::STC_FLOAT:    return "FLOATING_SPIRIT";
+        std::string scriptName( const Room data ) {
+            switch( data ) {
+            case Room::R_CLAIMED:        { return "UNSUPPORTED_CLAIMED"; }
+            case Room::R_DUNGEON_HEART:  { return "DUNGEON_HEART"; }
+            case Room::R_PORTAL:         { return "UNSUPPORTED_PORTAL"; }
+            case Room::R_TREASURE:       { return "TREASURE"; }
+            case Room::R_LIBRARY:        { return "RESEARCH"; }
+            case Room::R_PRISON:         { return "PRISON"; }
+            case Room::R_TORTURE:        { return "TORTURE"; }
+            case Room::R_TRAINING:       { return "TRAINING"; }
+            case Room::R_WORKSHOP:       { return "WORKSHOP"; }
+            case Room::R_SCAVENGER:      { return "SCAVENGER"; }
+            case Room::R_TEMPLE:         { return "TEMPLE"; }
+            case Room::R_GRAVEYARD:      { return "GRAVEYARD"; }
+            case Room::R_HATCHERY:       { return "GARDEN"; }
+            case Room::R_LAIR:           { return "LAIR"; }
+            case Room::R_BARRACKS:       { return "BARRACKS"; }
+            case Room::R_BRIDGE:         { return "BRIDGE"; }
+            case Room::R_GUARD_POST:     { return "GUARD_POST"; }
             }
-            return "UNKNOWN_CREATURE";
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
+        std::string scriptName( const Creature data ) {
+            switch( data ) {
+            case Creature::C_WIZARD:      { return "WIZARD"; }
+            case Creature::C_BARBARIAN:   { return "BARBARIAN"; }
+            case Creature::C_ARCHER:      { return "ARCHER"; }
+            case Creature::C_MONK:        { return "MONK"; }
+            case Creature::C_DWARFA:      { return "DWARFA"; }
+            case Creature::C_KNIGHT:      { return "KNIGHT"; }
+            case Creature::C_AVATAR:      { return "AVATAR"; }
+            case Creature::C_TUNNELLER:   { return "TUNNELLER"; }
+            case Creature::C_WITCH:       { return "WITCH"; }
+            case Creature::C_GIANT:       { return "GIANT"; }
+            case Creature::C_FAIRY:       { return "FAIRY"; }
+            case Creature::C_THIEF:       { return "THIEF"; }
+            case Creature::C_SAMURAI:     { return "SAMURAI"; }
+
+            case Creature::C_IMP:           { return "IMP"; }
+            case Creature::C_HORNY:         { return "HORNY"; }
+            case Creature::C_SKELETON:      { return "SKELETON"; }
+            case Creature::C_TROLL:         { return "TROLL"; }
+            case Creature::C_DRAGON:        { return "DRAGON"; }
+            case Creature::C_DEMONSPAWN:    { return "DEMONSPAWN"; }
+            case Creature::C_FLY:           { return "FLY"; }
+            case Creature::C_DARK_MISTRESS: { return "DARK_MISTRESS"; }
+            case Creature::C_WARLOCK:       { return "SORCEROR"; }
+            case Creature::C_BILE_DEMON:    { return "BILE_DEMON"; }
+            case Creature::C_BUG:           { return "BUG"; }
+            case Creature::C_VAMPIRE:       { return "VAMPIRE"; }
+            case Creature::C_SPIDER:        { return "SPIDER"; }
+            case Creature::C_HELL_HOUND:    { return "HELL_HOUND"; }
+            case Creature::C_GHOST:         { return "GHOST"; }
+            case Creature::C_TENTACLE:      { return "TENTACLE"; }
+            case Creature::C_ORC:           { return "ORC"; }
+            }
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
+        std::string scriptName( const Door data ) {
+            switch( data ) {
+            case Door::D_WOOD:           { return "WOOD"; }
+            case Door::D_BRACED:         { return "BRACED"; }
+            case Door::D_IRON:           { return "STEEL"; }
+            case Door::D_MAGIC:          { return "MAGIC"; }
+            }
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
+        std::string scriptName( const Trap data ) {
+            switch( data ) {
+            case Trap::T_BOULDER:        { return "BOULDER"; }
+            case Trap::T_ALARM:          { return "ALARM"; }
+            case Trap::T_POISON_GAS:     { return "POISON_GAS"; }
+            case Trap::T_LIGHTNING:      { return "LIGHTNING"; }
+            case Trap::T_WORD_OF_POWER:  { return "WORD_OF_POWER"; }
+            case Trap::T_LAVA:           { return "LAVA"; }
+            }
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
+        std::string scriptName( const Spell data ) {
+            switch( data ) {
+            case Spell::S_POWER_HAND:           { return "POWER_HAND"; }
+            case Spell::S_POWER_SLAP:           { return "POWER_SLAP"; }
+            case Spell::S_POWER_POSSESS:        { return "POWER_POSSESS"; }
+            case Spell::S_POWER_IMP:            { return "POWER_IMP"; }
+            case Spell::S_POWER_OBEY:           { return "POWER_OBEY"; }
+            case Spell::S_POWER_SIGHT:          { return "POWER_SIGHT"; }
+            case Spell::S_POWER_CALL_TO_ARMS:   { return "POWER_CALL_TO_ARMS"; }
+            case Spell::S_POWER_CAVE_IN:        { return "POWER_CAVE_IN"; }
+            case Spell::S_POWER_HEAL_CREATURE:  { return "POWER_HEAL_CREATURE"; }
+            case Spell::S_POWER_HOLD_AUDIENCE:  { return "POWER_HOLD_AUDIENCE"; }
+            case Spell::S_POWER_LIGHTNING:      { return "POWER_LIGHTNING"; }
+            case Spell::S_POWER_SPEED:          { return "POWER_SPEED"; }
+            case Spell::S_POWER_PROTECT:        { return "POWER_PROTECT"; }
+            case Spell::S_POWER_CONCEAL:        { return "POWER_CONCEAL"; }
+            case Spell::S_POWER_DISEASE:        { return "POWER_DISEASE"; }
+            case Spell::S_POWER_CHICKEN:        { return "POWER_CHICKEN"; }
+            case Spell::S_POWER_DESTROY_WALLS:  { return "POWER_DESTROY_WALLS"; }
+            case Spell::S_POWER_ARMAGEDDON:     { return "POWER_ARMAGEDDON"; }
+            }
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
         }
 
 
@@ -144,35 +237,35 @@ namespace adiktedpp {
 
         bool Script::addAvailable( const PlayerType player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
         bool Script::addAvailable( const PlayerType player, const Creature item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
         bool Script::addAvailable( const PlayerType player, const Door item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
         bool Script::addAvailable( const PlayerType player, const Trap item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
         bool Script::addAvailable( const PlayerType player, const Spell item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
@@ -194,27 +287,26 @@ namespace adiktedpp {
         }
 
         void Script::setEvilCreaturesPool( const std::size_t number ) {
-            std::set< raw::SubTypeCreature > list = raw::SubTypeCreatureEvil();
-            list.erase( raw::SubTypeCreature::STC_HORNY );
-            list.erase( raw::SubTypeCreature::STC_FLOAT );
-            list.erase( raw::SubTypeCreature::STC_IMP );
-            list.erase( raw::SubTypeCreature::STC_TENTCL );
-            list.erase( raw::SubTypeCreature::STC_VAMPIRE );
-            list.erase( raw::SubTypeCreature::STC_SKELETON );
-            for ( const raw::SubTypeCreature item: list ) {
+            std::set< Creature > list = EvilCreatures();
+            list.erase( Creature::C_HORNY );
+            list.erase( Creature::C_IMP );
+            list.erase( Creature::C_TENTACLE );
+            list.erase( Creature::C_VAMPIRE );
+            list.erase( Creature::C_SKELETON );
+            for ( const Creature item: list ) {
                 setCreaturePool( item, number );
             }
         }
 
         void Script::setHeroCreaturesPool( const std::size_t number ) {
-            std::set< raw::SubTypeCreature > list = raw::SubTypeCreatureHero();
-            list.erase( raw::SubTypeCreature::STC_AVATAR );
-            for ( const raw::SubTypeCreature item: list ) {
+            std::set< Creature > list = HeroCreatures();
+            list.erase( Creature::C_AVATAR );
+            for ( const Creature item: list ) {
                 setCreaturePool( item, number );
             }
         }
 
-        void Script::setCreaturePool( const raw::SubTypeCreature creature, const std::size_t number ) {
+        void Script::setCreaturePool( const Creature creature, const std::size_t number ) {
             std::stringstream stream;
             stream << "ADD_CREATURE_TO_POOL( " << scriptName( creature ) << ", " << number << " )";
             const std::string& line = stream.str();

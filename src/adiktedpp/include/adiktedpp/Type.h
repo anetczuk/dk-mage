@@ -52,8 +52,6 @@ namespace adiktedpp {
         R_GUARD_POST
     };
 
-    std::ostream& operator<<( std::ostream& os, const Room data );
-
     const std::set< Room >& RoomsAll();
 
     const std::set< Room >& RoomsRegular();
@@ -99,8 +97,6 @@ namespace adiktedpp {
         C_ORC
     };
 
-    std::ostream& operator<<( std::ostream& os, const Creature data );
-
     const std::set< Creature >& EvilCreatures();
 
     const std::set< Creature >& HeroCreatures();
@@ -119,8 +115,6 @@ namespace adiktedpp {
         D_MAGIC
     };
 
-    std::ostream& operator<<( std::ostream& os, const Door data );
-
     const std::set< Door >& Doors();
 
 
@@ -138,8 +132,6 @@ namespace adiktedpp {
         T_WORD_OF_POWER,
         T_LAVA
     };
-
-    std::ostream& operator<<( std::ostream& os, const Trap data );
 
     const std::set< Trap >& Traps();
 
@@ -170,8 +162,6 @@ namespace adiktedpp {
         S_POWER_DESTROY_WALLS,
         S_POWER_ARMAGEDDON
     };
-
-    std::ostream& operator<<( std::ostream& os, const Spell data );
 
     const std::set< Spell >& Spells();
 
