@@ -9,6 +9,7 @@
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace dkmage {
@@ -24,7 +25,7 @@ namespace dkmage {
         }
 
         void Spatialtem::centerizeOnMap() {
-            const Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
+            const Rect mapRect = raw::RawLevel::mapRect();
             const Point mapCenter = mapRect.center();
             centerizeOn( mapCenter );
         }
@@ -48,7 +49,7 @@ namespace dkmage {
 
         void Spatialtem::moveToBottomEdge( const std::size_t distanceFromEdge ) {
             centerizeOnMap();
-            const Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
+            const Rect mapRect = raw::RawLevel::mapRect();
             const Rect bbox = boundingBox();
             const int yoffset = mapRect.max.y + 1 - bbox.max.y - distanceFromEdge - 1;         /// -1 to prevent going outside map
             move( 0, yoffset );

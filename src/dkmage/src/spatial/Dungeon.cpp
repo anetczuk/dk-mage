@@ -9,6 +9,7 @@
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace dkmage {
@@ -61,7 +62,7 @@ namespace dkmage {
         /// ============================================================
 
 
-        std::string Room::print() const {
+        std::string DungeonRoom::print() const {
             std::stringstream stream;
             stream << "position: " << position() << " type: " << roomType;
             return stream.str();
@@ -71,10 +72,10 @@ namespace dkmage {
         /// ============================================================
 
 
-        std::vector< Room* > Dungeon::findRoom( const adiktedpp::Room roomType ) {
-            std::vector< Room* > ret;
-            std::vector< Room* > allRooms = graph.itemsList();
-            for ( Room* item: allRooms ) {
+        std::vector< DungeonRoom* > Dungeon::findRoom( const Room roomType ) {
+            std::vector< DungeonRoom* > ret;
+            std::vector< DungeonRoom* > allRooms = graph.itemsList();
+            for (  DungeonRoom* item: allRooms ) {
                 if ( item == nullptr ) {
                     continue ;
                 }
@@ -85,19 +86,19 @@ namespace dkmage {
             return ret;
         }
 
-        Room* Dungeon::findRoomFirst( const adiktedpp::Room roomType ) {
-            std::vector< Room* > rooms = findRoom( roomType );
+        DungeonRoom* Dungeon::findRoomFirst( const Room roomType ) {
+            std::vector< DungeonRoom* > rooms = findRoom( roomType );
             if ( rooms.empty() ) {
                 return nullptr;
             }
             return rooms[0];
         }
 
-        Room* Dungeon::addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
-            std::vector< Room* > roomsList = graph.itemsList();
+        DungeonRoom* Dungeon::addRandomRoom( const Room roomType, const std::size_t roomSize, const bool addLink, const std::size_t distance ) {
+            std::vector< DungeonRoom* > roomsList = graph.itemsList();
             if ( roomsList.empty()) {
                 /// no rooms in dungeon
-                Room* root = graph.addItem();
+                DungeonRoom* root = graph.addItem();
                 root->resize( roomSize );
                 Rect& basePos = root->position();
                 basePos.centerize();
@@ -107,7 +108,7 @@ namespace dkmage {
             }
             while ( roomsList.empty() == false ) {
                 const std::size_t rRoom = rand() % roomsList.size();
-                Room* selected = remove_at( roomsList, rRoom );
+                DungeonRoom* selected = remove_at( roomsList, rRoom );
                 if ( selected == nullptr ) {
                     continue;
                 }
@@ -133,7 +134,7 @@ namespace dkmage {
                 while ( availableDirs.empty() == false ) {
                     const std::size_t rDir = rand() % availableDirs.size();
                     const Direction newDir = remove_at( availableDirs, rDir );
-                    Room* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
+                    DungeonRoom* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
                     if ( added != nullptr ) {
                         return added;
                     }
@@ -143,14 +144,14 @@ namespace dkmage {
             return nullptr;
         }
 
-        Room* Dungeon::addRoom( const adiktedpp::Room roomType, const std::size_t roomSize ) {
+        DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize ) {
             Rect newRect( roomSize, roomSize );
             if ( isCollision( newRect ) ) {
                 /// collision detected
                 return nullptr;
             }
 
-            Room* newRoom = graph.addItem();
+            DungeonRoom* newRoom = graph.addItem();
             if ( newRoom == nullptr ) {
                 return nullptr;
             }
@@ -166,7 +167,7 @@ namespace dkmage {
             return newRoom;
         }
 
-        Room* Dungeon::addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink, const std::size_t distance ) {
+        DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink, const std::size_t distance ) {
             Rect newRect( roomSize, roomSize );
             const Rect& basePos = from.position();
             moveRect( newRect, basePos, direction, distance );
@@ -175,7 +176,7 @@ namespace dkmage {
                 return nullptr;
             }
 
-            Room* newRoom = graph.addItem( from, direction, addLink );
+            DungeonRoom* newRoom = graph.addItem( from, direction, addLink );
             if ( newRoom == nullptr ) {
                 return newRoom;
             }
@@ -211,41 +212,41 @@ namespace dkmage {
         }
 
         void Dungeon::generate( const std::size_t roomsNum, const std::size_t roomSize ) {
-            std::vector< adiktedpp::Room > roomsType;
+            std::vector< Room > roomsType;
             {
-                roomsType.push_back( adiktedpp::Room::R_TREASURE );
-                roomsType.push_back( adiktedpp::Room::R_LAIR );
-                roomsType.push_back( adiktedpp::Room::R_GARDEN );
-                roomsType.push_back( adiktedpp::Room::R_TRAINING );
-                roomsType.push_back( adiktedpp::Room::R_RESEARCH );
-                roomsType.push_back( adiktedpp::Room::R_WORKSHOP );
-                roomsType.push_back( adiktedpp::Room::R_PRISON );
-                roomsType.push_back( adiktedpp::Room::R_TORTURE );
-                roomsType.push_back( adiktedpp::Room::R_GRAVEYARD );
-                roomsType.push_back( adiktedpp::Room::R_TEMPLE );
-                roomsType.push_back( adiktedpp::Room::R_SCAVENGER );
+                roomsType.push_back( Room::R_TREASURE );
+                roomsType.push_back( Room::R_LAIR );
+                roomsType.push_back( Room::R_GARDEN );
+                roomsType.push_back( Room::R_TRAINING );
+                roomsType.push_back( Room::R_RESEARCH );
+                roomsType.push_back( Room::R_WORKSHOP );
+                roomsType.push_back( Room::R_PRISON );
+                roomsType.push_back( Room::R_TORTURE );
+                roomsType.push_back( Room::R_GRAVEYARD );
+                roomsType.push_back( Room::R_TEMPLE );
+                roomsType.push_back( Room::R_SCAVENGER );
             }
             if ( graph.size() < 1 ) {
                 /// create dungeon heart
-                addRandomRoom( adiktedpp::Room::R_DUNGEON_HEART, roomSize );
+                addRandomRoom( Room::R_DUNGEON_HEART, roomSize );
             }
             for (std::size_t i=1; i<roomsNum; ++i) {
                 const std::size_t roomIndex = ( i - 1 ) % roomsType.size();
-                const adiktedpp::Room newRoomType = roomsType[roomIndex];
+                const Room newRoomType = roomsType[roomIndex];
                 /// randomize next room
                 addRandomRoom( newRoomType, roomSize );
             }
         }
 
         Rect Dungeon::boundingBox() const {
-            std::vector< const Room* > roomsList = graph.itemsList();
+            std::vector< const DungeonRoom* > roomsList = graph.itemsList();
             const std::size_t rSize = roomsList.size();
             if ( rSize < 1 ) {
                 return Rect();
             }
             Rect minMax = roomsList[0]->position();
             for (std::size_t i=1; i<rSize; ++i) {
-                const Room* room = roomsList[ i ];
+                const DungeonRoom* room = roomsList[ i ];
                 const Rect& roomPos = room->position();
                 minMax.expand( roomPos );
             }
@@ -285,8 +286,8 @@ namespace dkmage {
         std::set< Point > Dungeon::outline() const {
             std::set< Point > ret;
 
-            std::vector< const dkmage::spatial::Room* > roomsList = rooms();
-            for ( const dkmage::spatial::Room* item: roomsList ) {
+            std::vector< const dkmage::spatial::DungeonRoom* > roomsList = rooms();
+            for ( const dkmage::spatial::DungeonRoom* item: roomsList ) {
                 /// room
                 Rect position = item->position();
                 position.grow( 2 );
@@ -294,8 +295,8 @@ namespace dkmage {
 
                 /// corridors
                 const Point& itemCenter = item->position().center();
-                std::vector< const dkmage::spatial::Room* > connectedList = connectedRooms( *item );
-                for ( const dkmage::spatial::Room* connected: connectedList ) {
+                std::vector< const dkmage::spatial::DungeonRoom* > connectedList = connectedRooms( *item );
+                for ( const dkmage::spatial::DungeonRoom* connected: connectedList ) {
                     const Point& connectedCenter = connected->position().center();
                     addLine( ret, itemCenter, connectedCenter );
                 }
@@ -305,8 +306,8 @@ namespace dkmage {
         }
 
         bool Dungeon::isCollision( const Rect& rect ) {
-            std::vector< Room* > roomsList = graph.itemsList();
-            for ( const Room* item: roomsList ) {
+            std::vector< DungeonRoom* > roomsList = graph.itemsList();
+            for ( const DungeonRoom* item: roomsList ) {
                 const Rect& pos = item->position();
                 if ( rect.isCollision( pos ) ) {
                     return true;
@@ -318,22 +319,22 @@ namespace dkmage {
         std::string Dungeon::print() {
             std::stringstream stream;
             stream << "bbox: " << boundingBox() << "\n";
-            std::vector< Room* > roomsList = graph.itemsList();
+            std::vector< DungeonRoom* > roomsList = graph.itemsList();
             const std::size_t rSize = roomsList.size();
             for (std::size_t i=0; i<rSize; ++i) {
-                const Room* room = roomsList[ i ];
+                const DungeonRoom* room = roomsList[ i ];
                 const std::size_t currId = graph.itemId( *room );
                 stream << currId << ": " << room->print() << "\n";
             }
             const std::vector<Direction>& directions = DirectionValues();
             for (std::size_t i=0; i<rSize; ++i) {
-                const Room* room = roomsList[ i ];
+                const DungeonRoom* room = roomsList[ i ];
                 if ( room == nullptr ) {
                     continue ;
                 }
                 const std::size_t currId = graph.itemId( *room );
                 for ( const Direction dir: directions ) {
-                    Room* next = graph.getItem( *room, dir );
+                    DungeonRoom* next = graph.getItem( *room, dir );
                     if ( next == nullptr ) {
                         continue ;
                     }

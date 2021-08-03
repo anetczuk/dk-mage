@@ -28,7 +28,7 @@ namespace dkmage {
         /**
          *
          */
-        class Room {
+        class DungeonRoom {
 
             Rect roomPosition;
 
@@ -43,7 +43,7 @@ namespace dkmage {
             int eastCoord;
 
 
-            Room(): roomPosition(), validType(false),
+            DungeonRoom(): roomPosition(), validType(false),
                 roomType( adiktedpp::Room::R_TREASURE ),
                 roomOwner( adiktedpp::PlayerType::PT_0 ),
                 northCoord(0), eastCoord(0)
@@ -95,7 +95,7 @@ namespace dkmage {
          */
         class Dungeon: public Spatialtem {
 
-            DungeonGraph< Room, NoEdgeData > graph;
+            DungeonGraph< DungeonRoom, NoEdgeData > graph;
             adiktedpp::PlayerType player;
             bool fortifyWalls;
 
@@ -128,43 +128,43 @@ namespace dkmage {
                 return graph.size();
             }
 
-            std::vector< const Room* > rooms() const {
+            std::vector< const DungeonRoom* > rooms() const {
                 return graph.itemsList();
             }
 
-            std::vector< Room* > rooms() {
+            std::vector< DungeonRoom* > rooms() {
                 return graph.itemsList();
             }
 
-            Room* room( const std::size_t index ) {
+            DungeonRoom* room( const std::size_t index ) {
                 return graph.itemByindex( index );
             }
 
             utils::Point roomCenter( const std::size_t index ) {
-                Room* aRoom = room( index );
+                DungeonRoom* aRoom = room( index );
                 if ( aRoom == nullptr ) {
                     return utils::Point();
                 }
                 return aRoom->position().center();
             }
 
-            std::vector< const Room* > connectedRooms( const Room& room ) const {
+            std::vector< const DungeonRoom* > connectedRooms( const DungeonRoom& room ) const {
                 return graph.connectedItems( room );
             }
 
-            std::vector< Room* > connectedRooms( const Room& room ) {
+            std::vector< DungeonRoom* > connectedRooms( const DungeonRoom& room ) {
                 return graph.connectedItems( room );
             }
 
-            std::vector< Room* > findRoom( const adiktedpp::Room roomType );
+            std::vector< DungeonRoom* > findRoom( const adiktedpp::Room roomType );
 
-            Room* findRoomFirst( const adiktedpp::Room roomType );
+            DungeonRoom* findRoomFirst( const adiktedpp::Room roomType );
 
-            Room* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
+            DungeonRoom* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 
-            Room* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize );
+            DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize );
 
-            Room* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const Room& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
+            DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
@@ -176,8 +176,8 @@ namespace dkmage {
             std::set< Point > outline() const;
 
             void move( const int offsetX, const int offsetY ) override {
-                std::vector< Room* > roomsList = graph.itemsList();
-                for ( Room* item: roomsList ) {
+                std::vector< DungeonRoom* > roomsList = graph.itemsList();
+                for ( DungeonRoom* item: roomsList ) {
                     Rect& pos = item->position();
                     pos.move( offsetX, offsetY );
                 }

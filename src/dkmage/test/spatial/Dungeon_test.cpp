@@ -9,6 +9,7 @@
 
 
 using namespace dkmage;
+using namespace adiktedpp;
 using namespace spatial;
 
 
@@ -25,9 +26,9 @@ TEST_CASE( "Dungeon_boundingBox" ) {
 
 TEST_CASE( "Dungeon_boundingBox_02" ) {
     Dungeon dungeon;
-    Room* room1 = dungeon.addRoom( adiktedpp::Room::R_DUNGEON_HEART, 5 );
+    DungeonRoom* room1 = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
     REQUIRE( room1 != nullptr );
-    Room* room2 = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5, *room1, Direction::D_WEST );
+    DungeonRoom* room2 = dungeon.addRoom( Room::R_TREASURE, 5, *room1, Direction::D_WEST );
     REQUIRE( room2 != nullptr );
 
     const Rect rect = dungeon.boundingBox();
@@ -40,20 +41,20 @@ TEST_CASE( "Dungeon_boundingBox_02" ) {
 
 TEST_CASE( "Dungeon_addRoom_collision" ) {
     Dungeon dungeon;
-    Room* first = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5 );
+    DungeonRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
     REQUIRE( first != nullptr );
 
-    Room* next = first;
-    next = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5, *next, Direction::D_WEST );
+    DungeonRoom* next = first;
+    next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_WEST );
     REQUIRE( next != nullptr );
 
-    next = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5, *next, Direction::D_NORTH );
+    next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_NORTH );
     REQUIRE( next != nullptr );
 
-    next = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5, *next, Direction::D_EAST );
+    next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_EAST );
     REQUIRE( next != nullptr );
 
-    Room* last = dungeon.addRoom( adiktedpp::Room::R_TREASURE, 5, *next, Direction::D_SOUTH );
+    DungeonRoom* last = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_SOUTH );
     REQUIRE( last == nullptr );
 
     REQUIRE( dungeon.roomsNum() == 4 );

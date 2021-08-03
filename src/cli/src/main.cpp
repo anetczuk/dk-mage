@@ -22,6 +22,7 @@
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 using ghc::filesystem::path;
 using ghc::filesystem::exists;
@@ -78,7 +79,7 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
 
 std::string findFreeMapName( const std::string& levelsPath ) {
     for (std::size_t i=3333; i<100000; ++i ) {
-        const std::string mapName = adiktedpp::raw::RawLevel::prepareMapName( i );
+        const std::string mapName = raw::RawLevel::prepareMapName( i );
         path levelPath( levelsPath );
         levelPath /= mapName;
         levelPath += ".dat";
@@ -93,7 +94,7 @@ std::string findFreeMapName( const std::string& levelsPath ) {
 
 int main( int argc, char** argv ) {
     try {
-        TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', adiktedpp::VERSION_FULL_STRING );
+        TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', VERSION_FULL_STRING );
 
         dkmage::Generator& generator = dkmage::Generator::instance();
 
@@ -187,7 +188,7 @@ int main( int argc, char** argv ) {
         } else if ( outputIdArg.isSet() ) {
             const std::string levelsPath  = config.readLevelsPath();
             const std::size_t levelNumber = outputIdArg.getValue();
-            const std::string mapName     = adiktedpp::raw::RawLevel::prepareMapName( levelNumber );
+            const std::string mapName     = raw::RawLevel::prepareMapName( levelNumber );
             if ( levelsPath.empty() == false ) {
                 const path outputPath     = path(levelsPath) / mapName;
                 outputLevelFile           = outputPath.string();

@@ -20,8 +20,8 @@ namespace dkmage {
     void drawDungeon( Level& level, const dkmage::spatial::Dungeon& dungeon ) {
         const PlayerType owner = dungeon.owner();
         const bool fortify = dungeon.fortify();
-        std::vector< const dkmage::spatial::Room* > roomsList = dungeon.rooms();
-        for ( const dkmage::spatial::Room* item: roomsList ) {
+        std::vector< const dkmage::spatial::DungeonRoom* > roomsList = dungeon.rooms();
+        for ( const dkmage::spatial::DungeonRoom* item: roomsList ) {
             /// set room
             const Rect& position = item->position();
             const Room itemType = item->type();
@@ -29,8 +29,8 @@ namespace dkmage {
 
             /// draw corridors
             const Point& itemCenter = item->position().center();
-            std::vector< const dkmage::spatial::Room* > connectedList = dungeon.connectedRooms( *item );
-            for ( const dkmage::spatial::Room* connected: connectedList ) {
+            std::vector< const dkmage::spatial::DungeonRoom* > connectedList = dungeon.connectedRooms( *item );
+            for ( const dkmage::spatial::DungeonRoom* connected: connectedList ) {
                 const Point& connectedCenter = connected->position().center();
                 level.digLine( itemCenter, connectedCenter, owner, fortify );
             }

@@ -17,6 +17,9 @@ extern "C" {
 }
 
 
+using namespace adiktedpp;
+
+
 namespace adiktedpp {
     namespace script {
 
@@ -142,35 +145,35 @@ namespace adiktedpp {
             return valid;
         }
 
-        bool Script::addAvailable( const adiktedpp::PlayerType player, const Room item, const int accessible, const int available ) {
+        bool Script::addAvailable( const PlayerType player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const adiktedpp::PlayerType player, const Creature item, const int accessible, const int available ) {
+        bool Script::addAvailable( const PlayerType player, const Creature item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const adiktedpp::PlayerType player, const Door item, const int accessible, const int available ) {
+        bool Script::addAvailable( const PlayerType player, const Door item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const adiktedpp::PlayerType player, const Trap item, const int accessible, const int available ) {
+        bool Script::addAvailable( const PlayerType player, const Trap item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const adiktedpp::PlayerType player, const Spell item, const int accessible, const int available ) {
+        bool Script::addAvailable( const PlayerType player, const Spell item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << item << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();

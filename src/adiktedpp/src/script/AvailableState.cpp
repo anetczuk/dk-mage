@@ -6,18 +6,21 @@
 #include "adiktedpp/script/AvailableState.h"
 
 
+using namespace adiktedpp;
+
+
 namespace adiktedpp {
     namespace script {
 
-        const std::set< adiktedpp::PlayerType >& Players() {
-            static std::set< adiktedpp::PlayerType > container;
+        const std::set< PlayerType >& Players() {
+            static std::set< PlayerType > container;
             if ( container.empty() ) {
-                container.insert( adiktedpp::PlayerType::PT_0 );
-                container.insert( adiktedpp::PlayerType::PT_1 );
-                container.insert( adiktedpp::PlayerType::PT_2 );
-                container.insert( adiktedpp::PlayerType::PT_3 );
-                container.insert( adiktedpp::PlayerType::PT_GOOD );
-                container.insert( adiktedpp::PlayerType::PT_ALL );
+                container.insert( PlayerType::PT_0 );
+                container.insert( PlayerType::PT_1 );
+                container.insert( PlayerType::PT_2 );
+                container.insert( PlayerType::PT_3 );
+                container.insert( PlayerType::PT_GOOD );
+                container.insert( PlayerType::PT_ALL );
             }
             return container;
         }
@@ -33,10 +36,10 @@ namespace adiktedpp {
 
         void RoomsAvailableState::setStandard() {
             setAllAvailable( PlayerType::PT_ALL, AvailableMode::AM_POSSIBLE );
-            setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_TREASURE, AvailableMode::AM_ENABLED );
-            setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_LAIR, AvailableMode::AM_ENABLED );
-            setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_GARDEN, AvailableMode::AM_ENABLED );
-            setStateMode( adiktedpp::PlayerType::PT_ALL, Room::R_RESEARCH, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_TREASURE, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_LAIR, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_GARDEN, AvailableMode::AM_ENABLED );
+            setStateMode( PlayerType::PT_ALL, Room::R_RESEARCH, AvailableMode::AM_ENABLED );
         }
 
         void CreatureAvailableState::setEvilAvailable( const PlayerType player, const bool available ) {

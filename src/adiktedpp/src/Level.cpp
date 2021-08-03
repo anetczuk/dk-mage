@@ -23,6 +23,7 @@ extern "C" {
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace adiktedpp {
@@ -330,11 +331,11 @@ namespace adiktedpp {
 
         const std::vector<Point> points = line( from, to );
         for ( const Point& item: points ) {
-            const adiktedpp::raw::SlabType currSlab = rawLevel.getSlab( item );
-            if ( adiktedpp::raw::isEarth( currSlab ) ||
-                 adiktedpp::raw::isWall( currSlab ) ||
-                 adiktedpp::raw::isLiquid( currSlab ) ||
-                 adiktedpp::raw::isImpassable( currSlab ) )
+            const raw::SlabType currSlab = rawLevel.getSlab( item );
+            if ( raw::isEarth( currSlab ) ||
+                 raw::isWall( currSlab ) ||
+                 raw::isLiquid( currSlab ) ||
+                 raw::isImpassable( currSlab ) )
             {
                 rawLevel.setSlab( item, slabType );
             }
@@ -344,13 +345,13 @@ namespace adiktedpp {
     void Level::digLine( const Point& from, const Point& to, const PlayerType owner, const bool fortify ) {
         const std::vector<Point> points = line( from, to );
         for ( const Point& item: points ) {
-            const adiktedpp::raw::SlabType currSlab = rawLevel.getSlab( item );
-            if ( adiktedpp::raw::isEarth( currSlab ) ||
-                 adiktedpp::raw::isWall( currSlab ) ||
-                 adiktedpp::raw::isLiquid( currSlab ) ||
-                 adiktedpp::raw::isImpassable( currSlab ) )
+            const raw::SlabType currSlab = rawLevel.getSlab( item );
+            if ( raw::isEarth( currSlab ) ||
+                 raw::isWall( currSlab ) ||
+                 raw::isLiquid( currSlab ) ||
+                 raw::isImpassable( currSlab ) )
             {
-                rawLevel.setSlab( item, adiktedpp::raw::SlabType::ST_CLAIMED, owner );
+                rawLevel.setSlab( item, raw::SlabType::ST_CLAIMED, owner );
                 if ( fortify ) {
                     rawLevel.fortify( item, owner );
                 }

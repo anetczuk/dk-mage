@@ -24,6 +24,7 @@ extern "C" {
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace adiktedpp {
@@ -595,8 +596,8 @@ namespace adiktedpp {
 
         /// ============================================================
 
-        void RawLevel::setRoom( const Rect& position, const adiktedpp::raw::SlabType room, const adiktedpp::PlayerType owner, const bool fortify ) {
-            if ( room != adiktedpp::raw::SlabType::ST_DUNGHEART ) {
+        void RawLevel::setRoom( const Rect& position, const raw::SlabType room, const PlayerType owner, const bool fortify ) {
+            if ( room != raw::SlabType::ST_DUNGHEART ) {
                 setSlab( position, room, owner );
                 if ( fortify ) {
                     this->fortify( position, owner );
@@ -604,7 +605,7 @@ namespace adiktedpp {
                 return ;
             }
             if ( position.width() > 3 && position.height() > 3 ) {
-                setSlab( position, adiktedpp::raw::SlabType::ST_CLAIMED, owner );
+                setSlab( position, raw::SlabType::ST_CLAIMED, owner );
                 const Point center = position.center();
                 const Rect shrink(center, 3, 3);
                 setSlab( shrink, room, owner );
@@ -616,25 +617,25 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::fortify( const Point& point, const adiktedpp::PlayerType owner ) {
+        void RawLevel::fortify( const Point& point, const PlayerType owner ) {
             for ( int x = point.x-1; x<= point.x+1; ++x ) {
                 for ( int y = point.y-1; y<= point.y+1; ++y ) {
-                    const adiktedpp::raw::SlabType currSlab = getSlab( x, y );
-                    if ( adiktedpp::raw::isEarth( currSlab ) ||
-                         adiktedpp::raw::isLiquid( currSlab ) ) {
-                        setSlab( x, y, adiktedpp::raw::SlabType::ST_WALLDRAPE, owner );
+                    const raw::SlabType currSlab = getSlab( x, y );
+                    if ( raw::isEarth( currSlab ) ||
+                         raw::isLiquid( currSlab ) ) {
+                        setSlab( x, y, raw::SlabType::ST_WALLDRAPE, owner );
                     }
                 }
             }
         }
 
-        void RawLevel::fortify( const Rect& room, const adiktedpp::PlayerType owner ) {
+        void RawLevel::fortify( const Rect& room, const PlayerType owner ) {
             for ( int x = room.min.x-1; x<= room.max.x+1; ++x ) {
                 for ( int y = room.min.y-1; y<= room.max.y+1; ++y ) {
-                    const adiktedpp::raw::SlabType currSlab = getSlab( x, y );
-                    if ( adiktedpp::raw::isEarth( currSlab ) ||
-                         adiktedpp::raw::isLiquid( currSlab ) ) {
-                        setSlab( x, y, adiktedpp::raw::SlabType::ST_WALLDRAPE, owner );
+                    const raw::SlabType currSlab = getSlab( x, y );
+                    if ( raw::isEarth( currSlab ) ||
+                         raw::isLiquid( currSlab ) ) {
+                        setSlab( x, y, raw::SlabType::ST_WALLDRAPE, owner );
                     }
                 }
             }
@@ -825,7 +826,7 @@ namespace adiktedpp {
             for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
                 for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
                     const SlabType stub = getSlab(x, y);
-                    if ( adiktedpp::raw::isImpassable( stub ) ) {
+                    if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
                     }
                 }
@@ -847,10 +848,10 @@ namespace adiktedpp {
             for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
                 for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
                     const SlabType stub = getSlab(x, y);
-                    if ( adiktedpp::raw::isImpassable( stub ) ) {
+                    if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
                     }
-                    if ( adiktedpp::raw::isLiquid( stub ) ) {
+                    if ( raw::isLiquid( stub ) ) {
                         data.set(x, y, -1 );
                     }
                 }
@@ -872,7 +873,7 @@ namespace adiktedpp {
             for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
                 for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
                     const SlabType stub = getSlab(x, y);
-                    if ( adiktedpp::raw::isImpassable( stub ) ) {
+                    if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
                     }
                 }
