@@ -6,6 +6,9 @@
 #include "dkmage/spatial/Maze.h"
 
 
+using namespace utils;
+
+
 namespace dkmage {
     namespace spatial {
 
@@ -343,16 +346,16 @@ namespace dkmage {
         /// =====================================================================
 
 
-        utils::Rect Maze::boundingBox() const {
+        Rect Maze::boundingBox() const {
             const std::size_t rSize = graph.nodes.size();
             if ( rSize < 1 ) {
-                return utils::Rect( minPoint, 0, 0 );
+                return Rect( minPoint, 0, 0 );
             }
 
-            utils::Rect minMax = nodeRect( 0, 0 );
+            Rect minMax = nodeRect( 0, 0 );
             for ( std::size_t y=0; y<graph.dimmY; ++y ) {
                 for ( std::size_t x=0; x<graph.dimmX; ++x ) {
-                    const utils::Rect nRect = nodeRect( x, y );
+                    const Rect nRect = nodeRect( x, y );
                     minMax.expand( nRect );
                 }
             }
@@ -362,7 +365,7 @@ namespace dkmage {
         }
 
         void Maze::move( const int offsetX, const int offsetY ) {
-            minPoint += utils::Point( offsetX, offsetY );
+            minPoint += Point( offsetX, offsetY );
         }
 
         Maze::PathType Maze::state( const std::size_t x, const std::size_t y ) const {
@@ -395,18 +398,18 @@ namespace dkmage {
             graph.calculateDistances( graph.dimmX / 2, graph.dimmY - 1 );
         }
 
-        utils::Rect Maze::nodeRect( const std::size_t nIndex ) const {
+        Rect Maze::nodeRect( const std::size_t nIndex ) const {
             const std::size_t nx = nIndex % graph.dimmX;
             const std::size_t ny = nIndex / graph.dimmX;
             return nodeRect( nx, ny );
         }
 
-        utils::Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) const {
+        Rect Maze::nodeRect( const std::size_t nx, const std::size_t ny ) const {
             const std::size_t cx = nx * (corridorSize + 1) + 1;
             const std::size_t cy = ny * (corridorSize + 1) + 1;
-            const utils::Point pointMin( cx, cy );
-            const utils::Point pointMax = pointMin + utils::Point( corridorSize - 1, corridorSize - 1 );
-            utils::Rect rect( pointMin, pointMax );
+            const Point pointMin( cx, cy );
+            const Point pointMax = pointMin + Point( corridorSize - 1, corridorSize - 1 );
+            Rect rect( pointMin, pointMax );
             rect.move( minPoint );
             return rect;
         }
@@ -419,11 +422,11 @@ namespace dkmage {
             return graph.getFurthest();
         }
 
-        utils::Rect Maze::getFurthest() {
+        Rect Maze::getFurthest() {
             const std::size_t foundIndex = graph.getFurthest();
             if ( foundIndex == (std::size_t) -1 ) {
                 /// not found
-                return utils::Rect();
+                return Rect();
             }
             const std::size_t fx = foundIndex % graph.dimmX;        /// node coords
             const std::size_t fy = foundIndex / graph.dimmX;        /// node coords
@@ -434,11 +437,11 @@ namespace dkmage {
             return graph.getFurthest( nx, ny );
         }
 
-        utils::Rect Maze::getFurthest( const std::size_t nx, const std::size_t ny ) {
+        Rect Maze::getFurthest( const std::size_t nx, const std::size_t ny ) {
             const std::size_t foundIndex = graph.getFurthest( nx, ny );
             if ( foundIndex == (std::size_t) -1 ) {
                 /// not found
-                return utils::Rect();
+                return Rect();
             }
             const std::size_t fx = foundIndex % graph.dimmX;        /// node coords
             const std::size_t fy = foundIndex / graph.dimmX;        /// node coords

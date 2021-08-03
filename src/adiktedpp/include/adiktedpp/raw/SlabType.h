@@ -6,7 +6,7 @@
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_SLABTYPE_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_SLABTYPE_H_
 
-/// inclusion: #include "adiktedpp/SlabType.h"
+/// inclusion: #include "adiktedpp/raw/SlabType.h"
 
 #include <set>
 #include <ostream>

@@ -23,6 +23,9 @@ extern "C" {
 }
 
 
+using namespace utils;
+
+
 namespace adiktedpp {
     namespace raw {
 
@@ -151,12 +154,12 @@ namespace adiktedpp {
             set_data_path( level, dataPath );
         }
 
-        utils::Rect RawLevel::mapSize() {
-            return utils::Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
+        Rect RawLevel::mapSize() {
+            return Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
         }
 
-        utils::Rect RawLevel::mapRect() {
-            return utils::Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
+        Rect RawLevel::mapRect() {
+            return Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
         }
 
         std::string RawLevel::prepareMapName( const std::size_t mapId ) {
@@ -178,7 +181,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::generateEmpty() {
-            utils::Rect rect( 0, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1 );
+            Rect rect( 0, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1 );
             setSlabOutline( rect, SlabType::ST_ROCK );
             rect.grow( -1 );
             setSlab( rect, SlabType::ST_EARTH );
@@ -283,7 +286,7 @@ namespace adiktedpp {
             return slab;
         }
 
-        SlabType RawLevel::getSlab( const utils::Point& point ) {
+        SlabType RawLevel::getSlab( const Point& point ) {
             return getSlab( point.x, point.y );
         }
 
@@ -292,7 +295,7 @@ namespace adiktedpp {
             return ( currSlab == slab );
         }
 
-        bool RawLevel::isSlab( const utils::Point& point, const SlabType slab ) {
+        bool RawLevel::isSlab( const Point& point, const SlabType slab ) {
             const SlabType currSlab = getSlab( point.x, point.y );
             return ( currSlab == slab );
         }
@@ -308,7 +311,7 @@ namespace adiktedpp {
             user_set_slab( level, x, y, (unsigned short) type );
         }
 
-        void RawLevel::setSlab( const utils::Point& point, const SlabType type ) {
+        void RawLevel::setSlab( const Point& point, const SlabType type ) {
             setSlab( point.x, point.y, type );
         }
 
@@ -317,7 +320,7 @@ namespace adiktedpp {
             setOwner( x, y, owner );
         }
 
-        void RawLevel::setSlab( const utils::Point& point, const SlabType type, const PlayerType owner ) {
+        void RawLevel::setSlab( const Point& point, const SlabType type, const PlayerType owner ) {
             setSlab( point.x, point.y, type );
             setOwner( point.x, point.y, owner );
         }
@@ -345,12 +348,12 @@ namespace adiktedpp {
     //        }
         }
 
-        void RawLevel::setSlab( const utils::Rect& rect, const SlabType type ) {
+        void RawLevel::setSlab( const Rect& rect, const SlabType type ) {
             setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, type );
         }
 
-        void RawLevel::setSlab( const std::set< utils::Point >& positions, const SlabType type ) {
-            for ( const utils::Point& item: positions ) {
+        void RawLevel::setSlab( const std::set< Point >& positions, const SlabType type ) {
+            for ( const Point& item: positions ) {
                 setSlab( item, type );
             }
         }
@@ -379,11 +382,11 @@ namespace adiktedpp {
     //        }
         }
 
-        void RawLevel::setSlab( const utils::Rect& rect, const SlabType room, const PlayerType owner ) {
+        void RawLevel::setSlab( const Rect& rect, const SlabType room, const PlayerType owner ) {
             setSlab( rect.min.x, rect.min.y, rect.max.x, rect.max.y, room, owner );
         }
 
-        void RawLevel::setSlabOutline( const utils::Rect& rect, const SlabType type ) {
+        void RawLevel::setSlabOutline( const Rect& rect, const SlabType type ) {
             setSlab( rect.min.x, rect.min.y, rect.min.x, rect.max.y, type );
             setSlab( rect.min.x, rect.min.y, rect.max.x, rect.min.y, type );
             setSlab( rect.min.x, rect.max.y, rect.max.x, rect.max.y, type );
@@ -471,11 +474,11 @@ namespace adiktedpp {
             thing_add( level, thing );
         }
 
-        void RawLevel::setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item ) {
+        void RawLevel::setItem( const Point& point, const std::size_t subIndex, const SubTypeItem item ) {
             setItem( point.x, point.y, subIndex, item );
         }
 
-        void RawLevel::setItem( const utils::Rect& rect, const std::size_t subIndex, const SubTypeItem item ) {
+        void RawLevel::setItem( const Rect& rect, const std::size_t subIndex, const SubTypeItem item ) {
             for ( int x = rect.min.x; x<= rect.max.x; ++x ) {
                 for ( int y = rect.min.y; y<= rect.max.y; ++y ) {
                     setItem( x, y, subIndex, item );
@@ -483,11 +486,11 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap ) {
+        void RawLevel::setTrap( const Point& point, const std::size_t subIndex, const SubTypeTrap trap ) {
             setTrap( point.x, point.y, subIndex, trap );
         }
 
-        void RawLevel::setTrap( const utils::Point& point, const SubTypeTrap trap ) {
+        void RawLevel::setTrap( const Point& point, const SubTypeTrap trap ) {
             setTrap( point.x, point.y, trap );
         }
 
@@ -517,7 +520,7 @@ namespace adiktedpp {
             setTrap( x, y, 4, trap );
         }
 
-        void RawLevel::setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked ) {
+        void RawLevel::setDoor( const Point& point, const SubTypeDoor door, const bool locked ) {
             setDoor( point.x, point.y, door, locked );
         }
 
@@ -586,13 +589,13 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+        void RawLevel::setCreature( const Point& point, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
             setCreature( point.x, point.y, subIndex, creature, number, expLevel, owner );
         }
 
         /// ============================================================
 
-        void RawLevel::setRoom( const utils::Rect& position, const adiktedpp::raw::SlabType room, const adiktedpp::PlayerType owner, const bool fortify ) {
+        void RawLevel::setRoom( const Rect& position, const adiktedpp::raw::SlabType room, const adiktedpp::PlayerType owner, const bool fortify ) {
             if ( room != adiktedpp::raw::SlabType::ST_DUNGHEART ) {
                 setSlab( position, room, owner );
                 if ( fortify ) {
@@ -602,8 +605,8 @@ namespace adiktedpp {
             }
             if ( position.width() > 3 && position.height() > 3 ) {
                 setSlab( position, adiktedpp::raw::SlabType::ST_CLAIMED, owner );
-                const utils::Point center = position.center();
-                const utils::Rect shrink(center, 3, 3);
+                const Point center = position.center();
+                const Rect shrink(center, 3, 3);
                 setSlab( shrink, room, owner );
             } else {
                 setSlab( position, room, owner );
@@ -613,7 +616,7 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::fortify( const utils::Point& point, const adiktedpp::PlayerType owner ) {
+        void RawLevel::fortify( const Point& point, const adiktedpp::PlayerType owner ) {
             for ( int x = point.x-1; x<= point.x+1; ++x ) {
                 for ( int y = point.y-1; y<= point.y+1; ++y ) {
                     const adiktedpp::raw::SlabType currSlab = getSlab( x, y );
@@ -625,7 +628,7 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::fortify( const utils::Rect& room, const adiktedpp::PlayerType owner ) {
+        void RawLevel::fortify( const Rect& room, const adiktedpp::PlayerType owner ) {
             for ( int x = room.min.x-1; x<= room.max.x+1; ++x ) {
                 for ( int y = room.min.y-1; y<= room.max.y+1; ++y ) {
                     const adiktedpp::raw::SlabType currSlab = getSlab( x, y );

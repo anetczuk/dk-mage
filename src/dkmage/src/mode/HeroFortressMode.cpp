@@ -14,6 +14,7 @@
 #include "utils/Rand.h"
 
 
+using namespace utils;
 using namespace adiktedpp;
 
 
@@ -96,9 +97,9 @@ namespace dkmage {
         }
 
         void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {
-            const utils::Rect mapRect = raw::RawLevel::mapRect();
-            const utils::Point mapCenter = mapRect.center();
-            const Rect region( mapCenter + utils::Point(0, 8), 70, 33 );
+            const Rect mapRect = raw::RawLevel::mapRect();
+            const Point mapCenter = mapRect.center();
+            const Rect region( mapCenter + Point(0, 8), 70, 33 );
 
             const int regionArea = region.area();
             if ( regionArea < 0 ) {
@@ -115,17 +116,17 @@ namespace dkmage {
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
                 const int itemIndex = rand() % indexSet.size();
-                const int regionIndex = utils::getSetItem( indexSet, itemIndex, true );
+                const int regionIndex = getSetItem( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
 
-                const utils::Point caveCenter = region.min + utils::Point( rX, rY );
+                const Point caveCenter = region.min + Point( rX, rY );
                 const Slab centerStab = level.getSlab( caveCenter );
                 if ( centerStab == Slab::S_ROCK ) {
                     continue ;
                 }
 
-                const utils::Rect chamber( caveCenter, 5, 5 );
+                const Rect chamber( caveCenter, 5, 5 );
                 level.setCave( chamber, Slab::S_PATH, 12 );
 
                 const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
@@ -158,7 +159,7 @@ namespace dkmage {
             level.setRoom( portalRect, Room::R_PORTAL );
 
             /// add gold vein
-            const utils::Rect mapRect = raw::RawLevel::mapRect();
+            const Rect mapRect = raw::RawLevel::mapRect();
             const int veinY = mapRect.max.y - 3;
             const Point veinCenter( bbox.min.x - 20, veinY );
             const Rect veinRect( veinCenter, 9, 5 );
@@ -194,7 +195,7 @@ namespace dkmage {
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
 
-            const std::set< utils::Point > outline = enemyDungeon.outline();
+            const std::set< Point > outline = enemyDungeon.outline();
             level.setSlab( outline, Slab::S_LAVA );
 
             Rect bbox = enemyDungeon.boundingBox();
@@ -208,8 +209,8 @@ namespace dkmage {
 
             {
                 /// make a bridge
-                const utils::Point trapsCenter = traps->position().center();
-                const utils::Point trapsExit   = trapsCenter + utils::Point(0, 6);
+                const Point trapsCenter = traps->position().center();
+                const Point trapsExit   = trapsCenter + Point(0, 6);
                 level.digLine( trapsCenter, trapsExit, Slab::S_EARTH );
             }
 

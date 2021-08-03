@@ -22,6 +22,9 @@ extern "C" {
 }
 
 
+using namespace utils;
+
+
 namespace adiktedpp {
 
     static raw::SlabType convertToSlab( const Slab slab ) {
@@ -177,7 +180,7 @@ namespace adiktedpp {
         return convertToSlab( slab );
     }
 
-    Slab Level::getSlab( const utils::Point& point ) {
+    Slab Level::getSlab( const Point& point ) {
         return getSlab( point.x, point.y );
     }
 
@@ -186,35 +189,35 @@ namespace adiktedpp {
         rawLevel.setSlab( x, y, rawType );
     }
 
-    void Level::setSlab( const utils::Point& point, const Slab type ) {
+    void Level::setSlab( const Point& point, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( point, rawType );
     }
 
-    void Level::setSlab( const utils::Rect& rect, const Slab type ) {
+    void Level::setSlab( const Rect& rect, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( rect, rawType );
     }
 
-    void Level::setSlab( const std::set< utils::Point >& positions, const Slab type ) {
+    void Level::setSlab( const std::set< Point >& positions, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( positions, rawType );
     }
 
-    void Level::setClaimed( const utils::Point& point, PlayerType owner ) {
+    void Level::setClaimed( const Point& point, PlayerType owner ) {
         rawLevel.setSlab( point, raw::SlabType::ST_CLAIMED, owner );
     }
 
-    void Level::setClaimed( const utils::Rect& rect, PlayerType owner ) {
+    void Level::setClaimed( const Rect& rect, PlayerType owner ) {
         rawLevel.setSlab( rect, raw::SlabType::ST_CLAIMED, owner );
     }
 
-    void Level::setRoom( const utils::Rect& position, const Room room ) {
+    void Level::setRoom( const Rect& position, const Room room ) {
         const raw::SlabType rawType = convertToSlab( room );
         rawLevel.setSlab( position, rawType );
     }
 
-    void Level::setRoom( const utils::Rect& position, const Room room, const PlayerType owner, const bool fortify ) {
+    void Level::setRoom( const Rect& position, const Room room, const PlayerType owner, const bool fortify ) {
         const raw::SlabType rawType = convertToSlab( room );
         rawLevel.setRoom( position, rawType, owner, fortify );
     }
@@ -224,12 +227,12 @@ namespace adiktedpp {
         rawLevel.setTrap( x, y, 4, rawTrap );
     }
 
-    void Level::setTrap( const utils::Point& point, const Trap trap ) {
+    void Level::setTrap( const Point& point, const Trap trap ) {
         const raw::SubTypeTrap rawTrap = convertToRaw( trap );
         rawLevel.setTrap( point, 4, rawTrap );
     }
 
-    void Level::setTrap( const utils::Point& point, const std::size_t subIndex, const Trap trap ) {
+    void Level::setTrap( const Point& point, const std::size_t subIndex, const Trap trap ) {
         const raw::SubTypeTrap rawTrap = convertToRaw( trap );
         rawLevel.setTrap( point, subIndex, rawTrap );
     }
@@ -244,7 +247,7 @@ namespace adiktedpp {
         rawLevel.setCreature( x, y, subIndex, creatureType, number, expLevel, owner );
     }
 
-    void Level::setCreature( const utils::Point& point, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreature( const Point& point, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
         const raw::SubTypeCreature creatureType = convertToRaw( creature );
         rawLevel.setCreature( point, subIndex, creatureType, number, expLevel, owner );
     }
@@ -269,23 +272,23 @@ namespace adiktedpp {
         }
     }
 
-    void Level::setCreatureAuto( const utils::Point& point, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreatureAuto( const Point& point, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
         setCreatureAuto( point.x, point.y, creature, number, expLevel, owner );
     }
 
-    void Level::setItem( const utils::Point& point, const std::size_t subIndex, const Item item ) {
+    void Level::setItem( const Point& point, const std::size_t subIndex, const Item item ) {
         const raw::SubTypeItem rawItem = convertToRaw( item );
         rawLevel.setItem( point, subIndex, rawItem );
     }
 
-    void Level::setItem( const utils::Rect& rect, const std::size_t subIndex, const Item item ) {
+    void Level::setItem( const Rect& rect, const std::size_t subIndex, const Item item ) {
         const raw::SubTypeItem rawItem = convertToRaw( item );
         rawLevel.setItem( rect, subIndex, rawItem );
     }
 
     /// ==============================================================================
 
-    std::size_t Level::setCave( const utils::Rect& boundingLimit, const Slab type, const std::size_t itemsNum ) {
+    std::size_t Level::setCave( const Rect& boundingLimit, const Slab type, const std::size_t itemsNum ) {
         if ( itemsNum < 1 ) {
             return 0;
         }
@@ -298,13 +301,13 @@ namespace adiktedpp {
             return (std::size_t) area;
         }
 
-//        std::set< utils::Point > available;
+//        std::set< Point > available;
 //        for ( int x=boundingLimit.min.x; x<=boundingLimit.max.x; ++x ) {
 //            for ( int y=boundingLimit.min.y; y<=boundingLimit.max.y; ++y ) {
-//                available.insert( utils::Point(x,y) );
+//                available.insert( Point(x,y) );
 //            }
 //        }
-//        std::set< utils::Point > added;
+//        std::set< Point > added;
 //        for ( std::size_t i=0; i<itemsNum; ++i ) {
 //            const std::size_t vIndex = rand() % available.size();
 //            auto avpos = available.begin();
@@ -322,11 +325,11 @@ namespace adiktedpp {
         return vein.added.size();
     }
 
-    void Level::digLine( const utils::Point& from, const utils::Point& to, const Slab type ) {
+    void Level::digLine( const Point& from, const Point& to, const Slab type ) {
         const raw::SlabType slabType = convertToSlab( type );
 
-        const std::vector<utils::Point> points = line( from, to );
-        for ( const utils::Point& item: points ) {
+        const std::vector<Point> points = line( from, to );
+        for ( const Point& item: points ) {
             const adiktedpp::raw::SlabType currSlab = rawLevel.getSlab( item );
             if ( adiktedpp::raw::isEarth( currSlab ) ||
                  adiktedpp::raw::isWall( currSlab ) ||
@@ -338,9 +341,9 @@ namespace adiktedpp {
         }
     }
 
-    void Level::digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify ) {
-        const std::vector<utils::Point> points = line( from, to );
-        for ( const utils::Point& item: points ) {
+    void Level::digLine( const Point& from, const Point& to, const PlayerType owner, const bool fortify ) {
+        const std::vector<Point> points = line( from, to );
+        for ( const Point& item: points ) {
             const adiktedpp::raw::SlabType currSlab = rawLevel.getSlab( item );
             if ( adiktedpp::raw::isEarth( currSlab ) ||
                  adiktedpp::raw::isWall( currSlab ) ||

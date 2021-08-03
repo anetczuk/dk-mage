@@ -21,6 +21,8 @@
 #include <random>
 
 
+using namespace utils;
+
 using ghc::filesystem::path;
 using ghc::filesystem::exists;
 using ghc::filesystem::current_path;
@@ -31,7 +33,7 @@ using ghc::filesystem::create_directories;
 
 
 GLOBAL_SCOPE() {
-    utils::Logger::setLogFile( "dkmage.log.txt" );
+    Logger::setLogFile( "dkmage.log.txt" );
 }
 
 
@@ -39,7 +41,7 @@ bool initializeRand( const std::string& seed ) {
     if ( seed.empty() ) {
         const unsigned int timeSeed = time(NULL);
         srand( timeSeed );
-        const std::string newSeed = utils::genSeed();
+        const std::string newSeed = genSeed();
         if ( newSeed.empty() ) {
             LOG() << "unable to generate seed";
             return false;
@@ -70,7 +72,7 @@ dkmage::LevelGenerator* getGenerator( dkmage::Generator& generator, const std::s
         return nullptr;
     }
     const std::size_t rIndex = rand() % typeSet.size();
-    const std::string newType = utils::getSetItem( typeSet, rIndex );
+    const std::string newType = getSetItem( typeSet, rIndex );
     return getGenerator( generator, newType );
 }
 

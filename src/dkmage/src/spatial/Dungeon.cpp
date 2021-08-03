@@ -8,6 +8,9 @@
 #include <random>
 
 
+using namespace utils;
+
+
 namespace dkmage {
     namespace spatial {
 
@@ -260,16 +263,16 @@ namespace dkmage {
             }
         }
 
-        static void addLine( std::set< Point >& container, const utils::Point& from, const utils::Point& to ) {
-            const std::vector<utils::Point> points = line( from, to );
+        static void addLine( std::set< Point >& container, const Point& from, const Point& to ) {
+            const std::vector<Point> points = line( from, to );
             if ( points.empty() ) {
                 return ;
             }
-            for ( const utils::Point& item: points ) {
-                container.insert( item + utils::Point( 2, 0) );
-                container.insert( item + utils::Point(-2, 0) );
-                container.insert( item + utils::Point( 0,  2) );
-                container.insert( item + utils::Point( 0, -2) );
+            for ( const Point& item: points ) {
+                container.insert( item + Point( 2, 0) );
+                container.insert( item + Point(-2, 0) );
+                container.insert( item + Point( 0,  2) );
+                container.insert( item + Point( 0, -2) );
             }
             {
                 const Rect first( points.front(), 5, 5 );

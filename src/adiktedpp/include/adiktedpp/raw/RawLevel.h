@@ -6,6 +6,8 @@
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_RAW_RAWLEVEL_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_RAW_RAWLEVEL_H_
 
+/// inclusion: #include "adiktedpp/raw/RawLevel.h"
+
 #include "adiktedpp/PlayerType.h"
 #include "adiktedpp/raw/SlabType.h"
 #include "adiktedpp/raw/SubTypeItem.h"

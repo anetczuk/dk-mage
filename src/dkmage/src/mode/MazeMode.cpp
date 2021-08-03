@@ -14,6 +14,9 @@
 #include "utils/Rand.h"
 
 
+using namespace utils;
+
+
 namespace dkmage {
     namespace mode {
 
@@ -115,35 +118,35 @@ namespace dkmage {
 //                {
 //                    const std::size_t furthestIndex = maze.getFurthestIndex();
 //                    if ( indexSet.erase( furthestIndex ) > 0 ) {
-//                        const utils::Rect furthest = maze.nodeRect( furthestIndex );
+//                        const Rect furthest = maze.nodeRect( furthestIndex );
 //                        drawSpecial( level, furthest, adiktedpp::SubTypeItem::STI_SPMULTPLY );
 //                    }
 //                }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 20, 5 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
-                    const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                    const Rect furthest = maze.nodeRect( furthestIndex );
                     drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_REVMAP );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 0, 0 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
-                    const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                    const Rect furthest = maze.nodeRect( furthestIndex );
                     drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 0, 5 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
-                    const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                    const Rect furthest = maze.nodeRect( furthestIndex );
                     drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
             {
                 const std::size_t furthestIndex = maze.getFurthestIndex( 20, 0 );
                 if ( indexSet.erase( furthestIndex ) > 0 ) {
-                    const utils::Rect furthest = maze.nodeRect( furthestIndex );
+                    const Rect furthest = maze.nodeRect( furthestIndex );
                     drawSpecial( level, furthest, adiktedpp::Item::I_SPECIAL_INCLEV );
                 }
             }
@@ -152,7 +155,7 @@ namespace dkmage {
                 const std::set< std::size_t > deadEndList = maze.getDeadEnds();
                 for ( std::size_t item: deadEndList ) {
                     if ( indexSet.erase( item ) > 0 ) {
-                        const utils::Rect furthest = maze.nodeRect( item );
+                        const Rect furthest = maze.nodeRect( item );
                         drawGoldChests( level, furthest );
                     }
                 }
@@ -167,15 +170,15 @@ namespace dkmage {
             LOG() << "generating traps chambers: " << trapsChambers;
             for ( std::size_t i=0; i<trapsChambers; ++i ) {
                 const std::size_t setIndex = rand() % indexSet.size();
-                const std::size_t cIndex = utils::getSetItem( indexSet, setIndex, true );
+                const std::size_t cIndex = getSetItem( indexSet, setIndex, true );
                 const std::size_t nx = cIndex % maze.nodesX();
                 const std::size_t ny = cIndex / maze.nodesX();
-                const utils::Rect nodeRect = maze.nodeRect( nx, ny );
-                const utils::Point nodeCenter = nodeRect.center();
+                const Rect nodeRect = maze.nodeRect( nx, ny );
+                const Point nodeCenter = nodeRect.center();
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
                 const std::size_t trapIndex = rand() % trapsSize;
-                const adiktedpp::Trap trapType = utils::getSetItem( damageTraps, trapIndex );
+                const adiktedpp::Trap trapType = getSetItem( damageTraps, trapIndex );
 
                 if ( maze.corridorSize == 1 ) {
                     level.setSlab( nodeCenter, adiktedpp::Slab::S_PATH );
@@ -205,9 +208,9 @@ namespace dkmage {
             }
         }
 
-        void MazeMode::randHeroTrap( spatial::Maze& maze, const utils::Point& nodeCenter, const double distanceFactor ) {
+        void MazeMode::randHeroTrap( spatial::Maze& maze, const Point& nodeCenter, const double distanceFactor ) {
 //                level.setVein( chamber, adiktedpp::SlabType::ST_PATH, cSize );
-            const utils::Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
+            const Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
             level.setSlab( chamber, adiktedpp::Slab::S_PATH );
 
             int creatureLevel = std::min( (int)(distanceFactor * 9 + 1), 9 );          /// in range [1, 9]
@@ -240,7 +243,7 @@ namespace dkmage {
             level.setRoom( portalRect, adiktedpp::Room::R_PORTAL );
 
             /// add gold vein
-            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
+            const Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
             const int veinY = mapRect.max.y - 3;
             const Point veinCenter( bbox.min.x - 20, veinY );
             const Rect veinRect( veinCenter, 9, 5 );

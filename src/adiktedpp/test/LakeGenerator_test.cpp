@@ -7,6 +7,7 @@
 #include "adiktedpp/LakeGenerator.h"
 
 
+using namespace utils;
 using namespace adiktedpp;
 
 
@@ -26,7 +27,7 @@ using namespace adiktedpp;
 
 TEST_CASE("LakeGenerator_3x3", "[classic]") {
     LakeGenerator generator;
-    const utils::Rect rect( 3, 3 );
+    const Rect rect( 3, 3 );
     generator.generateLake( rect, 1.0 );
     const std::size_t lakeSize = generator.added.size();
     CHECK( lakeSize == 9 );
@@ -34,7 +35,7 @@ TEST_CASE("LakeGenerator_3x3", "[classic]") {
 
 TEST_CASE("LakeGenerator_4x4", "[classic]") {
     LakeGenerator generator;
-    const utils::Rect rect( 4, 4 );
+    const Rect rect( 4, 4 );
     generator.generateLake( rect, 1.0 );
     const std::size_t lakeSize = generator.added.size();
     CHECK( lakeSize == 16 );
@@ -42,7 +43,7 @@ TEST_CASE("LakeGenerator_4x4", "[classic]") {
 
 TEST_CASE("LakeGenerator_10x10", "[classic]") {
     LakeGenerator generator;
-    const utils::Rect rect( 20, 20 );
+    const Rect rect( 20, 20 );
     generator.generateLake( rect, 1.0 );
     const std::size_t lakeSize = generator.added.size();
     CHECK( lakeSize == 400 );

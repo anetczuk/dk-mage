@@ -13,6 +13,7 @@
 //#include "utils/Separator.h"
 //
 //
+//using namespace utils;
 //using namespace adiktedpp;
 //
 //
@@ -131,7 +132,7 @@
 //    LevelMock level;
 //    level.startNewMap();
 //
-//    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_ROCK );
+//    level.setSlab( Rect( 0, 0, 84, 84 ), SlabType::ST_ROCK );
 //
 //    level.generateTestBmp();
 //
@@ -143,7 +144,7 @@
 //    LevelMock level;
 //    level.startNewMap();
 //
-//    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+//    level.setSlab( Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
 //
 //    level.generateTestBmp();
 //
@@ -155,9 +156,9 @@
 //    LevelMock level;
 //    level.startNewMap();
 //
-//    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
-//    level.setSlab( utils::Rect( utils::Point(50, 50), 11, 11 ), SlabType::ST_ROCK );
-//    level.setSlab( utils::Rect( utils::Point(50, 50), 9, 9 ), SlabType::ST_EARTH );
+//    level.setSlab( Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+//    level.setSlab( Rect( Point(50, 50), 11, 11 ), SlabType::ST_ROCK );
+//    level.setSlab( Rect( Point(50, 50), 9, 9 ), SlabType::ST_EARTH );
 //
 //    level.generateTestBmp();
 //
@@ -169,9 +170,9 @@
 //    LevelMock level;
 //    level.startNewMap();
 //
-//    level.setSlab( utils::Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
-//    level.setSlab( utils::Rect( utils::Point(50, 50), 5, 5 ), SlabType::ST_ROCK );
-//    level.setSlab( utils::Rect( utils::Point(50, 50), 3, 3 ), SlabType::ST_EARTH );
+//    level.setSlab( Rect( 0, 0, 84, 84 ), SlabType::ST_EARTH );
+//    level.setSlab( Rect( Point(50, 50), 5, 5 ), SlabType::ST_ROCK );
+//    level.setSlab( Rect( Point(50, 50), 3, 3 ), SlabType::ST_EARTH );
 //
 //    level.generateTestBmp();
 //

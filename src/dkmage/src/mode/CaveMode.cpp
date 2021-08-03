@@ -13,6 +13,9 @@
 #include "utils/Rand.h"
 
 
+using namespace utils;
+
+
 namespace dkmage {
     namespace mode {
 
@@ -75,8 +78,8 @@ namespace dkmage {
         }
 
         void CaveMode::generateCaves( const std::size_t cavesNum ) {
-            const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
-            const utils::Point mapCenter = mapRect.center();
+            const Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
+            const Point mapCenter = mapRect.center();
             const Rect region( mapCenter, 70, 35 );
 
             const int regionArea = region.area();
@@ -94,17 +97,17 @@ namespace dkmage {
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
                 const int itemIndex = rand() % indexSet.size();
-                const int regionIndex = utils::getSetItem( indexSet, itemIndex, true );
+                const int regionIndex = getSetItem( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
 
-                const utils::Point caveCenter = region.min + utils::Point( rX, rY );
+                const Point caveCenter = region.min + Point( rX, rY );
                 const adiktedpp::Slab centerStab = level.getSlab( caveCenter );
                 if ( centerStab == adiktedpp::Slab::S_ROCK ) {
                     continue ;
                 }
 
-                const utils::Rect chamber( caveCenter, 5, 5 );
+                const Rect chamber( caveCenter, 5, 5 );
                 level.setCave( chamber, adiktedpp::Slab::S_PATH, 12 );
 
                 const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
@@ -138,7 +141,7 @@ namespace dkmage {
              level.setRoom( portalRect, adiktedpp::Room::R_PORTAL );
 
              /// add gold vein
-             const utils::Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
+             const Rect mapRect = adiktedpp::raw::RawLevel::mapRect();
              const int veinY = mapRect.max.y - 3;
              const Point leftVeinCenter( bbox.min.x - 20, veinY );
              const Rect leftVeinRect( leftVeinCenter, 9, 5 );

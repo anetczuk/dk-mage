@@ -11,6 +11,7 @@
 #include "utils/Rand.h"
 
 
+using namespace utils;
 using namespace adiktedpp;
 
 
@@ -40,8 +41,8 @@ namespace dkmage {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
 
-        const utils::Rect bbox = maze.boundingBox();
-        const utils::Point& minPoint = bbox.min;
+        const Rect bbox = maze.boundingBox();
+        const Point& minPoint = bbox.min;
 
         for ( std::size_t y=0; y<yDimm; ++y ) {
             for ( std::size_t x=0; x<xDimm; ++x ) {
@@ -49,17 +50,17 @@ namespace dkmage {
                 switch ( val ) {
                 case dkmage::spatial::Maze::PathType::PT_ROCK: {
                     /// closed
-                    level.setSlab( minPoint + utils::Point( x, y ), Slab::S_ROCK );
+                    level.setSlab( minPoint + Point( x, y ), Slab::S_ROCK );
                     break ;
                 }
                 case dkmage::spatial::Maze::PathType::PT_EARTH: {
                     /// open
-                    level.setSlab( minPoint + utils::Point( x, y ), Slab::S_EARTH );
+                    level.setSlab( minPoint + Point( x, y ), Slab::S_EARTH );
                     break ;
                 }
                 case dkmage::spatial::Maze::PathType::PT_LAVA: {
                     /// closed
-                    level.setSlab( minPoint + utils::Point( x, y ), Slab::S_LAVA );
+                    level.setSlab( minPoint + Point( x, y ), Slab::S_LAVA );
                     break ;
                 }
                 }
@@ -67,11 +68,11 @@ namespace dkmage {
         }
     }
 
-    void drawGoldVein( Level& level, const utils::Rect& veinRect, const std::size_t gemFaces ) {
+    void drawGoldVein( Level& level, const Rect& veinRect, const std::size_t gemFaces ) {
         const Point veinCenter = veinRect.center();
 
         int veinDir = 1;
-        const utils::Rect mapSize = raw::RawLevel::mapSize();
+        const Rect mapSize = raw::RawLevel::mapSize();
         if ( veinCenter.y > mapSize.center().y / 2 ) {
             /// on south
             veinDir = 1;
@@ -101,7 +102,7 @@ namespace dkmage {
             level.setSlab( gemRect, Slab::S_GOLD );
             level.setCave( veinRect, Slab::S_GOLD, veinSize );
             level.setSlab( gemCenter, Slab::S_GEMS );
-            const utils::Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
+            const Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
             level.setSlab( rect, Slab::S_ROCK );
             level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );
             break;
@@ -112,7 +113,7 @@ namespace dkmage {
             level.setSlab( gemRect, Slab::S_GOLD );
             level.setCave( veinRect, Slab::S_GOLD, veinSize );
             level.setSlab( gemCenter, Slab::S_GEMS );
-            const utils::Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
+            const Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
             level.setSlab( rect, Slab::S_ROCK );
             break;
         }
@@ -122,65 +123,65 @@ namespace dkmage {
         }
     }
 
-    void drawGoldChests( Level& level, const utils::Rect& treasureRect ) {
+    void drawGoldChests( Level& level, const Rect& treasureRect ) {
         /// prevents picking up gold from unclaimed path
         level.setClaimed( treasureRect, PlayerType::PT_GOOD );
         level.setItem( treasureRect, 4, Item::I_GOLDCHEST );
     }
 
-    void drawTrap3x3X( Level& level, const utils::Point& trapCenter, const Trap trap, const Slab fillType ) {
-        const utils::Rect rect( trapCenter, 3, 3 );
+    void drawTrap3x3X( Level& level, const Point& trapCenter, const Trap trap, const Slab fillType ) {
+        const Rect rect( trapCenter, 3, 3 );
         level.setSlab( rect, fillType );
         drawTrap3x3X( level, trapCenter, trap );
     }
 
-    void drawTrap3x3X( Level& level, const utils::Point& trapCenter, const Trap trap ) {
+    void drawTrap3x3X( Level& level, const Point& trapCenter, const Trap trap ) {
         level.setTrap( trapCenter, 4, trap );
 
-        level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
-        level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
-        level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
-        level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
+        level.setTrap( trapCenter + Point(-1,-1), 4, trap );
+        level.setTrap( trapCenter + Point( 1,-1), 4, trap );
+        level.setTrap( trapCenter + Point(-1, 1), 4, trap );
+        level.setTrap( trapCenter + Point( 1, 1), 4, trap );
     }
 
-    void drawTrap3x3Diamond( Level& level, const utils::Point& trapCenter, const Trap trap, const Slab fillType ) {
-        const utils::Rect rect( trapCenter, 3, 3 );
+    void drawTrap3x3Diamond( Level& level, const Point& trapCenter, const Trap trap, const Slab fillType ) {
+        const Rect rect( trapCenter, 3, 3 );
         level.setSlab( rect, fillType );
         drawTrap3x3Diamond( level, trapCenter, trap );
     }
 
-    void drawTrap3x3Diamond( Level& level, const utils::Point& trapCenter, const Trap trap ) {
-        level.setTrap( trapCenter + utils::Point( 1, 0), 4, trap );
-        level.setTrap( trapCenter + utils::Point(-1, 0), 4, trap );
-        level.setTrap( trapCenter + utils::Point( 0,-1), 4, trap );
-        level.setTrap( trapCenter + utils::Point( 0, 1), 4, trap );
+    void drawTrap3x3Diamond( Level& level, const Point& trapCenter, const Trap trap ) {
+        level.setTrap( trapCenter + Point( 1, 0), 4, trap );
+        level.setTrap( trapCenter + Point(-1, 0), 4, trap );
+        level.setTrap( trapCenter + Point( 0,-1), 4, trap );
+        level.setTrap( trapCenter + Point( 0, 1), 4, trap );
     }
 
-    void drawTrap3x3Corners( Level& level, const utils::Point& trapCenter, const Trap trap, const Slab fillType ) {
-        const utils::Rect rect( trapCenter, 3, 3 );
+    void drawTrap3x3Corners( Level& level, const Point& trapCenter, const Trap trap, const Slab fillType ) {
+        const Rect rect( trapCenter, 3, 3 );
         level.setSlab( rect, fillType );
         drawTrap3x3Corners( level, trapCenter, trap );
     }
 
-    void drawTrap3x3Corners( Level& level, const utils::Point& trapCenter, const Trap trap ) {
-        level.setTrap( trapCenter + utils::Point( 1, 1), 4, trap );
-        level.setTrap( trapCenter + utils::Point(-1, 1), 4, trap );
-        level.setTrap( trapCenter + utils::Point( 1,-1), 4, trap );
-        level.setTrap( trapCenter + utils::Point(-1,-1), 4, trap );
+    void drawTrap3x3Corners( Level& level, const Point& trapCenter, const Trap trap ) {
+        level.setTrap( trapCenter + Point( 1, 1), 4, trap );
+        level.setTrap( trapCenter + Point(-1, 1), 4, trap );
+        level.setTrap( trapCenter + Point( 1,-1), 4, trap );
+        level.setTrap( trapCenter + Point(-1,-1), 4, trap );
     }
 
-    void drawSpecial3x3( Level& level, const utils::Point& specialCenter, const Item specialItem ) {
-        const utils::Rect rect( specialCenter, 3, 3 );
+    void drawSpecial3x3( Level& level, const Point& specialCenter, const Item specialItem ) {
+        const Rect rect( specialCenter, 3, 3 );
         drawSpecial( level, rect, specialItem );
     }
 
-    void drawSpecial( Level& level, const utils::Rect& chamber, const Item specialItem ) {
+    void drawSpecial( Level& level, const Rect& chamber, const Item specialItem ) {
         if ( chamber.valid() == false ) {
             LOG() << "invalid rect";
             return ;
         }
         level.setSlab( chamber, Slab::S_PATH );
-        const utils::Point specialCenter = chamber.center();
+        const Point specialCenter = chamber.center();
         level.setItem( specialCenter, 4, specialItem );
         if ( chamber.width() == 3 && chamber.height() == 3 ) {
             drawTrap3x3Diamond( level, specialCenter, Trap::T_BOULDER );
@@ -189,17 +190,17 @@ namespace dkmage {
         LOG() << "unsupported rect dimensions";
     }
 
-    void drawHeroTrap( Level& level, const utils::Point& point, const int creatureLevel ) {
+    void drawHeroTrap( Level& level, const Point& point, const int creatureLevel ) {
         const int cLevel = std::min( std::max( creatureLevel, 1 ), 9 );
 
-        std::set< Creature > list = HeroCreatures();                /// eys, copy
+        std::set< Creature > list = HeroCreatures();                /// yes, copy
         list.erase( Creature::C_TUNNELLER );
         list.erase( Creature::C_KNIGHT );
         list.erase( Creature::C_AVATAR );
         const std::size_t index1 = rand() % list.size();
-        const Creature creature1 = utils::getSetItem( list, index1 );
+        const Creature creature1 = getSetItem( list, index1 );
         const std::size_t index2 = rand() % list.size();
-        const Creature creature2 = utils::getSetItem( list, index2 );
+        const Creature creature2 = getSetItem( list, index2 );
 
         level.setCreature( point, 3, creature1, 3, cLevel - 1, PlayerType::PT_GOOD );
         level.setCreature( point, 5, creature2, 2, cLevel, PlayerType::PT_GOOD );
