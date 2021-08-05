@@ -10,6 +10,7 @@
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Version.h"
 
+#include "utils/Set.h"
 #include "utils/Rand.h"
 #include "utils/Log.h"
 #include "utils/GlobalScope.h"

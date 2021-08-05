@@ -8,7 +8,7 @@
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/spatial/Maze.h"
 
-#include "utils/Rand.h"
+#include "utils/Set.h"
 
 
 using namespace utils;
