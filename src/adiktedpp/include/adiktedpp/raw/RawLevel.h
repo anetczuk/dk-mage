@@ -56,6 +56,7 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
+            /// level name is stored in *.lif file
             void setLevelName( const std::string& name );
 
             /// returns path of recent attempt to load map (fname)
@@ -201,8 +202,10 @@ namespace adiktedpp {
 
             void setInfo();
 
+            /// author is stored in *.adi file
             void setAuthor( const std::string& info );
 
+            /// description is stored in *.adi file
             void setDesciption( const std::string& info );
 
         };
