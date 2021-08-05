@@ -120,6 +120,8 @@ namespace adiktedpp {
 
         Slab getSlab( const utils::Point& point );
 
+        bool isSlab( const utils::Point& point, const Slab type );
+
         void setSlab( const std::size_t x, const std::size_t y, const Slab type );
 
         void setSlab( const utils::Point& point, const Slab type );
@@ -143,6 +145,8 @@ namespace adiktedpp {
         void setTrap( const utils::Point& point, const std::size_t subIndex, const Trap trap );
 
         void setDoor( const std::size_t x, const std::size_t y, const Door door, const bool locked = false );
+
+        void setDoor( const utils::Point& point, const Door door, const bool locked = false );
 
         void setCreature( const utils::Point& point, const std::size_t subIndex, const Creature creature,
                           const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );

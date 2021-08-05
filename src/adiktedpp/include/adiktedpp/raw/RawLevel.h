@@ -188,7 +188,7 @@ namespace adiktedpp {
 
             static utils::Rect mapSize();
 
-            static utils::Rect mapRect();
+            static utils::Rect mapRect( const std::size_t shrink = 0 );
 
             static std::string prepareMapName( const std::size_t mapId );
 

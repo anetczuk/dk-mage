@@ -7,6 +7,7 @@
 #define UTILS_INCLUDE_UTILS_RECT_H_
 
 #include <vector>
+#include <set>
 #include <ostream>
 
 
@@ -36,6 +37,13 @@ namespace utils {
                 return false;
             }
             return ( y < data.y );
+        }
+
+        Point operator-() const {
+            Point newPoint = *this;
+            newPoint.x *= -1;
+            newPoint.y *= -1;
+            return newPoint;
         }
 
         Point operator+( const Point& data ) const {
@@ -128,6 +136,30 @@ namespace utils {
             return Point( cx, cy );
         }
 
+        Point centerTop( const std::size_t delta = 0 ) const {
+            const int cx = min.x + width() / 2;
+            const int cy = min.y - delta;
+            return Point( cx, cy );
+        }
+
+        Point centerBottom( const std::size_t delta = 0 ) const {
+            const int cx = min.x + width() / 2;
+            const int cy = max.y + delta;
+            return Point( cx, cy );
+        }
+
+        Point centerLeft( const std::size_t delta = 0 ) const {
+            const int cx = min.x - delta;
+            const int cy = min.y + height() / 2;
+            return Point( cx, cy );
+        }
+
+        Point centerRight( const std::size_t delta = 0 ) const {
+            const int cx = max.x + delta;
+            const int cy = min.y + height() / 2;
+            return Point( cx, cy );
+        }
+
         void move( const int offsetX, const int offsetY ) {
             min.x += offsetX;
             min.y += offsetY;
@@ -206,6 +238,35 @@ namespace utils {
             return true;
         }
 
+        bool hasInside( const Rect& rect ) const {
+            if ( isInside( rect.min ) == false ) {
+                return false;
+            }
+            if ( isInside( rect.max ) == false ) {
+                return false;
+            }
+            return true;
+        }
+
+        bool hasInside( const std::set< Point >& points ) const {
+            for ( const Point item: points ) {
+                if ( isInside( item ) == false ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool isCollision( const Rect& rect ) const {
+            if ( isSmallerThan(rect) ) {
+                return false;
+            }
+            if ( rect.isSmallerThan( *this ) ) {
+                return false;
+            }
+            return true;
+        }
+
         Point distance( const Rect& rect ) const {
             const Point p1 = center();
             const Point p2 = rect.center();
@@ -222,16 +283,6 @@ namespace utils {
                 ydistance = pdist.y - hCommon + 1;
             }
             return Point( xdistance, ydistance );
-        }
-
-        bool isCollision( const Rect& rect ) const {
-            if ( isSmallerThan(rect) ) {
-                return false;
-            }
-            if ( rect.isSmallerThan( *this ) ) {
-                return false;
-            }
-            return true;
         }
 
         /// ================================================

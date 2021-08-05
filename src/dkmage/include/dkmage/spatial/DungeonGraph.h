@@ -244,7 +244,7 @@ namespace dkmage {
                     }
                     ret.push_back( nItem );
                 }
-                return ret;
+                return std::vector< TNodeData* >( ret.rbegin(), ret.rend() );
             }
 
             /// find nodes connected to given 'item'

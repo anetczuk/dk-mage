@@ -39,6 +39,53 @@ TEST_CASE( "Dungeon_boundingBox_02" ) {
     CHECK( rect.max.y ==  2 );
 }
 
+TEST_CASE( "Dungeon_isCollision" ) {
+    Dungeon dungeon;
+    DungeonRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
+    REQUIRE( first != nullptr );
+
+    const Point from( 3, 5 );
+    const Point to( 3, -5 );
+    const bool colision = dungeon.isCollision( from, to );
+    REQUIRE( colision );
+}
+
+TEST_CASE( "Dungeon_addRoom" ) {
+    Dungeon dungeon;
+    DungeonRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
+    REQUIRE( first != nullptr );
+
+    DungeonRoom* next = first;
+    next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_WEST, true, 1 );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( Room::R_CLAIMED, 1, *next, Direction::D_WEST, true, 4 );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( Room::R_LIBRARY, 3, *next, Direction::D_WEST, true, 3 );
+    REQUIRE( next != nullptr );
+
+    REQUIRE( dungeon.roomsNum() == 4 );
+}
+
+TEST_CASE( "Dungeon_addRoom_corridors" ) {
+    Dungeon dungeon;
+    DungeonRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
+    REQUIRE( first != nullptr );
+
+    DungeonRoom* next = first;
+    next = dungeon.addRoom( Room::R_TREASURE, 1, *next, Direction::D_WEST, true, 3 );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( Room::R_CLAIMED, 1, *next, Direction::D_SOUTH, true, 1 );
+    REQUIRE( next != nullptr );
+
+    next = dungeon.addRoom( Room::R_LIBRARY, 1, *next, Direction::D_EAST, true, 1 );
+    REQUIRE( next != nullptr );
+
+    REQUIRE( dungeon.roomsNum() == 4 );
+}
+
 TEST_CASE( "Dungeon_addRoom_collision" ) {
     Dungeon dungeon;
     DungeonRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );

@@ -54,9 +54,9 @@ namespace adiktedpp {
         case raw::SlabType::ST_GEMS:  return Slab::S_GEMS;
 
         default: {
-            LOG() << "invalid argument: " << (int)slab;
+            LOG() << "invalid argument: " << slab;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)slab;
+            stream << FILE_NAME << "invalid argument: " << slab;
             throw std::invalid_argument( stream.str() );
         }
         }
@@ -84,9 +84,9 @@ namespace adiktedpp {
         case Room::R_BRIDGE:        return raw::SlabType::ST_BRIDGE;
         case Room::R_GUARD_POST:    return raw::SlabType::ST_GUARDPOST;
         }
-        LOG() << "invalid argument: " << (int)room;
+        LOG() << "invalid argument: " << room;
         std::stringstream stream;
-        stream << FILE_NAME << "invalid argument: " << (int)room;
+        stream << FILE_NAME << "invalid argument: " << room;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -199,6 +199,11 @@ namespace adiktedpp {
         return getSlab( point.x, point.y );
     }
 
+    bool Level::isSlab( const utils::Point& point, const Slab type ) {
+        const raw::SlabType rawType = convertToSlab( type );
+        return rawLevel.isSlab( point, rawType );
+    }
+
     void Level::setSlab( const std::size_t x, const std::size_t y, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( x, y, rawType );
@@ -255,6 +260,11 @@ namespace adiktedpp {
     void Level::setDoor( const std::size_t x, const std::size_t y, const Door door, const bool locked ) {
         const raw::SubTypeDoor rawDoor = convertToRaw( door );
         rawLevel.setDoor( x, y, rawDoor, locked );
+    }
+
+    void Level::setDoor( const utils::Point& point, const Door door, const bool locked ) {
+        const raw::SubTypeDoor rawDoor = convertToRaw( door );
+        rawLevel.setDoor( point, rawDoor, locked );
     }
 
     void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
@@ -334,6 +344,7 @@ namespace adiktedpp {
 //        return added.size();
 
         LakeGenerator vein;
+        vein.add( boundingLimit.center() );
         vein.generate( boundingLimit, itemsNum );
 
         setSlab( vein.added, type );

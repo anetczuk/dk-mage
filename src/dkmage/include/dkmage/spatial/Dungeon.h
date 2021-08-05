@@ -50,6 +50,10 @@ namespace dkmage {
             {
             }
 
+            std::size_t roomArea() const {
+                return roomPosition.area();
+            }
+
             Point roomSize() const {
                 return roomPosition.vector();
             }
@@ -61,6 +65,8 @@ namespace dkmage {
             Rect& position() {
                 return roomPosition;
             }
+
+            Point edgePoint( const Direction direction, const std::size_t delta = 0 ) const;
 
             void resize( const std::size_t newSize ) {
                 roomPosition = Rect( newSize, newSize );
@@ -85,6 +91,10 @@ namespace dkmage {
             std::string print() const;
 
         };
+
+        Point movePoint( const Point& base, const Direction direction, const std::size_t space );
+
+        void moveRect( Rect& rect, const Rect& base, const Direction direction, const std::size_t space );
 
 
         /// ==================================================================
@@ -156,19 +166,28 @@ namespace dkmage {
                 return graph.connectedItems( room );
             }
 
+            std::vector< Direction > availableDirections( const DungeonRoom& room ) const {
+                return graph.availableDirections( room );
+            }
+
             std::vector< DungeonRoom* > findRoom( const adiktedpp::Room roomType );
 
             DungeonRoom* findRoomFirst( const adiktedpp::Room roomType );
 
             DungeonRoom* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 );
 
+            DungeonRoom* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const bool addLink = true, const std::size_t corridorLength = 1 );
+
             DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize );
 
-            DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink = true, const std::size_t distance = 1 );
+            DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink = true, const std::size_t corridorLength = 1 );
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
             bool isCollision( const Rect& rect );
+
+            /// is collision with corridor
+            bool isCollision( const Point& start, const Point& end );
 
             /// size of dungeon
             Rect boundingBox() const override;

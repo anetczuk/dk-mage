@@ -26,7 +26,17 @@ namespace adiktedpp {
 
         void generateLake( const utils::Rect& boundingLimit, const double areaFactor = 0.7 ) {
             const int area = boundingLimit.area() * areaFactor;
+            add( boundingLimit.center() );
             generate( boundingLimit, area );
+        }
+
+        void generate( const std::size_t size ) {
+            while ( added.size() < size ) {
+                const std::size_t avSize = available.size();
+                const std::size_t vIndex = rand() % avSize;
+                const utils::Point point = getAvailable( vIndex );
+                add( point );
+            }
         }
 
         void generate( const utils::Rect& boundingLimit, const std::size_t size ) {
@@ -34,9 +44,6 @@ namespace adiktedpp {
             if ( boundingArea < 1 ) {
                 return;
             }
-
-            const utils::Point center = boundingLimit.center();
-            add( center );
 
             const std::size_t area = std::min( (std::size_t) boundingArea, size );
             while ( added.size() < area ) {
@@ -50,12 +57,6 @@ namespace adiktedpp {
             }
         }
 
-
-        static void grow( std::set< utils::Point >& data, const std::size_t delta );
-
-
-    protected:
-
         void add( const utils::Point& point ) {
             if ( added.count( point ) > 0 ) {
                 return ;
@@ -67,6 +68,14 @@ namespace adiktedpp {
             addAvailable( point + utils::Point( 0, -1 ) );
             available.erase( point );
         }
+
+
+        static void grow( std::set< utils::Point >& data, const std::size_t deltaHV, const std::size_t deltaD );
+
+        static std::set< utils::Point > edge( std::set< utils::Point >& data );
+
+
+    protected:
 
         void add( const std::size_t availableIndex ) {
             auto avpos = available.begin();

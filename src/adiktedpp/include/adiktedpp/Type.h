@@ -25,6 +25,20 @@ namespace adiktedpp {
         S_WATER
     };
 
+    inline std::ostream& operator<<( std::ostream& os, const Slab data ) {
+        switch( data ) {
+        case Slab::S_ROCK:    { os << "S_ROCK"; return os; }
+        case Slab::S_GOLD:    { os << "S_GOLD"; return os; }
+        case Slab::S_GEMS:    { os << "S_GEMS"; return os; }
+        case Slab::S_EARTH:   { os << "S_EARTH"; return os; }
+        case Slab::S_PATH:    { os << "S_PATH"; return os; }
+        case Slab::S_LAVA:    { os << "S_LAVA"; return os; }
+        case Slab::S_WATER:   { os << "S_WATER"; return os; }
+        }
+        os << "UNKNOWN_SLAB[" << (int) data << "]";
+        return os;
+    }
+
 
     /// ===============================================================
 
@@ -51,6 +65,30 @@ namespace adiktedpp {
         R_BRIDGE,
         R_GUARD_POST
     };
+
+    inline std::ostream& operator<<( std::ostream& os, const Room data ) {
+        switch( data ) {
+        case Room::R_CLAIMED:           { os << "R_CLAIMED"; return os; }
+        case Room::R_DUNGEON_HEART:     { os << "R_DUNGEON_HEART"; return os; }
+        case Room::R_PORTAL:            { os << "R_PORTAL"; return os; }
+        case Room::R_TREASURE:          { os << "R_TREASURE"; return os; }
+        case Room::R_LIBRARY:           { os << "R_LIBRARY"; return os; }
+        case Room::R_PRISON:            { os << "R_PRISON"; return os; }
+        case Room::R_TORTURE:           { os << "R_TORTURE"; return os; }
+        case Room::R_TRAINING:          { os << "R_TRAINING"; return os; }
+        case Room::R_WORKSHOP:          { os << "R_WORKSHOP"; return os; }
+        case Room::R_SCAVENGER:         { os << "R_SCAVENGER"; return os; }
+        case Room::R_TEMPLE:            { os << "R_TEMPLE"; return os; }
+        case Room::R_GRAVEYARD:         { os << "R_GRAVEYARD"; return os; }
+        case Room::R_HATCHERY:          { os << "R_HATCHERY"; return os; }
+        case Room::R_LAIR:              { os << "R_LAIR"; return os; }
+        case Room::R_BARRACKS:          { os << "R_BARRACKS"; return os; }
+        case Room::R_BRIDGE:            { os << "R_BRIDGE"; return os; }
+        case Room::R_GUARD_POST:        { os << "R_GUARD_POST"; return os; }
+        }
+        os << "UNKNOWN_ROOM[" << (int) data << "]";
+        return os;
+    }
 
     const std::set< Room >& RoomsAll();
 

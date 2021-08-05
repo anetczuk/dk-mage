@@ -33,7 +33,7 @@ namespace dkmage {
 
             void preparePlayerDungeon();
 
-            void prepareEnemyDungeon();
+            bool prepareEnemyDungeon();
 
         };
 

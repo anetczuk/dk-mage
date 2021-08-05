@@ -158,8 +158,8 @@ namespace adiktedpp {
             return Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
         }
 
-        Rect RawLevel::mapRect() {
-            return Rect( 1, 1, MAP_SIZE_DKSTD_X - 2, MAP_SIZE_DKSTD_Y - 2 );
+        Rect RawLevel::mapRect( const std::size_t shrink ) {
+            return Rect( 1 + shrink, 1 + shrink, MAP_SIZE_DKSTD_X - 2 - shrink, MAP_SIZE_DKSTD_Y - 2 - shrink );
         }
 
         std::string RawLevel::prepareMapName( const std::size_t mapId ) {

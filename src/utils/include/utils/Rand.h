@@ -11,6 +11,7 @@
 #include <random>
 #include <string>
 #include <set>
+#include <algorithm>
 
 
 namespace utils {
@@ -54,6 +55,13 @@ namespace utils {
         T value = *iter;
         container.erase( iter );
         return value;
+    }
+
+    template <typename T>
+    std::set< T > disjoint_sets( const std::set<T>& fromSet, const std::set<T>& substractSet ) {
+        std::vector< Point > output;
+        std::set_difference( fromSet.begin(), fromSet.end(), substractSet.begin(), substractSet.end(), std::inserter(output, output.begin()) );
+        return std::set< T >( output.begin(), output.end() );
     }
 
 }

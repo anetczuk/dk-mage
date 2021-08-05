@@ -23,6 +23,26 @@ namespace dkmage {
             return last;
         }
 
+        Point movePoint( const Point& base, const Direction direction, const std::size_t space ) {
+            switch( direction ) {
+            case Direction::D_NORTH: {
+                return base + Point( 0, -space );
+            }
+            case Direction::D_SOUTH: {
+                return base + Point( 0,  space );
+            }
+            case Direction::D_EAST: {
+                return base + Point(  space, 0 );
+            }
+            case Direction::D_WEST: {
+                return base + Point( -space, 0 );
+            }
+            }
+
+            LOG() << "unhandled case: " << direction;
+            return base;
+        }
+
         void moveRect( Rect& rect, const Rect& base, const Direction direction, const std::size_t space ) {
             rect.centerize();
             const Point baseCenter = base.center();
@@ -50,7 +70,6 @@ namespace dkmage {
                 break;
             }
             }
-
         }
 
         template <typename T>
@@ -62,9 +81,20 @@ namespace dkmage {
         /// ============================================================
 
 
+        Point DungeonRoom::edgePoint( const Direction direction, const std::size_t delta ) const {
+            switch( direction ) {
+            case Direction::D_NORTH: return roomPosition.centerTop( delta );
+            case Direction::D_SOUTH: return roomPosition.centerBottom( delta );
+            case Direction::D_WEST:  return roomPosition.centerLeft( delta );
+            case Direction::D_EAST:  return roomPosition.centerRight( delta );
+            }
+            LOG() << "invalid case";
+            return roomPosition.center();
+        }
+
         std::string DungeonRoom::print() const {
             std::stringstream stream;
-            stream << "position: " << position() << " type: " << (int)roomType;
+            stream << "position: " << position() << " type: " << roomType;
             return stream.str();
         }
 
@@ -106,47 +136,63 @@ namespace dkmage {
                 root->owner( player );
                 return root;
             }
+
             while ( roomsList.empty() == false ) {
                 const std::size_t rRoom = rand() % roomsList.size();
                 DungeonRoom* selected = remove_at( roomsList, rRoom );
                 if ( selected == nullptr ) {
                     continue;
                 }
-                std::vector< Direction > availableDirs = graph.freeDirections( *selected );
 
-                const int northDiff = limitNorth - selected->northCoord;
-                if ( northDiff <= 0) {
-                    remove( availableDirs, Direction::D_NORTH );
-                }
-                const int southDiff = limitSouth + selected->northCoord;
-                if ( southDiff <= 0) {
-                    remove( availableDirs, Direction::D_SOUTH );
-                }
-                const int eastDiff = limitEast - selected->eastCoord;
-                if ( eastDiff <= 0) {
-                    remove( availableDirs, Direction::D_EAST );
-                }
-                const int westDiff = limitWest + selected->eastCoord;
-                if ( westDiff == 0) {
-                    remove( availableDirs, Direction::D_WEST );
-                }
-
-                while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = rand() % availableDirs.size();
-                    const Direction newDir = remove_at( availableDirs, rDir );
-                    DungeonRoom* added = addRoom( roomType, roomSize, *selected, newDir, addLink, distance );
-                    if ( added != nullptr ) {
-                        return added;
-                    }
+                DungeonRoom* added = addRandomRoom( roomType, roomSize, *selected, addLink, distance );
+                if ( added != nullptr ) {
+                    return added;
                 }
             }
+
             LOG() << "unable to add room: " << (int)roomType;
+            return nullptr;
+        }
+
+        DungeonRoom* Dungeon::addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const bool addLink, const std::size_t corridorLength ) {
+            std::vector< Direction > availableDirs = graph.freeDirections( from );
+
+            const int northDiff = limitNorth - from.northCoord;
+            if ( northDiff <= 0) {
+                remove( availableDirs, Direction::D_NORTH );
+            }
+            const int southDiff = limitSouth + from.northCoord;
+            if ( southDiff <= 0) {
+                remove( availableDirs, Direction::D_SOUTH );
+            }
+            const int eastDiff = limitEast - from.eastCoord;
+            if ( eastDiff <= 0) {
+                remove( availableDirs, Direction::D_EAST );
+            }
+            const int westDiff = limitWest + from.eastCoord;
+            if ( westDiff == 0) {
+                remove( availableDirs, Direction::D_WEST );
+            }
+
+            while ( availableDirs.empty() == false ) {
+                const std::size_t rDir = rand() % availableDirs.size();
+                const Direction newDir = remove_at( availableDirs, rDir );
+                DungeonRoom* added = addRoom( roomType, roomSize, from, newDir, addLink, corridorLength );
+                if ( added != nullptr ) {
+                    return added;
+                }
+            }
+
+//            LOG() << "unable to add room: " << (int)roomType;
             return nullptr;
         }
 
         DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize ) {
             Rect newRect( roomSize, roomSize );
-            if ( isCollision( newRect ) ) {
+
+            Rect collisionRect = newRect;
+            collisionRect.grow( 1 );
+            if ( isCollision( collisionRect ) ) {
                 /// collision detected
                 return nullptr;
             }
@@ -167,12 +213,26 @@ namespace dkmage {
             return newRoom;
         }
 
-        DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink, const std::size_t distance ) {
+        DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink, const std::size_t corridorLength ) {
             Rect newRect( roomSize, roomSize );
             const Rect& basePos = from.position();
-            moveRect( newRect, basePos, direction, distance );
-            if ( isCollision( newRect ) ) {
+            moveRect( newRect, basePos, direction, corridorLength );
+
+            // check room collision
+            Rect collisionRect = newRect;
+            collisionRect.grow( 1 );
+            if ( isCollision( collisionRect ) ) {
                 /// collision detected
+//                LOG() << "unable to add room -- rooms collision detected: " << newRect << " " << direction;
+                return nullptr;
+            }
+
+            /// check corridor collision
+            const Point start = from.edgePoint( direction, 2 );
+            const Point end = newRect.center();
+            if ( isCollision( start, end ) ) {
+                /// collision detected
+//                LOG() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
                 return nullptr;
             }
 
@@ -308,8 +368,43 @@ namespace dkmage {
         bool Dungeon::isCollision( const Rect& rect ) {
             std::vector< DungeonRoom* > roomsList = graph.itemsList();
             for ( const DungeonRoom* item: roomsList ) {
-                const Rect& pos = item->position();
-                if ( rect.isCollision( pos ) ) {
+                const Rect& itemRect = item->position();
+                if ( itemRect.isCollision( rect ) ) {
+//                    LOG() << "collision detected, rectangles: " << itemRect << " " << rect;;
+                    return true;
+                }
+
+                /// check existing corridors
+                const Point itemCenter = itemRect.center();
+                std::vector< DungeonRoom* > connected = connectedRooms( *item );
+                for ( const DungeonRoom* next: connected ) {
+                    const Point nextCenter = next->position().center();
+                    const std::vector<Point> points = line( itemCenter, nextCenter );
+                    const std::size_t pSize = points.size();
+                    for ( std::size_t i=0; i<pSize; ++i ) {
+                        const Rect pointRect( points[i], 1, 1 );
+                        if ( pointRect.isCollision( rect ) ) {
+//                            LOG() << "collision detected, rectangles: " << pointRect << " " << rect;;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool Dungeon::isCollision( const Point& start, const Point& end ) {
+            const std::vector<Point> points = line( start, end );
+            const std::size_t pSize = points.size();
+            for ( std::size_t i=0; i<pSize; i += 3 ) {
+                const Rect rect( points[i], 3, 3 );
+                if ( isCollision(rect) ) {
+                    return true;
+                }
+            }
+            if ( pSize > 1 ) {
+                const Rect pointRect( points[pSize-1], 3, 3 );
+                if ( isCollision( pointRect ) ) {
                     return true;
                 }
             }
