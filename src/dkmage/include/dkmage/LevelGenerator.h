@@ -23,6 +23,8 @@ namespace dkmage {
         virtual ~LevelGenerator() {
         }
 
+        virtual void setLevelName( const std::string& name ) = 0;
+
         virtual void setDataPath( const std::string& dataPath ) = 0;
 
         virtual void generateLevel() = 0;
@@ -43,6 +45,10 @@ namespace dkmage {
      */
     class EmptyLevelGenerator: public LevelGenerator {
     public:
+
+        void setLevelName( const std::string& /*name*/ ) override {
+            /// do nothing
+        }
 
         void setDataPath( const std::string& /*dataPath*/ ) override {
             /// do nothing
@@ -74,6 +80,11 @@ namespace dkmage {
     public:
 
         LevelGeneratorWrapper( LevelGenerator* generator ): data( generator ) {
+        }
+
+        void setLevelName( const std::string& name ) override {
+            LevelGenerator* implementation = data.get();
+            implementation->setLevelName( name );
         }
 
         void setDataPath( const std::string& dataPath ) override {

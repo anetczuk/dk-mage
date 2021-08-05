@@ -211,6 +211,15 @@ int main( int argc, char** argv ) {
         if ( outputLevelFile.empty() == false ) {
             create_directories( outputLevelFile.parent_path() );                      /// create parent directories
             const std::string output = outputLevelFile.string();
+
+            {
+                const std::size_t mapId = raw::RawLevel::extractMapIdFromPath( output );
+                std::stringstream stream;
+                stream << "dk-mage map " << mapId;
+                const std::string name = stream.str();
+                typeGenerator->setLevelName( name );
+            }
+
             typeGenerator->storeLevel( output );
             const std::string outputBmp = output + ".bmp";
             typeGenerator->storePreview( outputBmp );

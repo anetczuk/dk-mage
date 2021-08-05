@@ -33,6 +33,10 @@ namespace adiktedpp {
 
     public:
 
+        raw::RawLevel& getRawLevel() {
+            return rawLevel;
+        }
+
         LEVEL* rawData() {
             return rawLevel.rawData();
         }

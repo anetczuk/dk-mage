@@ -56,6 +56,8 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
+            void setLevelName( const std::string& name );
+
             /// returns path of recent attempt to load map (fname)
             std::string inputFileName() const;
 
@@ -191,6 +193,8 @@ namespace adiktedpp {
             static utils::Rect mapRect( const std::size_t shrink = 0 );
 
             static std::string prepareMapName( const std::size_t mapId );
+
+            static std::size_t extractMapIdFromPath( const std::string& mapPath );
 
 
         private:

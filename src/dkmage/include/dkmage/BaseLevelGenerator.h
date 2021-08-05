@@ -29,6 +29,10 @@ namespace dkmage {
         BaseLevelGenerator(): messages( "adikted.log.txt" ) {
         }
 
+        void setLevelName( const std::string& name ) override {
+            level.getRawLevel().setLevelName( name );
+        }
+
         void setDataPath( const std::string& dataPath ) override {
             level.setDataPath( dataPath );
         }
