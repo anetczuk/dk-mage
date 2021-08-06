@@ -37,14 +37,14 @@ namespace dkmage {
         return iter->second;
     }
 
-    Optional< std::string > ParametersMap::getString( const std::string& parameter, const std::string& defaultValue ) const {
+    std::string ParametersMap::getString( const std::string& parameter, const std::string& defaultValue ) const {
         auto iter = data.find( parameter );
         if ( iter == data.end() ) {
             return defaultValue;
         }
         const std::string& value = iter->second;
         if ( value.empty() == false ) {
-            return iter->second;
+            return value;
         }
         return defaultValue;
     }

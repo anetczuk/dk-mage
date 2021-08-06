@@ -41,6 +41,10 @@ namespace adiktedpp {
             /// execute commands stored in ADI file
             void execScriptADI( const std::string& path );
 
+            void storeParameters( const std::string& mapType, const std::string& seed );
+
+            bool addREM( const std::string& comment );
+
             bool addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 
             bool addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );

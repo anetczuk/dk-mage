@@ -108,7 +108,7 @@ namespace dkmage {
 
         Optional< std::string > getString( const std::string& parameter ) const;
 
-        Optional< std::string > getString( const std::string& parameter, const std::string& defaultValue ) const;
+        std::string getString( const std::string& parameter, const std::string& defaultValue ) const;
 
         Optional< std::size_t > getSizeT( const std::string& parameter ) const;
 

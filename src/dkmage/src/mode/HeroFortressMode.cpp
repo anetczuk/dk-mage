@@ -38,9 +38,17 @@ namespace dkmage {
 
             /// =========== scripting ===========
 
+            const ParametersMap& parameters = getParameters();
+
             LOG() << "preparing script";
             script::Script script( level );
+            {
+                const std::string type = parameters.getString( "type", "" );
+                const std::string seed = parameters.getString( "seed", "" );
+                script.storeParameters( type, seed );
+            }
 
+            script.addLine( "" );
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
             script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
             script.addLine( "START_MONEY( PLAYER0,  20000 )" );                 /// does not show in treasure

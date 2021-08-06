@@ -31,8 +31,17 @@ namespace dkmage {
 
             /// =========== scripting ===========
 
-            script::Script script( level );
+            const ParametersMap& parameters = getParameters();
 
+            LOG() << "preparing script";
+            script::Script script( level );
+            {
+                const std::string type = parameters.getString( "type", "" );
+                const std::string seed = parameters.getString( "seed", "" );
+                script.storeParameters( type, seed );
+            }
+
+            script.addLine( "" );
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
 
             script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
