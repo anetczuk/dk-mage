@@ -6,6 +6,7 @@
 #include "cli/Config.h"
 
 #include "dkmage/Generator.h"
+#include "dkmage/Parameter.h"
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Version.h"
@@ -59,24 +60,23 @@ bool initializeRand( const std::string& seed ) {
     return true;
 }
 
-LevelGenerator* getGenerator( Generator& generator, const std::string& mapType ) {
+std::string getProperType( const std::string& mapType ) {
     if ( mapType.compare("random") != 0 ) {
-        LOG() << "using map generator: '" << mapType << "'";
-        return generator.get( mapType );
+        return mapType;
     }
 
     /// random
     LOG() << "getting random map generator";
+    const Generator& generator = Generator::instance();
     const std::vector<std::string> typeAllowed = generator.generatorsList();
     std::set<std::string> typeSet( typeAllowed.begin(), typeAllowed.end() );
     typeSet.erase( "random" );
     if ( typeSet.empty() ) {
-        LOG() << "could not get generator: no generator candidate";
-        return nullptr;
+        LOG() << "could not get proper map type: no generators found";
+        return "";
     }
     const std::size_t rIndex = rand() % typeSet.size();
-    const std::string newType = getSetItem( typeSet, rIndex );
-    return getGenerator( generator, newType );
+    return getSetItem( typeSet, rIndex );
 }
 
 std::string findFreeMapName( const std::string& levelsPath ) {
@@ -93,66 +93,132 @@ std::string findFreeMapName( const std::string& levelsPath ) {
     return "";
 }
 
+int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
+    TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', VERSION_FULL_STRING );
+
+    Generator& generator = Generator::instance();
+
+    TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
+
+    std::vector<std::string> typeAllowed = generator.generatorsList();
+    typeAllowed.push_back( "random" );
+
+    TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
+    TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "random", &typeAllowedVals, cmd );
+
+    TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
+
+    TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
+    TCLAP::ValueArg<std::string> outputSubPathArg( "", "output_subpath", "Path to map's output file relative to 'level_path' config field", false, "", "path string" );
+    TCLAP::ValueArg<std::size_t> outputIdArg( "", "output_id", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
+    TCLAP::SwitchArg outputAutoArg( "", "output_auto", "Finds unused map id and use it to store map", true );
+    TCLAP::EitherOf input;
+//        TCLAP::OneOf input;
+    input.add( outputPathArg ).add( outputSubPathArg ).add( outputIdArg ).add( outputAutoArg );
+    cmd.add( input );
+
+    TCLAP::ValueArg<std::string> outputbmpArg( "", "output_bmp", "Path to map's output BMP file", false, "", "path string", cmd );
+
+    cmd.parse( argc, argv );
+
+    /// ===========================================================================
+
+    /// loading config file
+    std::string configPath = configArg.getValue();
+    if ( configArg.isSet() == false ) {
+        /// config parameter not given -- read default file
+        path currPath = current_path() / path( argv[0] ).parent_path() / configPath;
+        configPath = currPath.string();
+    }
+    cli::Config config( configPath );
+    if ( config.isValid() == false ) {
+        LOG() << "unable to parse config file '" << configPath << "'";
+        return 1;
+    }
+    LOG() << "loaded config file: " << configPath;
+
+    /**
+     * Parameters needed before construction of parameters map (because already in use):
+     *      config      -- config already loaded
+     *      seed        -- needed to get random type
+     *      type        -- required to read proper section from config
+     */
+
+    const cli::Config::RawData generalData = config.readSection( "general" );
+    retParameters.appendData( generalData );
+
+    /// handle seed
+    const Optional< std::string > mapSeedParam = retParameters.getString( "seed", "" );
+    std::string mapSeed = mapSeedParam.getValue( "" );
+    if ( seedArg.isSet() ) {
+        mapSeed = seedArg.getValue();                                   /// yes, copy
+    }
+    if ( initializeRand( mapSeed ) == false ) {
+        LOG() << "unable to initialize random number generator with seed '" << mapSeed << "'";
+        return 1;
+    }
+
+    /// try to load map type section based on value 'general::type' from config
+    {
+        const Optional< std::string > generalTypeParam = retParameters.getString( "type", "random" );
+        std::string configMapType = generalTypeParam.value();
+        configMapType = getProperType( configMapType );
+        if ( configMapType.empty() == false ) {
+            const cli::Config::RawData mapData = config.readSection( configMapType );
+            retParameters.appendData( mapData );
+            retParameters.add( typeArg.getName(), configMapType );                        /// override section field
+        }
+    }
+
+    /// try to load map type section based on cmd line argument
+    if ( typeArg.isSet() ) {
+        std::string cmdMapType = typeArg.getValue();
+        cmdMapType = getProperType( cmdMapType );
+        if ( cmdMapType.empty() == false ) {
+            const cli::Config::RawData mapData = config.readSection( cmdMapType );
+            retParameters.appendData( mapData );
+            retParameters.add( typeArg.getName(), cmdMapType );                           /// override section field
+        }
+    }
+
+    /// append cmd args
+    retParameters.add( configArg.getName(), configPath );
+    /// 'type' field already set
+    retParameters.add( seedArg.getName(), mapSeed );                                      /// override section field
+
+    if ( outputPathArg.isSet() )    retParameters.add( outputPathArg.getName(), outputPathArg.getValue() );
+    if ( outputSubPathArg.isSet() ) retParameters.add( outputSubPathArg.getName(), outputSubPathArg.getValue() );
+    if ( outputIdArg.isSet() )      retParameters.add( outputIdArg.getName(), outputIdArg.getValue() );
+    if ( outputAutoArg.isSet() )    retParameters.add( outputAutoArg.getName(), outputAutoArg.getValue() );
+    if ( outputbmpArg.isSet() )     retParameters.add( outputbmpArg.getName(), outputbmpArg.getValue() );
+
+    return 0;
+}
+
+
+/// =========================================================================================================
+
 
 int main( int argc, char** argv ) {
     try {
-        TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', VERSION_FULL_STRING );
+        ParametersMap parameters;
+        const int invalid = readParameters( argc, argv, parameters );
+        if ( invalid != 0 ) {
+            return invalid;
+        }
 
+        const Optional<std::string> mapTypeParam = parameters.getString( "type" );
+        const std::string mapType = mapTypeParam.value();
+
+        LOG() << "using map generator: '" << mapType << "'";
         Generator& generator = Generator::instance();
-
-        TCLAP::ValueArg<std::string> configArg( "", "config", "Path to configuration INI file", false, "config.ini", "path string", cmd );
-
-        std::vector<std::string> typeAllowed = generator.generatorsList();
-        typeAllowed.push_back( "random" );
-
-        TCLAP::ValuesConstraint<std::string> typeAllowedVals( typeAllowed );
-        TCLAP::ValueArg<std::string> typeArg( "", "type", "Map type", false, "random", &typeAllowedVals, cmd );
-
-        TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
-
-        TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
-        TCLAP::ValueArg<std::string> outputSubPathArg( "", "output_subpath", "Path to map's output file relative to 'level_path' config field", false, "", "path string" );
-        TCLAP::ValueArg<std::size_t> outputIdArg( "", "output_id", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
-        TCLAP::SwitchArg outputAutoArg( "", "output_auto", "Finds unused map id and use it to store map", true );
-        TCLAP::EitherOf input;
-//        TCLAP::OneOf input;
-        input.add( outputPathArg ).add( outputSubPathArg ).add( outputIdArg ).add( outputAutoArg );
-        cmd.add( input );
-
-        TCLAP::ValueArg<std::string> outbmpArg( "", "output_bmp", "Path to map's output BMP file", false, "", "path string", cmd );
-
-        cmd.parse( argc, argv );
-
-        /// ---------------------------------------------------------
-
-        std::string configPath = configArg.getValue();
-        if ( configArg.isSet() == false ) {
-            /// config parameter not given -- read default file
-            path currPath = current_path() / path( argv[0] ).parent_path() / configPath;
-            configPath = currPath.string();
-        }
-        cli::Config config( configPath );
-        if ( config.isValid() == false ) {
-            LOG() << "unable to parse config file '" << configPath << "'";
-            return 1;
-        }
-        LOG() << "loaded config file: " << configPath;
-
-        const std::string& mapSeed = seedArg.getValue();
-        if ( initializeRand( mapSeed ) == false ) {
-            LOG() << "unable to initialize random number generator with seed '" << mapSeed << "'";
-            return 1;
-        }
-
-        const std::string& mapType = typeArg.getValue();
-        LevelGenerator* typeGenerator = getGenerator( generator, mapType );
+        LevelGenerator* typeGenerator = generator.get( mapType );
         if ( typeGenerator == nullptr ) {
             LOG() << "unable to handle generator '" << mapType << "'";
             return 1;
         }
 
-        const std::string dataPath = config.readDataPath();
-        typeGenerator->setDataPath( dataPath );
+        typeGenerator->setParameters( parameters );
 
         /// generate level
         LOG() << "generating level";
@@ -162,9 +228,13 @@ int main( int argc, char** argv ) {
 
         /// store generated level
         path outputLevelFile = "";
-        if ( outputPathArg.isSet() ) {
+        const Optional<std::string> outputPathParam    = parameters.getString( "output_path" );
+        const Optional<std::string> outputSubPathParam = parameters.getString( "output_subpath" );
+        const Optional<std::size_t> outputIdParam      = parameters.getSizeT( "output_id" );
+        const Optional<std::string> levelsPathParam    = parameters.getString( "levels_path" );
+        if ( outputPathParam.isSet() ) {
             /// store in absolute path or path relative to work dir
-            const path outputPath = outputPathArg.getValue();
+            const path outputPath = outputPathParam.getValue();
             if ( outputPath.is_absolute() ) {
                 /// absolute command-line argument path
                 outputLevelFile = outputPath;
@@ -173,10 +243,10 @@ int main( int argc, char** argv ) {
                 const path output = current_path() / outputPath;
                 outputLevelFile = output.string();
             }
-        } else if ( outputSubPathArg.isSet() ) {
+        } else if ( outputSubPathParam.isSet() ) {
             /// store in path relative to 'levels_path'
-            const std::string levelsPath = config.readLevelsPath();
-            const path outputSubPath        = outputSubPathArg.getValue();
+            const std::string levelsPath = levelsPathParam.value_or( "" );                     /// yes, copy
+            const path outputSubPath     = outputSubPathParam.getValue();
             if ( outputSubPath.is_absolute() ) {
                 /// absolute command-line argument path
                 outputLevelFile = outputSubPath;
@@ -187,9 +257,9 @@ int main( int argc, char** argv ) {
             } else {
                 outputLevelFile = outputSubPath;
             }
-        } else if ( outputIdArg.isSet() ) {
-            const std::string levelsPath  = config.readLevelsPath();
-            const std::size_t levelNumber = outputIdArg.getValue();
+        } else if ( outputIdParam.isSet() ) {
+            const std::string levelsPath  = levelsPathParam.value_or( "" );                     /// yes, copy
+            const std::size_t levelNumber = outputIdParam.getValue();
             const std::string mapName     = raw::RawLevel::prepareMapName( levelNumber );
             if ( levelsPath.empty() == false ) {
                 const path outputPath     = path(levelsPath) / mapName;
@@ -198,7 +268,7 @@ int main( int argc, char** argv ) {
                 outputLevelFile           = mapName;
             }
         } else {
-            const std::string levelsPath = config.readLevelsPath();
+            const std::string levelsPath = levelsPathParam.value_or( "" );                     /// yes, copy
             const std::string mapName    = findFreeMapName( levelsPath );
             if ( levelsPath.empty() == false ) {
                 const path outputPath     = path(levelsPath) / mapName;
@@ -228,7 +298,8 @@ int main( int argc, char** argv ) {
         }
 
         /// store preview image
-        const std::string& bmpFile = outbmpArg.getValue();
+        const Optional<std::string> outputBmpParam = parameters.getString( "output_bmp" );
+        const std::string& bmpFile = outputBmpParam.getValue( "" );
         if ( bmpFile.empty() == false ) {
             path outputBmp = bmpFile;
             create_directories( outputBmp.parent_path() );                      /// create parent directories

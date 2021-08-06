@@ -7,6 +7,7 @@
 #define CLI_INCLUDE_CLI_CONFIG_H_
 
 #include <string>
+#include <map>
 
 
 namespace cli {
@@ -15,6 +16,12 @@ namespace cli {
      *
      */
     class Config {
+    public:
+
+        using RawData = std::map< std::string, std::string >;
+
+
+    private:
 
         std::string configPath;
 
@@ -32,6 +39,12 @@ namespace cli {
         std::string readLevelsPath() const {
             return readFieldString( "general", "levels_path", true );
         }
+
+        std::string readSeed() const {
+            return readFieldString( "general", "seed", true );
+        }
+
+        RawData readSection( const std::string& section ) const;
 
 
     private:

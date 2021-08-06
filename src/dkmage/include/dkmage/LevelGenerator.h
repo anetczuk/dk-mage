@@ -8,6 +8,8 @@
 
 /// inclusion: #include "dkmage/LevelGenerator.h"
 
+#include "dkmage/Parameter.h"
+
 #include <string>
 #include <memory>
 
@@ -22,6 +24,10 @@ namespace dkmage {
 
         virtual ~LevelGenerator() {
         }
+
+        virtual const ParametersMap& getParameters() const = 0;
+
+        virtual void setParameters( const ParametersMap& map ) = 0;
 
         virtual void setLevelName( const std::string& name ) = 0;
 
@@ -45,6 +51,17 @@ namespace dkmage {
      */
     class EmptyLevelGenerator: public LevelGenerator {
     public:
+
+        ParametersMap parameters;
+
+
+        const ParametersMap& getParameters() const override {
+            return parameters;
+        }
+
+        void setParameters( const ParametersMap& map ) override {
+            parameters = map;
+        }
 
         void setLevelName( const std::string& /*name*/ ) override {
             /// do nothing
@@ -80,6 +97,16 @@ namespace dkmage {
     public:
 
         LevelGeneratorWrapper( LevelGenerator* generator ): data( generator ) {
+        }
+
+        const ParametersMap& getParameters() const override {
+            LevelGenerator* implementation = data.get();
+            return implementation->getParameters();
+        }
+
+        void setParameters( const ParametersMap& map ) override {
+            LevelGenerator* implementation = data.get();
+            return implementation->setParameters( map );
         }
 
         void setLevelName( const std::string& name ) override {

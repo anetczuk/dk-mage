@@ -22,11 +22,26 @@ namespace dkmage {
     class BaseLevelGenerator: public LevelGenerator {
     public:
 
+        ParametersMap parameters;
+
         adiktedpp::ScopeMessages messages;
         adiktedpp::Level level;
 
 
         BaseLevelGenerator(): messages( "adikted.log.txt" ) {
+        }
+
+        const ParametersMap& getParameters() const override {
+            return parameters;
+        }
+
+        void setParameters( const ParametersMap& map ) override {
+            parameters = map;
+            Optional< std::string > dataPath = parameters.getString( "data_path" );
+            if ( dataPath.has_value() ) {
+                const std::string& path = dataPath.value();
+                setDataPath( path );
+            }
         }
 
         void setLevelName( const std::string& name ) override {

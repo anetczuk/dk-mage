@@ -19,6 +19,9 @@ namespace dkmage {
     LevelGenerator* Generator::get( const std::string& type ) {
         LevelGeneratorPtr& itemPtr = genMap[ type ];
         AbstractItem* item = itemPtr.get();
+        if ( item == nullptr ) {
+            return nullptr;
+        }
         return item->create();
 //        return itemPtr.get();
     }
