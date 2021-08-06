@@ -40,24 +40,25 @@ GLOBAL_SCOPE() {
     Logger::setLogFile( "dkmage.log.txt" );
 }
 
-
-bool initializeRand( const std::string& seed ) {
-    if ( seed.empty() ) {
-        const unsigned int timeSeed = time(NULL);
-        srand( timeSeed );
-        const std::string newSeed = genSeed();
-        if ( newSeed.empty() ) {
-            LOG() << "unable to generate seed";
-            return false;
-        }
-        return initializeRand( newSeed );
+std::string getProperSeed( const std::string& seed ) {
+    if ( seed.empty() == false ) {
+        return seed;
     }
 
+    const unsigned int timeSeed = time(NULL);
+    srand( timeSeed );
+    const std::string newSeed = genSeed();
+    if ( newSeed.empty() ) {
+        LOG() << "unable to generate seed";
+        return "";
+    }
+    return newSeed;
+}
+
+void initializeRand( const std::string& seed ) {
     LOG() << "using seed '" << seed << "'";
     const std::size_t seedValue = std::hash< std::string >{}( seed );
     srand( seedValue );
-
-    return true;
 }
 
 std::string getProperType( const std::string& mapType ) {
@@ -148,20 +149,19 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     retParameters.appendData( generalData );
 
     /// handle seed
-    const Optional< std::string > seedParam = retParameters.getString( "seed", "" );
-    std::string mapSeed = seedParam.getValue( "" );
+    std::string mapSeed = retParameters.getString( "seed", "" );
     if ( seedArg.isSet() ) {
         mapSeed = seedArg.getValue();                                   /// yes, copy
     }
-    if ( initializeRand( mapSeed ) == false ) {
-        LOG() << "unable to initialize random number generator with seed '" << mapSeed << "'";
+    mapSeed = getProperSeed( mapSeed );
+    if ( mapSeed.empty() ) {
         return 1;
     }
+    initializeRand( mapSeed );
 
     /// try to load map type section based on value 'general::type' from config
     {
-        const Optional< std::string > generalTypeParam = retParameters.getString( "type", "random" );
-        std::string configMapType = generalTypeParam.value();
+        std::string configMapType = retParameters.getString( "type", "random" );
         configMapType = getProperType( configMapType );
         if ( configMapType.empty() == false ) {
             const cli::Config::RawData mapData = config.readSection( configMapType );
