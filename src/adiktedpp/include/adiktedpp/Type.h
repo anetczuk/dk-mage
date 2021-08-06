@@ -46,6 +46,31 @@ namespace adiktedpp {
     /**
      *
      */
+    enum class Item {
+        I_GOLDCHEST,
+        I_GOLD_HOARD1,              /// small bag (800)
+        I_GOLD_HOARD2,              /// medium bag (1200)
+        I_GOLD_HOARD3,              /// big bag (1600)
+        I_GOLD_HOARD4,              /// big bag (1600)
+        I_GOLD_HOARD5,              /// big bag (1600)
+
+        I_SPECIAL_REVMAP,
+        I_SPECIAL_RESURCT,
+        I_SPECIAL_TRANSFR,
+        I_SPECIAL_STEALHR,
+        I_SPECIAL_MULTPLY,
+        I_SPECIAL_INCLEV,
+        I_SPECIAL_MKSAFE,
+        I_SPECIAL_HIDNWRL
+    };
+
+
+    /// ===============================================================
+
+
+    /**
+     *
+     */
     enum class Room {
         R_CLAIMED,              /// empty
         R_DUNGEON_HEART,
@@ -101,6 +126,70 @@ namespace adiktedpp {
     /**
      *
      */
+    enum class Trap {
+        T_BOULDER,
+        T_ALARM,
+        T_POISON_GAS,
+        T_LIGHTNING,
+        T_WORD_OF_POWER,
+        T_LAVA
+    };
+
+    const std::set< Trap >& Traps();
+
+
+    /// ===============================================================
+
+
+    /**
+     *
+     */
+    enum class Door {
+        D_WOOD,
+        D_BRACED,
+        D_IRON,
+        D_MAGIC
+    };
+
+    const std::set< Door >& Doors();
+
+
+    /// ===============================================================
+
+
+    /**
+     *
+     */
+    enum class Spell {
+        S_POWER_HAND,
+        S_POWER_SLAP,
+        S_POWER_POSSESS,
+        S_POWER_IMP,
+        S_POWER_OBEY,
+        S_POWER_SIGHT,
+        S_POWER_CALL_TO_ARMS,
+        S_POWER_CAVE_IN,
+        S_POWER_HEAL_CREATURE,
+        S_POWER_HOLD_AUDIENCE,
+        S_POWER_LIGHTNING,
+        S_POWER_SPEED,
+        S_POWER_PROTECT,
+        S_POWER_CONCEAL,
+        S_POWER_DISEASE,
+        S_POWER_CHICKEN,
+        S_POWER_DESTROY_WALLS,
+        S_POWER_ARMAGEDDON
+    };
+
+    const std::set< Spell >& Spells();
+
+
+    /// ===============================================================
+
+
+    /**
+     *
+     */
     enum class Creature {
         C_WIZARD,
         C_BARBARIAN,
@@ -146,86 +235,14 @@ namespace adiktedpp {
     /**
      *
      */
-    enum class Door {
-        D_WOOD,
-        D_BRACED,
-        D_IRON,
-        D_MAGIC
-    };
-
-    const std::set< Door >& Doors();
-
-
-    /// ===============================================================
-
-
-    /**
-     *
-     */
-    enum class Trap {
-        T_BOULDER,
-        T_ALARM,
-        T_POISON_GAS,
-        T_LIGHTNING,
-        T_WORD_OF_POWER,
-        T_LAVA
-    };
-
-    const std::set< Trap >& Traps();
-
-
-    /// ===============================================================
-
-
-    /**
-     *
-     */
-    enum class Spell {
-        S_POWER_HAND,
-        S_POWER_SLAP,
-        S_POWER_POSSESS,
-        S_POWER_IMP,
-        S_POWER_OBEY,
-        S_POWER_SIGHT,
-        S_POWER_CALL_TO_ARMS,
-        S_POWER_CAVE_IN,
-        S_POWER_HEAL_CREATURE,
-        S_POWER_HOLD_AUDIENCE,
-        S_POWER_LIGHTNING,
-        S_POWER_SPEED,
-        S_POWER_PROTECT,
-        S_POWER_CONCEAL,
-        S_POWER_DISEASE,
-        S_POWER_CHICKEN,
-        S_POWER_DESTROY_WALLS,
-        S_POWER_ARMAGEDDON
-    };
-
-    const std::set< Spell >& Spells();
-
-
-    /// ===============================================================
-
-
-    /**
-     *
-     */
-    enum class Item {
-        I_GOLDCHEST,
-        I_GOLD_HOARD1,              /// small bag (800)
-        I_GOLD_HOARD2,              /// medium bag (1200)
-        I_GOLD_HOARD3,              /// big bag (1600)
-        I_GOLD_HOARD4,              /// big bag (1600)
-        I_GOLD_HOARD5,              /// big bag (1600)
-
-        I_SPECIAL_REVMAP,
-        I_SPECIAL_RESURCT,
-        I_SPECIAL_TRANSFR,
-        I_SPECIAL_STEALHR,
-        I_SPECIAL_MULTPLY,
-        I_SPECIAL_INCLEV,
-        I_SPECIAL_MKSAFE,
-        I_SPECIAL_HIDNWRL
+    enum class Player {
+        P_P0,                          /// human player
+        P_P1,
+        P_P2,
+        P_P3,
+        P_GOOD,                        /// hero (white)
+        P_UNSET,                       /// neutral (multicolor)
+        P_ALL                          /// used in scripts only
     };
 
 } /* namespace adiktedpp */

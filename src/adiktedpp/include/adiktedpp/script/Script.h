@@ -41,15 +41,15 @@ namespace adiktedpp {
             /// execute commands stored in ADI file
             void execScriptADI( const std::string& path );
 
-            bool addAvailable( const adiktedpp::PlayerType player, const Room item, const int accessible, const int available );
+            bool addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::PlayerType player, const Creature item, const int accessible, const int available );
+            bool addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::PlayerType player, const Door item, const int accessible, const int available );
+            bool addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::PlayerType player, const Trap item, const int accessible, const int available );
+            bool addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::PlayerType player, const Spell item, const int accessible, const int available );
+            bool addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
 
             bool addLine( const std::string& line );
 
@@ -59,7 +59,7 @@ namespace adiktedpp {
             void set( const AvailableCommandStateMap<TValue>& stateMap ) {
                 auto iter1 = stateMap.begin();
                 for ( ; iter1 != stateMap.end(); ++iter1 ) {
-                    const adiktedpp::PlayerType player = iter1->first;
+                    const adiktedpp::Player player = iter1->first;
                     const auto& submap = iter1->second;
 
                     auto iter2 = submap.begin();
@@ -81,14 +81,14 @@ namespace adiktedpp {
             /// ================================================================================
 
             /// set available creatures from pool
-            void setEvilCreaturesAvailable( const PlayerType player, const bool available = true );
+            void setEvilCreaturesAvailable( const Player player, const bool available = true );
 
             /// set available creatures from pool
-            void setHeroCreaturesAvailable( const PlayerType player, const bool available = true );
+            void setHeroCreaturesAvailable( const Player player, const bool available = true );
 
-            void setRoomsAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setRoomsAvailable( const Player player, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
-            void setRoomAvailable( const PlayerType player, const Room room, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setRoomAvailable( const Player player, const Room room, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
             void setRoomsStandard();
 
@@ -98,7 +98,7 @@ namespace adiktedpp {
              *      - zero     -- possible to workshop
              *      - positive -- number of available items
              */
-            void setDoorsAvailable( const PlayerType player, const int available = -1 );
+            void setDoorsAvailable( const Player player, const int available = -1 );
 
             /**
              * "available" parameter meaning:
@@ -106,15 +106,15 @@ namespace adiktedpp {
              *      - zero     -- possible to workshop
              *      - positive -- number of available items
              */
-            void setTrapsAvailable( const PlayerType player, const int available = -1 );
+            void setTrapsAvailable( const Player player, const int available = -1 );
 
-            void setMagicAvailable( const PlayerType player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setMagicAvailable( const Player player, const AvailableMode mode = AvailableMode::AM_DISABLED );
 
-            void setMagicStandard( const PlayerType player );
+            void setMagicStandard( const Player player );
 
             /// ================================================================================
 
-            void setWinConditionStandard( const PlayerType player );
+            void setWinConditionStandard( const Player player );
 
 
         private:

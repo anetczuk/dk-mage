@@ -10,7 +10,6 @@
 #include "dkmage/spatial/DungeonGraph.h"
 
 #include "adiktedpp/Type.h"
-#include "adiktedpp/PlayerType.h"
 
 #include "utils/Log.h"
 #include "utils/Rect.h"
@@ -34,7 +33,7 @@ namespace dkmage {
 
             bool validType;
             adiktedpp::Room roomType;
-            adiktedpp::PlayerType roomOwner;
+            adiktedpp::Player roomOwner;
 
 
         public:
@@ -45,7 +44,7 @@ namespace dkmage {
 
             DungeonRoom(): roomPosition(), validType(false),
                 roomType( adiktedpp::Room::R_TREASURE ),
-                roomOwner( adiktedpp::PlayerType::PT_0 ),
+                roomOwner( adiktedpp::Player::P_P0 ),
                 northCoord(0), eastCoord(0)
             {
             }
@@ -80,11 +79,11 @@ namespace dkmage {
                 roomType = newType;
             }
 
-            adiktedpp::PlayerType owner() const {
+            adiktedpp::Player owner() const {
                 return roomOwner;
             }
 
-            void owner( const adiktedpp::PlayerType newType ) {
+            void owner( const adiktedpp::Player newType ) {
                 roomOwner = newType;
             }
 
@@ -106,7 +105,7 @@ namespace dkmage {
         class Dungeon: public Spatialtem {
 
             DungeonGraph< DungeonRoom, NoEdgeData > graph;
-            adiktedpp::PlayerType player;
+            adiktedpp::Player player;
             bool fortifyWalls;
 
 
@@ -118,12 +117,12 @@ namespace dkmage {
             std::size_t limitWest;
 
 
-            Dungeon( const adiktedpp::PlayerType player=adiktedpp::PlayerType::PT_0, const bool fortify=true ): player(player), fortifyWalls( fortify ),
+            Dungeon( const adiktedpp::Player player=adiktedpp::Player::P_P0, const bool fortify=true ): player(player), fortifyWalls( fortify ),
                     limitNorth( 999 ), limitSouth( 999 ), limitEast( 999 ), limitWest( 999 )
             {
             }
 
-            adiktedpp::PlayerType owner() const {
+            adiktedpp::Player owner() const {
                 return player;
             }
 

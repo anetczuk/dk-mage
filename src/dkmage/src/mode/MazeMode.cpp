@@ -58,22 +58,22 @@ namespace dkmage {
             script.addLine( "" );
             script.setHeroCreaturesPool( 20 );
 
-            const std::set< PlayerType > availablePlayers = { PlayerType::PT_0, PlayerType::PT_1 };
+            const std::set< Player > availablePlayers = { Player::P_P0, Player::P_P0 };
 
             script::CreatureAvailableState availableCreatures( availablePlayers );
-            availableCreatures.setHeroAvailable( PlayerType::PT_1 );
+            availableCreatures.setHeroAvailable( Player::P_P0 );
 
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( PlayerType::PT_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
 
             /// necromancer mode
-            availableCreatures.setEvilAvailable( PlayerType::PT_0, false );
-            availableRooms.setStateMode( PlayerType::PT_0, Room::R_TORTURE, script::AvailableMode::AM_DISABLED );
+            availableCreatures.setEvilAvailable( Player::P_P0, false );
+            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableMode::AM_DISABLED );
 
             script::TrapAvailableState availableTraps( availablePlayers );
-            availableTraps.setAllAvailable( PlayerType::PT_ALL, true );
-            availableTraps.setStateFlag( PlayerType::PT_ALL, Trap::T_LAVA, false );
+            availableTraps.setAllAvailable( Player::P_ALL, true );
+            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
 
             script.addLine( "" );
             script.set( availableCreatures );
@@ -82,19 +82,19 @@ namespace dkmage {
             script.set( availableRooms );
 
             script.addLine( "" );
-            script.setDoorsAvailable( PlayerType::PT_ALL, 0 );
+            script.setDoorsAvailable( Player::P_ALL, 0 );
 
             script.addLine( "" );
             script.set( availableTraps );
 
             script.addLine( "" );
-            script.setMagicStandard( PlayerType::PT_ALL );
+            script.setMagicStandard( Player::P_ALL );
 
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
-            script.setWinConditionStandard( PlayerType::PT_0 );
+            script.setWinConditionStandard( Player::P_P0 );
 
             script.rebuild();
 
@@ -266,8 +266,8 @@ namespace dkmage {
         }
 
         void MazeMode::prepareEnemyDungeon() {
-        //    spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
-            spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
+        //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
+            spatial::Dungeon enemyDungeon( Player::P_P0 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
@@ -287,7 +287,7 @@ namespace dkmage {
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
             const Rect bbox = enemyDungeon.boundingBox();
-            const PlayerType owner = enemyDungeon.owner();
+            const Player owner = enemyDungeon.owner();
 
             /// add portal
             const Point portalCenter( bbox.min.x - 8, firstCenter.y );

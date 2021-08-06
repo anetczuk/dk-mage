@@ -134,13 +134,13 @@ namespace adiktedpp {
 
         void setSlab( const std::set< utils::Point >& positions, const Slab type );
 
-        void setClaimed( const utils::Point& point, PlayerType owner );
+        void setClaimed( const utils::Point& point, const Player owner );
 
-        void setClaimed( const utils::Rect& rect, PlayerType owner );
+        void setClaimed( const utils::Rect& rect, const Player owner );
 
         void setRoom( const utils::Rect& position, const Room room );
 
-        void setRoom( const utils::Rect& position, const Room room, const PlayerType owner, const bool fortify );
+        void setRoom( const utils::Rect& position, const Room room, const Player owner, const bool fortify );
 
         void setTrap( const std::size_t x, const std::size_t y, const Trap trap );
 
@@ -153,16 +153,16 @@ namespace adiktedpp {
         void setDoor( const utils::Point& point, const Door door, const bool locked = false );
 
         void setCreature( const utils::Point& point, const std::size_t subIndex, const Creature creature,
-                          const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                          const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
 
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature,
-                          const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                          const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
 
         void setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
 
         void setCreatureAuto( const utils::Point& point, const Creature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
 
         void setItem( const utils::Point& point, const std::size_t subIndex, const Item item );
 
@@ -180,7 +180,7 @@ namespace adiktedpp {
 
         void digLine( const utils::Point& from, const utils::Point& to, const Slab type = Slab::S_PATH );
 
-        void digLine( const utils::Point& from, const utils::Point& to, const PlayerType owner, const bool fortify );
+        void digLine( const utils::Point& from, const utils::Point& to, const Player owner, const bool fortify );
 
     };
 

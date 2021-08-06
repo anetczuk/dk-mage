@@ -8,12 +8,12 @@
 
 /// inclusion: #include "adiktedpp/raw/RawLevel.h"
 
-#include "adiktedpp/PlayerType.h"
 #include "adiktedpp/raw/SlabType.h"
 #include "adiktedpp/raw/SubTypeItem.h"
 #include "adiktedpp/raw/SubTypeTrap.h"
 #include "adiktedpp/raw/SubTypeDoor.h"
 #include "adiktedpp/raw/SubTypeCreature.h"
+#include "adiktedpp/raw/PlayerType.h"
 
 #include "utils/Rect.h"
 

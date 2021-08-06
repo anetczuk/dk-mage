@@ -268,13 +268,13 @@ TEST_CASE("RawLevel_setSlab_owner", "[classic]") {
     level.startNewMap();
 
     const raw::SlabType newSlab    = raw::SlabType::ST_TRAINING;
-    const PlayerType newOwner = PlayerType::PT_0;
+    const raw::PlayerType newOwner = raw::PlayerType::PT_0;
     level.setSlab( 10, 10, 20, 20, newSlab, newOwner );
 
     const raw::SlabType gotSlab = level.getSlab( 15, 15 );
     CHECK( gotSlab == newSlab );
 
-    const PlayerType gotOwner = level.getOwner( 15, 15 );
+    const raw::PlayerType gotOwner = level.getOwner( 15, 15 );
     CHECK( gotOwner == newOwner );
 
     level.generateTestBmp();

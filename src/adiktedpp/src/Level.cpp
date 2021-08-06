@@ -64,6 +64,35 @@ namespace adiktedpp {
 
     /// ===========================================================
 
+    static raw::SubTypeItem convertToRaw( const Item item ) {
+        switch( item ) {
+        case Item::I_GOLDCHEST:     return raw::SubTypeItem::STI_GOLDCHEST;
+        case Item::I_GOLD_HOARD1:   return raw::SubTypeItem::STI_GLDHOARD1;
+        case Item::I_GOLD_HOARD2:   return raw::SubTypeItem::STI_GLDHOARD2;
+        case Item::I_GOLD_HOARD3:   return raw::SubTypeItem::STI_GLDHOARD3;
+        case Item::I_GOLD_HOARD4:   return raw::SubTypeItem::STI_GLDHOARD4;
+        case Item::I_GOLD_HOARD5:   return raw::SubTypeItem::STI_GLDHOARD5;
+
+        case Item::I_SPECIAL_REVMAP:    return raw::SubTypeItem::STI_SPREVMAP;
+        case Item::I_SPECIAL_RESURCT:   return raw::SubTypeItem::STI_SPRESURCT;
+        case Item::I_SPECIAL_TRANSFR:   return raw::SubTypeItem::STI_SPTRANSFR;
+        case Item::I_SPECIAL_STEALHR:   return raw::SubTypeItem::STI_SPSTEALHR;
+        case Item::I_SPECIAL_MULTPLY:   return raw::SubTypeItem::STI_SPMULTPLY;
+        case Item::I_SPECIAL_INCLEV:    return raw::SubTypeItem::STI_SPINCLEV;
+        case Item::I_SPECIAL_MKSAFE:    return raw::SubTypeItem::STI_SPMKSAFE;
+        case Item::I_SPECIAL_HIDNWRL:   return raw::SubTypeItem::STI_SPHIDNWRL;
+
+        default: {
+            LOG() << "invalid argument: " << (int)item;
+            std::stringstream stream;
+            stream << FILE_NAME << "invalid argument: " << (int)item;
+            throw std::invalid_argument( stream.str() );
+        }
+        }
+    }
+
+    /// ===========================================================
+
     static raw::SlabType convertToSlab( const Room room ) {
         switch( room ) {
         case Room::R_CLAIMED:       return raw::SlabType::ST_CLAIMED;
@@ -159,31 +188,22 @@ namespace adiktedpp {
         throw std::invalid_argument( stream.str() );
     }
 
-    static raw::SubTypeItem convertToRaw( const Item item ) {
-        switch( item ) {
-        case Item::I_GOLDCHEST:     return raw::SubTypeItem::STI_GOLDCHEST;
-        case Item::I_GOLD_HOARD1:   return raw::SubTypeItem::STI_GLDHOARD1;
-        case Item::I_GOLD_HOARD2:   return raw::SubTypeItem::STI_GLDHOARD2;
-        case Item::I_GOLD_HOARD3:   return raw::SubTypeItem::STI_GLDHOARD3;
-        case Item::I_GOLD_HOARD4:   return raw::SubTypeItem::STI_GLDHOARD4;
-        case Item::I_GOLD_HOARD5:   return raw::SubTypeItem::STI_GLDHOARD5;
+    /// =======================================================================
 
-        case Item::I_SPECIAL_REVMAP:    return raw::SubTypeItem::STI_SPREVMAP;
-        case Item::I_SPECIAL_RESURCT:   return raw::SubTypeItem::STI_SPRESURCT;
-        case Item::I_SPECIAL_TRANSFR:   return raw::SubTypeItem::STI_SPTRANSFR;
-        case Item::I_SPECIAL_STEALHR:   return raw::SubTypeItem::STI_SPSTEALHR;
-        case Item::I_SPECIAL_MULTPLY:   return raw::SubTypeItem::STI_SPMULTPLY;
-        case Item::I_SPECIAL_INCLEV:    return raw::SubTypeItem::STI_SPINCLEV;
-        case Item::I_SPECIAL_MKSAFE:    return raw::SubTypeItem::STI_SPMKSAFE;
-        case Item::I_SPECIAL_HIDNWRL:   return raw::SubTypeItem::STI_SPHIDNWRL;
-
-        default: {
-            LOG() << "invalid argument: " << (int)item;
-            std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)item;
-            throw std::invalid_argument( stream.str() );
+    static raw::PlayerType convertToRaw( const Player player ) {
+        switch( player ) {
+        case Player::P_P0:    return raw::PlayerType::PT_0;
+        case Player::P_P1:    return raw::PlayerType::PT_1;
+        case Player::P_P2:    return raw::PlayerType::PT_2;
+        case Player::P_P3:    return raw::PlayerType::PT_3;
+        case Player::P_GOOD:  return raw::PlayerType::PT_GOOD;
+        case Player::P_UNSET: return raw::PlayerType::PT_UNSET;
+        case Player::P_ALL:   return raw::PlayerType::PT_ALL;
         }
-        }
+        LOG() << "invalid argument: " << (int)player;
+        std::stringstream stream;
+        stream << FILE_NAME << "invalid argument: " << (int)player;
+        throw std::invalid_argument( stream.str() );
     }
 
 
@@ -224,12 +244,14 @@ namespace adiktedpp {
         rawLevel.setSlab( positions, rawType );
     }
 
-    void Level::setClaimed( const Point& point, PlayerType owner ) {
-        rawLevel.setSlab( point, raw::SlabType::ST_CLAIMED, owner );
+    void Level::setClaimed( const Point& point, const Player owner ) {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.setSlab( point, raw::SlabType::ST_CLAIMED, playerType );
     }
 
-    void Level::setClaimed( const Rect& rect, PlayerType owner ) {
-        rawLevel.setSlab( rect, raw::SlabType::ST_CLAIMED, owner );
+    void Level::setClaimed( const Rect& rect, const Player owner ) {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.setSlab( rect, raw::SlabType::ST_CLAIMED, playerType );
     }
 
     void Level::setRoom( const Rect& position, const Room room ) {
@@ -237,9 +259,10 @@ namespace adiktedpp {
         rawLevel.setSlab( position, rawType );
     }
 
-    void Level::setRoom( const Rect& position, const Room room, const PlayerType owner, const bool fortify ) {
+    void Level::setRoom( const Rect& position, const Room room, const Player owner, const bool fortify ) {
         const raw::SlabType rawType = convertToSlab( room );
-        rawLevel.setRoom( position, rawType, owner, fortify );
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.setRoom( position, rawType, playerType, fortify );
     }
 
     void Level::setTrap( const std::size_t x, const std::size_t y, const Trap trap ) {
@@ -267,17 +290,19 @@ namespace adiktedpp {
         rawLevel.setDoor( point, rawDoor, locked );
     }
 
-    void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
         const raw::SubTypeCreature creatureType = convertToRaw( creature );
-        rawLevel.setCreature( x, y, subIndex, creatureType, number, expLevel, owner );
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.setCreature( x, y, subIndex, creatureType, number, expLevel, playerType );
     }
 
-    void Level::setCreature( const Point& point, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreature( const Point& point, const std::size_t subIndex, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
         const raw::SubTypeCreature creatureType = convertToRaw( creature );
-        rawLevel.setCreature( point, subIndex, creatureType, number, expLevel, owner );
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.setCreature( point, subIndex, creatureType, number, expLevel, playerType );
     }
 
-    void Level::setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
         if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
@@ -285,6 +310,7 @@ namespace adiktedpp {
         }
 
         const raw::SubTypeCreature creatureType = convertToRaw( creature );
+        const raw::PlayerType playerType        = convertToRaw( owner );
 
         std::size_t creaturesNum = number;
         std::size_t sub = 0;
@@ -292,12 +318,12 @@ namespace adiktedpp {
             const std::size_t insertNum = min( (std::size_t) 5, creaturesNum );
             creaturesNum -= insertNum;
 
-            rawLevel.setCreature( x, y, sub, creatureType, insertNum, expLevel, owner );
+            rawLevel.setCreature( x, y, sub, creatureType, insertNum, expLevel, playerType );
             ++sub;
         }
     }
 
-    void Level::setCreatureAuto( const Point& point, const Creature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
+    void Level::setCreatureAuto( const Point& point, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
         setCreatureAuto( point.x, point.y, creature, number, expLevel, owner );
     }
 
@@ -367,7 +393,9 @@ namespace adiktedpp {
         }
     }
 
-    void Level::digLine( const Point& from, const Point& to, const PlayerType owner, const bool fortify ) {
+    void Level::digLine( const Point& from, const Point& to, const Player owner, const bool fortify ) {
+        const raw::PlayerType playerType = convertToRaw( owner );
+
         const std::vector<Point> points = line( from, to );
         for ( const Point& item: points ) {
             const raw::SlabType currSlab = rawLevel.getSlab( item );
@@ -376,9 +404,9 @@ namespace adiktedpp {
                  raw::isLiquid( currSlab ) ||
                  raw::isImpassable( currSlab ) )
             {
-                rawLevel.setSlab( item, raw::SlabType::ST_CLAIMED, owner );
+                rawLevel.setSlab( item, raw::SlabType::ST_CLAIMED, playerType );
                 if ( fortify ) {
-                    rawLevel.fortify( item, owner );
+                    rawLevel.fortify( item, playerType );
                 }
             }
         }

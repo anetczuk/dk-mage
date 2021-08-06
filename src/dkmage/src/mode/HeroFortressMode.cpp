@@ -32,7 +32,7 @@ namespace dkmage {
 //                    storePreview( "level.bmp" );
                 generateLevel();
                 return ;
-            }
+            };
 
             preparePlayerDungeon();
 
@@ -47,41 +47,41 @@ namespace dkmage {
 
             script.addLine( "" );
             script.addLine( "" );
-            const std::set< PlayerType > availablePlayers = { PlayerType::PT_0 };
+            const std::set< Player > availablePlayers = { Player::P_P0 };
 
             script::CreatureAvailableState availableCreatures( availablePlayers );
-            availableCreatures.setEvilAvailable( PlayerType::PT_0 );
+            availableCreatures.setEvilAvailable( Player::P_P0 );
             script.set( availableCreatures );
 
             script.addLine( "" );
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( PlayerType::PT_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
             script.set( availableRooms );
 
             script.addLine( "" );
-            script.setDoorsAvailable( PlayerType::PT_ALL, 0 );
+            script.setDoorsAvailable( Player::P_ALL, 0 );
 
             script.addLine( "" );
-//            script.setTrapsAvailable( PlayerType::PT_ALL, 0 );
+//            script.setTrapsAvailable( Player::P_ALL, 0 );
             script::TrapAvailableState availableTraps( availablePlayers );
-            availableTraps.setAllAvailable( PlayerType::PT_ALL, true );
-            availableTraps.setStateFlag( PlayerType::PT_ALL, Trap::T_LAVA, false );
+            availableTraps.setAllAvailable( Player::P_ALL, true );
+            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
             script.set( availableTraps );
 
             script.addLine( "" );
-//            script.setMagicStandard( PlayerType::PT_ALL );
+//            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
-            availableMagic.setStandard( PlayerType::PT_ALL );
-            availableMagic.setStateMode( PlayerType::PT_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
-            availableMagic.setStateMode( PlayerType::PT_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
+            availableMagic.setStandard( Player::P_ALL );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
             script.set( availableMagic );
 
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
-            script.setWinConditionStandard( PlayerType::PT_0 );
+            script.setWinConditionStandard( Player::P_P0 );
 
             script.rebuild();
 
@@ -311,7 +311,7 @@ namespace dkmage {
         }
 
         bool HeroFortressMode::prepareEnemyDungeon() {
-            spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
+            spatial::Dungeon enemyDungeon( Player::P_GOOD );
             enemyDungeon.limitNorth = 3;
             enemyDungeon.limitSouth = 3;
             enemyDungeon.fortify( true );

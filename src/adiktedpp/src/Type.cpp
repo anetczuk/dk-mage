@@ -54,6 +54,67 @@ namespace adiktedpp {
     }
 
 
+    /// ============================================================================
+
+
+    const std::set< Trap >& Traps() {
+        static std::set< Trap > container;
+        if ( container.empty() ) {
+            container.insert( Trap::T_BOULDER );
+            container.insert( Trap::T_ALARM );
+            container.insert( Trap::T_POISON_GAS );
+            container.insert( Trap::T_LIGHTNING );
+            container.insert( Trap::T_WORD_OF_POWER );
+            container.insert( Trap::T_LAVA );
+        }
+        return container;
+    }
+
+
+    /// ============================================================================
+
+
+    const std::set< Door >& Doors() {
+        static std::set< Door > container;
+        if ( container.empty() ) {
+            container.insert( Door::D_WOOD );
+            container.insert( Door::D_BRACED );
+            container.insert( Door::D_IRON );
+            container.insert( Door::D_MAGIC );
+        }
+        return container;
+    }
+
+
+    /// ============================================================================
+
+
+    const std::set< Spell >& Spells() {
+        static std::set< Spell > container;
+        if ( container.empty() ) {
+            container.insert( Spell::S_POWER_HAND );
+            container.insert( Spell::S_POWER_SLAP );
+            container.insert( Spell::S_POWER_POSSESS );
+            container.insert( Spell::S_POWER_IMP );
+            container.insert( Spell::S_POWER_OBEY );
+            container.insert( Spell::S_POWER_SIGHT );
+            container.insert( Spell::S_POWER_CALL_TO_ARMS );
+            container.insert( Spell::S_POWER_CAVE_IN );
+            container.insert( Spell::S_POWER_HEAL_CREATURE );
+            container.insert( Spell::S_POWER_HOLD_AUDIENCE );
+            container.insert( Spell::S_POWER_LIGHTNING );
+            container.insert( Spell::S_POWER_SPEED );
+            container.insert( Spell::S_POWER_PROTECT );
+            container.insert( Spell::S_POWER_CONCEAL );
+            container.insert( Spell::S_POWER_DISEASE );
+            container.insert( Spell::S_POWER_CHICKEN );
+            container.insert( Spell::S_POWER_DESTROY_WALLS );
+            container.insert( Spell::S_POWER_ARMAGEDDON );
+        }
+        return container;
+    }
+
+
     /// ====================================================
 
 
@@ -97,67 +158,6 @@ namespace adiktedpp {
             container.insert( Creature::C_FAIRY );
             container.insert( Creature::C_THIEF );
             container.insert( Creature::C_SAMURAI );
-        }
-        return container;
-    }
-
-
-    /// ============================================================================
-
-
-    const std::set< Door >& Doors() {
-        static std::set< Door > container;
-        if ( container.empty() ) {
-            container.insert( Door::D_WOOD );
-            container.insert( Door::D_BRACED );
-            container.insert( Door::D_IRON );
-            container.insert( Door::D_MAGIC );
-        }
-        return container;
-    }
-
-
-    /// ============================================================================
-
-
-    const std::set< Trap >& Traps() {
-        static std::set< Trap > container;
-        if ( container.empty() ) {
-            container.insert( Trap::T_BOULDER );
-            container.insert( Trap::T_ALARM );
-            container.insert( Trap::T_POISON_GAS );
-            container.insert( Trap::T_LIGHTNING );
-            container.insert( Trap::T_WORD_OF_POWER );
-            container.insert( Trap::T_LAVA );
-        }
-        return container;
-    }
-
-
-    /// ============================================================================
-
-
-    const std::set< Spell >& Spells() {
-        static std::set< Spell > container;
-        if ( container.empty() ) {
-            container.insert( Spell::S_POWER_HAND );
-            container.insert( Spell::S_POWER_SLAP );
-            container.insert( Spell::S_POWER_POSSESS );
-            container.insert( Spell::S_POWER_IMP );
-            container.insert( Spell::S_POWER_OBEY );
-            container.insert( Spell::S_POWER_SIGHT );
-            container.insert( Spell::S_POWER_CALL_TO_ARMS );
-            container.insert( Spell::S_POWER_CAVE_IN );
-            container.insert( Spell::S_POWER_HEAL_CREATURE );
-            container.insert( Spell::S_POWER_HOLD_AUDIENCE );
-            container.insert( Spell::S_POWER_LIGHTNING );
-            container.insert( Spell::S_POWER_SPEED );
-            container.insert( Spell::S_POWER_PROTECT );
-            container.insert( Spell::S_POWER_CONCEAL );
-            container.insert( Spell::S_POWER_DISEASE );
-            container.insert( Spell::S_POWER_CHICKEN );
-            container.insert( Spell::S_POWER_DESTROY_WALLS );
-            container.insert( Spell::S_POWER_ARMAGEDDON );
         }
         return container;
     }

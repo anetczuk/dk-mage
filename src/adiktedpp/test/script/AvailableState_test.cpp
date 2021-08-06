@@ -25,17 +25,17 @@ using namespace script;
 TEST_CASE("RoomsAvailableState_enabled_disabled", "[classic]") {
     RoomsAvailableState commandState;
 
-    commandState.setStateMode( PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_ENABLED );
+    commandState.setStateMode( Player::P_P0, Room::R_GRAVEYARD, AvailableMode::AM_ENABLED );
     {
-        const AvailableState* state = commandState.getState( PlayerType::PT_0, Room::R_GRAVEYARD );
+        const AvailableState* state = commandState.getState( Player::P_P0, Room::R_GRAVEYARD );
         REQUIRE( state != nullptr );
         CHECK( state->accessible == 1 );
         CHECK( state->available  == 1 );
     }
 
-    commandState.setStateMode( PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
+    commandState.setStateMode( Player::P_P0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
     {
-        const AvailableState* state = commandState.getState( PlayerType::PT_0, Room::R_GRAVEYARD );
+        const AvailableState* state = commandState.getState( Player::P_P0, Room::R_GRAVEYARD );
         REQUIRE( state != nullptr );
         CHECK( state->accessible == 0 );
         CHECK( state->available  == 0 );
@@ -45,20 +45,20 @@ TEST_CASE("RoomsAvailableState_enabled_disabled", "[classic]") {
 TEST_CASE("RoomsAvailableState_notdefined", "[classic]") {
     RoomsAvailableState commandState;
 
-    commandState.setStateMode( PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_ENABLED );
+    commandState.setStateMode( Player::P_P0, Room::R_GRAVEYARD, AvailableMode::AM_ENABLED );
 
-    const AvailableState* state = commandState.getState( PlayerType::PT_0, Room::R_PRISON );
+    const AvailableState* state = commandState.getState( Player::P_P0, Room::R_PRISON );
     REQUIRE( state == nullptr );
 }
 
 TEST_CASE("RoomsAvailableState_allplayer_explode", "[classic]") {
     RoomsAvailableState commandState;
 
-    commandState.setStateMode( PlayerType::PT_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
-    commandState.setStateMode( PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
+    commandState.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
+    commandState.setStateMode( Player::P_P0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
     CHECK( commandState.size() == 5 );
 
-    const AvailableState* state = commandState.getState( PlayerType::PT_1, Room::R_GRAVEYARD );
+    const AvailableState* state = commandState.getState( Player::P_P1, Room::R_GRAVEYARD );
     REQUIRE( state != nullptr );
     CHECK( state->accessible == 1 );
     CHECK( state->available  == 0 );
@@ -67,13 +67,13 @@ TEST_CASE("RoomsAvailableState_allplayer_explode", "[classic]") {
 TEST_CASE("RoomsAvailableState_allplayer_erase", "[classic]") {
     RoomsAvailableState commandState;
 
-    commandState.setStateMode( PlayerType::PT_0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
+    commandState.setStateMode( Player::P_P0, Room::R_GRAVEYARD, AvailableMode::AM_DISABLED );
     CHECK( commandState.size() == 1 );
 
-    commandState.setStateMode( PlayerType::PT_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
+    commandState.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, AvailableMode::AM_POSSIBLE );
     CHECK( commandState.size() == 1 );
 
-    const AvailableState* state = commandState.getState( PlayerType::PT_ALL, Room::R_GRAVEYARD );
+    const AvailableState* state = commandState.getState( Player::P_ALL, Room::R_GRAVEYARD );
     REQUIRE( state != nullptr );
     CHECK( state->accessible == 1 );
     CHECK( state->available  == 0 );

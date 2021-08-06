@@ -8,7 +8,6 @@
 
 #include "adiktedpp/Type.h"
 #include "adiktedpp/script/AvailableMode.h"
-#include "adiktedpp/PlayerType.h"
 
 #include "utils/Log.h"
 
@@ -121,7 +120,7 @@ namespace adiktedpp {
         };
 
 
-        const std::set< adiktedpp::PlayerType >& Players();
+        const std::set< adiktedpp::Player >& Players();
 
 
         /**
@@ -131,11 +130,11 @@ namespace adiktedpp {
         template <typename TValue>
         class AvailableCommandStateMap {
 
-            using DataMap = Map2< adiktedpp::PlayerType, TValue, AvailableState >;
+            using DataMap = Map2< adiktedpp::Player, TValue, AvailableState >;
 
             DataMap data;
 
-            std::set< adiktedpp::PlayerType > availablePlayers;
+            std::set< adiktedpp::Player > availablePlayers;
 
 
         public:
@@ -143,8 +142,8 @@ namespace adiktedpp {
             AvailableCommandStateMap(): availablePlayers( Players() ) {
             }
 
-            AvailableCommandStateMap( const std::set< adiktedpp::PlayerType >& players ): availablePlayers( players ) {
-                availablePlayers.insert( adiktedpp::PlayerType::PT_ALL );
+            AvailableCommandStateMap( const std::set< adiktedpp::Player >& players ): availablePlayers( players ) {
+                availablePlayers.insert( adiktedpp::Player::P_ALL );
             }
 
             typename DataMap::const_iterator begin() const {
@@ -161,9 +160,9 @@ namespace adiktedpp {
 
             std::size_t countStates( const TValue item ) const {
                 std::size_t count = 0;
-                std::set< adiktedpp::PlayerType > currPlayers = availablePlayers;
-                currPlayers.erase( adiktedpp::PlayerType::PT_ALL );
-                for ( const adiktedpp::PlayerType player: currPlayers ) {
+                std::set< adiktedpp::Player > currPlayers = availablePlayers;
+                currPlayers.erase( adiktedpp::Player::P_ALL );
+                for ( const adiktedpp::Player player: currPlayers ) {
                     const AvailableState* state = getState( player, item );
                     if ( state != nullptr ) {
                         ++count;
@@ -172,11 +171,11 @@ namespace adiktedpp {
                 return count;
             }
 
-            const AvailableState* getState( const adiktedpp::PlayerType player, const TValue item ) const {
+            const AvailableState* getState( const adiktedpp::Player player, const TValue item ) const {
                 return data.getPtr( player, item );
             }
 
-            void setStateMode( const adiktedpp::PlayerType player, const TValue item, const AvailableMode mode ) {
+            void setStateMode( const adiktedpp::Player player, const TValue item, const AvailableMode mode ) {
                 switch( mode ) {
                 case AvailableMode::AM_DISABLED: {
                     setState( player, item, 0, 0 );
@@ -193,7 +192,7 @@ namespace adiktedpp {
                 }
             }
 
-            void setStateFlag( const adiktedpp::PlayerType player, const TValue item, const bool available ) {
+            void setStateFlag( const adiktedpp::Player player, const TValue item, const bool available ) {
                 if ( available ) {
                     setStateMode( player, item, AvailableMode::AM_ENABLED );
                 } else {
@@ -207,7 +206,7 @@ namespace adiktedpp {
              *      - zero     -- possible to workshop
              *      - positive -- number of available items
              */
-            void setStateAmount( const adiktedpp::PlayerType player, const TValue item, const int amount ) {
+            void setStateAmount( const adiktedpp::Player player, const TValue item, const int amount ) {
                 if ( amount < 0 )
                     setState( player, item, 0, 0 );
                 else if ( amount == 0 )
@@ -216,10 +215,10 @@ namespace adiktedpp {
                     setState( player, item, 0, amount );
             }
 
-            void setState( const adiktedpp::PlayerType player, const TValue item, const int accessible, const int available ) {
-                if ( player != adiktedpp::PlayerType::PT_ALL ) {
+            void setState( const adiktedpp::Player player, const TValue item, const int accessible, const int available ) {
+                if ( player != adiktedpp::Player::P_ALL ) {
                     /// check "all players" entry
-                    const AvailableState* allState = getState( adiktedpp::PlayerType::PT_ALL, item );
+                    const AvailableState* allState = getState( adiktedpp::Player::P_ALL, item );
                     if ( allState != nullptr ) {
                         /// all players state exists -- explode
                         explodeAllPlayers( item, allState->accessible, allState->available );
@@ -237,10 +236,10 @@ namespace adiktedpp {
 
         private:
 
-            void setStateRaw( const adiktedpp::PlayerType player, const TValue item, const int accessible, const int available ) {
+            void setStateRaw( const adiktedpp::Player player, const TValue item, const int accessible, const int available ) {
                 if ( availablePlayers.count(player) < 1 ) {
                     std::stringstream stream;
-                    stream << FILE_NAME << "invalid argument -- unavailable player: " << player;
+                    stream << FILE_NAME << "invalid argument -- unavailable player: " << (int)player;
                     throw std::invalid_argument( stream.str() );
                 }
 
@@ -249,17 +248,17 @@ namespace adiktedpp {
             }
 
             void explodeAllPlayers( const TValue item, const int accessible, const int available ) {
-                data.erase( adiktedpp::PlayerType::PT_ALL, item );
+                data.erase( adiktedpp::Player::P_ALL, item );
 
-                std::set< adiktedpp::PlayerType > currPlayers = availablePlayers;
-                currPlayers.erase( adiktedpp::PlayerType::PT_ALL );
-                for ( const adiktedpp::PlayerType player: currPlayers ) {
+                std::set< adiktedpp::Player > currPlayers = availablePlayers;
+                currPlayers.erase( adiktedpp::Player::P_ALL );
+                for ( const adiktedpp::Player player: currPlayers ) {
                     setStateRaw( player, item, accessible, available );
                 }
             }
 
             void erasePlayers( const TValue item ) {
-                for ( const adiktedpp::PlayerType player: availablePlayers ) {
+                for ( const adiktedpp::Player player: availablePlayers ) {
                     data.erase( player, item );
                 }
             }
@@ -279,10 +278,10 @@ namespace adiktedpp {
             RoomsAvailableState(): AvailableCommandStateMap< Room >() {
             }
 
-            RoomsAvailableState( const std::set< adiktedpp::PlayerType >& players ): AvailableCommandStateMap< Room >( players ) {
+            RoomsAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Room >( players ) {
             }
 
-            void setAllAvailable( const PlayerType player, const AvailableMode mode );
+            void setAllAvailable( const Player player, const AvailableMode mode );
 
             void setStandard();
 
@@ -294,12 +293,12 @@ namespace adiktedpp {
             CreatureAvailableState(): AvailableCommandStateMap< Creature >() {
             }
 
-            CreatureAvailableState( const std::set< adiktedpp::PlayerType >& players ): AvailableCommandStateMap< Creature >( players ) {
+            CreatureAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Creature >( players ) {
             }
 
-            void setEvilAvailable( const PlayerType player, const bool available = true );
+            void setEvilAvailable( const Player player, const bool available = true );
 
-            void setHeroAvailable( const PlayerType player, const bool available = true );
+            void setHeroAvailable( const Player player, const bool available = true );
 
         };
 
@@ -309,10 +308,10 @@ namespace adiktedpp {
             DoorAvailableState(): AvailableCommandStateMap< Door >() {
             }
 
-            DoorAvailableState( const std::set< adiktedpp::PlayerType >& players ): AvailableCommandStateMap< Door >( players ) {
+            DoorAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Door >( players ) {
             }
 
-            void setAllAvailable( const PlayerType player, const int amount );
+            void setAllAvailable( const Player player, const int amount );
 
         };
 
@@ -323,12 +322,12 @@ namespace adiktedpp {
             TrapAvailableState(): AvailableCommandStateMap< Trap >() {
             }
 
-            TrapAvailableState( const std::set< adiktedpp::PlayerType >& players ): AvailableCommandStateMap< Trap >( players ) {
+            TrapAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Trap >( players ) {
             }
 
-            void setAllAvailable( const PlayerType player, const bool available );
+            void setAllAvailable( const Player player, const bool available );
 
-            void setAllAvailable( const PlayerType player, const int amount );
+            void setAllAvailable( const Player player, const int amount );
 
         };
 
@@ -339,12 +338,12 @@ namespace adiktedpp {
             MagicAvailableState(): AvailableCommandStateMap< Spell >() {
             }
 
-            MagicAvailableState( const std::set< adiktedpp::PlayerType >& players ): AvailableCommandStateMap< Spell >( players ) {
+            MagicAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Spell >( players ) {
             }
 
-            void setAllAvailable( const PlayerType player, const AvailableMode mode );
+            void setAllAvailable( const Player player, const AvailableMode mode );
 
-            void setStandard( const PlayerType player );
+            void setStandard( const Player player );
 
         };
 

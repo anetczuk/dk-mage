@@ -18,7 +18,7 @@ using namespace adiktedpp;
 namespace dkmage {
 
     void drawDungeon( Level& level, const spatial::Dungeon& dungeon ) {
-        const PlayerType owner = dungeon.owner();
+        const Player owner = dungeon.owner();
         const bool fortify = dungeon.fortify();
         std::vector< const spatial::DungeonRoom* > roomsList = dungeon.rooms();
         for ( const spatial::DungeonRoom* item: roomsList ) {
@@ -125,7 +125,7 @@ namespace dkmage {
 
     void drawGoldChests( Level& level, const Rect& treasureRect ) {
         /// prevents picking up gold from unclaimed path
-        level.setClaimed( treasureRect, PlayerType::PT_GOOD );
+        level.setClaimed( treasureRect, Player::P_GOOD );
         level.setItem( treasureRect, 4, Item::I_GOLDCHEST );
     }
 
@@ -202,8 +202,8 @@ namespace dkmage {
         const std::size_t index2 = rand() % list.size();
         const Creature creature2 = getSetItem( list, index2 );
 
-        level.setCreature( point, 3, creature1, 3, cLevel - 1, PlayerType::PT_GOOD );
-        level.setCreature( point, 5, creature2, 2, cLevel, PlayerType::PT_GOOD );
+        level.setCreature( point, 3, creature1, 3, cLevel - 1, Player::P_GOOD );
+        level.setCreature( point, 5, creature2, 2, cLevel, Player::P_GOOD );
     }
 
 } /* namespace dkmage */

@@ -20,15 +20,15 @@ extern "C" {
 namespace adiktedpp {
     namespace script {
 
-        std::string scriptName( const PlayerType item ) {
+        std::string scriptName( const Player item ) {
             switch( item ) {
-            case PlayerType::PT_0:      return "PLAYER0";
-            case PlayerType::PT_1:      return "PLAYER1";
-            case PlayerType::PT_2:      return "PLAYER2";
-            case PlayerType::PT_3:      return "PLAYER3";
-            case PlayerType::PT_GOOD:   return "PLAYER_GOOD";
-            case PlayerType::PT_UNSET:  return "PLAYER_UNSET";          /// unavailable in script
-            case PlayerType::PT_ALL:    return "ALL_PLAYERS";
+            case Player::P_P0:      return "PLAYER0";
+            case Player::P_P1:      return "PLAYER1";
+            case Player::P_P2:      return "PLAYER2";
+            case Player::P_P3:      return "PLAYER3";
+            case Player::P_GOOD:    return "PLAYER_GOOD";
+            case Player::P_UNSET:   return "PLAYER_UNSET";          /// unavailable in script
+            case Player::P_ALL:     return "ALL_PLAYERS";
             }
             return "UNKNOWN_PLAYER";
         }
@@ -235,35 +235,35 @@ namespace adiktedpp {
             return valid;
         }
 
-        bool Script::addAvailable( const PlayerType player, const Room item, const int accessible, const int available ) {
+        bool Script::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const PlayerType player, const Creature item, const int accessible, const int available ) {
+        bool Script::addAvailable( const Player player, const Creature item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const PlayerType player, const Door item, const int accessible, const int available ) {
+        bool Script::addAvailable( const Player player, const Door item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const PlayerType player, const Trap item, const int accessible, const int available ) {
+        bool Script::addAvailable( const Player player, const Trap item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             return addLine( line );
         }
 
-        bool Script::addAvailable( const PlayerType player, const Spell item, const int accessible, const int available ) {
+        bool Script::addAvailable( const Player player, const Spell item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
@@ -313,25 +313,25 @@ namespace adiktedpp {
             addLine( line );
         }
 
-        void Script::setEvilCreaturesAvailable( const PlayerType player, const bool available ) {
+        void Script::setEvilCreaturesAvailable( const Player player, const bool available ) {
             CreatureAvailableState availableState;
             availableState.setEvilAvailable( player, available );
             set( availableState );
         }
 
-        void Script::setHeroCreaturesAvailable( const PlayerType player, const bool available ) {
+        void Script::setHeroCreaturesAvailable( const Player player, const bool available ) {
             CreatureAvailableState availableState;
             availableState.setHeroAvailable( player, available );
             set( availableState );
         }
 
-        void Script::setRoomsAvailable( const PlayerType player, const AvailableMode mode ) {
+        void Script::setRoomsAvailable( const Player player, const AvailableMode mode ) {
             RoomsAvailableState availableState;
             availableState.setAllAvailable( player, mode );
             set( availableState );
         }
 
-        void Script::setRoomAvailable( const PlayerType player, const Room room, const AvailableMode mode ) {
+        void Script::setRoomAvailable( const Player player, const Room room, const AvailableMode mode ) {
             RoomsAvailableState availableState;
             availableState.setStateMode( player, room, mode );
             set( availableState );
@@ -343,31 +343,31 @@ namespace adiktedpp {
             set( availableState );
         }
 
-        void Script::setDoorsAvailable( const PlayerType player, const int available ) {
+        void Script::setDoorsAvailable( const Player player, const int available ) {
             DoorAvailableState availableState;
             availableState.setAllAvailable( player, available );
             set( availableState );
         }
 
-        void Script::setTrapsAvailable( const PlayerType player, const int available ) {
+        void Script::setTrapsAvailable( const Player player, const int available ) {
             TrapAvailableState availableState;
             availableState.setAllAvailable( player, available );
             set( availableState );
         }
 
-        void Script::setMagicAvailable( const PlayerType player, const AvailableMode mode ) {
+        void Script::setMagicAvailable( const Player player, const AvailableMode mode ) {
             MagicAvailableState availableState;
             availableState.setAllAvailable( player, mode );
             set( availableState );
         }
 
-        void Script::setMagicStandard( const PlayerType player ) {
+        void Script::setMagicStandard( const Player player ) {
             MagicAvailableState availableState;
             availableState.setStandard( player );
             set( availableState );
         }
 
-        void Script::setWinConditionStandard( const PlayerType player ) {
+        void Script::setWinConditionStandard( const Player player ) {
             std::stringstream stream;
             addLine( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
             addLine( std::string() + "    WIN_GAME" );

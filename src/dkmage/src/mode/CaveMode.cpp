@@ -46,25 +46,25 @@ namespace dkmage {
             script.setEvilCreaturesPool( 30 );
 
             script.addLine( "" );
-            script.setEvilCreaturesAvailable( PlayerType::PT_ALL );
+            script.setEvilCreaturesAvailable( Player::P_ALL );
 
             script.addLine( "" );
             script.setRoomsStandard();
 
             script.addLine( "" );
-            script.setDoorsAvailable( PlayerType::PT_ALL, 0 );
+            script.setDoorsAvailable( Player::P_ALL, 0 );
 
             script.addLine( "" );
-            script.setTrapsAvailable( PlayerType::PT_ALL, 0 );
+            script.setTrapsAvailable( Player::P_ALL, 0 );
 
             script.addLine( "" );
-            script.setMagicStandard( PlayerType::PT_ALL );
+            script.setMagicStandard( Player::P_ALL );
 
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
-            script.setWinConditionStandard( PlayerType::PT_0 );
+            script.setWinConditionStandard( Player::P_P0 );
 
             script.rebuild();
 
@@ -119,7 +119,7 @@ namespace dkmage {
         }
 
         void CaveMode::preparePlayerDungeon() {
-            spatial::Dungeon dungeon( PlayerType::PT_0 );
+            spatial::Dungeon dungeon( Player::P_P0 );
             dungeon.limitNorth = 1;
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
@@ -154,7 +154,7 @@ namespace dkmage {
 
             /// add other
             Point pos = firstCenter + Point(0, 2);
-            level.setClaimed( pos, PlayerType::PT_0 );
+            level.setClaimed( pos, Player::P_P0 );
 //                level.setItem( pos, 4, SubTypeItem::STI_SPREVMAP );
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 //                   level.setCreature( firstCenter.x, firstCenter.y+2, 4, SubTypeCreature::STC_SKELETON, 4 );
@@ -169,8 +169,8 @@ namespace dkmage {
         }
 
         void CaveMode::prepareEnemyDungeon() {
-        //    spatial::Dungeon enemyDungeon( PlayerType::PT_GOOD );
-            spatial::Dungeon enemyDungeon( PlayerType::PT_1 );
+        //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
+            spatial::Dungeon enemyDungeon( Player::P_P1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
@@ -187,7 +187,7 @@ namespace dkmage {
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
             const Rect bbox = enemyDungeon.boundingBox();
-            const PlayerType owner = enemyDungeon.owner();
+            const Player owner = enemyDungeon.owner();
 
             /// add portal
             const Point portalCenter( bbox.min.x - 8, firstCenter.y );
