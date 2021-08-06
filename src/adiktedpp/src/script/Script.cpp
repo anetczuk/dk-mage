@@ -39,20 +39,21 @@ namespace adiktedpp {
             case Room::R_CLAIMED:        { return "UNSUPPORTED_CLAIMED"; }
             case Room::R_DUNGEON_HEART:  { return "DUNGEON_HEART"; }
             case Room::R_PORTAL:         { return "UNSUPPORTED_PORTAL"; }
+
             case Room::R_TREASURE:       { return "TREASURE"; }
             case Room::R_LIBRARY:        { return "RESEARCH"; }
-            case Room::R_PRISON:         { return "PRISON"; }
-            case Room::R_TORTURE:        { return "TORTURE"; }
             case Room::R_TRAINING:       { return "TRAINING"; }
-            case Room::R_WORKSHOP:       { return "WORKSHOP"; }
-            case Room::R_SCAVENGER:      { return "SCAVENGER"; }
-            case Room::R_TEMPLE:         { return "TEMPLE"; }
-            case Room::R_GRAVEYARD:      { return "GRAVEYARD"; }
             case Room::R_HATCHERY:       { return "GARDEN"; }
             case Room::R_LAIR:           { return "LAIR"; }
-            case Room::R_BARRACKS:       { return "BARRACKS"; }
             case Room::R_BRIDGE:         { return "BRIDGE"; }
+            case Room::R_WORKSHOP:       { return "WORKSHOP"; }
             case Room::R_GUARD_POST:     { return "GUARD_POST"; }
+            case Room::R_PRISON:         { return "PRISON"; }
+            case Room::R_TORTURE:        { return "TORTURE"; }
+            case Room::R_BARRACKS:       { return "BARRACKS"; }
+            case Room::R_TEMPLE:         { return "TEMPLE"; }
+            case Room::R_GRAVEYARD:      { return "GRAVEYARD"; }
+            case Room::R_SCAVENGER:      { return "SCAVENGER"; }
             }
 
             LOG() << "invalid argument: " << (int)data;
@@ -79,7 +80,6 @@ namespace adiktedpp {
             case Creature::C_SAMURAI:     { return "SAMURAI"; }
 
             case Creature::C_IMP:           { return "IMP"; }
-            case Creature::C_HORNY:         { return "HORNY"; }
             case Creature::C_SKELETON:      { return "SKELETON"; }
             case Creature::C_TROLL:         { return "TROLL"; }
             case Creature::C_DRAGON:        { return "DRAGON"; }
@@ -95,6 +95,7 @@ namespace adiktedpp {
             case Creature::C_GHOST:         { return "GHOST"; }
             case Creature::C_TENTACLE:      { return "TENTACLE"; }
             case Creature::C_ORC:           { return "ORC"; }
+            case Creature::C_HORNY:         { return "HORNY"; }
             }
 
             LOG() << "invalid argument: " << (int)data;
@@ -288,11 +289,11 @@ namespace adiktedpp {
 
         void Script::setEvilCreaturesPool( const std::size_t number ) {
             std::set< Creature > list = EvilCreatures();
-            list.erase( Creature::C_HORNY );
             list.erase( Creature::C_IMP );
             list.erase( Creature::C_TENTACLE );
             list.erase( Creature::C_VAMPIRE );
             list.erase( Creature::C_SKELETON );
+            list.erase( Creature::C_HORNY );
             for ( const Creature item: list ) {
                 setCreaturePool( item, number );
             }

@@ -99,19 +99,19 @@ namespace adiktedpp {
         case Room::R_DUNGEON_HEART: return raw::SlabType::ST_DUNGHEART;
         case Room::R_PORTAL:        return raw::SlabType::ST_PORTAL;
         case Room::R_TREASURE:      return raw::SlabType::ST_TREASURE;
+        case Room::R_LAIR:          return raw::SlabType::ST_LAIR;
+        case Room::R_HATCHERY:      return raw::SlabType::ST_HATCHERY;
+        case Room::R_TRAINING:      return raw::SlabType::ST_TRAINING;
         case Room::R_LIBRARY:       return raw::SlabType::ST_LIBRARY;
+        case Room::R_BRIDGE:        return raw::SlabType::ST_BRIDGE;
+        case Room::R_WORKSHOP:      return raw::SlabType::ST_WORKSHOP;
+        case Room::R_GUARD_POST:    return raw::SlabType::ST_GUARDPOST;
         case Room::R_PRISON:        return raw::SlabType::ST_PRISONCASE;
         case Room::R_TORTURE:       return raw::SlabType::ST_TORTURE;
-        case Room::R_TRAINING:      return raw::SlabType::ST_TRAINING;
-        case Room::R_WORKSHOP:      return raw::SlabType::ST_WORKSHOP;
-        case Room::R_SCAVENGER:     return raw::SlabType::ST_SCAVENGER;
+        case Room::R_BARRACKS:      return raw::SlabType::ST_BARRACKS;
         case Room::R_TEMPLE:        return raw::SlabType::ST_TEMPLE;
         case Room::R_GRAVEYARD:     return raw::SlabType::ST_GRAVEYARD;
-        case Room::R_HATCHERY:      return raw::SlabType::ST_HATCHERY;
-        case Room::R_LAIR:          return raw::SlabType::ST_LAIR;
-        case Room::R_BARRACKS:      return raw::SlabType::ST_BARRACKS;
-        case Room::R_BRIDGE:        return raw::SlabType::ST_BRIDGE;
-        case Room::R_GUARD_POST:    return raw::SlabType::ST_GUARDPOST;
+        case Room::R_SCAVENGER:     return raw::SlabType::ST_SCAVENGER;
         }
         LOG() << "invalid argument: " << room;
         std::stringstream stream;
@@ -164,7 +164,6 @@ namespace adiktedpp {
         case Creature::C_SAMURAI:     return raw::SubTypeCreature::STC_SMURI;
 
         case Creature::C_IMP:            return raw::SubTypeCreature::STC_IMP;
-        case Creature::C_HORNY:          return raw::SubTypeCreature::STC_HORNY;
         case Creature::C_SKELETON:       return raw::SubTypeCreature::STC_SKELETON;
         case Creature::C_TROLL:          return raw::SubTypeCreature::STC_TROLL;
         case Creature::C_DRAGON:         return raw::SubTypeCreature::STC_DRAGON;
@@ -180,6 +179,7 @@ namespace adiktedpp {
         case Creature::C_GHOST:          return raw::SubTypeCreature::STC_GHOST;
         case Creature::C_TENTACLE:       return raw::SubTypeCreature::STC_TENTCL;
         case Creature::C_ORC:            return raw::SubTypeCreature::STC_ORC;
+        case Creature::C_HORNY:          return raw::SubTypeCreature::STC_HORNY;
         }
 
         LOG() << "invalid argument: " << (int)creature;

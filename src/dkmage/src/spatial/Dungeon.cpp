@@ -279,11 +279,13 @@ namespace dkmage {
                 roomsType.push_back( Room::R_HATCHERY );
                 roomsType.push_back( Room::R_TRAINING );
                 roomsType.push_back( Room::R_LIBRARY );
+                /// bridge
                 roomsType.push_back( Room::R_WORKSHOP );
+                /// guard post
                 roomsType.push_back( Room::R_PRISON );
                 roomsType.push_back( Room::R_TORTURE );
-                roomsType.push_back( Room::R_GRAVEYARD );
                 roomsType.push_back( Room::R_TEMPLE );
+                roomsType.push_back( Room::R_GRAVEYARD );
                 roomsType.push_back( Room::R_SCAVENGER );
             }
             if ( graph.size() < 1 ) {

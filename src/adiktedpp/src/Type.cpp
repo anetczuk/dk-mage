@@ -14,20 +14,21 @@ namespace adiktedpp {
             container.insert( Room::R_CLAIMED );
             container.insert( Room::R_DUNGEON_HEART );
             container.insert( Room::R_PORTAL );
+
             container.insert( Room::R_TREASURE );
+            container.insert( Room::R_LAIR );
+            container.insert( Room::R_HATCHERY );
+            container.insert( Room::R_TRAINING );
             container.insert( Room::R_LIBRARY );
+            container.insert( Room::R_BRIDGE );
+            container.insert( Room::R_WORKSHOP );
+            container.insert( Room::R_GUARD_POST );
             container.insert( Room::R_PRISON );
             container.insert( Room::R_TORTURE );
-            container.insert( Room::R_TRAINING );
-            container.insert( Room::R_WORKSHOP );
-            container.insert( Room::R_SCAVENGER );
+            container.insert( Room::R_BARRACKS );
             container.insert( Room::R_TEMPLE );
             container.insert( Room::R_GRAVEYARD );
-            container.insert( Room::R_HATCHERY );
-            container.insert( Room::R_LAIR );
-            container.insert( Room::R_BARRACKS );
-            container.insert( Room::R_BRIDGE );
-            container.insert( Room::R_GUARD_POST );
+            container.insert( Room::R_SCAVENGER );
         }
         return container;
     }
@@ -36,19 +37,19 @@ namespace adiktedpp {
         static std::set< Room > container;
         if ( container.empty() ) {
             container.insert( Room::R_TREASURE );
+            container.insert( Room::R_LAIR );
+            container.insert( Room::R_HATCHERY );
+            container.insert( Room::R_TRAINING );
             container.insert( Room::R_LIBRARY );
+            container.insert( Room::R_BRIDGE );
+            container.insert( Room::R_WORKSHOP );
+            container.insert( Room::R_GUARD_POST );
             container.insert( Room::R_PRISON );
             container.insert( Room::R_TORTURE );
-            container.insert( Room::R_TRAINING );
-            container.insert( Room::R_WORKSHOP );
-            container.insert( Room::R_SCAVENGER );
+            container.insert( Room::R_BARRACKS );
             container.insert( Room::R_TEMPLE );
             container.insert( Room::R_GRAVEYARD );
-            container.insert( Room::R_HATCHERY );
-            container.insert( Room::R_LAIR );
-            container.insert( Room::R_BARRACKS );
-            container.insert( Room::R_BRIDGE );
-            container.insert( Room::R_GUARD_POST );
+            container.insert( Room::R_SCAVENGER );
         }
         return container;
     }
@@ -122,7 +123,6 @@ namespace adiktedpp {
         static std::set< Creature > container;
         if ( container.empty() ) {
             container.insert( Creature::C_IMP );
-            container.insert( Creature::C_HORNY );
             container.insert( Creature::C_SKELETON );
             container.insert( Creature::C_TROLL );
             container.insert( Creature::C_DRAGON );
@@ -138,6 +138,7 @@ namespace adiktedpp {
             container.insert( Creature::C_GHOST );
             container.insert( Creature::C_TENTACLE );
             container.insert( Creature::C_ORC );
+            container.insert( Creature::C_HORNY );
         }
         return container;
     }

@@ -75,20 +75,21 @@ namespace adiktedpp {
         R_CLAIMED,              /// empty
         R_DUNGEON_HEART,
         R_PORTAL,
+
         R_TREASURE,
+        R_LAIR,
+        R_HATCHERY,
+        R_TRAINING,
         R_LIBRARY,
+        R_BRIDGE,
+        R_WORKSHOP,
+        R_GUARD_POST,
         R_PRISON,
         R_TORTURE,
-        R_TRAINING,
-        R_WORKSHOP,
-        R_SCAVENGER,
+        R_BARRACKS,
         R_TEMPLE,
         R_GRAVEYARD,
-        R_HATCHERY,
-        R_LAIR,
-        R_BARRACKS,
-        R_BRIDGE,
-        R_GUARD_POST
+        R_SCAVENGER
     };
 
     inline std::ostream& operator<<( std::ostream& os, const Room data ) {
@@ -96,20 +97,21 @@ namespace adiktedpp {
         case Room::R_CLAIMED:           { os << "R_CLAIMED"; return os; }
         case Room::R_DUNGEON_HEART:     { os << "R_DUNGEON_HEART"; return os; }
         case Room::R_PORTAL:            { os << "R_PORTAL"; return os; }
+
         case Room::R_TREASURE:          { os << "R_TREASURE"; return os; }
+        case Room::R_LAIR:              { os << "R_LAIR"; return os; }
+        case Room::R_HATCHERY:          { os << "R_HATCHERY"; return os; }
+        case Room::R_TRAINING:          { os << "R_TRAINING"; return os; }
         case Room::R_LIBRARY:           { os << "R_LIBRARY"; return os; }
+        case Room::R_BRIDGE:            { os << "R_BRIDGE"; return os; }
+        case Room::R_WORKSHOP:          { os << "R_WORKSHOP"; return os; }
+        case Room::R_GUARD_POST:        { os << "R_GUARD_POST"; return os; }
         case Room::R_PRISON:            { os << "R_PRISON"; return os; }
         case Room::R_TORTURE:           { os << "R_TORTURE"; return os; }
-        case Room::R_TRAINING:          { os << "R_TRAINING"; return os; }
-        case Room::R_WORKSHOP:          { os << "R_WORKSHOP"; return os; }
-        case Room::R_SCAVENGER:         { os << "R_SCAVENGER"; return os; }
+        case Room::R_BARRACKS:          { os << "R_BARRACKS"; return os; }
         case Room::R_TEMPLE:            { os << "R_TEMPLE"; return os; }
         case Room::R_GRAVEYARD:         { os << "R_GRAVEYARD"; return os; }
-        case Room::R_HATCHERY:          { os << "R_HATCHERY"; return os; }
-        case Room::R_LAIR:              { os << "R_LAIR"; return os; }
-        case Room::R_BARRACKS:          { os << "R_BARRACKS"; return os; }
-        case Room::R_BRIDGE:            { os << "R_BRIDGE"; return os; }
-        case Room::R_GUARD_POST:        { os << "R_GUARD_POST"; return os; }
+        case Room::R_SCAVENGER:         { os << "R_SCAVENGER"; return os; }
         }
         os << "UNKNOWN_ROOM[" << (int) data << "]";
         return os;
@@ -206,7 +208,6 @@ namespace adiktedpp {
         C_SAMURAI,
 
         C_IMP,
-        C_HORNY,
         C_SKELETON,
         C_TROLL,
         C_DRAGON,
@@ -221,7 +222,8 @@ namespace adiktedpp {
         C_HELL_HOUND,
         C_GHOST,
         C_TENTACLE,
-        C_ORC
+        C_ORC,
+        C_HORNY
     };
 
     const std::set< Creature >& EvilCreatures();
