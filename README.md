@@ -22,6 +22,25 @@ Before first run edit `config.ini` placed along main executable. Inside the file
 
 For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in `level_path` defined in config. If the path is game's directory then map will be ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help` or open [dkmagecli help](doc/dkmagecli-help.md)
 
+## Processing generator parameters
+
+Generator parameters can be passed by command line argument or by configuration file. Processing sequence of parameters:
+1. load `config.ini` from file passed by command line argument `--config`, if no cmd argument given then use default location
+2. load all parameters from `general` section of configuration file
+3. load all parameters from type section pointed by `--type` command line argument or `type` from `general` section
+4. overwrite loaded parameters by arguments passed through command line (if any)
+
+Processing sequence defines following priority of parameters (from most to least):
+1. command line parameters
+2. type section from configuration file
+3. `general` section from configuration file
+4. default values if not set
+
+There are few exceptions from priority rule described above:
+- `config` parameter is only read from command line
+- `seed` parameter is only read from command line or `general` section from configuration file
+- `type` parameter is only read from command line or `general` section from configuration file
+
 
 ## Building under Linux (including WLS)
 

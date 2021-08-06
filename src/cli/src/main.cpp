@@ -148,8 +148,8 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     retParameters.appendData( generalData );
 
     /// handle seed
-    const Optional< std::string > mapSeedParam = retParameters.getString( "seed", "" );
-    std::string mapSeed = mapSeedParam.getValue( "" );
+    const Optional< std::string > seedParam = retParameters.getString( "seed", "" );
+    std::string mapSeed = seedParam.getValue( "" );
     if ( seedArg.isSet() ) {
         mapSeed = seedArg.getValue();                                   /// yes, copy
     }
