@@ -11,3 +11,15 @@ data_path=
 ## The behaviour can be overriden by "--output_path" cmd parameter.
 levels_path=
 
+
+## additional, specific or overwritten paramters for 'cave' type
+[cave]
+
+
+## additional, specific or overwritten paramters for 'maze' type
+[maze]
+
+
+## additional, specific or overwritten paramters for 'herofortress' type
+[herofortress]
+
