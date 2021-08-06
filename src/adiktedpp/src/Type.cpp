@@ -123,21 +123,21 @@ namespace adiktedpp {
         static std::set< Creature > container;
         if ( container.empty() ) {
             container.insert( Creature::C_IMP );
-            container.insert( Creature::C_SKELETON );
-            container.insert( Creature::C_TROLL );
-            container.insert( Creature::C_DRAGON );
-            container.insert( Creature::C_DEMONSPAWN );
             container.insert( Creature::C_FLY );
-            container.insert( Creature::C_DARK_MISTRESS );
-            container.insert( Creature::C_WARLOCK );
-            container.insert( Creature::C_BILE_DEMON );
-            container.insert( Creature::C_BUG );
-            container.insert( Creature::C_VAMPIRE );
-            container.insert( Creature::C_SPIDER );
-            container.insert( Creature::C_HELL_HOUND );
             container.insert( Creature::C_GHOST );
+            container.insert( Creature::C_WARLOCK );
+            container.insert( Creature::C_BEETLE );
+            container.insert( Creature::C_SPIDER );
+            container.insert( Creature::C_TROLL );
+            container.insert( Creature::C_DEMONSPAWN );
             container.insert( Creature::C_TENTACLE );
+            container.insert( Creature::C_SKELETON );
+            container.insert( Creature::C_HELL_HOUND );
+            container.insert( Creature::C_MISTRESS );
             container.insert( Creature::C_ORC );
+            container.insert( Creature::C_BILE_DEMON );
+            container.insert( Creature::C_DRAGON );
+            container.insert( Creature::C_VAMPIRE );
             container.insert( Creature::C_HORNY );
         }
         return container;
@@ -146,19 +146,19 @@ namespace adiktedpp {
     const std::set< Creature >& HeroCreatures() {
         static std::set< Creature > container;
         if ( container.empty() ) {
-            container.insert( Creature::C_WIZARD );
-            container.insert( Creature::C_BARBARIAN );
+            container.insert( Creature::C_TUNNELLER );
+            container.insert( Creature::C_FAIRY );
             container.insert( Creature::C_ARCHER );
+            container.insert( Creature::C_PRIESTESS );
+            container.insert( Creature::C_WIZARD );
+            container.insert( Creature::C_THIEF );
             container.insert( Creature::C_MONK );
-            container.insert( Creature::C_DWARFA );
+            container.insert( Creature::C_DWARF );
+            container.insert( Creature::C_BARBARIAN );
+            container.insert( Creature::C_SAMURAI );
+            container.insert( Creature::C_GIANT );
             container.insert( Creature::C_KNIGHT );
             container.insert( Creature::C_AVATAR );
-            container.insert( Creature::C_TUNNELLER );
-            container.insert( Creature::C_WITCH );
-            container.insert( Creature::C_GIANT );
-            container.insert( Creature::C_FAIRY );
-            container.insert( Creature::C_THIEF );
-            container.insert( Creature::C_SAMURAI );
         }
         return container;
     }

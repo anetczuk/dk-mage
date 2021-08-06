@@ -65,36 +65,36 @@ namespace adiktedpp {
 
         std::string scriptName( const Creature data ) {
             switch( data ) {
-            case Creature::C_WIZARD:      { return "WIZARD"; }
-            case Creature::C_BARBARIAN:   { return "BARBARIAN"; }
+            case Creature::C_TUNNELLER:   { return "TUNNELLER"; }
+            case Creature::C_FAIRY:       { return "FAIRY"; }
             case Creature::C_ARCHER:      { return "ARCHER"; }
+            case Creature::C_PRIESTESS:   { return "WITCH"; }
+            case Creature::C_WIZARD:      { return "WIZARD"; }
+            case Creature::C_THIEF:       { return "THIEF"; }
             case Creature::C_MONK:        { return "MONK"; }
-            case Creature::C_DWARFA:      { return "DWARFA"; }
+            case Creature::C_DWARF:       { return "DWARFA"; }
+            case Creature::C_BARBARIAN:   { return "BARBARIAN"; }
+            case Creature::C_SAMURAI:     { return "SAMURAI"; }
+            case Creature::C_GIANT:       { return "GIANT"; }
             case Creature::C_KNIGHT:      { return "KNIGHT"; }
             case Creature::C_AVATAR:      { return "AVATAR"; }
-            case Creature::C_TUNNELLER:   { return "TUNNELLER"; }
-            case Creature::C_WITCH:       { return "WITCH"; }
-            case Creature::C_GIANT:       { return "GIANT"; }
-            case Creature::C_FAIRY:       { return "FAIRY"; }
-            case Creature::C_THIEF:       { return "THIEF"; }
-            case Creature::C_SAMURAI:     { return "SAMURAI"; }
 
             case Creature::C_IMP:           { return "IMP"; }
-            case Creature::C_SKELETON:      { return "SKELETON"; }
-            case Creature::C_TROLL:         { return "TROLL"; }
-            case Creature::C_DRAGON:        { return "DRAGON"; }
-            case Creature::C_DEMONSPAWN:    { return "DEMONSPAWN"; }
             case Creature::C_FLY:           { return "FLY"; }
-            case Creature::C_DARK_MISTRESS: { return "DARK_MISTRESS"; }
-            case Creature::C_WARLOCK:       { return "SORCEROR"; }
-            case Creature::C_BILE_DEMON:    { return "BILE_DEMON"; }
-            case Creature::C_BUG:           { return "BUG"; }
-            case Creature::C_VAMPIRE:       { return "VAMPIRE"; }
-            case Creature::C_SPIDER:        { return "SPIDER"; }
-            case Creature::C_HELL_HOUND:    { return "HELL_HOUND"; }
             case Creature::C_GHOST:         { return "GHOST"; }
+            case Creature::C_WARLOCK:       { return "SORCEROR"; }
+            case Creature::C_BEETLE:        { return "C_BEETLE"; }
+            case Creature::C_SPIDER:        { return "SPIDER"; }
+            case Creature::C_TROLL:         { return "TROLL"; }
+            case Creature::C_DEMONSPAWN:    { return "DEMONSPAWN"; }
             case Creature::C_TENTACLE:      { return "TENTACLE"; }
+            case Creature::C_SKELETON:      { return "SKELETON"; }
+            case Creature::C_HELL_HOUND:    { return "HELL_HOUND"; }
+            case Creature::C_MISTRESS:      { return "DARK_MISTRESS"; }
             case Creature::C_ORC:           { return "ORC"; }
+            case Creature::C_BILE_DEMON:    { return "BILE_DEMON"; }
+            case Creature::C_DRAGON:        { return "DRAGON"; }
+            case Creature::C_VAMPIRE:       { return "VAMPIRE"; }
             case Creature::C_HORNY:         { return "HORNY"; }
             }
 
@@ -291,8 +291,8 @@ namespace adiktedpp {
             std::set< Creature > list = EvilCreatures();
             list.erase( Creature::C_IMP );
             list.erase( Creature::C_TENTACLE );
-            list.erase( Creature::C_VAMPIRE );
             list.erase( Creature::C_SKELETON );
+            list.erase( Creature::C_VAMPIRE );
             list.erase( Creature::C_HORNY );
             for ( const Creature item: list ) {
                 setCreaturePool( item, number );

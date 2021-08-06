@@ -43,8 +43,8 @@ namespace adiktedpp {
             std::set< Creature > list = EvilCreatures();
             list.erase( Creature::C_IMP );
             list.erase( Creature::C_TENTACLE );
-            list.erase( Creature::C_VAMPIRE );
             list.erase( Creature::C_SKELETON );
+            list.erase( Creature::C_VAMPIRE );
             list.erase( Creature::C_HORNY );
             for ( const Creature item: list ) {
                 setStateFlag( player, item, available );

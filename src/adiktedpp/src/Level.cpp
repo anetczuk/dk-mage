@@ -149,36 +149,36 @@ namespace adiktedpp {
 
     static raw::SubTypeCreature convertToRaw( const Creature creature ) {
         switch( creature ) {
-        case Creature::C_WIZARD:      return raw::SubTypeCreature::STC_WIZRD;
-        case Creature::C_BARBARIAN:   return raw::SubTypeCreature::STC_BARBARIN;
+        case Creature::C_TUNNELLER:   return raw::SubTypeCreature::STC_TUNELER;
+        case Creature::C_FAIRY:       return raw::SubTypeCreature::STC_FAIRY;
         case Creature::C_ARCHER:      return raw::SubTypeCreature::STC_ARCHER;
+        case Creature::C_PRIESTESS:   return raw::SubTypeCreature::STC_WITCH;
+        case Creature::C_WIZARD:      return raw::SubTypeCreature::STC_WIZRD;
+        case Creature::C_THIEF:       return raw::SubTypeCreature::STC_THEFT;
         case Creature::C_MONK:        return raw::SubTypeCreature::STC_MONK;
-        case Creature::C_DWARFA:      return raw::SubTypeCreature::STC_DWAFT;
+        case Creature::C_DWARF:       return raw::SubTypeCreature::STC_DWAFT;
+        case Creature::C_BARBARIAN:   return raw::SubTypeCreature::STC_BARBARIN;
+        case Creature::C_SAMURAI:     return raw::SubTypeCreature::STC_SMURI;
+        case Creature::C_GIANT:       return raw::SubTypeCreature::STC_GIANT;
         case Creature::C_KNIGHT:      return raw::SubTypeCreature::STC_KNIGHT;
         case Creature::C_AVATAR:      return raw::SubTypeCreature::STC_AVATAR;
-        case Creature::C_TUNNELLER:   return raw::SubTypeCreature::STC_TUNELER;
-        case Creature::C_WITCH:       return raw::SubTypeCreature::STC_WITCH;
-        case Creature::C_GIANT:       return raw::SubTypeCreature::STC_GIANT;
-        case Creature::C_FAIRY:       return raw::SubTypeCreature::STC_FAIRY;
-        case Creature::C_THIEF:       return raw::SubTypeCreature::STC_THEFT;
-        case Creature::C_SAMURAI:     return raw::SubTypeCreature::STC_SMURI;
 
         case Creature::C_IMP:            return raw::SubTypeCreature::STC_IMP;
-        case Creature::C_SKELETON:       return raw::SubTypeCreature::STC_SKELETON;
-        case Creature::C_TROLL:          return raw::SubTypeCreature::STC_TROLL;
-        case Creature::C_DRAGON:         return raw::SubTypeCreature::STC_DRAGON;
-        case Creature::C_DEMONSPAWN:     return raw::SubTypeCreature::STC_SPAWN;
         case Creature::C_FLY:            return raw::SubTypeCreature::STC_FLY;
-        case Creature::C_DARK_MISTRESS:  return raw::SubTypeCreature::STC_MISTRESS;
-        case Creature::C_WARLOCK:        return raw::SubTypeCreature::STC_WARLOCK;
-        case Creature::C_BILE_DEMON:     return raw::SubTypeCreature::STC_BILEDEMN;
-        case Creature::C_BUG:            return raw::SubTypeCreature::STC_BEETLE;
-        case Creature::C_VAMPIRE:        return raw::SubTypeCreature::STC_VAMPIRE;
-        case Creature::C_SPIDER:         return raw::SubTypeCreature::STC_SPIDER;
-        case Creature::C_HELL_HOUND:     return raw::SubTypeCreature::STC_HOUND;
         case Creature::C_GHOST:          return raw::SubTypeCreature::STC_GHOST;
+        case Creature::C_WARLOCK:        return raw::SubTypeCreature::STC_WARLOCK;
+        case Creature::C_BEETLE:         return raw::SubTypeCreature::STC_BEETLE;
+        case Creature::C_SPIDER:         return raw::SubTypeCreature::STC_SPIDER;
+        case Creature::C_TROLL:          return raw::SubTypeCreature::STC_TROLL;
+        case Creature::C_DEMONSPAWN:     return raw::SubTypeCreature::STC_SPAWN;
         case Creature::C_TENTACLE:       return raw::SubTypeCreature::STC_TENTCL;
+        case Creature::C_SKELETON:       return raw::SubTypeCreature::STC_SKELETON;
+        case Creature::C_HELL_HOUND:     return raw::SubTypeCreature::STC_HOUND;
+        case Creature::C_MISTRESS:       return raw::SubTypeCreature::STC_MISTRESS;
         case Creature::C_ORC:            return raw::SubTypeCreature::STC_ORC;
+        case Creature::C_BILE_DEMON:     return raw::SubTypeCreature::STC_BILEDEMN;
+        case Creature::C_DRAGON:         return raw::SubTypeCreature::STC_DRAGON;
+        case Creature::C_VAMPIRE:        return raw::SubTypeCreature::STC_VAMPIRE;
         case Creature::C_HORNY:          return raw::SubTypeCreature::STC_HORNY;
         }
 
