@@ -83,7 +83,7 @@ namespace adiktedpp {
             case Creature::C_FLY:           { return "FLY"; }
             case Creature::C_GHOST:         { return "GHOST"; }
             case Creature::C_WARLOCK:       { return "SORCEROR"; }
-            case Creature::C_BEETLE:        { return "C_BEETLE"; }
+            case Creature::C_BEETLE:        { return "BUG"; }
             case Creature::C_SPIDER:        { return "SPIDER"; }
             case Creature::C_TROLL:         { return "TROLL"; }
             case Creature::C_DEMONSPAWN:    { return "DEMONSPAWN"; }
