@@ -18,6 +18,7 @@ project( dk-mage )
 
 
 SET( EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external" )
+SET( DOC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../doc" )
 
 list( APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" )
 
@@ -78,3 +79,13 @@ else()
         configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini @ONLY )
     endif()
 endif()
+
+
+if (WIN32)
+    ## for Windows target
+    set( EXECUTABLE_PATH "wine ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dkmagecli.exe" )
+else()
+    set( EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dkmagecli" )
+endif()
+
+generate_to_file( generate_doc.sh.in generate_doc.sh )

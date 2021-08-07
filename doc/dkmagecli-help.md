@@ -1,3 +1,6 @@
+Output of `dkmagecli --help` command:
+
+```
 
 USAGE: 
 
@@ -44,4 +47,4 @@ Where:
      Displays usage information and exits.
 
    Map and scenario generator for Dungeon Keeper 1 PC game
-
+```

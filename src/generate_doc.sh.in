@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#
+# This file was automatically generated from '@GENERATOR_FILE@'. All changes will be lost.
+#
+
+set -e
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+
+cat > @DOC_DIR@/dkmagecli-help.md <<EOF
+Output of \`dkmagecli --help\` command:
+
+\`\`\`
+$(@EXECUTABLE_PATH@ --help)
+\`\`\`
+EOF
