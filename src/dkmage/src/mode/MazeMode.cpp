@@ -275,7 +275,7 @@ namespace dkmage {
 
         void MazeMode::prepareEnemyDungeon() {
         //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
-            spatial::Dungeon enemyDungeon( Player::P_P0 );
+            spatial::Dungeon enemyDungeon( Player::P_P1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
