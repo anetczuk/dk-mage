@@ -13,9 +13,9 @@ Following map types can be generated:
 
 
 Following previews and samples were generated with *Sample* seed:
-[![*cave* type](doc/sample/cave-small.png "cave type")](doc/sample/cave/map04444.bmp)
-[![*maze* type](doc/sample/maze-small.png "maze type")](doc/sample/maze/map04445.bmp)
-[![*herofortress* type](doc/sample/herofortress-small.png "herofortress type")](doc/sample/herofortress/map04446.bmp)
+[![cave type](doc/samples/cave-small.png "cave type")](doc/samples/cave/map04444.bmp)
+[![maze type](doc/samples/maze-small.png "maze type")](doc/samples/maze/map04445.bmp)
+[![herofortress type](doc/samples/herofortress-small.png "herofortress type")](doc/samples/herofortress/map04446.bmp)
 
 
 ## Running generator
