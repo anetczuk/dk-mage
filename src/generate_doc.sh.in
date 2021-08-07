@@ -10,6 +10,9 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
+###
+### generate usage description
+###
 
 cat > @DOC_DIR@/dkmagecli-help.md <<EOF
 Output of \`dkmagecli --help\` command:
@@ -18,3 +21,30 @@ Output of \`dkmagecli --help\` command:
 $(@EXECUTABLE_PATH@ --help)
 \`\`\`
 EOF
+
+
+###
+### generate samples
+###
+
+SAMPLES_DIR=@DOC_DIR@/samples
+SEED=Sample
+
+
+## $1 -- map mode 
+## $2 -- map name
+prepare_sample() {
+    local MAP_MODE=$1
+    local MAP_NAME=$2
+    
+    echo -e "\ngenerating sample for $MAP_MODE mode:"
+    @EXECUTABLE_PATH@ --type  $MAP_MODE --seed $SEED --output_path $SAMPLES_DIR/$MAP_MODE/$MAP_NAME
+    (cd $SAMPLES_DIR && zip -r $MAP_MODE.zip $MAP_MODE)
+}
+
+
+prepare_sample cave map04444
+
+prepare_sample maze map04445
+
+prepare_sample herofortress map04446
