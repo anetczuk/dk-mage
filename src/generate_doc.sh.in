@@ -20,6 +20,13 @@ Output of \`dkmagecli --help\` command:
 \`\`\`
 $(@EXECUTABLE_PATH@ --help)
 \`\`\`
+
+
+Usage generated for version:
+
+\`\`\`
+$(@EXECUTABLE_PATH@ --version)
+\`\`\`
 EOF
 
 
@@ -39,7 +46,7 @@ prepare_sample() {
     
     echo -e "\ngenerating sample for $MAP_MODE mode:"
     @EXECUTABLE_PATH@ --type  $MAP_MODE --seed $SEED --output_path $SAMPLES_DIR/$MAP_MODE/$MAP_NAME
-    (cd $SAMPLES_DIR && zip -r $MAP_MODE.zip $MAP_MODE)
+    (cd $SAMPLES_DIR && zip -FSr $MAP_MODE.zip $MAP_MODE)
     
     convert $SAMPLES_DIR/$MAP_MODE/$MAP_NAME.bmp -resize 400 $SAMPLES_DIR/$MAP_MODE-small.png || true
 }

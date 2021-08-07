@@ -1,0 +1,1 @@
+To generate documentation (usage info, samples, previews etc.) run "generate_doc.sh" script from build directory. Script will use prepared executable to generate required artifacts.
