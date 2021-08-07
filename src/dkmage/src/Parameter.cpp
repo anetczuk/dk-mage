@@ -29,6 +29,14 @@ namespace dkmage {
         data[ name ] = std::to_string( value );
     }
 
+    bool ParametersMap::isSet( const std::string& parameter ) const {
+        auto iter = data.find( parameter );
+        if ( iter == data.end() ) {
+            return false;
+        }
+        return true;
+    }
+
     Optional< std::string > ParametersMap::getString( const std::string& parameter ) const {
         auto iter = data.find( parameter );
         if ( iter == data.end() ) {

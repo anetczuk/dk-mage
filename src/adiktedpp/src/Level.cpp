@@ -254,6 +254,11 @@ namespace adiktedpp {
         rawLevel.setSlab( rect, raw::SlabType::ST_CLAIMED, playerType );
     }
 
+    void Level::setFortified( const Point& point, const Player owner ) {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        rawLevel.fortify( point, playerType );
+    }
+
     void Level::setRoom( const Rect& position, const Room room ) {
         const raw::SlabType rawType = convertToSlab( room );
         rawLevel.setSlab( position, rawType );

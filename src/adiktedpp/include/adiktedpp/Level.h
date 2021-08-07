@@ -138,6 +138,8 @@ namespace adiktedpp {
 
         void setClaimed( const utils::Rect& rect, const Player owner );
 
+        void setFortified( const utils::Point& point, const Player owner );
+
         void setRoom( const utils::Rect& position, const Room room );
 
         void setRoom( const utils::Rect& position, const Room room, const Player owner, const bool fortify );

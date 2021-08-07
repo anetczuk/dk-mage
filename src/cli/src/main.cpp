@@ -109,6 +109,8 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
 
     TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
+    TCLAP::SwitchArg testingModeArg( "", "test_mode", "Additional items on map, e.g. reveal map or neutral monsters next to player's dungeon heart", cmd );
+
     TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
     TCLAP::ValueArg<std::string> outputSubPathArg( "", "output_subpath", "Path to map's output file relative to 'level_path' config field", false, "", "path string" );
     TCLAP::ValueArg<std::size_t> outputIdArg( "", "output_id", "Id of output map (will be placed in game's level directory)", false, 3333, "int" );
@@ -185,6 +187,8 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     retParameters.add( configArg.getName(), configPath );
     /// 'type' field already set
     retParameters.add( seedArg.getName(), mapSeed );                                      /// override section field
+
+    if ( testingModeArg.isSet() )    retParameters.add( testingModeArg.getName(), testingModeArg.getValue() );
 
     if ( outputPathArg.isSet() )    retParameters.add( outputPathArg.getName(), outputPathArg.getValue() );
     if ( outputSubPathArg.isSet() ) retParameters.add( outputSubPathArg.getName(), outputSubPathArg.getValue() );

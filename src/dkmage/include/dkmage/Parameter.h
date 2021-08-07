@@ -106,6 +106,8 @@ namespace dkmage {
 
         void add( const std::string& name, const std::size_t value );
 
+        bool isSet( const std::string& parameter ) const;
+
         Optional< std::string > getString( const std::string& parameter ) const;
 
         std::string getString( const std::string& parameter, const std::string& defaultValue ) const;

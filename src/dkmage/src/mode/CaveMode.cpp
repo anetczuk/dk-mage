@@ -30,9 +30,6 @@ namespace dkmage {
             prepareEnemyDungeon();
 
             /// =========== scripting ===========
-
-            const ParametersMap& parameters = getParameters();
-
             LOG() << "preparing script";
             script::Script script( level );
             {
@@ -48,7 +45,11 @@ namespace dkmage {
             script.addLine( "MAX_CREATURES( PLAYER0, 30 )" );
             script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
 
-            script.addLine( "START_MONEY( PLAYER0,  20000 )" );               /// does not show in treasure
+            if ( parameters.isSet("test_mode") ) {
+                script.addLine( "START_MONEY( PLAYER0, 200000 )" );             /// does not show in treasure
+            } else {
+                script.addLine( "START_MONEY( PLAYER0,  20000 )" );             /// does not show in treasure
+            }
             script.addLine( "START_MONEY( PLAYER1, 200000 )" );               /// does not show in treasure
 
             script.addLine( "" );
@@ -133,8 +134,12 @@ namespace dkmage {
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
 
-            dungeon.generate( 1, 5 );
-//               dungeon.addRandomRoom( SlabType::ST_TREASURE, 3, false, 1 );
+            if ( parameters.isSet("test_mode") ) {
+                dungeon.generate( 4, 5 );
+            } else {
+                dungeon.generate( 1, 5 );
+            }
+
             dungeon.moveToBottomEdge( 4 );
 
 //               LOG() << "dungeon:\n" << dungeon.print();
@@ -142,7 +147,8 @@ namespace dkmage {
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, dungeon );
 
-            const Point firstCenter = dungeon.roomCenter( 0 );
+            const spatial::DungeonRoom* heart = dungeon.room( 0 );
+            const Point firstCenter = heart->position().center();
             const Rect bbox = dungeon.boundingBox();
 
             /// add neutral portal
@@ -162,9 +168,18 @@ namespace dkmage {
             drawGoldVein( level, rightVeinRect, 0 );
 
             /// add other
-            Point pos = firstCenter + Point(0, 2);
-            level.setClaimed( pos, Player::P_P0 );
-//                level.setItem( pos, 4, SubTypeItem::STI_SPREVMAP );
+            if ( parameters.isSet("test_mode") ) {
+                const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
+                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
+
+                const adiktedpp::Player player = dungeon.owner();
+                level.setFortified( revPos + Point(0, 1), player );
+                level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
+                const Point monstersPos = revPos + Point(0, 3);
+                level.setSlab( monstersPos, Slab::S_PATH );
+                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 9 );
+            }
+
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 //                   level.setCreature( firstCenter.x, firstCenter.y+2, 4, SubTypeCreature::STC_SKELETON, 4 );
 //                   level.setCreature( firstCenter.x+2, firstCenter.y, 4, SubTypeCreature::STC_WARLOCK, 1 );
