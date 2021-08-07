@@ -11,9 +11,11 @@ Following map types can be generated:
 - *herofortress* -- siege of hero fortress ([sample](doc/samples/herofortress.zip))
 - *random* -- randomly picks one of modes described above
 
-[![*cave* type](doc/cave-small.png "*cave* type")](doc/cave-big.png)
-[![*maze* type](doc/maze-small.png "*maze* type")](doc/maze-big.png)
-[![*herofortress* type](doc/herofortress-small.png "*herofortress* type")](doc/herofortress-big.png)
+
+Following previews and samples were generated with *Sample* seed:
+[![*cave* type](doc/sample/cave-small.png "cave type")](doc/sample/cave/map04444.bmp)
+[![*maze* type](doc/sample/maze-small.png "maze type")](doc/sample/maze/map04445.bmp)
+[![*herofortress* type](doc/sample/herofortress-small.png "herofortress type")](doc/sample/herofortress/map04446.bmp)
 
 
 ## Running generator

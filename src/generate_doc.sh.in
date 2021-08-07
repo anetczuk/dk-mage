@@ -4,7 +4,7 @@
 # This file was automatically generated from '@GENERATOR_FILE@'. All changes will be lost.
 #
 
-set -e
+set -eu
 
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -40,6 +40,8 @@ prepare_sample() {
     echo -e "\ngenerating sample for $MAP_MODE mode:"
     @EXECUTABLE_PATH@ --type  $MAP_MODE --seed $SEED --output_path $SAMPLES_DIR/$MAP_MODE/$MAP_NAME
     (cd $SAMPLES_DIR && zip -r $MAP_MODE.zip $MAP_MODE)
+    
+    convert $SAMPLES_DIR/$MAP_MODE/$MAP_NAME.bmp -resize 400 $SAMPLES_DIR/$MAP_MODE-small.png || true
 }
 
 
@@ -48,3 +50,6 @@ prepare_sample cave map04444
 prepare_sample maze map04445
 
 prepare_sample herofortress map04446
+
+
+echo -e "\ngeneration done"
