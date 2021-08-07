@@ -308,7 +308,7 @@ namespace adiktedpp {
     }
 
     void Level::setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
-        if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+        if ( x >= raw::RawLevel::MAP_SIZE_X || y >= raw::RawLevel::MAP_SIZE_Y ) {
             /// out of map
             LOG() << "given point is outside map: [" << x << " " << y << "]";
             return ;

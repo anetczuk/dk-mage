@@ -32,6 +32,14 @@ namespace adiktedpp {
          *
          */
         class RawLevel {
+        public:
+
+            /// aliases for adikted constants
+            static const std::size_t MAP_SIZE_X;
+            static const std::size_t MAP_SIZE_Y;
+
+
+        private:
 
             std::unique_ptr<LevelData> data;
 

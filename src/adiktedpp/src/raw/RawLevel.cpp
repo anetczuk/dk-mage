@@ -5,6 +5,7 @@
 
 #include "adiktedpp/raw/RawLevel.h"
 
+#include "adiktedpp/AreaDetector.h"
 #include "adiktedpp/Messages.h"
 #include "adiktedpp/Version.h"
 #include "adiktedpp/raw/ThingType.h"
@@ -67,6 +68,10 @@ namespace adiktedpp {
 
 
         /// ===============================================================
+
+
+        const std::size_t RawLevel::MAP_SIZE_X = MAP_SIZE_DKSTD_X;
+        const std::size_t RawLevel::MAP_SIZE_Y = MAP_SIZE_DKSTD_Y;
 
 
         RawLevel::RawLevel(): data( new LevelData() ) {
@@ -171,11 +176,11 @@ namespace adiktedpp {
         }
 
         Rect RawLevel::mapSize() {
-            return Rect( 0, 0, MAP_SIZE_DKSTD_X - 1, MAP_SIZE_DKSTD_Y - 1 );
+            return Rect( 0, 0, MAP_SIZE_X - 1, MAP_SIZE_Y - 1 );
         }
 
         Rect RawLevel::mapRect( const std::size_t shrink ) {
-            return Rect( 1 + shrink, 1 + shrink, MAP_SIZE_DKSTD_X - 2 - shrink, MAP_SIZE_DKSTD_Y - 2 - shrink );
+            return Rect( 1 + shrink, 1 + shrink, MAP_SIZE_X - 2 - shrink, MAP_SIZE_Y - 2 - shrink );
         }
 
         std::string RawLevel::prepareMapName( const std::size_t mapId ) {
@@ -213,7 +218,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::generateEmpty() {
-            Rect rect( 0, 0, MAP_SIZE_DKSTD_X-1, MAP_SIZE_DKSTD_Y-1 );
+            Rect rect( 0, 0, MAP_SIZE_X-1, MAP_SIZE_Y-1 );
             setSlabOutline( rect, SlabType::ST_ROCK );
             rect.grow( -1 );
             setSlab( rect, SlabType::ST_EARTH );
@@ -308,7 +313,7 @@ namespace adiktedpp {
         /// ============================================================
 
         SlabType RawLevel::getSlab( const std::size_t x, const std::size_t y ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return SlabType::ST_ROCK;
@@ -333,7 +338,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -361,11 +366,11 @@ namespace adiktedpp {
                              const std::size_t endX,   const std::size_t endY,
                              const SlabType type )
         {
-            if ( startX >= MAP_SIZE_DKSTD_X || startY >= MAP_SIZE_DKSTD_Y ) {
+            if ( startX >= MAP_SIZE_X || startY >= MAP_SIZE_Y ) {
                 LOG() << "given point is outside map: [" << startX << " " << startY << "]";
                 return ;
             }
-            if ( endX >= MAP_SIZE_DKSTD_X || endY >= MAP_SIZE_DKSTD_Y ) {
+            if ( endX >= MAP_SIZE_X || endY >= MAP_SIZE_Y ) {
                 LOG() << "given point is outside map: [" << endX << " " << endY << "]";
                 return ;
             }
@@ -394,11 +399,11 @@ namespace adiktedpp {
                              const std::size_t endX,   const std::size_t endY,
                              const SlabType room, const PlayerType owner )
         {
-            if ( startX >= MAP_SIZE_DKSTD_X || startY >= MAP_SIZE_DKSTD_Y ) {
+            if ( startX >= MAP_SIZE_X || startY >= MAP_SIZE_Y ) {
                 LOG() << "given point is outside map: [" << startX << " " << startY << "]";
                 return ;
             }
-            if ( endX >= MAP_SIZE_DKSTD_X || endY >= MAP_SIZE_DKSTD_Y ) {
+            if ( endX >= MAP_SIZE_X || endY >= MAP_SIZE_Y ) {
                 LOG() << "given point is outside map: [" << endX << " " << endY << "]";
                 return ;
             }
@@ -426,7 +431,7 @@ namespace adiktedpp {
         }
 
         PlayerType RawLevel::getOwner( const std::size_t x, const std::size_t y ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return PlayerType::PT_UNSET;
@@ -437,7 +442,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::setOwner( const std::size_t x, const std::size_t y, const PlayerType owner ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -483,7 +488,7 @@ namespace adiktedpp {
 
         /// prevents setting two items inside the same subtile
         void RawLevel::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -527,7 +532,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -557,7 +562,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -602,7 +607,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
-            if ( x >= MAP_SIZE_DKSTD_X || y >= MAP_SIZE_DKSTD_Y ) {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
@@ -742,118 +747,12 @@ namespace adiktedpp {
             setTextField( &level->info.desc_text, info.c_str() );
         }
 
-        /**
-         *
-         */
-        struct FillData {
-
-            struct AreaInfo {
-                std::size_t posx;
-                std::size_t posy;
-                std::vector< std::size_t > cells;
-            };
-
-
-            int data[ MAP_SIZE_DKSTD_X * MAP_SIZE_DKSTD_Y ] = { 0 };
-    //        int data[ MAP_SIZE_DKSTD_X ][ MAP_SIZE_DKSTD_Y ] = { {0} };
-
-            void set( const std::size_t x, const std::size_t y, const int val ) {
-                data[ y * MAP_SIZE_DKSTD_X + x ] = val;
-    //            data[y][x] = val;
-            }
-
-            int get( const std::size_t x, const std::size_t y ) const {
-                return data[ y * MAP_SIZE_DKSTD_X + x ];
-    //            return data[y][x];
-            }
-
-            std::vector< AreaInfo > fill( const int value ) {
-                std::vector< AreaInfo > areas;
-                for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
-                    for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
-                        if ( get( x, y ) == value ) {
-                             /// cell not filled
-                            const std::size_t num = areas.size() + 1;
-                            AreaInfo info;
-                            info.posx = x;
-                            info.posy = y;
-                            info.cells = fillValue( x, y, value, num );
-                            areas.push_back( info );
-                        }
-                    }
-                }
-                return areas;
-            }
-
-            std::vector< std::size_t > fillValue( const std::size_t startX, const std::size_t startY, const int oldValue, const int newValue ) {
-                std::vector< std::size_t > ret;
-                std::queue< std::pair<std::size_t, std::size_t> > obj;
-                obj.push( { startX, startY } );
-                while ( obj.empty() == false ) {
-                    const std::pair<std::size_t, std::size_t> coord = obj.front();
-                    const std::size_t x = coord.first;
-                    const std::size_t y = coord.second;
-
-                    /// poping front pair of queue
-                    obj.pop();
-
-                    if ( x >= MAP_SIZE_DKSTD_X ) {
-                        continue ;
-                    }
-                    if ( y >= MAP_SIZE_DKSTD_Y ) {
-                        continue ;
-                    }
-
-                    const int preColor = get( x, y );
-                    if ( preColor != oldValue ) {
-                        continue ;
-                    }
-                    if ( preColor == newValue ) {
-                        continue ;
-                    }
-
-                    set( x, y, newValue );
-                    ret.push_back( y * MAP_SIZE_DKSTD_X + x );
-
-                    obj.push( { x + 1, y } );
-                    obj.push( { x - 1, y } );
-                    obj.push( { x, y + 1 } );
-                    obj.push( { x, y - 1 } );
-                }
-
-                return ret;
-            }
-
-    //        /// recursive solution
-    //        std::size_t fillValue( const std::size_t x, const std::size_t y, const int oldValue, const int newValue ) {
-    //            if ( x >= MAP_SIZE_DKSTD_X ) {
-    //                return 0;
-    //            }
-    //            if ( y >= MAP_SIZE_DKSTD_Y ) {
-    //                return 0;
-    //            }
-    //            if ( get( x, y ) != oldValue ) {
-    //                return 0;
-    //            }
-    //            if ( get( x, y ) == newValue ) {
-    //                return 0;
-    //            }
-    //            set( x, y, newValue );
-    //            std::size_t ret = 1;
-    //            ret += fillValue( x+1, y, oldValue, newValue );
-    //            ret += fillValue( x-1, y, oldValue, newValue );
-    //            ret += fillValue( x, y+1, oldValue, newValue );
-    //            ret += fillValue( x, y-1, oldValue, newValue );
-    //            return ret;
-    //        }
-
-        };
-
         std::size_t RawLevel::countSeparatedAreas() {
-            FillData data;
+            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+
             /// mark rock
-            for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
-                for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+            for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
+                for ( std::size_t x=0; x<MAP_SIZE_X; ++x) {
                     const SlabType stub = getSlab(x, y);
                     if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
@@ -863,7 +762,7 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< FillData::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize == 0 ) {
                 return 0;
@@ -872,10 +771,11 @@ namespace adiktedpp {
         }
 
         std::size_t RawLevel::countClaimAreas() {
-            FillData data;
+            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+
             /// mark rock
-            for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
-                for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+            for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
+                for ( std::size_t x=0; x<MAP_SIZE_X; ++x) {
                     const SlabType stub = getSlab(x, y);
                     if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
@@ -888,7 +788,7 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< FillData::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize == 0 ) {
                 return 0;
@@ -897,10 +797,11 @@ namespace adiktedpp {
         }
 
         void RawLevel::fillSeparatedAreas( const std::size_t areaLimit ) {
-            FillData data;
+            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+
             /// mark rock
-            for ( std::size_t y=0; y<MAP_SIZE_DKSTD_Y; ++y) {
-                for ( std::size_t x=0; x<MAP_SIZE_DKSTD_X; ++x) {
+            for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
+                for ( std::size_t x=0; x<MAP_SIZE_X; ++x) {
                     const SlabType stub = getSlab(x, y);
                     if ( raw::isImpassable( stub ) ) {
                         data.set(x, y, -1 );
@@ -910,7 +811,7 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< FillData::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize < 2 ) {
                 return ;
@@ -923,8 +824,8 @@ namespace adiktedpp {
                 }
                 /// fill cells
                 for ( const auto cell: cells ) {
-                    const std::size_t x = cell % MAP_SIZE_DKSTD_X;
-                    const std::size_t y = cell / MAP_SIZE_DKSTD_X;
+                    const std::size_t x = cell % MAP_SIZE_X;
+                    const std::size_t y = cell / MAP_SIZE_X;
                     setSlab( x, y, SlabType::ST_ROCK );
                 }
             }

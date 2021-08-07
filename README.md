@@ -12,7 +12,7 @@ Following map types can be generated:
 - *random* -- randomly picks one of modes described above
 
 
-Linked samples and gollowing previews were generated with *Sample* seed.
+Linked samples and following previews were generated with *Sample* seed.
 
 [![cave type](doc/samples/cave-small.png "cave type")](doc/samples/cave/map04444.bmp)
 [![maze type](doc/samples/maze-small.png "maze type")](doc/samples/maze/map04445.bmp)
