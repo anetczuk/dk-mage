@@ -14,7 +14,6 @@
 
 #include <sstream>
 #include <iomanip>
-#include <queue>
 #include <random>
 
 extern "C" {
@@ -395,6 +394,12 @@ namespace adiktedpp {
             }
         }
 
+        void RawLevel::setSlab( const std::vector< Point >& positions, const SlabType type ) {
+            for ( const Point& item: positions ) {
+                setSlab( item, type );
+            }
+        }
+
         void RawLevel::setSlab( const std::size_t startX, const std::size_t startY,
                              const std::size_t endX,   const std::size_t endY,
                              const SlabType room, const PlayerType owner )
@@ -748,7 +753,7 @@ namespace adiktedpp {
         }
 
         std::size_t RawLevel::countSeparatedAreas() {
-            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+            AreaDetector data;
 
             /// mark rock
             for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
@@ -762,7 +767,7 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaDetector::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize == 0 ) {
                 return 0;
@@ -771,7 +776,7 @@ namespace adiktedpp {
         }
 
         std::size_t RawLevel::countClaimAreas() {
-            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+            AreaDetector data;
 
             /// mark rock
             for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
@@ -788,7 +793,7 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaDetector::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize == 0 ) {
                 return 0;
@@ -797,7 +802,7 @@ namespace adiktedpp {
         }
 
         void RawLevel::fillSeparatedAreas( const std::size_t areaLimit ) {
-            AreaDetector< MAP_SIZE_X, MAP_SIZE_Y > data;
+            AreaDetector data;
 
             /// mark rock
             for ( std::size_t y=0; y<MAP_SIZE_Y; ++y) {
@@ -811,23 +816,20 @@ namespace adiktedpp {
 
             /// In this place all 'ROCK' slabs have value '-1'. Rest of 'data' is filled with zeros.
 
-            const std::vector< AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
+            const std::vector< AreaDetector::AreaInfo > areas = data.fill( 0 );           /// assign numbers to 'zero' areas
             const std::size_t aSize = areas.size();
             if ( aSize < 2 ) {
                 return ;
             }
 
-            for ( const auto item: areas ) {
+            for ( const AreaDetector::AreaInfo& item: areas ) {
                 const std::vector< std::size_t >& cells = item.cells;
                 if ( cells.size() > areaLimit ) {
                     continue ;
                 }
                 /// fill cells
-                for ( const auto cell: cells ) {
-                    const std::size_t x = cell % MAP_SIZE_X;
-                    const std::size_t y = cell / MAP_SIZE_X;
-                    setSlab( x, y, SlabType::ST_ROCK );
-                }
+                const std::vector< utils::Point > points = item.cellsAsPoints();
+                setSlab( points, SlabType::ST_ROCK );
             }
         }
 

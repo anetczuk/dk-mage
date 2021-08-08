@@ -9,6 +9,7 @@
 #include "dkmage/spatial/Dungeon.h"
 
 #include "adiktedpp/LakeGenerator.h"
+#include "adiktedpp/AreaDetector.h"
 #include "adiktedpp/script/Script.h"
 
 #include "utils/Set.h"
@@ -303,7 +304,7 @@ namespace dkmage {
                         return false;
                     }
 
-                    level.setSlab( bridgePoint, Slab::S_EARTH );
+                    level.setSlab( bridgePoint, Slab::S_PATH );
 
                     bool shoreFound = false;
                     for ( const Point item: heighbourDirections ) {
@@ -362,7 +363,6 @@ namespace dkmage {
 
             {
                 /// generate lake
-                //TODO: remove islands
                 Rect lakeLimit = raw::RawLevel::mapRect( 4 );
                 lakeLimit.max.y -= 18;                                      /// make space for evil dungeon
                 const Rect dungeonBBox = enemyDungeon.boundingBox();
@@ -389,11 +389,25 @@ namespace dkmage {
                 /// draw 'EARTH' shore
                 std::set< Point > lakeEdge = LakeGenerator::edge( lavaLake.added );
                 level.setSlab( lakeEdge, Slab::S_EARTH );
+
+                /// fill islands
+                AreaDetector areaDetector;
+                areaDetector.set( lavaLake.added, 1 );                   /// mark lava
+                areaDetector.fill( 0, 0, 1 );                            /// fill outside as lava
+
+                const std::vector< AreaDetector::AreaInfo > islands = areaDetector.fill( 0 );
+                LOG() << "islands found: " << islands.size();
+
+                for ( const AreaDetector::AreaInfo& item: islands ) {
+                    const std::vector< utils::Point > points = item.cellsAsPoints();
+                    level.setSlab( points, Slab::S_LAVA );
+                }
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, enemyDungeon );
 
+            /// prepare entrances
             for ( const spatial::DungeonRoom* entrance: entrances ) {
                 if ( prepareEntrance( level, enemyDungeon, *entrance ) == false ) {
                     return false;

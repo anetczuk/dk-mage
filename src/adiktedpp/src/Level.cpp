@@ -244,6 +244,11 @@ namespace adiktedpp {
         rawLevel.setSlab( positions, rawType );
     }
 
+    void Level::setSlab( const std::vector< Point >& positions, const Slab type ) {
+        const raw::SlabType rawType = convertToSlab( type );
+        rawLevel.setSlab( positions, rawType );
+    }
+
     void Level::setClaimed( const Point& point, const Player owner ) {
         const raw::PlayerType playerType = convertToRaw( owner );
         rawLevel.setSlab( point, raw::SlabType::ST_CLAIMED, playerType );

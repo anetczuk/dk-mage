@@ -134,6 +134,8 @@ namespace adiktedpp {
 
         void setSlab( const std::set< utils::Point >& positions, const Slab type );
 
+        void setSlab( const std::vector< utils::Point >& positions, const Slab type );
+
         void setClaimed( const utils::Point& point, const Player owner );
 
         void setClaimed( const utils::Rect& rect, const Player owner );
