@@ -114,6 +114,8 @@ namespace dkmage {
 
         Optional< std::size_t > getSizeT( const std::string& parameter ) const;
 
+        std::size_t getSizeT( const std::string& parameter, const std::size_t defaultValue ) const;
+
     };
 
 } /* namespace dkmage */

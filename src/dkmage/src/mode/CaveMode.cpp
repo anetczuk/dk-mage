@@ -158,12 +158,17 @@ namespace dkmage {
 
             /// add gold vein
             const Rect mapRect = raw::RawLevel::mapRect();
-            const int veinY = mapRect.max.y - 3;
+            const int veinY = mapRect.max.y - 4;
             const Point leftVeinCenter( bbox.min.x - 20, veinY );
             const Rect leftVeinRect( leftVeinCenter, 9, 5 );
-            drawGoldVein( level, leftVeinRect, 1 );
 
-            const Point rightVeinCenter( bbox.max.x + 28, veinY );
+            std::size_t gemsNum = parameters.getSizeT( "gems_number", 1 );
+            gemsNum = std::min( gemsNum, (std::size_t)4 );
+            LOG() << "gems number: " << gemsNum;
+
+            drawGoldVein( level, leftVeinRect, gemsNum );
+
+            const Point rightVeinCenter( std::min(bbox.max.x + 28, 78 ), veinY );
             const Rect rightVeinRect( rightVeinCenter, 9, 6 );
             drawGoldVein( level, rightVeinRect, 0 );
 

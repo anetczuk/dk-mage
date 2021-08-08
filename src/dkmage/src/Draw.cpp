@@ -117,6 +117,16 @@ namespace dkmage {
             level.setSlab( rect, Slab::S_ROCK );
             break;
         }
+        case 4: {
+            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 2 );
+//            level.setSlab( gemCenter - Point( 2, 0), Slab::S_EARTH );                       /// make nicer shape
+//            level.setSlab( gemCenter + Point( 2, 0), Slab::S_EARTH );                       /// make nicer shape
+            const Rect gemRect( gemCenter, 3, 3 );
+            level.setSlab( gemRect, Slab::S_GOLD );
+            level.setCave( veinRect, Slab::S_GOLD, veinSize );
+            level.setSlab( gemCenter, Slab::S_GEMS );
+            break;
+        }
         default: {
             LOG() << "unhandled gem faces size: " << gemFaces;
         }

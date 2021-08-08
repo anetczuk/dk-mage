@@ -261,7 +261,7 @@ namespace adiktedpp {
 
     void Level::setFortified( const Point& point, const Player owner ) {
         const raw::PlayerType playerType = convertToRaw( owner );
-        rawLevel.fortify( point, playerType );
+        rawLevel.setSlab( point.x, point.y, raw::SlabType::ST_WALLDRAPE, playerType );          /// fortified wall
     }
 
     void Level::setRoom( const Rect& position, const Room room ) {

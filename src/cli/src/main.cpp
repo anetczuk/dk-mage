@@ -96,6 +96,7 @@ std::string findFreeMapName( const std::string& levelsPath ) {
 
 int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     TCLAP::CmdLine cmd( "Map and scenario generator for Dungeon Keeper 1 PC game", ' ', VERSION_FULL_STRING );
+    cmd.ignoreUnmatched( true );                /// ignore unmatched/unknown arguments
 
     Generator& generator = Generator::instance();
 

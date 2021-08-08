@@ -67,4 +67,14 @@ namespace dkmage {
         return (std::size_t) number;
     }
 
+    std::size_t ParametersMap::getSizeT( const std::string& parameter, const std::size_t defaultValue ) const {
+        Optional< std::string > rawData = getString( parameter );
+        if ( rawData.has_value() == false ) {
+            return defaultValue;
+        }
+        const std::string& value = rawData.value();
+        const int number = stoi( value );
+        return (std::size_t) number;
+    }
+
 } /* namespace dkmage */
