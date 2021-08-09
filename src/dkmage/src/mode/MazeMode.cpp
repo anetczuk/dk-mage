@@ -13,6 +13,7 @@
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Set.h"
+#include "utils/Rand.h"
 
 #include <cmath>
 
@@ -305,7 +306,7 @@ namespace dkmage {
             }
         }
 
-        void void MazeMode::prepareScript() {
+        void MazeMode::prepareScript() {
             script::Script script( level );
             {
                 const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );

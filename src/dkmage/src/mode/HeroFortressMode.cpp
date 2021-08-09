@@ -392,7 +392,7 @@ namespace dkmage {
             return true;
         }
 
-        void void HeroFortressMode::prepareScript() {
+        void HeroFortressMode::prepareScript() {
             script::Script script( level );
             {
                 const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );

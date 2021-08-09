@@ -207,7 +207,7 @@ namespace dkmage {
 //                    LOG() << "items: " << level.printItems();
         }
 
-        void void CaveMode::prepareScript() {
+        void CaveMode::prepareScript() {
             script::Script script( level );
             {
                 const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
