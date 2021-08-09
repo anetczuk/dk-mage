@@ -244,6 +244,13 @@ namespace adiktedpp {
             return addLine( "REM " + comment );
         }
 
+        void Script::setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
+            std::stringstream stream;
+            stream << "START_MONEY( " << scriptName( player ) << ", " << amount << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
         bool Script::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";

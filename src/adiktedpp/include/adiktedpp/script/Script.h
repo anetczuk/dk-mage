@@ -45,6 +45,8 @@ namespace adiktedpp {
 
             bool addREM( const std::string& comment );
 
+            void setStartMoney( const adiktedpp::Player player, const std::size_t amount );
+
             bool addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 
             bool addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );

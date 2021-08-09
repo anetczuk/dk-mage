@@ -51,11 +51,12 @@ namespace dkmage {
             script.addLine( "" );
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
             script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
+
+            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-                script.addLine( "START_MONEY( PLAYER0, 200000 )" );             /// does not show in treasure
-            } else {
-                script.addLine( "START_MONEY( PLAYER0,  20000 )" );             /// does not show in treasure
+                initialGold += 200000;
             }
+            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
 
             script.addLine( "" );
             script.addLine( "" );

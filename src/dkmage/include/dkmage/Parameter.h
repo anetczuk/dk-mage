@@ -29,6 +29,7 @@ namespace dkmage {
         PN_TYPE,
         PN_GOLD_SLABS_NUMBER,
         PN_GEM_FACES_NUMBER,
+        PN_INIT_GOLD_AMOUNT,
 
         PN_TEST_MODE
     };

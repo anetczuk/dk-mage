@@ -23,6 +23,7 @@ namespace dkmage {
         case ParameterName::PN_TYPE:                return "type";
         case ParameterName::PN_GOLD_SLABS_NUMBER:   return "gold_slabs_number";
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
+        case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
 
         case ParameterName::PN_TEST_MODE:   return "test_mode";
         }
