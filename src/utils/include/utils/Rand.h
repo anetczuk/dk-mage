@@ -14,6 +14,15 @@
 
 namespace utils {
 
+    /**
+     * Return value in range [0..1].
+     */
+    inline double randd() {
+        const int rint   = rand();
+        const double val = ((double) rint / (RAND_MAX));
+        return val;
+    }
+
     inline std::string genSeed( const std::size_t length = 8 ) {
         static const char alphanum[] =
             "0123456789"

@@ -11,6 +11,7 @@
 
 #include "adiktedpp/script/Script.h"
 
+#include "utils/ProbabilityMass.h"
 #include "utils/Set.h"
 
 #include <cmath>
@@ -175,7 +176,12 @@ namespace dkmage {
 
             std::set< Trap > damageTraps = Traps();
             damageTraps.erase( Trap::T_LAVA );                          /// remove lava traps, because bridges are disabled
-            const std::size_t trapsSize = damageTraps.size();
+
+            ProbabilityMass< Trap > trapProbability;
+            trapProbability.set( damageTraps, 10.0 );
+            trapProbability.set( Trap::T_LIGHTNING, 5.0 );
+            trapProbability.normalize();
+
             const int maxDistance = maze.maxDistance();
 
             const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
@@ -189,8 +195,10 @@ namespace dkmage {
                 const Point nodeCenter = nodeRect.center();
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
-                const std::size_t trapIndex = rand() % trapsSize;
-                const Trap trapType = getSetItem( damageTraps, trapIndex );
+                const double num = randd();
+                const Trap trapType = trapProbability.get( num );
+//                const std::size_t trapIndex = rand() % trapsSize;
+//                const Trap trapType = getSetItem( damageTraps, trapIndex );
 
                 if ( maze.corridorSize == 1 ) {
                     level.setSlab( nodeCenter, Slab::S_PATH );
