@@ -13,7 +13,10 @@
 
 namespace adiktedpp {
 
-    static const std::string VERSION_FULL_STRING = "1.1.0";
+    /**
+     * Version number should be increased whenever calls to random number generator are changed.
+     */
+    static const std::string VERSION_FULL_STRING = "1.1.1";
 
 }
 

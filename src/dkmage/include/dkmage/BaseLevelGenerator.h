@@ -77,6 +77,10 @@ namespace dkmage {
 
         void writeIniFile() const;
 
+        void generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount );
+
+        void generateRightGoldVein( const std::size_t goldAmount, const std::size_t gemAmount );
+
     };
 
 } /* namespace dkmage */

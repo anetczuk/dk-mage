@@ -12,8 +12,6 @@
 
 #include "utils/Set.h"
 
-#include <cmath>
-
 
 using namespace utils;
 using namespace adiktedpp;
@@ -101,15 +99,6 @@ namespace dkmage {
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, dungeon );
 
-            const spatial::DungeonRoom* heart = dungeon.room( 0 );
-            const Point firstCenter = heart->position().center();
-            const Rect bbox = dungeon.boundingBox();
-
-            /// add neutral portal
-            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
-            const Rect portalRect( portalCenter, 3, 3 );
-            level.setRoom( portalRect, Room::R_PORTAL );
-
             {
                 /// add gold vein
                 std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 80 );
@@ -120,20 +109,20 @@ namespace dkmage {
                 LOG() << "gems number: " << gemsNum;
 
                 const std::size_t leftVeinGold = goldSlabsNum / 3;
-                const std::size_t leftVeinDimm = (std::size_t) sqrt( leftVeinGold ) * 1.5;
-                const Rect mapRect = raw::RawLevel::mapRect();
-                Rect leftVeinRect( leftVeinDimm, leftVeinDimm );
-                leftVeinRect.move( 10, 0 );
-                leftVeinRect.moveBottomTo( mapRect.max.y );
-                drawGoldVein( level, leftVeinRect, leftVeinGold, gemsNum );
+                generateLeftGoldVein( leftVeinGold, gemsNum );
 
                 const std::size_t rightVeinGold = goldSlabsNum - leftVeinGold;
-                const std::size_t rightVeinDimm = (std::size_t) sqrt( rightVeinGold ) * 1.5;
-                Rect rightVeinRect( rightVeinDimm, rightVeinDimm );
-                rightVeinRect.moveRightTo( mapRect.max.x );
-                rightVeinRect.moveBottomTo( mapRect.max.y );
-                drawGoldVein( level, rightVeinRect, rightVeinGold, 0 );
+                generateRightGoldVein( rightVeinGold, 0 );
             }
+
+            const spatial::DungeonRoom* heart = dungeon.room( 0 );
+            const Point firstCenter = heart->position().center();
+            const Rect bbox = dungeon.boundingBox();
+
+            /// add neutral portal
+            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
+            const Rect portalRect( portalCenter, 3, 3 );
+            level.setRoom( portalRect, Room::R_PORTAL );
 
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {

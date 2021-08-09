@@ -7,9 +7,15 @@
 
 #include "adiktedpp/Version.h"
 
+#include "dkmage/Draw.h"
+
+#include "utils/Rect.h"
+
+#include <cmath>
 #include <fstream>
 
 
+using namespace utils;
 using namespace adiktedpp;
 
 
@@ -43,6 +49,32 @@ namespace dkmage {
         }
 
         iniFile.close();
+    }
+
+    /// =============================================================================
+
+    void BaseLevelGenerator::generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount ) {
+        const Rect mapRect = raw::RawLevel::mapRect();
+        const std::size_t veinDimm = (std::size_t) sqrt( goldAmount ) * 1.5;
+        Rect randPosArea( 24, 18 );
+        randPosArea.moveLeftTo( 1 + veinDimm / 2 + 1 );
+        randPosArea.moveBottomTo( mapRect.max.y - veinDimm / 2 - 1 );
+        const std::size_t randomPosIndex = rand() % randPosArea.area();
+        const Point center = randPosArea.pointByIndex( randomPosIndex );
+        const Rect veinRect( center, veinDimm, veinDimm );
+        drawGoldVein( level, veinRect, goldAmount, gemAmount );
+    }
+
+    void BaseLevelGenerator::generateRightGoldVein( const std::size_t goldAmount, const std::size_t gemAmount ) {
+        const Rect mapRect = raw::RawLevel::mapRect();
+        const std::size_t veinDimm = (std::size_t) sqrt( goldAmount ) * 1.5;
+        Rect randPosArea( 24, 18 );
+        randPosArea.moveRightTo( mapRect.max.x - veinDimm / 2 - 1 );
+        randPosArea.moveBottomTo( mapRect.max.y - veinDimm / 2 - 1 );
+        const std::size_t randomPosIndex = rand() % randPosArea.area();
+        const Point center = randPosArea.pointByIndex( randomPosIndex );
+        const Rect veinRect( center, veinDimm, veinDimm );
+        drawGoldVein( level, veinRect, goldAmount, gemAmount );
     }
 
 } /* namespace dkmage */

@@ -115,15 +115,6 @@ namespace dkmage {
             /// dungeon have to be drawn before placing items inside it's rooms
             drawDungeon( level, dungeon );
 
-            const spatial::DungeonRoom* heart = dungeon.room( 0 );
-            const Point firstCenter = heart->position().center();
-            const Rect bbox = dungeon.boundingBox();
-
-            /// add neutral portal
-            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
-            const Rect portalRect( portalCenter, 3, 3 );
-            level.setRoom( portalRect, Room::R_PORTAL );
-
             {
                 /// add gold vein
                 std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 40 );
@@ -133,14 +124,17 @@ namespace dkmage {
                 gemsNum = std::min( gemsNum, (std::size_t)4 );
                 LOG() << "gems number: " << gemsNum;
 
-                const std::size_t leftVeinGold = goldSlabsNum;
-                const std::size_t leftVeinDimm = (std::size_t) sqrt( leftVeinGold ) * 1.5;
-                const Rect mapRect = raw::RawLevel::mapRect();
-                Rect leftVeinRect( leftVeinDimm, leftVeinDimm );
-                leftVeinRect.move( 10, 0 );
-                leftVeinRect.moveBottomTo( mapRect.max.y );
-                drawGoldVein( level, leftVeinRect, leftVeinGold, gemsNum );
+                generateLeftGoldVein( goldSlabsNum, gemsNum );
             }
+
+            const spatial::DungeonRoom* heart = dungeon.room( 0 );
+            const Point firstCenter = heart->position().center();
+            const Rect bbox = dungeon.boundingBox();
+
+            /// add neutral portal
+            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
+            const Rect portalRect( portalCenter, 3, 3 );
+            level.setRoom( portalRect, Room::R_PORTAL );
 
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {

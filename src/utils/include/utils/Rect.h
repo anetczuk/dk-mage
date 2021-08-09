@@ -160,6 +160,16 @@ namespace utils {
             return Point( cx, cy );
         }
 
+        Point pointByIndex( const std::size_t pointIndex ) const {
+            const int rectWidth = width();
+            if ( rectWidth == 0 ) {
+                return center();
+            }
+            const int dx = pointIndex % rectWidth;
+            const int dy = pointIndex / rectWidth;
+            return min + Point( dx, dy );
+        }
+
         void move( const int offsetX, const int offsetY ) {
             min.x += offsetX;
             min.y += offsetY;
@@ -183,6 +193,11 @@ namespace utils {
 
         void moveRightTo( const int xCoord ) {
             const int xOffset = xCoord - max.x;
+            move( xOffset, 0 );
+        }
+
+        void moveLeftTo( const int xCoord ) {
+            const int xOffset = xCoord - min.x;
             move( xOffset, 0 );
         }
 
