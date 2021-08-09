@@ -37,7 +37,7 @@ namespace dkmage {
 
         void setParameters( const ParametersMap& map ) override {
             parameters = map;
-            Optional< std::string > dataPath = parameters.getString( "data_path" );
+            Optional< std::string > dataPath = parameters.getString( ParameterName::PN_DATA_PATH );
             if ( dataPath.has_value() ) {
                 const std::string& path = dataPath.value();
                 setDataPath( path );

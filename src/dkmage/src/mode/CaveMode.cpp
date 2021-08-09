@@ -33,8 +33,8 @@ namespace dkmage {
             LOG() << "preparing script";
             script::Script script( level );
             {
-                const std::string type = parameters.getString( "type", "" );
-                const std::string seed = parameters.getString( "seed", "" );
+                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
+                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
                 script.storeParameters( type, seed );
             }
 
@@ -45,7 +45,7 @@ namespace dkmage {
             script.addLine( "MAX_CREATURES( PLAYER0, 30 )" );
             script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
 
-            if ( parameters.isSet("test_mode") ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 script.addLine( "START_MONEY( PLAYER0, 200000 )" );             /// does not show in treasure
             } else {
                 script.addLine( "START_MONEY( PLAYER0,  20000 )" );             /// does not show in treasure
@@ -134,7 +134,7 @@ namespace dkmage {
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
 
-            if ( parameters.isSet("test_mode") ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 dungeon.generate( 4, 5 );
             } else {
                 dungeon.generate( 1, 5 );
@@ -162,7 +162,7 @@ namespace dkmage {
             const Point leftVeinCenter( bbox.min.x - 20, veinY );
             const Rect leftVeinRect( leftVeinCenter, 9, 5 );
 
-            std::size_t gemsNum = parameters.getSizeT( "gems_number", 1 );
+            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEMS_NUMBER, 1 );
             gemsNum = std::min( gemsNum, (std::size_t)4 );
             LOG() << "gems number: " << gemsNum;
 
@@ -173,7 +173,7 @@ namespace dkmage {
             drawGoldVein( level, rightVeinRect, 0 );
 
             /// add other
-            if ( parameters.isSet("test_mode") ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
                 level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
 

@@ -152,7 +152,7 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     retParameters.appendData( generalData );
 
     /// handle seed
-    std::string mapSeed = retParameters.getString( "seed", "" );
+    std::string mapSeed = retParameters.getString( ParameterName::PN_SEED, "" );
     if ( seedArg.isSet() ) {
         mapSeed = seedArg.getValue();                                   /// yes, copy
     }
@@ -164,7 +164,7 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
 
     /// try to load map type section based on value 'general::type' from config
     {
-        std::string configMapType = retParameters.getString( "type", "random" );
+        std::string configMapType = retParameters.getString( ParameterName::PN_TYPE, "random" );
         configMapType = getProperType( configMapType );
         if ( configMapType.empty() == false ) {
             const cli::Config::RawData mapData = config.readSection( configMapType );
@@ -233,10 +233,10 @@ int main( int argc, char** argv ) {
 
         /// store generated level
         path outputLevelFile = "";
-        const Optional<std::string> outputPathParam    = parameters.getString( "output_path" );
-        const Optional<std::string> outputSubPathParam = parameters.getString( "output_subpath" );
-        const Optional<std::size_t> outputIdParam      = parameters.getSizeT( "output_id" );
-        const Optional<std::string> levelsPathParam    = parameters.getString( "levels_path" );
+        const Optional<std::string> outputPathParam    = parameters.getString( ParameterName::PN_OUTPUT_PATH );
+        const Optional<std::string> outputSubPathParam = parameters.getString( ParameterName::PN_OUTPUT_SUBPATH );
+        const Optional<std::size_t> outputIdParam      = parameters.getSizeT( ParameterName::PN_OUTPUT_ID );
+        const Optional<std::string> levelsPathParam    = parameters.getString( ParameterName::PN_LEVELS_PATH );
         if ( outputPathParam.isSet() ) {
             /// store in absolute path or path relative to work dir
             const path outputPath = outputPathParam.getValue();
@@ -303,7 +303,7 @@ int main( int argc, char** argv ) {
         }
 
         /// store preview image
-        const Optional<std::string> outputBmpParam = parameters.getString( "output_bmp" );
+        const Optional<std::string> outputBmpParam = parameters.getString( ParameterName::PN_OUTPUT_BMP );
         const std::string& bmpFile = outputBmpParam.getValue( "" );
         if ( bmpFile.empty() == false ) {
             path outputBmp = bmpFile;

@@ -15,6 +15,27 @@
 namespace dkmage {
 
     /**
+     *
+     */
+    enum class ParameterName {
+        PN_DATA_PATH,
+        PN_LEVELS_PATH,
+        PN_OUTPUT_ID,
+        PN_OUTPUT_PATH,
+        PN_OUTPUT_SUBPATH,
+        PN_OUTPUT_BMP,
+
+        PN_TYPE,
+        PN_SEED,
+        PN_GEMS_NUMBER,
+
+        PN_TEST_MODE
+    };
+
+    std::string getParameterName( const ParameterName parameter );
+
+
+    /**
      * Pre C++17 implementation of std::optional.
      */
     template <typename T>
@@ -108,13 +129,23 @@ namespace dkmage {
 
         bool isSet( const std::string& parameter ) const;
 
+        bool isSet( const ParameterName parameter ) const;
+
         Optional< std::string > getString( const std::string& parameter ) const;
+
+        Optional< std::string > getString( const ParameterName parameter ) const;
 
         std::string getString( const std::string& parameter, const std::string& defaultValue ) const;
 
+        std::string getString( const ParameterName parameter, const std::string& defaultValue ) const;
+
         Optional< std::size_t > getSizeT( const std::string& parameter ) const;
 
+        Optional< std::size_t > getSizeT( const ParameterName parameter ) const;
+
         std::size_t getSizeT( const std::string& parameter, const std::size_t defaultValue ) const;
+
+        std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 
     };
 
