@@ -10,8 +10,13 @@ BUILD_TYPE=Debug
 
 SRC_DIR=$SCRIPT_DIR/../src
 
-BUILD_DIR_NAME=$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
-BUILD_DIR=$SCRIPT_DIR/../build/win_$BUILD_DIR_NAME
+BUILD_DIR_NAME=
+if [ "$#" -ge 1 ]; then
+    BUILD_DIR_NAME="$1"
+else
+    BUILD_DIR_NAME=win_$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
+fi
+BUILD_DIR=$SCRIPT_DIR/../build/$BUILD_DIR_NAME
 
 
 ## remove old configuration
