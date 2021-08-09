@@ -58,7 +58,7 @@ namespace adiktedpp {
 
             LOG() << "invalid argument: " << (int)data;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)data;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
         }
 
@@ -100,7 +100,7 @@ namespace adiktedpp {
 
             LOG() << "invalid argument: " << (int)data;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)data;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
         }
 
@@ -115,7 +115,7 @@ namespace adiktedpp {
 
             LOG() << "invalid argument: " << (int)data;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)data;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
         }
 
@@ -132,7 +132,7 @@ namespace adiktedpp {
 
             LOG() << "invalid argument: " << (int)data;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)data;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
         }
 
@@ -161,7 +161,7 @@ namespace adiktedpp {
 
             LOG() << "invalid argument: " << (int)data;
             std::stringstream stream;
-            stream << FILE_NAME << "invalid argument: " << (int)data;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
         }
 

@@ -239,7 +239,7 @@ namespace adiktedpp {
             void setStateRaw( const adiktedpp::Player player, const TValue item, const int accessible, const int available ) {
                 if ( availablePlayers.count(player) < 1 ) {
                     std::stringstream stream;
-                    stream << FILE_NAME << "invalid argument -- unavailable player: " << (int)player;
+                    stream << FILE_NAME << ": invalid argument -- unavailable player: " << (int)player;
                     throw std::invalid_argument( stream.str() );
                 }
 

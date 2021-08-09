@@ -66,7 +66,7 @@ namespace dkmage {
         }
 
         std::stringstream stream;
-        stream << FILE_NAME << "invalid argument -- unavailable player: " << (int)parameter;
+        stream << FILE_NAME << ": invalid argument -- unavailable player: " << (int)parameter;
         LOG() << stream.str();
         throw std::invalid_argument( stream.str() );
     }

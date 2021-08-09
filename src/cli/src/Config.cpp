@@ -97,7 +97,7 @@ namespace cli {
         ExtendedINIReader reader( configPath );
         if (reader.ParseError() != 0) {
             std::stringstream stream;
-            stream << FILE_NAME << "Can't load '" << configPath << "'";
+            stream << FILE_NAME << ": can't load '" << configPath << "'";
             throw std::runtime_error( stream.str() );
         }
 
@@ -112,7 +112,7 @@ namespace cli {
         ExtendedINIReader reader( configPath );
         if (reader.ParseError() != 0) {
             std::stringstream stream;
-            stream << FILE_NAME << "Can't load '" << configPath << "'";
+            stream << FILE_NAME << ": can't load '" << configPath << "'";
             throw std::runtime_error( stream.str() );
         }
 
@@ -122,7 +122,7 @@ namespace cli {
         }
         if ( fieldData.empty() ) {
             std::stringstream stream;
-            stream << FILE_NAME << "Can't read '" << field << "' field in '" << section << "' section";
+            stream << FILE_NAME << ": can't read '" << field << "' field in '" << section << "' section";
             throw std::runtime_error( stream.str() );
         }
         return fieldData;

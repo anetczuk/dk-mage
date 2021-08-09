@@ -104,7 +104,7 @@ namespace adiktedpp {
         if ( activated ) {
             /// guard
             std::stringstream stream;
-            stream << FILE_NAME << "scope message already created";
+            stream << FILE_NAME << ": scope message already created";
             throw std::runtime_error( stream.str() );
         }
         activated = true;

@@ -185,7 +185,7 @@ namespace adiktedpp {
         std::string RawLevel::prepareMapName( const std::size_t mapId ) {
             if ( mapId > 99999 || mapId == 0 ) {
                 std::stringstream stream;
-                stream << FILE_NAME << "invalid argument -- map id outside range [1, 99999]: " << mapId;
+                stream << FILE_NAME << ": invalid argument -- map id outside range [1, 99999]: " << mapId;
                 throw std::invalid_argument( stream.str() );
             }
             std::stringstream name;
