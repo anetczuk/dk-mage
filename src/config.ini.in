@@ -52,7 +52,7 @@ levels_path =
 ## Example 2: ON8SJF3O
 #seed =
 
-## Map type, one of: cave maze herofortress
+## Map type, one of: cave maze herofortress random
 ## Type: single value or list of values
 ## Example 1: cave
 ## Example 2: cave,maze
@@ -91,6 +91,8 @@ levels_path =
 ## Max allowed value: 4
 #gem_faces_number = 1
 
+#init_gold_amount = 20000
+
 
 ##
 ## Additional, specific or overwritten paramters for 'maze' type.
@@ -102,6 +104,8 @@ levels_path =
 ## Max allowed value: 4
 #gem_faces_number = 2
 
+#init_gold_amount = 20000
+
 
 ##
 ## Additional, specific or overwritten paramters for 'herofortress' type.
@@ -112,4 +116,6 @@ levels_path =
 
 ## Max allowed value: 4
 #gem_faces_number = 2
+
+#init_gold_amount = 20000
 
