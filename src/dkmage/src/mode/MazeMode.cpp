@@ -44,73 +44,8 @@ namespace dkmage {
 
             prepareEnemyDungeon();
 
-            /// =========== scripting ===========
             LOG() << "preparing script";
-            script::Script script( level );
-            {
-                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
-                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
-                script.storeParameters( type, seed );
-            }
-
-            script.addLine( "" );
-            script.addLine( "SET_GENERATE_SPEED( 500 )" );
-
-            script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
-            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
-            script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
-
-            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-                initialGold += 200000;
-            }
-            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
-            script.setStartMoney( Player::P_P1, 250000 );                     /// does not show in treasure
-
-            script.addLine( "" );
-            script.setHeroCreaturesPool( 20 );
-
-            const std::set< Player > availablePlayers = { Player::P_P0, Player::P_P0 };
-
-            script::CreatureAvailableState availableCreatures( availablePlayers );
-            availableCreatures.setHeroAvailable( Player::P_P0 );
-
-            script::RoomsAvailableState availableRooms( availablePlayers );
-            availableRooms.setStandard();
-            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
-
-            /// necromancer mode
-            availableCreatures.setEvilAvailable( Player::P_P0, false );
-            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableMode::AM_DISABLED );
-
-            script::TrapAvailableState availableTraps( availablePlayers );
-            availableTraps.setAllAvailable( Player::P_ALL, true );
-            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
-
-            script.addLine( "" );
-            script.set( availableCreatures );
-
-            script.addLine( "" );
-            script.set( availableRooms );
-
-            script.addLine( "" );
-            script.setDoorsAvailable( Player::P_ALL, 0 );
-
-            script.addLine( "" );
-            script.set( availableTraps );
-
-            script.addLine( "" );
-            script.setMagicStandard( Player::P_ALL );
-
-            script.addLine( "" );
-            script.addLine( "" );
-            script.addLine( "REM --- main script ---" );
-            script.addLine( "" );
-            script.setWinConditionStandard( Player::P_P0 );
-
-            script.rebuild();
-
-            /// ========================================================
+            prepareScript();
 
             const bool valid = level.verifyMap();
             if ( valid == false ) {
@@ -368,6 +303,72 @@ namespace dkmage {
                 const Rect& roomRect = treasure->position();
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }
+        }
+
+        void void MazeMode::prepareScript() {
+            script::Script script( level );
+            {
+                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
+                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
+                script.storeParameters( type, seed );
+            }
+
+            script.addLine( "" );
+            script.addLine( "SET_GENERATE_SPEED( 500 )" );
+
+            script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
+            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
+            script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
+
+            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                initialGold += 200000;
+            }
+            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
+            script.setStartMoney( Player::P_P1, 250000 );                     /// does not show in treasure
+
+            script.addLine( "" );
+            script.setHeroCreaturesPool( 20 );
+
+            const std::set< Player > availablePlayers = { Player::P_P0, Player::P_P0 };
+
+            script::CreatureAvailableState availableCreatures( availablePlayers );
+            availableCreatures.setHeroAvailable( Player::P_P0 );
+
+            script::RoomsAvailableState availableRooms( availablePlayers );
+            availableRooms.setStandard();
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
+
+            /// necromancer mode
+            availableCreatures.setEvilAvailable( Player::P_P0, false );
+            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableMode::AM_DISABLED );
+
+            script::TrapAvailableState availableTraps( availablePlayers );
+            availableTraps.setAllAvailable( Player::P_ALL, true );
+            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
+
+            script.addLine( "" );
+            script.set( availableCreatures );
+
+            script.addLine( "" );
+            script.set( availableRooms );
+
+            script.addLine( "" );
+            script.setDoorsAvailable( Player::P_ALL, 0 );
+
+            script.addLine( "" );
+            script.set( availableTraps );
+
+            script.addLine( "" );
+            script.setMagicStandard( Player::P_ALL );
+
+            script.addLine( "" );
+            script.addLine( "" );
+            script.addLine( "REM --- main script ---" );
+            script.addLine( "" );
+            script.setWinConditionStandard( Player::P_P0 );
+
+            script.rebuild();
         }
 
     } /* namespace mode */

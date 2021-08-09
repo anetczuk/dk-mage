@@ -39,66 +39,8 @@ namespace dkmage {
 
             preparePlayerDungeon();
 
-            /// =========== scripting ===========
             LOG() << "preparing script";
-            script::Script script( level );
-            {
-                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
-                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
-                script.storeParameters( type, seed );
-            }
-
-            script.addLine( "" );
-            script.addLine( "SET_GENERATE_SPEED( 500 )" );
-            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
-
-            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-                initialGold += 200000;
-            }
-            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
-
-            script.addLine( "" );
-            script.addLine( "" );
-            const std::set< Player > availablePlayers = { Player::P_P0 };
-
-            script::CreatureAvailableState availableCreatures( availablePlayers );
-            availableCreatures.setEvilAvailable( Player::P_P0 );
-            script.set( availableCreatures );
-
-            script.addLine( "" );
-            script::RoomsAvailableState availableRooms( availablePlayers );
-            availableRooms.setStandard();
-            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
-            script.set( availableRooms );
-
-            script.addLine( "" );
-            script.setDoorsAvailable( Player::P_ALL, 0 );
-
-            script.addLine( "" );
-//            script.setTrapsAvailable( Player::P_ALL, 0 );
-            script::TrapAvailableState availableTraps( availablePlayers );
-            availableTraps.setAllAvailable( Player::P_ALL, true );
-            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
-            script.set( availableTraps );
-
-            script.addLine( "" );
-//            script.setMagicStandard( Player::P_ALL );
-            script::MagicAvailableState availableMagic( availablePlayers );
-            availableMagic.setStandard( Player::P_ALL );
-            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
-            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
-            script.set( availableMagic );
-
-            script.addLine( "" );
-            script.addLine( "" );
-            script.addLine( "REM --- main script ---" );
-            script.addLine( "" );
-            script.setWinConditionStandard( Player::P_P0 );
-
-            script.rebuild();
-
-            /// ========================================================
+            prepareScript();
 
             const bool valid = level.verifyMap();
             if ( valid == false ) {
@@ -448,6 +390,65 @@ namespace dkmage {
             }
 
             return true;
+        }
+
+        void void HeroFortressMode::prepareScript() {
+            script::Script script( level );
+            {
+                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
+                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
+                script.storeParameters( type, seed );
+            }
+
+            script.addLine( "" );
+            script.addLine( "SET_GENERATE_SPEED( 500 )" );
+            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
+
+            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                initialGold += 200000;
+            }
+            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
+
+            script.addLine( "" );
+            script.addLine( "" );
+            const std::set< Player > availablePlayers = { Player::P_P0 };
+
+            script::CreatureAvailableState availableCreatures( availablePlayers );
+            availableCreatures.setEvilAvailable( Player::P_P0 );
+            script.set( availableCreatures );
+
+            script.addLine( "" );
+            script::RoomsAvailableState availableRooms( availablePlayers );
+            availableRooms.setStandard();
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
+            script.set( availableRooms );
+
+            script.addLine( "" );
+            script.setDoorsAvailable( Player::P_ALL, 0 );
+
+            script.addLine( "" );
+//            script.setTrapsAvailable( Player::P_ALL, 0 );
+            script::TrapAvailableState availableTraps( availablePlayers );
+            availableTraps.setAllAvailable( Player::P_ALL, true );
+            availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
+            script.set( availableTraps );
+
+            script.addLine( "" );
+//            script.setMagicStandard( Player::P_ALL );
+            script::MagicAvailableState availableMagic( availablePlayers );
+            availableMagic.setStandard( Player::P_ALL );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
+            script.set( availableMagic );
+
+            script.addLine( "" );
+            script.addLine( "" );
+            script.addLine( "REM --- main script ---" );
+            script.addLine( "" );
+            script.setWinConditionStandard( Player::P_P0 );
+
+            script.rebuild();
         }
 
     } /* namespace mode */

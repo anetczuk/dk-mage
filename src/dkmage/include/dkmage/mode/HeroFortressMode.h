@@ -35,6 +35,8 @@ namespace dkmage {
 
             bool prepareEnemyDungeon();
 
+            void prepareScript();
+
         };
 
     } /* namespace mode */
