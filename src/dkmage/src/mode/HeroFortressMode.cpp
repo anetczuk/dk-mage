@@ -248,12 +248,15 @@ namespace dkmage {
                 const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
 
                 const Point bridgeDirection = movePoint( Point(0, 0), entranceDirection, 1 );
+                const Point bridgeOrtho     = bridgeDirection.swapped();
                 Point bridgePoint = entrancePoint + bridgeDirection;
 
                 std::set< Point > heighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
                 heighbourDirections.erase( -bridgeDirection );
 
+                std::size_t i = 0;
                 while( true ) {
+                    ++i;
                     if ( level.isSlab( bridgePoint, Slab::S_EARTH ) ) {
                         /// shore found
                         break;
@@ -265,7 +268,12 @@ namespace dkmage {
                     }
 
                     level.setSlab( bridgePoint, Slab::S_PATH );
+                    level.setCreature( bridgePoint, 1, Creature::C_FAIRY, 2, 6, Player::P_GOOD );
+                    if ( i == 1 ) {
+                        level.setCreature( bridgePoint, 4, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
+                    }
 
+                    /// search for shore
                     bool shoreFound = false;
                     for ( const Point item: heighbourDirections ) {
                         if ( level.isSlab( bridgePoint + item, Slab::S_EARTH ) ) {
@@ -278,18 +286,30 @@ namespace dkmage {
                         break;
                     }
 
+                    /// add turrets
+                    if ( i % 2 == 0 ) {
+                        {
+                            const Point guardPosition = bridgePoint + bridgeOrtho * 2;
+                            const Rect guardPost( guardPosition, 3, 3 );
+                            level.setSlab( guardPost, Slab::S_LAVA );
+                            level.setSlab( guardPosition, Slab::S_PATH );
+                            level.setCreature( guardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                            level.setCreature( guardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                            level.setCreature( guardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                        }
+                        {
+                            const Point guardPosition = bridgePoint - bridgeOrtho * 2;
+                            const Rect guardPost( guardPosition, 3, 3 );
+                            level.setSlab( guardPost, Slab::S_LAVA );
+                            level.setSlab( guardPosition, Slab::S_PATH );
+                            level.setCreature( guardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                            level.setCreature( guardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                            level.setCreature( guardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                        }
+                    }
+
                     bridgePoint += bridgeDirection;
                 }
-
-//                while( level.isSlab( bridgePoint, Slab::S_LAVA ) ) {
-//                    level.setSlab( bridgePoint, Slab::S_EARTH );
-//                    bridgePoint += bridgeDirection;
-//                }
-//                if ( level.isSlab( bridgePoint, Slab::S_EARTH ) == false ) {
-//                    /// bridge didn't reach lake's shore -- dungeon invalid
-//                    LOG() << "unable find bridge shore";
-//                    return false;
-//                }
 
                 level.setDoor( entrancePoint, Door::D_IRON, true );
             }

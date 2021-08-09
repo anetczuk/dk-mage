@@ -59,6 +59,13 @@ namespace utils {
             return newPoint;
         }
 
+        Point operator*( const int factor ) const {
+            Point newPoint = *this;
+            newPoint.x *= factor;
+            newPoint.y *= factor;
+            return newPoint;
+        }
+
         Point& operator+=( const Point& data ) {
             x += data.x;
             y += data.y;
@@ -73,6 +80,10 @@ namespace utils {
         Point diff( const Point& point ) const;
 
         std::size_t distance( const Point& point ) const;
+
+        Point swapped() const {
+            return Point( y, x );
+        }
 
     };
 
