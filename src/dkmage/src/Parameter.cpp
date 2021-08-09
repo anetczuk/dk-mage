@@ -14,9 +14,9 @@ namespace dkmage {
         switch( parameter ) {
         case ParameterName::PN_DATA_PATH:       return "data_path";
         case ParameterName::PN_LEVELS_PATH:     return "levels_path";
-        case ParameterName::PN_OUTPUT_ID:       return "output_id";
         case ParameterName::PN_OUTPUT_PATH:     return "output_path";
         case ParameterName::PN_OUTPUT_SUBPATH:  return "output_subpath";
+        case ParameterName::PN_OUTPUT_ID:       return "output_id";
         case ParameterName::PN_OUTPUT_BMP:      return "output_bmp";
 
         case ParameterName::PN_SEED:                return "seed";
@@ -32,6 +32,27 @@ namespace dkmage {
         stream << FILE_NAME << "invalid argument -- unavailable player: " << (int)parameter;
         LOG() << stream.str();
         throw std::invalid_argument( stream.str() );
+    }
+
+    const std::set< ParameterName >& getAllParameterNames() {
+        static std::set< ParameterName > data;
+        if ( data.empty() ) {
+            data.insert( ParameterName::PN_DATA_PATH );
+            data.insert( ParameterName::PN_LEVELS_PATH );
+            data.insert( ParameterName::PN_OUTPUT_PATH );
+            data.insert( ParameterName::PN_OUTPUT_SUBPATH );
+            data.insert( ParameterName::PN_OUTPUT_ID );
+            data.insert( ParameterName::PN_OUTPUT_BMP );
+
+            data.insert( ParameterName::PN_SEED );
+            data.insert( ParameterName::PN_TYPE );
+            data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
+            data.insert( ParameterName::PN_GEM_FACES_NUMBER );
+            data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
+
+            data.insert( ParameterName::PN_TEST_MODE );
+        }
+        return data;
     }
 
     /// ==============================

@@ -273,6 +273,7 @@ int main( int argc, char** argv ) {
                 outputLevelFile           = mapName;
             }
         } else {
+            /// auto mode
             const std::string levelsPath = levelsPathParam.value_or( "" );                     /// yes, copy
             const std::string mapName    = findFreeMapName( levelsPath );
             if ( levelsPath.empty() == false ) {

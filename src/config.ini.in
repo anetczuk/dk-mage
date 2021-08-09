@@ -2,24 +2,78 @@
 ## Generator's configuration file.
 ##
 
-[general]
+[GENERAL]
 
 ## Path to DK1 Original or Gold version 'data' directory. Field is required.
-data_path=
+data_path =
 
 ## Generated maps default output directory. Field optional (maps will be stored to work directory if empty).
 ## The behaviour can be overriden by "--output_path" cmd parameter.
-levels_path=
+levels_path =
+
+## Path to map's output file (absolute or relative to work dir), e.g. /path/to/map03333
+#output_path =
+
+## Path to map's output file relative to 'level_path' config field.  
+#output_subpath =
+
+## Id of output map (will be placed in game's level directory).
+## For example giving id '3333' will produce/overwrite 'map03333' inside 'levels_path' directory.
+#output_id =
+
+## Priority of 'output_' parameters: 'output_path', 'output_subpath', 'output_id'. If none given then 'auto' mode applies.
+
+## Path to additional BMP preview of generated map.
+#output_bmp =
+
+## Seed for random number generator. For given it always generate the same map. Can be any string of phase, e.g. 'Evil map' or 'ON8SJF3O'.
+#seed =
+
+## Map type, one of: cave maze herofortress random
+#type =
+
+## Number of gold slabs initailly available for human player.
+#gold_slabs_number =
+
+## Number of gem faces initailly available for human player.
+#gem_faces_number =
+
+## Initial gold amount for human player.
+#init_gold_amount =
+
+## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. Parameter accepts any or empty string.
+#test_mode =
 
 
-## additional, specific or overwritten paramters for 'cave' type
-[cave]
+##
+## Additional, specific or overwritten paramters for 'cave' type.
+##
+[CAVE]
+
+#gold_slabs_number = 80
+
+## Max allowed value: 4
+#gem_faces_number = 1
 
 
-## additional, specific or overwritten paramters for 'maze' type
-[maze]
+##
+## Additional, specific or overwritten paramters for 'maze' type.
+##
+[MAZE]
+
+#gold_slabs_number = 40
+
+## Max allowed value: 4
+#gem_faces_number = 1
 
 
-## additional, specific or overwritten paramters for 'herofortress' type
-[herofortress]
+##
+## Additional, specific or overwritten paramters for 'herofortress' type.
+##
+[HEROFORTRESS]
+
+#gold_slabs_number = 40
+
+## Max allowed value: 4
+#gem_faces_number = 1
 

@@ -9,7 +9,7 @@
 /// inclusion: #include "dkmage/Parameter.h"
 
 #include <map>
-#include <optional>
+#include <set>
 
 
 namespace dkmage {
@@ -20,9 +20,9 @@ namespace dkmage {
     enum class ParameterName {
         PN_DATA_PATH,
         PN_LEVELS_PATH,
-        PN_OUTPUT_ID,
         PN_OUTPUT_PATH,
         PN_OUTPUT_SUBPATH,
+        PN_OUTPUT_ID,
         PN_OUTPUT_BMP,
 
         PN_SEED,
@@ -33,6 +33,8 @@ namespace dkmage {
 
         PN_TEST_MODE
     };
+
+    const std::set< ParameterName >& getAllParameterNames();
 
     std::string getParameterName( const ParameterName parameter );
 
