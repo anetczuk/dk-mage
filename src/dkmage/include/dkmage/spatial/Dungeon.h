@@ -201,6 +201,8 @@ namespace dkmage {
                 }
             }
 
+            using Spatialtem::move;
+
             std::string print();
 
         };

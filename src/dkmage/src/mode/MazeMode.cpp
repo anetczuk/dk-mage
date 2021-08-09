@@ -189,10 +189,15 @@ namespace dkmage {
 
             dungeon.moveToBottomEdge( 4 );
 
-//                LOG() << "dungeon:\n" << dungeon.print();
-
-            /// dungeon have to be drawn before placing items inside it's rooms
-            drawDungeon( level, dungeon );
+            {
+                /// randomize dungeon position
+                Rect randRect( 25, 11 );
+                randRect.centerize();
+                randRect.moveBottomTo( 0 );
+                const std::size_t randomPosIndex = rand() % randRect.area();
+                const Point center = randRect.pointByIndex( randomPosIndex );
+                dungeon.move( center );
+            }
 
             {
                 /// add gold vein
@@ -206,14 +211,23 @@ namespace dkmage {
                 generateLeftGoldVein( goldSlabsNum, gemsNum );
             }
 
+            /// dungeon have to be drawn before placing items inside it's rooms
+            drawDungeon( level, dungeon );
+
             const spatial::DungeonRoom* heart = dungeon.room( 0 );
             const Point firstCenter = heart->position().center();
-            const Rect bbox = dungeon.boundingBox();
 
-            /// add neutral portal
-            const Point portalCenter( bbox.max.x + 16, firstCenter.y );
-            const Rect portalRect( portalCenter, 3, 3 );
-            level.setRoom( portalRect, Room::R_PORTAL );
+            {
+                /// add neutral portal
+                const Rect mapRect = raw::RawLevel::mapRect();
+                Rect randRect( 25, 11 );
+                randRect.moveRightTo( mapRect.max.x - 7 );
+                randRect.moveBottomTo( mapRect.max.y - 3 );
+                const std::size_t randomPosIndex = rand() % randRect.area();
+                const Point portalCenter = randRect.pointByIndex( randomPosIndex );
+                const Rect portalRect( portalCenter, 3, 3 );
+                level.setRoom( portalRect, Room::R_PORTAL );
+            }
 
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
