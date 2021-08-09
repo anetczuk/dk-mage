@@ -33,6 +33,10 @@ namespace adiktedpp {
 
     public:
 
+        const raw::RawLevel& getRawLevel() const {
+            return rawLevel;
+        }
+
         raw::RawLevel& getRawLevel() {
             return rawLevel;
         }

@@ -18,6 +18,7 @@ namespace dkmage {
      *
      */
     enum class ParameterName {
+        PN_CONFIG,
         PN_DATA_PATH,
         PN_LEVELS_PATH,
         PN_OUTPUT_PATH,
@@ -36,7 +37,14 @@ namespace dkmage {
 
     const std::set< ParameterName >& getAllParameterNames();
 
+    /**
+     * User specific parameters (e.g. paths) that does not affect map content itself.
+     */
+    const std::set< ParameterName >& getLocalParameterNames();
+
     std::string getParameterName( const ParameterName parameter );
+
+    std::set< std::string > getParameterName( const std::set< ParameterName >& parameters );
 
 
     /**
@@ -123,6 +131,10 @@ namespace dkmage {
     public:
 
         ParametersMap() {
+        }
+
+        const Data& rawData() const {
+            return data;
         }
 
         void appendData( const Data& parameters );

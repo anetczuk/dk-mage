@@ -56,10 +56,12 @@ namespace dkmage {
             LOG() << "storing level in: " << levelPath;
             const bool saved = level.saveMapByPath( levelPath );
         //    const bool saved = level.saveMapById( 333 );
-            LOG() << "is map saved: " << saved;
             if ( saved == false ) {
+                LOG() << "unable to save map: " << saved;
                 return ;
             }
+            writeIniFile();
+            LOG() << "map saved";
         }
 
         void storePreview( const std::string& filePath ) override {
@@ -69,6 +71,11 @@ namespace dkmage {
                 messages.readRecent();
             }
         }
+
+
+    protected:
+
+        void writeIniFile() const;
 
     };
 

@@ -10,8 +10,45 @@
 
 namespace dkmage {
 
+    const std::set< ParameterName >& getAllParameterNames() {
+        static std::set< ParameterName > data;
+        if ( data.empty() ) {
+            data.insert( ParameterName::PN_CONFIG );
+            data.insert( ParameterName::PN_DATA_PATH );
+            data.insert( ParameterName::PN_LEVELS_PATH );
+            data.insert( ParameterName::PN_OUTPUT_PATH );
+            data.insert( ParameterName::PN_OUTPUT_SUBPATH );
+            data.insert( ParameterName::PN_OUTPUT_ID );
+            data.insert( ParameterName::PN_OUTPUT_BMP );
+
+            data.insert( ParameterName::PN_SEED );
+            data.insert( ParameterName::PN_TYPE );
+            data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
+            data.insert( ParameterName::PN_GEM_FACES_NUMBER );
+            data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
+
+            data.insert( ParameterName::PN_TEST_MODE );
+        }
+        return data;
+    }
+
+    const std::set< ParameterName >& getLocalParameterNames() {
+        static std::set< ParameterName > data;
+        if ( data.empty() ) {
+            data.insert( ParameterName::PN_CONFIG );
+            data.insert( ParameterName::PN_DATA_PATH );
+            data.insert( ParameterName::PN_LEVELS_PATH );
+            data.insert( ParameterName::PN_OUTPUT_PATH );
+            data.insert( ParameterName::PN_OUTPUT_SUBPATH );
+            data.insert( ParameterName::PN_OUTPUT_ID );
+            data.insert( ParameterName::PN_OUTPUT_BMP );
+        }
+        return data;
+    }
+
     std::string getParameterName( const ParameterName parameter ) {
         switch( parameter ) {
+        case ParameterName::PN_CONFIG:          return "config";
         case ParameterName::PN_DATA_PATH:       return "data_path";
         case ParameterName::PN_LEVELS_PATH:     return "levels_path";
         case ParameterName::PN_OUTPUT_PATH:     return "output_path";
@@ -34,25 +71,13 @@ namespace dkmage {
         throw std::invalid_argument( stream.str() );
     }
 
-    const std::set< ParameterName >& getAllParameterNames() {
-        static std::set< ParameterName > data;
-        if ( data.empty() ) {
-            data.insert( ParameterName::PN_DATA_PATH );
-            data.insert( ParameterName::PN_LEVELS_PATH );
-            data.insert( ParameterName::PN_OUTPUT_PATH );
-            data.insert( ParameterName::PN_OUTPUT_SUBPATH );
-            data.insert( ParameterName::PN_OUTPUT_ID );
-            data.insert( ParameterName::PN_OUTPUT_BMP );
-
-            data.insert( ParameterName::PN_SEED );
-            data.insert( ParameterName::PN_TYPE );
-            data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
-            data.insert( ParameterName::PN_GEM_FACES_NUMBER );
-            data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
-
-            data.insert( ParameterName::PN_TEST_MODE );
+    std::set< std::string > getParameterName( const std::set< ParameterName >& parameters ) {
+        std::set< std::string > ret;
+        for ( const auto item: parameters ) {
+            const std::string name = getParameterName( item );
+            ret.insert( name );
         }
-        return data;
+        return ret;
     }
 
     /// ==============================
