@@ -13,6 +13,8 @@
 
 #include "utils/Set.h"
 
+#include <cmath>
+
 
 using namespace utils;
 using namespace adiktedpp;
@@ -257,17 +259,35 @@ namespace dkmage {
             const Rect portalRect( portalCenter, 3, 3 );
             level.setRoom( portalRect, Room::R_PORTAL );
 
-            /// add gold vein
-            const Rect mapRect = raw::RawLevel::mapRect();
-            const int veinY = mapRect.max.y - 4;
-            const Point veinCenter( bbox.min.x - 20, veinY );
-            const Rect veinRect( veinCenter, 9, 5 );
+            {
+                /// add gold vein
+                std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 40 );
+                LOG() << "gold slabs number: " << goldSlabsNum;
 
-            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 2 );
-            gemsNum = std::min( gemsNum, (std::size_t)4 );
-            LOG() << "gems number: " << gemsNum;
+                std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
+                gemsNum = std::min( gemsNum, (std::size_t)4 );
+                LOG() << "gems number: " << gemsNum;
 
-            drawGoldVein( level, veinRect, gemsNum );
+                const std::size_t leftVeinGold = goldSlabsNum;
+                const std::size_t leftVeinDimm = (std::size_t) sqrt( leftVeinGold ) * 1.5;
+                const Rect mapRect = raw::RawLevel::mapRect();
+                Rect leftVeinRect( leftVeinDimm, leftVeinDimm );
+                leftVeinRect.move( 10, 0 );
+                leftVeinRect.moveBottomTo( mapRect.max.y );
+                drawGoldVein( level, leftVeinRect, leftVeinGold, gemsNum );
+            }
+
+//            /// add gold vein
+//            const Rect mapRect = raw::RawLevel::mapRect();
+//            const int veinY = mapRect.max.y - 4;
+//            const Point veinCenter( bbox.min.x - 20, veinY );
+//            const Rect veinRect( veinCenter, 9, 5 );
+//
+//            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 2 );
+//            gemsNum = std::min( gemsNum, (std::size_t)4 );
+//            LOG() << "gems number: " << gemsNum;
+//
+//            drawGoldVein( level, veinRect, gemsNum );
 
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {

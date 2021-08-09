@@ -69,61 +69,64 @@ namespace dkmage {
     }
 
     void drawGoldVein( Level& level, const Rect& veinRect, const std::size_t gemFaces ) {
+        const std::size_t veinSize = veinRect.area() * 0.7;
+        drawGoldVein( level, veinRect, veinSize, gemFaces );
+    }
+
+    void drawGoldVein( Level& level, const Rect& veinRect, const std::size_t goldSlabs, const std::size_t gemFaces ) {
+        if ( gemFaces == 0 ) {
+            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
+            return ;
+        }
+
         const Point veinCenter = veinRect.center();
 
+        Point gemCenter;
         int veinDir = 1;
         const Rect mapSize = raw::RawLevel::mapSize();
         if ( veinCenter.y > mapSize.center().y / 2 ) {
             /// on south
             veinDir = 1;
+            gemCenter = veinRect.centerBottom();
         } else {
             /// on north
             veinDir = -1;
+            gemCenter = veinRect.centerTop();
         }
 
-        const std::size_t veinSize = veinRect.area() * 0.7;
         switch( gemFaces ) {
-        case 0: {
-            level.setCave( veinRect, Slab::S_GOLD, veinSize );
-            break;
-        }
         case 1: {
-            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );
-            const Rect gemRect( gemCenter, 3, 3 );
-            level.setSlab( gemRect, Slab::S_ROCK );
-            level.setCave( veinRect, Slab::S_GOLD, veinSize );
+            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
-            level.setSlab( gemCenter.x, gemCenter.y - veinDir * 1, Slab::S_GOLD );          /// ensure available face
+            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
+            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
             break;
         }
         case 2: {
-            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 2 faces
-            const Rect gemRect( gemCenter, 3, 3 );
-            level.setSlab( gemRect, Slab::S_GOLD );
-            level.setCave( veinRect, Slab::S_GOLD, veinSize );
+            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
-            const Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
-            level.setSlab( rect, Slab::S_ROCK );
-            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );
+            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
+            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
             break;
         }
         case 3: {
-            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 3 );                              /// 3 faces
-            const Rect gemRect( gemCenter, 3, 3 );
-            level.setSlab( gemRect, Slab::S_GOLD );
-            level.setCave( veinRect, Slab::S_GOLD, veinSize );
+            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
-            const Rect rect( gemCenter.x - 1, gemCenter.y + veinDir * 1, gemCenter.x + 1, gemCenter.y + veinDir * 1 );
-            level.setSlab( rect, Slab::S_ROCK );
+            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
+            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
+            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
             break;
         }
         case 4: {
-            const Point gemCenter( veinCenter.x, veinCenter.y + veinDir * 2 );
-//            level.setSlab( gemCenter - Point( 2, 0), Slab::S_EARTH );                       /// make nicer shape
-//            level.setSlab( gemCenter + Point( 2, 0), Slab::S_EARTH );                       /// make nicer shape
+            gemCenter -= Point(0, veinDir);
             const Rect gemRect( gemCenter, 3, 3 );
-            level.setSlab( gemRect, Slab::S_GOLD );
-            level.setCave( veinRect, Slab::S_GOLD, veinSize );
+            level.setSlab( gemRect, Slab::S_EARTH );
+            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
             break;
         }

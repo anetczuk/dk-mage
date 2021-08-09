@@ -25,8 +25,9 @@ namespace dkmage {
         PN_OUTPUT_SUBPATH,
         PN_OUTPUT_BMP,
 
-        PN_TYPE,
         PN_SEED,
+        PN_TYPE,
+        PN_GOLD_SLABS_NUMBER,
         PN_GEM_FACES_NUMBER,
 
         PN_TEST_MODE

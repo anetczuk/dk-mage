@@ -167,6 +167,10 @@ namespace utils {
             max.y += offsetY;
         }
 
+        void move( const Point offset ) {
+            move( offset.x, offset.y );
+        }
+
         Rect moved( const Point offset ) const {
             return moved( offset.x, offset.y );
         }
@@ -177,8 +181,14 @@ namespace utils {
             return r;
         }
 
-        void move( const Point offset ) {
-            move( offset.x, offset.y );
+        void moveRightTo( const int xCoord ) {
+            const int xOffset = xCoord - max.x;
+            move( xOffset, 0 );
+        }
+
+        void moveBottomTo( const int yCoord ) {
+            const int yOffset = yCoord - max.y;
+            move( 0, yOffset );
         }
 
         void centerize() {

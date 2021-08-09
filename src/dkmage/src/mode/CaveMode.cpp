@@ -12,6 +12,8 @@
 
 #include "utils/Set.h"
 
+#include <cmath>
+
 
 using namespace utils;
 using namespace adiktedpp;
@@ -156,21 +158,30 @@ namespace dkmage {
             const Rect portalRect( portalCenter, 3, 3 );
             level.setRoom( portalRect, Room::R_PORTAL );
 
-            /// add gold vein
-            const Rect mapRect = raw::RawLevel::mapRect();
-            const int veinY = mapRect.max.y - 4;
-            const Point leftVeinCenter( bbox.min.x - 20, veinY );
-            const Rect leftVeinRect( leftVeinCenter, 9, 5 );
+            {
+                /// add gold vein
+                std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 80 );
+                LOG() << "gold slabs number: " << goldSlabsNum;
 
-            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
-            gemsNum = std::min( gemsNum, (std::size_t)4 );
-            LOG() << "gems number: " << gemsNum;
+                std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
+                gemsNum = std::min( gemsNum, (std::size_t)4 );
+                LOG() << "gems number: " << gemsNum;
 
-            drawGoldVein( level, leftVeinRect, gemsNum );
+                const std::size_t leftVeinGold = goldSlabsNum / 3;
+                const std::size_t leftVeinDimm = (std::size_t) sqrt( leftVeinGold ) * 1.5;
+                const Rect mapRect = raw::RawLevel::mapRect();
+                Rect leftVeinRect( leftVeinDimm, leftVeinDimm );
+                leftVeinRect.move( 10, 0 );
+                leftVeinRect.moveBottomTo( mapRect.max.y );
+                drawGoldVein( level, leftVeinRect, leftVeinGold, gemsNum );
 
-            const Point rightVeinCenter( std::min(bbox.max.x + 28, 78 ), veinY );
-            const Rect rightVeinRect( rightVeinCenter, 9, 6 );
-            drawGoldVein( level, rightVeinRect, 0 );
+                const std::size_t rightVeinGold = goldSlabsNum - leftVeinGold;
+                const std::size_t rightVeinDimm = (std::size_t) sqrt( rightVeinGold ) * 1.5;
+                Rect rightVeinRect( rightVeinDimm, rightVeinDimm );
+                rightVeinRect.moveRightTo( mapRect.max.x );
+                rightVeinRect.moveBottomTo( mapRect.max.y );
+                drawGoldVein( level, rightVeinRect, rightVeinGold, 0 );
+            }
 
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
