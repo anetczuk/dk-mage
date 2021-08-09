@@ -19,9 +19,9 @@ namespace dkmage {
         case ParameterName::PN_OUTPUT_SUBPATH:  return "output_subpath";
         case ParameterName::PN_OUTPUT_BMP:      return "output_bmp";
 
-        case ParameterName::PN_TYPE:        return "type";
-        case ParameterName::PN_SEED:        return "seed";
-        case ParameterName::PN_GEMS_NUMBER: return "gems_number";
+        case ParameterName::PN_TYPE:             return "type";
+        case ParameterName::PN_SEED:             return "seed";
+        case ParameterName::PN_GEM_FACES_NUMBER: return "gem_faces_number";
 
         case ParameterName::PN_TEST_MODE:   return "test_mode";
         }

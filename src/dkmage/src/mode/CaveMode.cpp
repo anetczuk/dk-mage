@@ -162,7 +162,7 @@ namespace dkmage {
             const Point leftVeinCenter( bbox.min.x - 20, veinY );
             const Rect leftVeinRect( leftVeinCenter, 9, 5 );
 
-            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEMS_NUMBER, 1 );
+            std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
             gemsNum = std::min( gemsNum, (std::size_t)4 );
             LOG() << "gems number: " << gemsNum;
 

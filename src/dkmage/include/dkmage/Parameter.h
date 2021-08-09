@@ -27,7 +27,7 @@ namespace dkmage {
 
         PN_TYPE,
         PN_SEED,
-        PN_GEMS_NUMBER,
+        PN_GEM_FACES_NUMBER,
 
         PN_TEST_MODE
     };
