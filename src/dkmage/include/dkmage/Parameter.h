@@ -147,19 +147,26 @@ namespace dkmage {
 
         bool isSet( const ParameterName parameter ) const;
 
+        /// returns raw parameter string
+        Optional< std::string > getRawString( const std::string& parameter ) const;
+
+        std::string getRawString( const ParameterName parameter, const std::string& defaultValue ) const;
+
+        /// handles lists of strings separated by comma
         Optional< std::string > getString( const std::string& parameter ) const;
 
+        /// handles lists of strings separated by comma
         Optional< std::string > getString( const ParameterName parameter ) const;
 
+        /// handles lists of strings separated by comma
         std::string getString( const std::string& parameter, const std::string& defaultValue ) const;
 
+        /// handles lists of strings separated by comma
         std::string getString( const ParameterName parameter, const std::string& defaultValue ) const;
 
         Optional< std::size_t > getSizeT( const std::string& parameter ) const;
 
         Optional< std::size_t > getSizeT( const ParameterName parameter ) const;
-
-        std::size_t getSizeT( const std::string& parameter, const std::size_t defaultValue ) const;
 
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 

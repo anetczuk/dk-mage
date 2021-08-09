@@ -7,6 +7,9 @@
 
 #include "utils/Log.h"
 
+#include <vector>
+#include <string.h>
+
 
 namespace dkmage {
 
@@ -87,6 +90,87 @@ namespace dkmage {
 
     /// ==============================
 
+    static std::vector< std::string > parseList( const std::string& rawData, const char* delimiter ) {
+        std::vector< std::string > list;
+        char* dup   = strdup( rawData.c_str() );
+        char* token = strtok( dup, delimiter );             /// note: function is not thread safe nor reentrant, so running in parallel unsupported
+        while ( token != NULL ) {
+            list.push_back( token );
+            token = strtok( NULL, delimiter );
+        }
+        free(dup);
+
+//        char* rest = str;
+//
+//        while ((token = strtok_r(rest, " ", &rest)))
+//            printf("%s\n", token);
+
+        return list;
+    }
+
+    static std::string randomFromList( const std::vector< std::string >& stringList ) {
+        const std::size_t listSize = stringList.size();
+        switch( listSize ) {
+        case 0: return "";
+        case 1: return stringList[0];
+        }
+        const std::size_t listIndex = rand() % listSize;
+        const std::string& listItem = stringList[ listIndex ];
+        return listItem;
+    }
+
+    /// 'rawData' is single number or range in format '{num}:{num}'
+    static std::vector< int > handleRange( const std::string& rawData ) {
+        const std::vector< std::string > stringList = parseList( rawData, ":" );
+        const std::string listItem = randomFromList( stringList );
+        if ( listItem.empty() ) {
+            return {};
+        }
+        const int number = stoi( listItem );
+        return { number };
+    }
+
+    /// parse unsigned number or unsigned range
+    static int parseUnsigned( const std::string& parameter, const std::string& rawData ) {
+        const std::vector< int > range = handleRange( rawData );
+        const std::size_t rSize = range.size();
+        if ( rSize == 1 ) {
+            return range[ 0 ];
+        }
+        if ( range.size() != 2 ) {
+            std::stringstream stream;
+            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- format not match {number}:{number}, passed: " << rawData;
+            LOG() << stream.str();
+            throw std::invalid_argument( stream.str() );
+        }
+        const int rangeFrom = range[ 0 ];
+        if ( rangeFrom < 0 ) {
+            std::stringstream stream;
+            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- lower range have not be negative, passed: " << rawData;
+            LOG() << stream.str();
+            throw std::invalid_argument( stream.str() );
+        }
+        const int rangeTo   = range[ 1 ];
+        if ( rangeTo < 0 ) {
+            std::stringstream stream;
+            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- upper range have not be negative, passed: " << rawData;
+            LOG() << stream.str();
+            throw std::invalid_argument( stream.str() );
+        }
+        const int diff = rangeTo - rangeFrom;
+        if ( diff < 0 ) {
+            std::stringstream stream;
+            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
+            LOG() << stream.str();
+            throw std::invalid_argument( stream.str() );
+        }
+        if ( diff == 0 ) {
+            return (std::size_t) rangeFrom;
+        }
+        const int number = rangeFrom + rand() % ( diff + 1 );
+        return (std::size_t) number;
+    }
+
     void ParametersMap::appendData( const Data& parameters ) {
         auto iter  = parameters.begin();
         auto eiter = parameters.end();
@@ -116,12 +200,35 @@ namespace dkmage {
         return isSet( parameterName );
     }
 
-    Optional< std::string > ParametersMap::getString( const std::string& parameter ) const {
+    Optional< std::string > ParametersMap::getRawString( const std::string& parameter ) const {
         auto iter = data.find( parameter );
         if ( iter == data.end() ) {
             return {};
         }
         return iter->second;
+    }
+
+    std::string ParametersMap::getRawString( const ParameterName parameter, const std::string& defaultValue ) const {
+        const std::string parameterName = getParameterName( parameter );
+        auto iter = data.find( parameterName );
+        if ( iter == data.end() ) {
+            return defaultValue;
+        }
+        if ( iter->second.empty() == false ) {
+            return iter->second;
+        }
+        return defaultValue;
+    }
+
+    Optional< std::string > ParametersMap::getString( const std::string& parameter ) const {
+        Optional< std::string > rawData = getRawString( parameter );
+        if ( rawData.has_value() == false ) {
+            return {};
+        }
+        const std::string& value = rawData.value();
+        const std::vector< std::string > stringList = parseList( value, "," );
+        const std::string listItem = randomFromList( stringList );
+        return listItem;
     }
 
     Optional< std::string > ParametersMap::getString( const ParameterName parameter ) const {
@@ -134,9 +241,10 @@ namespace dkmage {
         if ( iter == data.end() ) {
             return defaultValue;
         }
-        const std::string& value = iter->second;
-        if ( value.empty() == false ) {
-            return value;
+        const std::vector< std::string > stringList = parseList( iter->second, "," );
+        const std::string listItem = randomFromList( stringList );
+        if ( listItem.empty() == false ) {
+            return listItem;
         }
         return defaultValue;
     }
@@ -152,8 +260,8 @@ namespace dkmage {
             return {};
         }
         const std::string& value = rawData.value();
-        const int number = stoi( value );
-        return (std::size_t) number;
+        const int num = parseUnsigned( parameter, value );
+        return (std::size_t) num;
     }
 
     Optional< std::size_t > ParametersMap::getSizeT( const ParameterName parameter ) const {
@@ -161,19 +269,16 @@ namespace dkmage {
         return getSizeT( parameterName );
     }
 
-    std::size_t ParametersMap::getSizeT( const std::string& parameter, const std::size_t defaultValue ) const {
-        Optional< std::string > rawData = getString( parameter );
+    std::size_t ParametersMap::getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const {
+        const std::string parameterName = getParameterName( parameter );
+        Optional< std::string > rawData = getString( parameterName );
         if ( rawData.has_value() == false ) {
             return defaultValue;
         }
-        const std::string& value = rawData.value();
-        const int number = stoi( value );
-        return (std::size_t) number;
-    }
 
-    std::size_t ParametersMap::getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const {
-        const std::string parameterName = getParameterName( parameter );
-        return getSizeT( parameterName, defaultValue );
+        const std::string& value = rawData.value();
+        const int num = parseUnsigned( parameterName, value );
+        return (std::size_t) num;
     }
 
 } /* namespace dkmage */

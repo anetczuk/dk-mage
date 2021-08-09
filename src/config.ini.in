@@ -1,48 +1,84 @@
 ##
 ## Generator's configuration file.
 ##
+##
+## Data types:
+##  - single value
+##  - list of comma separated values, e.g. red,green,blue
+##  - numeric range in format {numA}:{numB}, e.g. 10:30
+## In case of list or range single value will be randomized from (if not stated otherwise).
+##
+
 
 [GENERAL]
 
 ## Path to DK1 Original or Gold version 'data' directory. Field is required.
+## Type: single path
+## Example: /path/to/DK1 Gold/DATA
 data_path =
 
 ## Generated maps default output directory. Field optional (maps will be stored to work directory if empty).
-## The behaviour can be overriden by "--output_path" cmd parameter.
+## The behaviour can be affected by 'output_path' or 'output_subpath' parameter.
+## Type: single path
+## Example: /path/to/game/levels
 levels_path =
 
-## Path to map's output file (absolute or relative to work dir), e.g. /path/to/map03333
+## Path to map's output file (absolute or relative to work dir).
+## Type: single path
+## Example: /path/to/map03333
 #output_path =
 
 ## Path to map's output file relative to 'level_path' config field.  
+## Type: single path
+## Example: ../map03333
 #output_subpath =
 
 ## Id of output map (will be placed in game's level directory).
 ## For example giving id '3333' will produce/overwrite 'map03333' inside 'levels_path' directory.
+## Type: single unsigned integer
+## Example: 3333
 #output_id =
 
 ## Priority of 'output_' parameters: 'output_path', 'output_subpath', 'output_id'. If none given then 'auto' mode applies.
 
 ## Path to additional BMP preview of generated map.
+## Type: single path
+## Example: /path/to/map.bmp
 #output_bmp =
 
-## Seed for random number generator. For given it always generate the same map. Can be any string of phase, e.g. 'Evil map' or 'ON8SJF3O'.
+## Seed for random number generator. For given it always generate the same map.
+## Type: any string
+## Example 1: Evil map
+## Example 2: ON8SJF3O
 #seed =
 
-## Map type, one of: cave maze herofortress random
+## Map type, one of: cave maze herofortress
+## Type: single value or list of values
+## Example 1: cave
+## Example 2: cave,maze
 #type =
 
 ## Number of gold slabs initailly available for human player.
+## Type: list of unsigned numbers and ranges
+## Example: 60:80
 #gold_slabs_number =
 
 ## Number of gem faces initailly available for human player.
+## Type: list of unsigned numbers and ranges
+## Example: 2,3
 #gem_faces_number =
 
 ## Initial gold amount for human player.
+## Type: list of unsigned numbers and ranges
+## Example 1: 10000
+## Example 2: 10000,20000
+## Example 3: 10000,40000:60000
 #init_gold_amount =
 
-## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. Parameter accepts any or empty string.
-#test_mode =
+## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
+## To disable comment-out parameter.
+## Type: any string
+#test_mode = on
 
 
 ##
