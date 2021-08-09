@@ -64,7 +64,7 @@ levels_path =
 #gold_slabs_number = 40
 
 ## Max allowed value: 4
-#gem_faces_number = 1
+#gem_faces_number = 2
 
 
 ##
@@ -75,5 +75,5 @@ levels_path =
 #gold_slabs_number = 40
 
 ## Max allowed value: 4
-#gem_faces_number = 1
+#gem_faces_number = 2
 

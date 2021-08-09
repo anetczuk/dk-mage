@@ -264,7 +264,7 @@ namespace dkmage {
                 std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 40 );
                 LOG() << "gold slabs number: " << goldSlabsNum;
 
-                std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
+                std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 2 );
                 gemsNum = std::min( gemsNum, (std::size_t)4 );
                 LOG() << "gems number: " << gemsNum;
 
