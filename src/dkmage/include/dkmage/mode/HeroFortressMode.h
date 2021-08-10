@@ -24,16 +24,16 @@ namespace dkmage {
         class HeroFortressMode: public BaseLevelGenerator {
         public:
 
-            void generateLevel() override;
-
 
         protected:
+
+            bool generate() override;
+
+            bool check() override;
 
             void generateCaves( const std::size_t cavesNum );
 
             void preparePlayerDungeon();
-
-            bool prepareEnemyDungeon();
 
             void prepareScript();
 

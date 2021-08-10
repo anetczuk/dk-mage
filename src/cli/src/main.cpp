@@ -110,6 +110,7 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
 
     TCLAP::ValueArg<std::string> seedArg( "", "seed", "Generation seed", false, "", "any string", cmd );
 
+    TCLAP::SwitchArg stopOnFailArg( "", "stop_on_fail", "Do not re-attempt to generate map on failure", cmd, false );
     TCLAP::SwitchArg testingModeArg( "", "test_mode", "Additional items on map, e.g. reveal map or neutral monsters next to player's dungeon heart", cmd );
 
     TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
@@ -196,6 +197,7 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     if ( outputIdArg.isSet() )      retParameters.add( outputIdArg.getName(), outputIdArg.getValue() );
     if ( outputAutoArg.isSet() )    retParameters.add( outputAutoArg.getName(), outputAutoArg.getValue() );
     if ( outputbmpArg.isSet() )     retParameters.add( outputbmpArg.getName(), outputbmpArg.getValue() );
+    if ( stopOnFailArg.isSet() )    retParameters.add( stopOnFailArg.getName(), stopOnFailArg.getValue() );
 
     return 0;
 }
@@ -226,10 +228,7 @@ int main( int argc, char** argv ) {
         typeGenerator->setParameters( parameters );
 
         /// generate level
-        LOG() << "generating level";
         typeGenerator->generateLevel();
-
-        LOG() << "generation completed";
 
         /// store generated level
         path outputLevelFile = "";

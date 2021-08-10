@@ -22,12 +22,9 @@ namespace dkmage {
          *
          */
         class MazeMode: public BaseLevelGenerator {
-        public:
-
-            void generateLevel() override;
-
-
         protected:
+
+            bool generate() override;
 
             void generateMazeItems( spatial::Maze& maze );
 

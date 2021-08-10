@@ -8,6 +8,8 @@
 
 /// inclusion: #include "utils/ProbabilityMass.h"
 
+#include "utils/Rand.h"
+
 #include <map>
 #include <set>
 
@@ -67,6 +69,11 @@ namespace utils {
             }
             /// return greatest key
             return weights.rbegin()->first;
+        }
+
+        T getRandom() const {
+            const double num = randd();
+            return get( num );
         }
 
     };

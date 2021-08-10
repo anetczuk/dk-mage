@@ -80,6 +80,11 @@ levels_path =
 ## Type: any string
 #test_mode = on
 
+## Do not re-attempt to generate map on failure. 
+## To disable comment-out parameter.
+## Type: any string
+#stop_on_fail = on
+
 
 ##
 ## Additional, specific or overwritten paramters for 'cave' type.

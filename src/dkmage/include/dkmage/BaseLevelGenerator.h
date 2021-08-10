@@ -72,8 +72,22 @@ namespace dkmage {
             }
         }
 
+        void generateLevel() override;
+
 
     protected:
+
+        /// return 'true' if generation succeeded, otherwise 'false'
+        bool generateAttempt();
+
+        /// return 'true' if generation succeeded, otherwise 'false'
+        virtual bool generate() = 0;
+
+        /// return 'true' if generated map is correct, otherwise 'false'
+        virtual bool check() {
+            /// do not perform additional checks by default -- override if needed
+            return true;
+        }
 
         void writeIniFile() const;
 

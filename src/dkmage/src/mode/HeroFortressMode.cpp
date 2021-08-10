@@ -24,36 +24,28 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace mode {
 
-        void HeroFortressMode::generateLevel() {
-            LOG() << "preparing map";
+        bool HeroFortressMode::generate() {
             level.generateRandomMap( 9 );
 
 //            generateCaves( 28 );
 
             if ( prepareEnemyDungeon() == false ) {
-                LOG() << "could not generate fortress -- restarting";
-//                    storePreview( "level.bmp" );
-                generateLevel();
-                return ;
+                return false;
             };
 
             preparePlayerDungeon();
 
             LOG() << "preparing script";
             prepareScript();
+        }
 
-            const bool valid = level.verifyMap();
-            if ( valid == false ) {
-                LOG() << "detected invalid map -- restarting generation";
-//                    storePreview( "level.bmp" );
-                generateLevel();
-                return ;
-            }
+        bool HeroFortressMode::check() {
 //            if ( level.countClaimAreas() > 0 ) {
 //                LOG() << "map problem found: unclaimable areas";
-//                generateLevel();
-//                return ;
+//                return false;
 //            }
+
+            return true;
         }
 
         void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {

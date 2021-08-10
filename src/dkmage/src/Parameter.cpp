@@ -31,6 +31,7 @@ namespace dkmage {
             data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
 
             data.insert( ParameterName::PN_TEST_MODE );
+            data.insert( ParameterName::PN_STOP_ON_FAIL );
         }
         return data;
     }
@@ -45,6 +46,8 @@ namespace dkmage {
             data.insert( ParameterName::PN_OUTPUT_SUBPATH );
             data.insert( ParameterName::PN_OUTPUT_ID );
             data.insert( ParameterName::PN_OUTPUT_BMP );
+
+            data.insert( ParameterName::PN_STOP_ON_FAIL );
         }
         return data;
     }
@@ -65,7 +68,8 @@ namespace dkmage {
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
         case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
 
-        case ParameterName::PN_TEST_MODE:   return "test_mode";
+        case ParameterName::PN_TEST_MODE:       return "test_mode";
+        case ParameterName::PN_STOP_ON_FAIL:    return "stop_on_fail";
         }
 
         std::stringstream stream;

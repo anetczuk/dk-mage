@@ -20,7 +20,7 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace mode {
 
-        void CaveMode::generateLevel() {
+        bool CaveMode::generate() {
             level.generateRandomMap( 9 );
 
             generateCaves( 28 );
@@ -32,12 +32,7 @@ namespace dkmage {
             LOG() << "preparing script";
             prepareScript();
 
-            const bool valid = level.verifyMap();
-            if ( valid == false ) {
-                LOG() << "detected invalid map -- restarting generation";
-                generateLevel();
-                return ;
-            }
+            return true;
         }
 
         void CaveMode::generateCaves( const std::size_t cavesNum ) {
@@ -91,6 +86,14 @@ namespace dkmage {
             } else {
                 dungeon.generate( 1, 5 );
             }
+
+//            {
+//                dungeon.addRandomRoom( Room::R_PRISON, 5, true );
+//                dungeon.addRandomRoom( Room::R_GRAVEYARD, 5, true );
+//                const Point monstersPos = Point(40, 60);
+//                level.setSlab( monstersPos, Slab::S_PATH );
+//                level.setCreatureAuto( monstersPos, Creature::C_FAIRY, 9, 0, Player::P_GOOD );
+//            }
 
             dungeon.moveToBottomEdge( 4 );
 
@@ -250,6 +253,9 @@ namespace dkmage {
 
             script.addLine( "" );
             script.setMagicStandard( Player::P_ALL );
+//            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+//                script.setMagicAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
+//            }
 
             script.addLine( "" );
             script.addLine( "" );

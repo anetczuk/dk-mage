@@ -34,7 +34,7 @@ namespace dkmage {
 
         /// ================================================
 
-        void MazeMode::generateLevel() {
+        bool MazeMode::generate() {
             level.generateRandomMap( 9 );
 
             spatial::Maze maze;
@@ -57,13 +57,7 @@ namespace dkmage {
             LOG() << "preparing script";
             prepareScript();
 
-            const bool valid = level.verifyMap();
-            if ( valid == false ) {
-                LOG() << "detected invalid map -- restarting generation";
-//                    storePreview( "level.bmp" );
-                generateLevel();
-                return ;
-            }
+            return true;
         }
 
         void MazeMode::generateMazeItems( spatial::Maze& maze ) {
@@ -147,10 +141,7 @@ namespace dkmage {
                 const Point nodeCenter = nodeRect.center();
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
-                const double trapNum = randd();
-                const Trap trapType = trapProbability.get( trapNum );
-//                const std::size_t trapIndex = rand() % trapsSize;
-//                const Trap trapType = getSetItem( damageTraps, trapIndex );
+                const Trap trapType = trapProbability.getRandom();
 
                 if ( maze.corridorSize == 1 ) {
                     level.setSlab( nodeCenter, Slab::S_PATH );
@@ -158,8 +149,7 @@ namespace dkmage {
                     continue ;
                 }
                 if ( maze.corridorSize == 3 ) {
-                    const double roomNum = randd();
-                    const MazeRoom roomType = roomProbability.get( roomNum );
+                    const MazeRoom roomType = roomProbability.getRandom();
 
                     switch( roomType ) {
                     case MazeRoom::MR_DIAGONAL: {

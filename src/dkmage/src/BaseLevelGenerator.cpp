@@ -21,6 +21,37 @@ using namespace adiktedpp;
 
 namespace dkmage {
 
+    void BaseLevelGenerator::generateLevel() {
+        const bool succeed = generateAttempt();
+        if ( succeed ) {
+            return ;
+        }
+        if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
+            /// do not attempt to generate
+            LOG() << "detected invalid map -- stopping";
+            return ;
+        }
+        LOG() << "detected invalid map -- restarting generation";
+        generateLevel();
+    }
+
+    bool BaseLevelGenerator::generateAttempt() {
+        LOG() << "generating map";
+        if ( generate() == false ) {
+            LOG() << "could not generate map";
+            return false;
+        }
+        if ( level.verifyMap() == false ) {
+            LOG() << "generated level is invalid";
+            return false;
+        }
+        if ( check() == false ) {
+            LOG() << "generated map is invalid";
+            return false;
+        }
+        return true;
+    }
+
     void BaseLevelGenerator::writeIniFile() const {
         const std::string output = level.getRawLevel().outputFileName() + ".mage.ini";
 

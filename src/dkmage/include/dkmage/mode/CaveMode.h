@@ -16,12 +16,9 @@ namespace dkmage {
          *
          */
         class CaveMode: public BaseLevelGenerator {
-        public:
-
-            void generateLevel() override;
-
-
         protected:
+
+            bool generate() override;
 
             void generateCaves( const std::size_t cavesNum );
 

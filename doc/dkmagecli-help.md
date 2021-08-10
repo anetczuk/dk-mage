@@ -4,10 +4,11 @@ Output of `dkmagecli --help` command:
 
 USAGE: 
 
-   dkmagecli  [-h] [--version] [--output_auto|--output_id <int>|
-              --output_path <path string>|--output_subpath <path string>]
-              [--config <path string>] [--output_bmp <path string>] [--seed
-              <any string>] [--type <cave|herofortress|maze|random>]
+   dkmagecli  [-h] [--stop_on_fail] [--test_mode] [--version]
+              [--output_auto|--output_id <int>|--output_path <path string>|
+              --output_subpath <path string>] [--config <path string>]
+              [--output_bmp <path string>] [--seed <any string>] [--type
+              <cave|herofortress|maze|random>]
 
 
 Where: 
@@ -20,6 +21,13 @@ Where:
 
    --seed <any string>
      Generation seed
+
+   --stop_on_fail
+     Do not re-attempt to generate map on failure
+
+   --test_mode
+     Additional items on map, e.g. reveal map or neutral monsters next to
+     player's dungeon heart
 
    --output_bmp <path string>
      Path to map's output BMP file
@@ -54,5 +62,5 @@ Usage generated for version:
 
 ```
 
-dkmagecli  version: 1.1.0
+dkmagecli  version: 1.1.3
 ```
