@@ -44,6 +44,14 @@ There are few exceptions from priority rule described above:
 - `seed` parameter is only read from command line or `general` section from configuration file
 - `type` parameter is only read from command line or `general` section from configuration file
 
+### Generated files
+
+Generator produces the same files as *ADiKtEd* does. Moreover there is one additional file `*.mage.ini` along stored map containing parameters used for generate map. The Ini file can be passed to generator to repeat the generation (it produces the same map). It is useful to share maps or for debug purpose.
+
+In addition in work directory can be found two log files:
+- `adikted.log.txt` containing logs from execution of *ADiKtEd* library
+- `dkmage.log.txt` containing logs from execution of generator modules
+
 
 ## Building under Linux (including WLS)
 
