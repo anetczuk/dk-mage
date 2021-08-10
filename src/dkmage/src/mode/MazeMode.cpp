@@ -25,6 +25,15 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace mode {
 
+        enum class MazeRoom {
+            MR_DIAGONAL,
+            MR_DIAMOND,
+            MR_CORNERS,
+            MR_HERO
+        };
+
+        /// ================================================
+
         void MazeMode::generateLevel() {
             level.generateRandomMap( 9 );
 
@@ -118,6 +127,13 @@ namespace dkmage {
             trapProbability.set( Trap::T_LIGHTNING, 5.0 );
             trapProbability.normalize();
 
+            ProbabilityMass< MazeRoom > roomProbability;
+            roomProbability.set( MazeRoom::MR_DIAGONAL, 1.0 );
+            roomProbability.set( MazeRoom::MR_DIAMOND, 1.0 );
+            roomProbability.set( MazeRoom::MR_CORNERS, 1.0 );
+            roomProbability.set( MazeRoom::MR_HERO, 1.0 );
+            roomProbability.normalize();
+
             const int maxDistance = maze.maxDistance();
 
             const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
@@ -131,30 +147,34 @@ namespace dkmage {
                 const Point nodeCenter = nodeRect.center();
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
-                const double num = randd();
-                const Trap trapType = trapProbability.get( num );
+                const double trapNum = randd();
+                const Trap trapType = trapProbability.get( trapNum );
 //                const std::size_t trapIndex = rand() % trapsSize;
 //                const Trap trapType = getSetItem( damageTraps, trapIndex );
 
                 if ( maze.corridorSize == 1 ) {
                     level.setSlab( nodeCenter, Slab::S_PATH );
                     level.setTrap( nodeCenter, 4, trapType );
-                } else if ( maze.corridorSize == 3 ) {
-                    const std::size_t chamberIndex = rand() % 4;
-                    switch( chamberIndex ) {
-                    case 0: {
+                    continue ;
+                }
+                if ( maze.corridorSize == 3 ) {
+                    const double roomNum = randd();
+                    const MazeRoom roomType = roomProbability.get( roomNum );
+
+                    switch( roomType ) {
+                    case MazeRoom::MR_DIAGONAL: {
                         drawTrap3x3X( level, nodeCenter, trapType, Slab::S_PATH );
                         break ;
                     }
-                    case 1: {
+                    case MazeRoom::MR_DIAMOND: {
                         drawTrap3x3Diamond( level, nodeCenter, trapType, Slab::S_PATH );
                         break ;
                     }
-                    case 2: {
+                    case MazeRoom::MR_CORNERS: {
                         drawTrap3x3Corners( level, nodeCenter, trapType, Slab::S_PATH );
                         break ;
                     }
-                    default: {
+                    case MazeRoom::MR_HERO: {
                         const double distanceFactor = ((double) nodeDistance) / maxDistance * 2.0;
                         randHeroTrap( maze, nodeCenter, distanceFactor );
                         break ;
