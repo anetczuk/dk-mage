@@ -310,6 +310,9 @@ namespace dkmage {
                 script.storeParameters( type, seed );
             }
 
+//            script.addLine( "" );
+//            script.setFXLevel();
+
             script.addLine( "" );
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
 
