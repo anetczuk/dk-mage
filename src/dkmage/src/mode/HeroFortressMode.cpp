@@ -137,11 +137,15 @@ namespace dkmage {
 
             const spatial::DungeonRoom* heart = dungeon.room( 0 );
             const Point firstCenter = heart->position().center();
-            const Rect bbox = dungeon.boundingBox();
 
             {
                 /// add neutral portal
-                const Point portalCenter( bbox.max.x + 16, firstCenter.y );
+                const Rect mapRect = raw::RawLevel::mapRect();
+                Rect randRect( 25, 11 );
+                randRect.moveRightTo( mapRect.max.x - 7 );
+                randRect.moveBottomTo( mapRect.max.y - 3 );
+                const std::size_t randomPosIndex = rand() % randRect.area();
+                const Point portalCenter = randRect.pointByIndex( randomPosIndex );
                 const Rect portalRect( portalCenter, 3, 3 );
                 level.setRoom( portalRect, Room::R_PORTAL );
             }
@@ -268,9 +272,11 @@ namespace dkmage {
                     }
 
                     level.setSlab( bridgePoint, Slab::S_PATH );
-                    level.setCreature( bridgePoint, 1, Creature::C_FAIRY, 2, 6, Player::P_GOOD );
+                    const int fairyLevel = rand() % 4;
+                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
+                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
                     if ( i == 1 ) {
-                        level.setCreature( bridgePoint, 4, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
+                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                     }
 
                     /// search for shore
@@ -426,7 +432,8 @@ namespace dkmage {
 
             script.addLine( "" );
             script.addLine( "SET_GENERATE_SPEED( 500 )" );
-            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
+
+            script.addLine( "MAX_CREATURES( PLAYER0, 25 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -436,8 +443,10 @@ namespace dkmage {
 
             script.addLine( "" );
             script.addLine( "" );
-            const std::set< Player > availablePlayers = { Player::P_P0 };
+            script.setEvilCreaturesPool( 10 );
 
+            script.addLine( "" );
+            const std::set< Player > availablePlayers = { Player::P_P0 };
             script::CreatureAvailableState availableCreatures( availablePlayers );
             availableCreatures.setEvilAvailable( Player::P_P0 );
             script.set( availableCreatures );

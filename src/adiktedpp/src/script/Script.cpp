@@ -305,6 +305,7 @@ namespace adiktedpp {
         void Script::setEvilCreaturesPool( const std::size_t number ) {
             std::set< Creature > list = EvilCreatures();
             list.erase( Creature::C_IMP );
+            list.erase( Creature::C_GHOST );
             list.erase( Creature::C_TENTACLE );
             list.erase( Creature::C_SKELETON );
             list.erase( Creature::C_VAMPIRE );
