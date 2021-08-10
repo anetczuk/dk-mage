@@ -46,6 +46,15 @@ TEST_CASE( "ParametersMap_getString_list" ) {
     CHECK( param.value() == "ccc" );
 }
 
+TEST_CASE( "ParametersMap_getString_list_emptyListElement" ) {
+    srand( 2 );
+
+    ParametersMap parameters;
+    parameters.add( "param", ",,," );
+    const Optional< std::string > param = parameters.getString( "param" );
+    REQUIRE( param == false );
+}
+
 TEST_CASE( "ParametersMap_getSizeT_item" ) {
     ParametersMap parameters;
     parameters.add( "param", 11 );

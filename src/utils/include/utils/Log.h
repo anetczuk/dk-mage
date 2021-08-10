@@ -40,6 +40,16 @@ namespace utils {
 
     };
 
+
+    template <typename T>
+    std::string printIterable( const T& container ) {
+        std::stringstream buffer;
+        for ( const auto& item: container ) {
+            buffer << item << " ";
+        }
+        return buffer.str();
+    }
+
 }
 
 

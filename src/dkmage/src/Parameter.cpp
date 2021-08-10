@@ -92,18 +92,28 @@ namespace dkmage {
 
     static std::vector< std::string > parseList( const std::string& rawData, const char* delimiter ) {
         std::vector< std::string > list;
-        char* dup   = strdup( rawData.c_str() );
-        char* token = strtok( dup, delimiter );             /// note: function is not thread safe nor reentrant, so running in parallel unsupported
-        while ( token != NULL ) {
-            list.push_back( token );
-            token = strtok( NULL, delimiter );
-        }
-        free(dup);
 
-//        char* rest = str;
-//
-//        while ((token = strtok_r(rest, " ", &rest)))
-//            printf("%s\n", token);
+        std::size_t startPos = 0;
+        std::size_t delimPos = 0;
+        while ( ( delimPos = rawData.find_first_of( delimiter, startPos ) ) != std::string::npos ) {
+            delimPos = rawData.find_first_of( delimiter, startPos );
+            const std::size_t length = delimPos - startPos;
+            if ( length > 0 ) {
+                list.push_back( rawData.substr( startPos, length ) );
+            }
+            startPos = delimPos + 1;
+        }
+        /// no more delimiters -- add last item
+        list.push_back( rawData.substr( startPos ) );
+
+        /// old implementation
+//        char* dup   = strdup( rawData.c_str() );
+//        char* token = strtok( dup, delimiter );             /// note: function is not thread safe nor reentrant, so running in parallel unsupported
+//        while ( token != NULL ) {
+//            list.push_back( token );
+//            token = strtok( NULL, delimiter );
+//        }
+//        free(dup);
 
         return list;
     }
@@ -122,12 +132,22 @@ namespace dkmage {
     /// 'rawData' is single number or range in format '{num}:{num}'
     static std::vector< int > handleRange( const std::string& rawData ) {
         const std::vector< std::string > stringList = parseList( rawData, ":" );
-        const std::string listItem = randomFromList( stringList );
-        if ( listItem.empty() ) {
-            return {};
+
+        const std::size_t listSize = stringList.size();
+        switch( listSize ) {
+        case 0: return {};
+        case 1: {
+            const int number = stoi( stringList[0] );
+            return { number };
         }
-        const int number = stoi( listItem );
-        return { number };
+        case 2: {
+            const int numberA = stoi( stringList[0] );
+            const int numberB = stoi( stringList[1] );
+            return { numberA, numberB };
+        }
+        }
+
+        return {};
     }
 
     /// parse unsigned number or unsigned range
@@ -228,6 +248,9 @@ namespace dkmage {
         const std::string& value = rawData.value();
         const std::vector< std::string > stringList = parseList( value, "," );
         const std::string listItem = randomFromList( stringList );
+        if ( listItem.empty() ) {
+            return {};
+        }
         return listItem;
     }
 
