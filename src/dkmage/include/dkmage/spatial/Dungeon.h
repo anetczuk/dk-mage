@@ -125,6 +125,9 @@ namespace dkmage {
             adiktedpp::Player owner() const {
                 return player;
             }
+            void owner( const adiktedpp::Player owner ) {
+                player = owner;
+            }
 
             bool fortify() const {
                 return fortifyWalls;

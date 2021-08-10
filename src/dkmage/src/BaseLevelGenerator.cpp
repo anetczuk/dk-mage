@@ -49,6 +49,7 @@ namespace dkmage {
             LOG() << "generated map is invalid";
             return false;
         }
+        LOG() << "map generated successfully";
         return true;
     }
 
