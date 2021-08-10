@@ -244,6 +244,11 @@ namespace adiktedpp {
             return addLine( "REM " + comment );
         }
 
+        void Script::setFXLevel() {
+            addREM( "*** set script compatibility with Keeper FX ***" );
+            addLine( "LEVEL_VERSION(1)" );
+        }
+
         void Script::setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
             std::stringstream stream;
             stream << "START_MONEY( " << scriptName( player ) << ", " << amount << " )";
