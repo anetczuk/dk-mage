@@ -24,6 +24,14 @@ namespace adiktedpp {
         };
 
 
+        enum class AvailableRoomMode {
+            ARM_DISABLED,
+            ARM_POSSIBLE,            /// available after meet certain criteria (e.g. research or build proper room)
+            ARM_ENABLED_FOUND,       /// enable when found on map
+            ARM_ENABLED
+        };
+
+
         /**
          *
          */

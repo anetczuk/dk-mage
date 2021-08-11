@@ -347,13 +347,13 @@ namespace adiktedpp {
             set( availableState );
         }
 
-        void Script::setRoomsAvailable( const Player player, const AvailableMode mode ) {
+        void Script::setRoomsAvailable( const Player player, const AvailableRoomMode mode ) {
             RoomsAvailableState availableState;
             availableState.setAllAvailable( player, mode );
             set( availableState );
         }
 
-        void Script::setRoomAvailable( const Player player, const Room room, const AvailableMode mode ) {
+        void Script::setRoomAvailable( const Player player, const Room room, const AvailableRoomMode mode ) {
             RoomsAvailableState availableState;
             availableState.setStateMode( player, room, mode );
             set( availableState );

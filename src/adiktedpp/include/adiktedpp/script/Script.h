@@ -94,9 +94,9 @@ namespace adiktedpp {
             /// set available creatures from pool
             void setHeroCreaturesAvailable( const Player player, const bool available = true );
 
-            void setRoomsAvailable( const Player player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setRoomsAvailable( const Player player, const AvailableRoomMode mode = AvailableRoomMode::ARM_DISABLED );
 
-            void setRoomAvailable( const Player player, const Room room, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setRoomAvailable( const Player player, const Room room, const AvailableRoomMode mode = AvailableRoomMode::ARM_DISABLED );
 
             void setRoomsStandard();
 

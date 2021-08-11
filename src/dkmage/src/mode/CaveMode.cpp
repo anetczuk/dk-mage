@@ -8,8 +8,6 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
 
-#include "adiktedpp/script/Script.h"
-
 #include "utils/Set.h"
 
 
@@ -82,6 +80,8 @@ namespace dkmage {
             dungeon.fortify( true );
 
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                dungeon.limitNorth = 0;
+                dungeon.limitSouth = 0;
                 dungeon.generate( 4, 5 );
             } else {
                 dungeon.generate( 1, 5 );
@@ -212,7 +212,6 @@ namespace dkmage {
         }
 
         void CaveMode::prepareScript() {
-            script::Script script( level );
             {
                 const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
                 const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );

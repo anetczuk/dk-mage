@@ -10,7 +10,6 @@
 
 #include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/AreaDetector.h"
-#include "adiktedpp/script/Script.h"
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Set.h"
@@ -535,6 +534,8 @@ namespace dkmage {
             dungeon.fortify( true );
 
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                dungeon.limitNorth = 0;
+                dungeon.limitSouth = 0;
                 dungeon.generate( 4, 5 );
             } else {
                 dungeon.generate( 1, 5 );
@@ -606,7 +607,6 @@ namespace dkmage {
         }
 
         void HeroFortressMode::prepareScript() {
-            script::Script script( level );
             {
                 const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
                 const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
@@ -640,7 +640,7 @@ namespace dkmage {
             script.addLine( "" );
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableMode::AM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableRoomMode::ARM_DISABLED );
             script.set( availableRooms );
 
             script.addLine( "" );

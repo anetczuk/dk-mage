@@ -9,6 +9,7 @@
 #include "dkmage/LevelGenerator.h"
 
 #include "adiktedpp/Level.h"
+#include "adiktedpp/script/Script.h"
 #include "adiktedpp/Messages.h"
 
 #include "utils/Log.h"
@@ -26,9 +27,10 @@ namespace dkmage {
 
         adiktedpp::ScopeMessages messages;
         adiktedpp::Level level;
+        adiktedpp::script::Script script;
 
 
-        BaseLevelGenerator(): messages( "adikted.log.txt" ) {
+        BaseLevelGenerator(): messages( "adikted.log.txt" ), level(), script( level ) {
         }
 
         const ParametersMap& getParameters() const override {

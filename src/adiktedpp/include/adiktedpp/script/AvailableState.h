@@ -281,7 +281,28 @@ namespace adiktedpp {
             RoomsAvailableState( const std::set< adiktedpp::Player >& players ): AvailableCommandStateMap< Room >( players ) {
             }
 
-            void setAllAvailable( const Player player, const AvailableMode mode );
+            void setStateMode( const adiktedpp::Player player, const Room item, const AvailableRoomMode mode ) {
+                switch( mode ) {
+                case AvailableRoomMode::ARM_DISABLED: {
+                    setState( player, item, 0, 0 );
+                    break ;
+                }
+                case AvailableRoomMode::ARM_POSSIBLE: {
+                    setState( player, item, 1, 0 );
+                    break ;
+                }
+                case AvailableRoomMode::ARM_ENABLED_FOUND: {
+                    setState( player, item, 4, 0 );
+                    break ;
+                }
+                case AvailableRoomMode::ARM_ENABLED: {
+                    setState( player, item, 1, 1 );
+                    break ;
+                }
+                }
+            }
+
+            void setAllAvailable( const Player player, const AvailableRoomMode mode );
 
             void setStandard();
 
