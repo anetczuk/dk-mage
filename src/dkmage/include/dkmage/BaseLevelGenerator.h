@@ -61,7 +61,6 @@ namespace dkmage {
                 return ;
             }
             writeIniFile();
-            LOG() << "map saved";
         }
 
         void storePreview( const std::string& filePath ) override {

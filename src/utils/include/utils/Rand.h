@@ -14,6 +14,18 @@
 
 namespace utils {
 
+    /// returns value from range [ 0, maxValue )
+    inline int randi( const int maxValue ) {
+        const int rint = rand();
+        return ( rint % maxValue );
+    }
+
+    /// returns value from range [ minValue, maxValue )
+    inline int randi( const int minValue, const int maxValue ) {
+        const int rint = rand();
+        return ( rint % (maxValue - minValue) ) + minValue;
+    }
+
     /**
      * Return value in range [0..1].
      */

@@ -88,7 +88,7 @@ namespace dkmage {
     void BaseLevelGenerator::generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount ) {
         const Rect mapRect = raw::RawLevel::mapRect();
         const std::size_t veinDimm = (std::size_t) sqrt( goldAmount ) * 1.5;
-        Rect randPosArea( 25, 17 );
+        Rect randPosArea( 21, 17 );
         randPosArea.moveLeftTo( 1 + veinDimm / 2 + 1 );
         randPosArea.moveBottomTo( mapRect.max.y - veinDimm / 2 - 1 );
         const std::size_t randomPosIndex = rand() % randPosArea.area();
