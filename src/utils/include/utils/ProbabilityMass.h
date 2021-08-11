@@ -29,6 +29,10 @@ namespace utils {
 
         ProbabilityMass() = default;
 
+        bool empty() const {
+            return weights.empty();
+        }
+
         void set( const std::set<T>& values, const double weight ) {
             for ( const T& item: values ) {
                 weights[ item ] = weight;

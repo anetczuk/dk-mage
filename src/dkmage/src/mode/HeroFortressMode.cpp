@@ -165,7 +165,7 @@ namespace dkmage {
 
             ProbabilityMass< FortressRoom > roomProbability;
             roomProbability.set( FortressRoom::FR_TREASURE, 0.5 );
-            roomProbability.set( FortressRoom::FR_BRANCH, 0.25 );
+            roomProbability.set( FortressRoom::FR_BRANCH, 0.3 );
             roomProbability.set( FortressRoom::FR_EMPTY, 1.0 );
             roomProbability.normalize();
 
@@ -204,12 +204,20 @@ namespace dkmage {
         }
 
         std::vector< const spatial::DungeonRoom* > Fortress::prepareRoom( const FortressRoom roomType, const spatial::DungeonRoom* startItem ) {
-            static const std::size_t ROOM_MAX_SIZE = 4;
+//            static const std::size_t ROOM_MAX_SIZE = 4;
+            static ProbabilityMass<std::size_t> roomSize357;
+            if ( roomSize357.empty() ) {
+                roomSize357.set( 3, 1.0 );
+                roomSize357.set( 5, 1.0 );
+                roomSize357.set( 7, 0.25 );
+                roomSize357.normalize();
+            }
+
             const std::size_t corridorLength = rand() % 5 + 1;
 
             switch( roomType ) {
             case FortressRoom::FR_TREASURE: {
-                const std::size_t rSize = randi( 1, ROOM_MAX_SIZE ) * 2 + 1;                /// in set {3, 5, 7}
+                const std::size_t rSize = roomSize357.getRandom();
                 const spatial::DungeonRoom* next = dungeon.addRandomRoom( Room::R_TREASURE, rSize, *startItem, true, corridorLength );
                 if ( next == nullptr ) {
                     return {};
@@ -225,7 +233,7 @@ namespace dkmage {
             }
             case FortressRoom::FR_EMPTY: {
                 randd();
-                const std::size_t rSize = randi( 1, ROOM_MAX_SIZE ) * 2 + 1;                /// in set {3, 5, 7}
+                const std::size_t rSize = roomSize357.getRandom();
                 const spatial::DungeonRoom* next = dungeon.addRandomRoom( Room::R_CLAIMED, rSize, *startItem, true, corridorLength );
                 if ( next == nullptr ) {
                     return {};
