@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#
+# This file was automatically generated from '@GENERATOR_FILE@'. All changes will be lost.
+#
+
+set -eu
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+BIN_DIR=$SCRIPT_DIR/bin
+DEPLOY_DIR=$SCRIPT_DIR/deploy/dkmage
+
+mkdir -p $DEPLOY_DIR
+
+## copy products
+cp $BIN_DIR/dkmagecli* $DEPLOY_DIR
+cp $BIN_DIR/config.ini $DEPLOY_DIR
+
+cd $DEPLOY_DIR/..
+
+## -FS -- replaces existing archive
+zip -FSr dkmage.zip dkmage
+
+
+echo -e "\ndeployment done"

@@ -89,3 +89,5 @@ else()
 endif()
 
 generate_to_file( generate_doc.sh.in generate_doc.sh )
+
+generate_to_file( deploy_zip.sh.in deploy_zip.sh )
