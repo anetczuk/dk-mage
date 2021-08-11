@@ -55,6 +55,7 @@ Where:
      Displays usage information and exits.
 
    Map and scenario generator for Dungeon Keeper 1 PC game
+
 ```
 
 
@@ -62,5 +63,6 @@ Usage generated for version:
 
 ```
 
-dkmagecli  version: 1.1.3
+dkmagecli  version: 1.3.0
+
 ```
