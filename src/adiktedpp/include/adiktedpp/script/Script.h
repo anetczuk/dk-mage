@@ -122,7 +122,15 @@ namespace adiktedpp {
 
             /// ================================================================================
 
+            /// disable or enable imps corpses be brought to graveyard
+            /// not supported by adikted
+            void setImpRotting( const bool rotting = true );
+
             void setWinConditionStandard( const Player player );
+
+            void setWinConditionKillGood();
+
+            void setLoseConditionStandard( const Player player );
 
 
         private:

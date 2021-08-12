@@ -29,6 +29,7 @@ namespace dkmage {
          */
         enum class FortressRoom {
             FR_TREASURE,
+            FR_CORRIDOR,
             FR_BRANCH,
             FR_EMPTY
         };
@@ -164,6 +165,7 @@ namespace dkmage {
 
             ProbabilityMass< FortressRoom > roomProbability;
             roomProbability.set( FortressRoom::FR_TREASURE, 0.5 );
+            roomProbability.set( FortressRoom::FR_CORRIDOR, 1.8 );
             roomProbability.set( FortressRoom::FR_BRANCH, 0.3 );
             roomProbability.set( FortressRoom::FR_EMPTY, 1.0 );
             roomProbability.normalize();
@@ -223,6 +225,22 @@ namespace dkmage {
                 }
                 return {next};
             }
+            case FortressRoom::FR_CORRIDOR: {
+                std::size_t rSizeX = roomSize357.getRandom();
+                std::size_t rSizeY = 1;
+                if ( randb() ) {
+                    std::swap( rSizeX, rSizeY );
+                }
+                const spatial::DungeonRoom* next = dungeon.addRandomRoom( Room::R_CLAIMED, rSizeX, rSizeY, *startItem, true, corridorLength );
+                if ( next == nullptr ) {
+                    return {};
+                }
+                if ( randb( 0.3 ) ) {
+                    /// give a chance to generate branch
+                    return {next, next};
+                }
+                return {next};
+            }
             case FortressRoom::FR_BRANCH: {
                 const spatial::DungeonRoom* next = dungeon.addRandomRoom( Room::R_CLAIMED, 1, *startItem, true, corridorLength );
                 if ( next == nullptr ) {
@@ -231,7 +249,6 @@ namespace dkmage {
                 return {next, next};            /// yes, added twice to make a branch
             }
             case FortressRoom::FR_EMPTY: {
-                randd();
                 const std::size_t rSize = roomSize357.getRandom();
                 const spatial::DungeonRoom* next = dungeon.addRandomRoom( Room::R_CLAIMED, rSize, *startItem, true, corridorLength );
                 if ( next == nullptr ) {
@@ -661,11 +678,15 @@ namespace dkmage {
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
             script.set( availableMagic );
 
+//            script.addLine( "" );
+//            script.setImpRotting( false );
+
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
             script.setWinConditionStandard( Player::P_P0 );
+            script.setLoseConditionStandard( Player::P_P0 );
 
             script.rebuild();
         }

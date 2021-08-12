@@ -9,17 +9,6 @@
 
 #include "adiktedpp/Type.h"
 
-//#include "adiktedpp/SlabType.h"
-//#include "adiktedpp/PlayerType.h"
-//#include "adiktedpp/SubTypeItem.h"
-//#include "adiktedpp/SubTypeTrap.h"
-//#include "adiktedpp/SubTypeDoor.h"
-//#include "adiktedpp/SubTypeCreature.h"
-//
-//#include "utils/Rect.h"
-//
-//#include <memory>
-
 
 namespace adiktedpp {
 

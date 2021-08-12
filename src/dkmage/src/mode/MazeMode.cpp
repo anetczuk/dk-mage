@@ -371,11 +371,15 @@ namespace dkmage {
             script.addLine( "" );
             script.setMagicStandard( Player::P_ALL );
 
+//            script.addLine( "" );
+//            script.setImpRotting( false );
+
             script.addLine( "" );
             script.addLine( "" );
             script.addLine( "REM --- main script ---" );
             script.addLine( "" );
             script.setWinConditionStandard( Player::P_P0 );
+            script.setLoseConditionStandard( Player::P_P0 );
 
             script.rebuild();
         }

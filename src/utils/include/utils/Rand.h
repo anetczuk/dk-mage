@@ -14,6 +14,17 @@
 
 namespace utils {
 
+    double randd();                         /// forward declaration
+
+
+    inline bool randb() {
+        return ( rand() % 2 == 1 );
+    }
+
+    inline bool randb( const double probability ) {
+        return ( randd() < probability );
+    }
+
     /// returns value from range [ 0, maxValue )
     inline int randi( const int maxValue ) {
         const int rint = rand();

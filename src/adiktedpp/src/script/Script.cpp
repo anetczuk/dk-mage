@@ -389,10 +389,32 @@ namespace adiktedpp {
             set( availableState );
         }
 
+        void Script::setImpRotting( const bool rotting ) {
+            if ( rotting ) {
+                addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
+            } else {
+                addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 0 )" );
+            }
+        }
+
         void Script::setWinConditionStandard( const Player player ) {
-            std::stringstream stream;
             addLine( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
             addLine( std::string() + "    WIN_GAME" );
+            addLine( std::string() + "ENDIF" );
+        }
+
+        void Script::setWinConditionKillGood() {
+            addREM( "require killing all heroes" );
+            addLine( std::string() + "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )" );
+            addLine( std::string() + "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )" );
+            addLine( std::string() + "        WIN_GAME" );
+            addLine( std::string() + "    ENDIF" );
+            addLine( std::string() + "ENDIF" );
+        }
+
+        void Script::setLoseConditionStandard( const Player player ) {
+            addLine( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )" );
+            addLine( std::string() + "    LOSE_GAME" );
             addLine( std::string() + "ENDIF" );
         }
 

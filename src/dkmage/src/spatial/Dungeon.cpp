@@ -155,6 +155,10 @@ namespace dkmage {
         }
 
         DungeonRoom* Dungeon::addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const bool addLink, const std::size_t corridorLength ) {
+            return addRandomRoom( roomType, roomSize, roomSize, from, addLink, corridorLength );
+        }
+
+        DungeonRoom* Dungeon::addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const DungeonRoom& from, const bool addLink, const std::size_t corridorLength ) {
             std::vector< Direction > availableDirs = graph.freeDirections( from );
 
             const int northDiff = limitNorth - from.northCoord;
@@ -177,7 +181,7 @@ namespace dkmage {
             while ( availableDirs.empty() == false ) {
                 const std::size_t rDir = rand() % availableDirs.size();
                 const Direction newDir = remove_at( availableDirs, rDir );
-                DungeonRoom* added = addRoom( roomType, roomSize, from, newDir, addLink, corridorLength );
+                DungeonRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, addLink, corridorLength );
                 if ( added != nullptr ) {
                     return added;
                 }
@@ -214,7 +218,11 @@ namespace dkmage {
         }
 
         DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink, const std::size_t corridorLength ) {
-            Rect newRect( roomSize, roomSize );
+            return addRoom( roomType, roomSize, roomSize, from, direction, addLink, corridorLength );
+        }
+
+        DungeonRoom* Dungeon::addRoom( const Room roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const DungeonRoom& from, const Direction direction, const bool addLink, const std::size_t corridorLength ) {
+            Rect newRect( roomSizeX, roomSizeY );
             const Rect& basePos = from.position();
             moveRect( newRect, basePos, direction, corridorLength );
 

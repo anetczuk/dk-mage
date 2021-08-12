@@ -180,9 +180,13 @@ namespace dkmage {
 
             DungeonRoom* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const bool addLink = true, const std::size_t corridorLength = 1 );
 
+            DungeonRoom* addRandomRoom( const adiktedpp::Room roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const DungeonRoom& from, const bool addLink = true, const std::size_t corridorLength = 1 );
+
             DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize );
 
             DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSize, const DungeonRoom& from, const Direction direction, const bool addLink = true, const std::size_t corridorLength = 1 );
+
+            DungeonRoom* addRoom( const adiktedpp::Room roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const DungeonRoom& from, const Direction direction, const bool addLink = true, const std::size_t corridorLength = 1 );
 
             void generate( const std::size_t roomsNum, const std::size_t roomSize );
 
