@@ -85,7 +85,6 @@ namespace adiktedpp {
 
             void setLoseConditionStandard( const Player player );
 
-
         };
 
 
