@@ -183,6 +183,10 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
+            std::size_t addActionPoint( const std::size_t x, const std::size_t y, const std::size_t subIndex );
+
+            /// ===========================================================================
+
             void setRoom( const utils::Rect& position, const SlabType room, const PlayerType owner, const bool fortify );
 
             void fortify( const utils::Point& point, const PlayerType owner );

@@ -167,6 +167,10 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
+        std::size_t addActionPoint( const utils::Point& point, const std::size_t subIndex );
+
+        /// ==============================================================================
+
         std::size_t setCave( const utils::Rect& rect, const Slab type ) {
             const std::size_t chamberSize = rect.area() * 0.7;
             return setCave( rect, type, chamberSize );
