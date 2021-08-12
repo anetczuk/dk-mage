@@ -17,10 +17,11 @@
 ## Example: /path/to/DK1 Gold/DATA
 data_path =
 
-## Generated maps default output directory. Field optional (maps will be stored to work directory if empty).
+## Generated maps default output directory. Field optional (maps will be stored to work directory if left undefined or empty).
 ## The behaviour can be affected by 'output_path' or 'output_subpath' parameter.
 ## Type: single path
-## Example: /path/to/game/levels
+## Example (keeperfx 0.4.8): /path/to/game/levels
+## Example (keeperfx 0.4.9): /path/to/game/levels/personal
 levels_path =
 
 ## Path to map's output file (absolute or relative to work dir).
