@@ -14,7 +14,7 @@ BUILD_DIR_NAME=
 if [ "$#" -ge 1 ]; then
     BUILD_DIR_NAME="$1"
 else
-    BUILD_DIR_NAME=win_$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
+    BUILD_DIR_NAME=lin_$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
 fi
 BUILD_DIR=$SCRIPT_DIR/../build/$BUILD_DIR_NAME
 
