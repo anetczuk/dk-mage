@@ -313,21 +313,12 @@ namespace dkmage {
         }
 
         void MazeMode::prepareScript() {
-            {
-                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
-                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
-                script.storeParameters( type, seed );
-            }
-
-//            script.addLine( "" );
 //            script.setFXLevel();
 
-            script.addLine( "" );
-            script.addLine( "SET_GENERATE_SPEED( 500 )" );
-
-            script.addLine( "COMPUTER_PLAYER( PLAYER1, 0 )" );
-            script.addLine( "MAX_CREATURES( PLAYER0, 10 )" );
-            script.addLine( "MAX_CREATURES( PLAYER1, 50 )" );
+            script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            script.addLineInit( "COMPUTER_PLAYER( PLAYER1, 0 )" );
+            script.addLineInit( "MAX_CREATURES( PLAYER0, 10 )" );
+            script.addLineInit( "MAX_CREATURES( PLAYER1, 50 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -336,7 +327,7 @@ namespace dkmage {
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
             script.setStartMoney( Player::P_P1, 250000 );                     /// does not show in treasure
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.setHeroCreaturesPool( 20 );
 
             const std::set< Player > availablePlayers = { Player::P_P0, Player::P_P0 };
@@ -356,32 +347,27 @@ namespace dkmage {
             availableTraps.setAllAvailable( Player::P_ALL, true );
             availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.set( availableCreatures );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.set( availableRooms );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.setDoorsAvailable( Player::P_ALL, 0 );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.set( availableTraps );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.setMagicStandard( Player::P_ALL );
 
-//            script.addLine( "" );
+//            script.addLineInit( "" );
 //            script.setImpRotting( false );
 
-            script.addLine( "" );
-            script.addLine( "" );
-            script.addLine( "REM --- main script ---" );
-            script.addLine( "" );
+            /// end game conditions
             script.setWinConditionStandard( Player::P_P0 );
             script.setLoseConditionStandard( Player::P_P0 );
-
-            script.rebuild();
         }
 
     } /* namespace mode */

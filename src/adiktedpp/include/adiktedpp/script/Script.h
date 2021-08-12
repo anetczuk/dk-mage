@@ -17,51 +17,146 @@ namespace adiktedpp {
         /**
          *
          */
-        class Script {
+        class BasicScript {
 
-            Level* levelPtr;
             std::vector< std::string > lines;
-
 
         public:
 
-            Script( Level& level );
+            BasicScript() {
+            }
 
-            void rebuild();
+            const std::vector< std::string >& data() const {
+                return lines;
+            }
 
-            bool recompose();
+            bool empty() const {
+                return lines.empty();
+            }
 
-            /**
-             * Execute script function against level.
-             * Function name and arguments are given in string format, e.g. 'LEVEL_AUTHORS("dkmage","dkmage")'.
-             * Currently there is possible to execute functions from adikted specific group (CMD_ADIKTED).
-             */
-            bool executeLine( const std::string& line );
+            std::vector< std::string >::const_iterator begin() const {
+                return lines.begin();
+            }
 
-            /// execute commands stored in ADI file
-            void execScriptADI( const std::string& path );
+            std::vector< std::string >::const_iterator end() const {
+                return lines.end();
+            }
 
-            void storeParameters( const std::string& mapType, const std::string& seed );
+            void addLine( const std::string& line ) {
+                lines.push_back( line );
+            }
 
-            bool addREM( const std::string& comment );
+            void addLine( const std::string& line, const std::size_t position );
+
+            void addREM( const std::string& comment ) {
+                return addLine( "REM " + comment );
+            }
 
             void setFXLevel();
 
             void setStartMoney( const adiktedpp::Player player, const std::size_t amount );
 
-            bool addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
+            void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
+            void addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
+            void addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
+            void addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
 
-            bool addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
+            void addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
 
-            bool addLine( const std::string& line );
+            /// set creature pool
+            void setEvilCreaturesPool( const std::size_t number );
 
-            bool addLine( const std::string& line, const std::size_t position );
+            void setHeroCreaturesPool( const std::size_t number );
+
+            void setCreaturePool( const Creature creature, const std::size_t number );
+
+            /// ================================================================================
+
+            /// disable or enable imps corpses be brought to graveyard
+            /// not supported by adikted
+            void setImpRotting( const bool rotting = true );
+
+            void setWinConditionStandard( const Player player );
+
+            void setWinConditionKillGood();
+
+            void setLoseConditionStandard( const Player player );
+
+
+        };
+
+
+        enum class ScriptSection {
+            SS_HEADER,
+            SS_INIT,
+            SS_ACTION,
+            SS_ENDCOND,
+            SS_REST
+        };
+
+
+        /**
+         *
+         */
+        class Script {
+
+            BasicScript header;
+            BasicScript init;
+            BasicScript action;
+            BasicScript endConditions;
+            BasicScript other;
+
+
+        public:
+
+            Script();
+
+            std::vector< std::string > build();
+
+            void storeParameters( const std::string& mapType, const std::string& seed );
+
+            void addLine( const std::string& line ) {
+                other.addLine( line );
+            }
+
+            void addLine( const ScriptSection section, const std::string& line ) {
+                BasicScript& script = getSection( section );
+                script.addLine( line );
+            }
+
+            void addLineInit( const std::string& line ) {
+                init.addLine( line );
+            }
+
+            void addLineAction( const std::string& line ) {
+                action.addLine( line );
+            }
+
+            void addREM( const ScriptSection section, const std::string& comment ) {
+                BasicScript& script = getSection( section );
+                script.addLine( "REM " + comment );
+            }
+
+            void setFXLevel() {
+                init.setFXLevel();
+            }
+
+            void setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
+                init.setStartMoney( player, amount );
+            }
+
+            void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
+
+            void addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
+
+            void addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
+
+            void addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
+
+            void addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
 
             template <typename TValue>
             void set( const AvailableCommandStateMap<TValue>& stateMap ) {
@@ -135,7 +230,41 @@ namespace adiktedpp {
 
         private:
 
-            void convertToTextArray();
+            BasicScript& getSection( const ScriptSection section );
+
+        };
+
+
+        /**
+         *
+         */
+        class LevelScript {
+
+            Level* levelPtr;
+
+
+        public:
+
+            LevelScript( Level& level );
+
+            void rebuild( std::vector< std::string >& content );
+
+            bool recompose();
+
+            /**
+             * Execute script function against level.
+             * Function name and arguments are given in string format, e.g. 'LEVEL_AUTHORS("dkmage","dkmage")'.
+             * Currently there is possible to execute functions from adikted specific group (CMD_ADIKTED).
+             */
+            bool executeLine( const std::string& line );
+
+            /// execute commands stored in ADI file
+            void execScriptADI( const std::string& path );
+
+
+        protected:
+
+            void convertToTextArray( const std::vector< std::string >& content );
 
             void freeTxt();
 

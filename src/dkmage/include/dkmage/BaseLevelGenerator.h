@@ -30,7 +30,7 @@ namespace dkmage {
         adiktedpp::script::Script script;
 
 
-        BaseLevelGenerator(): messages( "adikted.log.txt" ), level(), script( level ) {
+        BaseLevelGenerator(): messages( "adikted.log.txt" ), level(), script() {
         }
 
         const ParametersMap& getParameters() const override {
@@ -44,6 +44,10 @@ namespace dkmage {
                 const std::string& path = dataPath.value();
                 setDataPath( path );
             }
+
+            const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
+            const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
+            script.storeParameters( type, seed );
         }
 
         void setLevelName( const std::string& name ) override {

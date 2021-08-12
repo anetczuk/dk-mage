@@ -624,19 +624,10 @@ namespace dkmage {
         }
 
         void HeroFortressMode::prepareScript() {
-            {
-                const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
-                const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
-                script.storeParameters( type, seed );
-            }
-
-//            script.addLine( "" );
 //            script.setFXLevel();
 
-            script.addLine( "" );
-            script.addLine( "SET_GENERATE_SPEED( 500 )" );
-
-            script.addLine( "MAX_CREATURES( PLAYER0, 25 )" );
+            script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            script.addLineInit( "MAX_CREATURES( PLAYER0, 25 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -644,33 +635,32 @@ namespace dkmage {
             }
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
 
-            script.addLine( "" );
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.setEvilCreaturesPool( 10 );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             const std::set< Player > availablePlayers = { Player::P_P0 };
             script::CreatureAvailableState availableCreatures( availablePlayers );
             availableCreatures.setEvilAvailable( Player::P_P0 );
             script.set( availableCreatures );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
             availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableRoomMode::ARM_DISABLED );
             script.set( availableRooms );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
             script.setDoorsAvailable( Player::P_ALL, 0 );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
 //            script.setTrapsAvailable( Player::P_ALL, 0 );
             script::TrapAvailableState availableTraps( availablePlayers );
             availableTraps.setAllAvailable( Player::P_ALL, true );
             availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
             script.set( availableTraps );
 
-            script.addLine( "" );
+            script.addLineInit( "" );
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
             availableMagic.setStandard( Player::P_ALL );
@@ -678,17 +668,12 @@ namespace dkmage {
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
             script.set( availableMagic );
 
-//            script.addLine( "" );
+//            script.addLineInit( "" );
 //            script.setImpRotting( false );
 
-            script.addLine( "" );
-            script.addLine( "" );
-            script.addLine( "REM --- main script ---" );
-            script.addLine( "" );
+            /// end game conditions
             script.setWinConditionStandard( Player::P_P0 );
             script.setLoseConditionStandard( Player::P_P0 );
-
-            script.rebuild();
         }
 
     } /* namespace mode */

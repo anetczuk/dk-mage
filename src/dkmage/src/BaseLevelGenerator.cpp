@@ -41,6 +41,11 @@ namespace dkmage {
             LOG() << "could not generate map";
             return false;
         }
+
+        std::vector< std::string > content = script.build();
+        script::LevelScript dataLevel( level );
+        dataLevel.rebuild( content );
+
         if ( level.verifyMap() == false ) {
             LOG() << "generated level is invalid";
             return false;
