@@ -9,6 +9,7 @@
 #include "dkmage/spatial/Dungeon.h"
 
 #include "utils/Set.h"
+#include "utils/Rand.h"
 
 
 using namespace utils;
@@ -52,7 +53,7 @@ namespace dkmage {
             const std::size_t trapsNum = std::min( (std::size_t)regionArea, cavesNum );
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
-                const int itemIndex = rand() % indexSet.size();
+                const int itemIndex = randi( indexSet.size() );
                 const int regionIndex = getSetItem( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
@@ -102,7 +103,7 @@ namespace dkmage {
                 Rect randRect( 25, 11 );
                 randRect.centerize();
                 randRect.moveBottomTo( 0 );
-                const std::size_t randomPosIndex = rand() % randRect.area();
+                const std::size_t randomPosIndex = randi( randRect.area() );
                 const Point center = randRect.pointByIndex( randomPosIndex );
                 dungeon.move( center );
             }
@@ -135,7 +136,7 @@ namespace dkmage {
                 Rect randRect( 25, 11 );
                 randRect.moveRightTo( mapRect.max.x - 7 );
                 randRect.moveBottomTo( mapRect.max.y - 3 );
-                const std::size_t randomPosIndex = rand() % randRect.area();
+                const std::size_t randomPosIndex = randi( randRect.area() );
                 const Point portalCenter = randRect.pointByIndex( randomPosIndex );
                 const Rect portalRect( portalCenter, 3, 3 );
                 level.setRoom( portalRect, Room::R_PORTAL );

@@ -171,7 +171,7 @@ namespace dkmage {
             roomProbability.normalize();
 
             /// create branches
-            const std::size_t branchLength = rand() % 3 + 4;
+            const std::size_t branchLength = randi( 3 ) + 4;
             for ( std::size_t i=0; i<branchLength; ++i ) {
                 std::vector< const spatial::DungeonRoom* > nextRooms;
                 const std::size_t qSize = roomQueue.size();
@@ -214,7 +214,7 @@ namespace dkmage {
                 roomSize357.normalize();
             }
 
-            const std::size_t corridorLength = rand() % 5 + 1;
+            const std::size_t corridorLength = randi( 5 ) + 1;
 
             switch( roomType ) {
             case FortressRoom::FR_TREASURE: {
@@ -309,7 +309,7 @@ namespace dkmage {
 
                     /// add bridge keepers
                     level.setSlab( bridgePoint, Slab::S_PATH );
-                    const int fairyLevel = rand() % 4;
+                    const int fairyLevel = randi( 4 );
                     level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
                     level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
                     if ( i == 1 ) {
@@ -354,7 +354,7 @@ namespace dkmage {
 //
 //                    /// add bridge keepers
 //                    level.setSlab( bridgePoint, Slab::S_PATH );
-//                    const int fairyLevel = rand() % 4;
+//                    const int fairyLevel = randi( 4 );
 //                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
 //                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
 //                    if ( i == 1 ) {
@@ -523,7 +523,7 @@ namespace dkmage {
             const std::size_t trapsNum = std::min( (std::size_t)regionArea, cavesNum );
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
-                const int itemIndex = rand() % indexSet.size();
+                const int itemIndex = randi( indexSet.size() );
                 const int regionIndex = getSetItem( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
@@ -565,7 +565,7 @@ namespace dkmage {
                 Rect randRect( 25, 9 );
                 randRect.centerize();
                 randRect.moveBottomTo( 0 );
-                const std::size_t randomPosIndex = rand() % randRect.area();
+                const std::size_t randomPosIndex = randi( randRect.area() );
                 const Point center = randRect.pointByIndex( randomPosIndex );
                 dungeon.move( center );
             }
@@ -594,7 +594,7 @@ namespace dkmage {
                 Rect randRect( 25, 11 );
                 randRect.moveRightTo( mapRect.max.x - 7 );
                 randRect.moveBottomTo( mapRect.max.y - 3 );
-                const std::size_t randomPosIndex = rand() % randRect.area();
+                const std::size_t randomPosIndex = randi( randRect.area() );
                 const Point portalCenter = randRect.pointByIndex( randomPosIndex );
                 const Rect portalRect( portalCenter, 3, 3 );
                 level.setRoom( portalRect, Room::R_PORTAL );

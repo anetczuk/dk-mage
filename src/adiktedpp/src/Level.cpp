@@ -376,7 +376,7 @@ namespace adiktedpp {
 //        }
 //        std::set< Point > added;
 //        for ( std::size_t i=0; i<itemsNum; ++i ) {
-//            const std::size_t vIndex = rand() % available.size();
+//            const std::size_t vIndex = randi() % available.size();
 //            auto avpos = available.begin();
 //            std::advance( avpos, vIndex );
 //            added.insert( *avpos );

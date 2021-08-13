@@ -14,53 +14,27 @@
 
 namespace utils {
 
-    double randd();                         /// forward declaration
+    void srand_ng( unsigned int seed );
 
+    bool randb();
 
-    inline bool randb() {
-        return ( rand() % 2 == 1 );
-    }
+    bool randb( const double probability );
 
-    inline bool randb( const double probability ) {
-        return ( randd() < probability );
-    }
+    /// returns value from range [ 0, MAX )
+    unsigned int randi();
 
     /// returns value from range [ 0, maxValue )
-    inline int randi( const int maxValue ) {
-        const int rint = rand();
-        return ( rint % maxValue );
-    }
+    unsigned int randi( const unsigned int maxValue );
 
     /// returns value from range [ minValue, maxValue )
-    inline int randi( const int minValue, const int maxValue ) {
-        const int rint = rand();
-        return ( rint % (maxValue - minValue) ) + minValue;
-    }
+    unsigned int randi( const unsigned int minValue, const unsigned int maxValue );
 
     /**
      * Return value in range [0..1].
      */
-    inline double randd() {
-        const int rint   = rand();
-        const double val = ((double) rint / (RAND_MAX));
-        return val;
-    }
+    double randd();
 
-    inline std::string genSeed( const std::size_t length = 8 ) {
-        static const char alphanum[] =
-            "0123456789"
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        std::string ret;
-        ret.reserve( length );
-
-        const int len = sizeof( alphanum ) - 1;
-        for ( std::size_t i=0; i<length; ++i ) {
-            const int index = rand() % len;
-            ret += alphanum[ index ];
-        }
-        return ret;
-    }
+    std::string genSeed( const std::size_t length = 8 );
 
 }
 

@@ -7,7 +7,10 @@
 
 #include "dkmage/Parameter.h"
 
+#include "utils/Rand.h"
 
+
+using namespace utils;
 using namespace dkmage;
 
 
@@ -37,7 +40,7 @@ TEST_CASE( "ParametersMap_getString" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list" ) {
-    srand( 2 );
+    srand_ng( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "aaa,bbb,ccc,ddd" );
@@ -47,7 +50,7 @@ TEST_CASE( "ParametersMap_getString_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list_emptyListElement" ) {
-    srand( 2 );
+    srand_ng( 2 );
 
     ParametersMap parameters;
     parameters.add( "param", ",,," );
@@ -64,7 +67,7 @@ TEST_CASE( "ParametersMap_getSizeT_item" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_list" ) {
-    srand( 2 );
+    srand_ng( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "1,3,5,7" );
@@ -74,7 +77,7 @@ TEST_CASE( "ParametersMap_getSizeT_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_range" ) {
-    srand( 2 );
+    srand_ng( 21 );
 
     ParametersMap parameters;
     parameters.add( "param", "10:20" );

@@ -16,7 +16,7 @@ using namespace utils;
 TEST_CASE( "ProbabilityMass_get" ) {
     {
         const unsigned int timeSeed = time(NULL);
-        srand( timeSeed );
+        srand_ng( timeSeed );
 
         ProbabilityMass<int> probability;
         probability.set( 1, 10.0 );

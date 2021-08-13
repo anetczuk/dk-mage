@@ -25,7 +25,7 @@ else()
 endif()
 
 target_include_directories( ${TARGET_NAME} PUBLIC ../include ${filesystem_SOURCE_DIR} )
-target_link_libraries( ${TARGET_NAME} ${EXT_LIBS} )
+target_link_libraries( ${TARGET_NAME} adikted )
 
 
 install( TARGETS ${TARGET_NAME}

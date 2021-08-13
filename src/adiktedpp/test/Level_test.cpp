@@ -96,7 +96,7 @@
 //TEST_CASE("Level_generateRandomMap", "[classic]") {
 //    LevelMock level;
 //
-////    srand( 0 );
+////    srand_ng( 0 );
 //    level.generateRandomMap();
 //
 //    level.generateTestBmp();

@@ -5,10 +5,14 @@
 
 #include "dkmage/Parameter.h"
 
+#include "utils/Rand.h"
 #include "utils/Log.h"
 
 #include <vector>
 #include <string.h>
+
+
+using namespace utils;
 
 
 namespace dkmage {
@@ -128,7 +132,7 @@ namespace dkmage {
         case 0: return "";
         case 1: return stringList[0];
         }
-        const std::size_t listIndex = rand() % listSize;
+        const std::size_t listIndex = randi( listSize );
         const std::string& listItem = stringList[ listIndex ];
         return listItem;
     }
@@ -191,7 +195,7 @@ namespace dkmage {
         if ( diff == 0 ) {
             return (std::size_t) rangeFrom;
         }
-        const int number = rangeFrom + rand() % ( diff + 1 );
+        const int number = rangeFrom + randi( diff + 1 );
         return (std::size_t) number;
     }
 

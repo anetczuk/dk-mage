@@ -96,7 +96,7 @@ TEST_CASE("RawLevel_startNewMap_succeed", "[classic]") {
 TEST_CASE("RawLevel_generateRandomMap", "[classic]") {
     RawLevelMock level;
 
-//    srand( 0 );
+//    srand_ng( 0 );
     level.generateRandomMap();
 
     level.generateTestBmp();

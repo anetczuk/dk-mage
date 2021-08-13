@@ -46,7 +46,7 @@ std::string getProperSeed( const std::string& seed ) {
     }
 
     const unsigned int timeSeed = time(NULL);
-    srand( timeSeed );
+    srand_ng( timeSeed );
     const std::string newSeed = genSeed();
     if ( newSeed.empty() ) {
         LOG() << "unable to generate seed";
@@ -58,7 +58,7 @@ std::string getProperSeed( const std::string& seed ) {
 void initializeRand( const std::string& seed ) {
     LOG() << "using seed '" << seed << "'";
     const std::size_t seedValue = std::hash< std::string >{}( seed );
-    srand( seedValue );
+    srand_ng( seedValue );
 }
 
 std::string getProperType( const std::string& mapType ) {
@@ -76,7 +76,7 @@ std::string getProperType( const std::string& mapType ) {
         LOG() << "could not get proper map type: no generators found";
         return "";
     }
-    const std::size_t rIndex = rand() % typeSet.size();
+    const std::size_t rIndex = randi( typeSet.size() );
     return getSetItem( typeSet, rIndex );
 }
 

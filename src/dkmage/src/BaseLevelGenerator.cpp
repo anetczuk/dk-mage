@@ -10,6 +10,7 @@
 #include "dkmage/Draw.h"
 
 #include "utils/Rect.h"
+#include "utils/Rand.h"
 
 #include <cmath>
 #include <fstream>
@@ -96,7 +97,7 @@ namespace dkmage {
         Rect randPosArea( 21, 17 );
         randPosArea.moveLeftTo( 1 + veinDimm / 2 + 1 );
         randPosArea.moveBottomTo( mapRect.max.y - veinDimm / 2 - 1 );
-        const std::size_t randomPosIndex = rand() % randPosArea.area();
+        const std::size_t randomPosIndex = randi( randPosArea.area() );
         const Point center = randPosArea.pointByIndex( randomPosIndex );
         const Rect veinRect( center, veinDimm, veinDimm );
         drawGoldVein( level, veinRect, goldAmount, gemAmount );
@@ -108,7 +109,7 @@ namespace dkmage {
         Rect randPosArea( 25, 17 );
         randPosArea.moveRightTo( mapRect.max.x - veinDimm / 2 - 1 );
         randPosArea.moveBottomTo( mapRect.max.y - veinDimm / 2 - 1 );
-        const std::size_t randomPosIndex = rand() % randPosArea.area();
+        const std::size_t randomPosIndex = randi( randPosArea.area() );
         const Point center = randPosArea.pointByIndex( randomPosIndex );
         const Rect veinRect( center, veinDimm, veinDimm );
         drawGoldVein( level, veinRect, goldAmount, gemAmount );
