@@ -11,11 +11,6 @@
 
 #include "utils/Log.h"
 
-//#include <sstream>
-//#include <iomanip>
-//#include <queue>
-//#include <random>
-
 
 extern "C" {
     #include "libadikted/adikted.h"
@@ -376,7 +371,7 @@ namespace adiktedpp {
 //        }
 //        std::set< Point > added;
 //        for ( std::size_t i=0; i<itemsNum; ++i ) {
-//            const std::size_t vIndex = randi() % available.size();
+//            const std::size_t vIndex = rng_randi() % available.size();
 //            auto avpos = available.begin();
 //            std::advance( avpos, vIndex );
 //            added.insert( *avpos );

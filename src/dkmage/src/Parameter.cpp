@@ -132,7 +132,7 @@ namespace dkmage {
         case 0: return "";
         case 1: return stringList[0];
         }
-        const std::size_t listIndex = randi( listSize );
+        const std::size_t listIndex = rng_randi( listSize );
         const std::string& listItem = stringList[ listIndex ];
         return listItem;
     }
@@ -195,7 +195,7 @@ namespace dkmage {
         if ( diff == 0 ) {
             return (std::size_t) rangeFrom;
         }
-        const int number = rangeFrom + randi( diff + 1 );
+        const int number = rangeFrom + rng_randi( diff + 1 );
         return (std::size_t) number;
     }
 

@@ -321,7 +321,7 @@ namespace dkmage {
             if ( cSize < 1 ) {
                 return nullptr;
             }
-            const std::size_t nextIndex = randi( cSize );
+            const std::size_t nextIndex = rng_randi( cSize );
             MazeNode* nextNode = closed[ nextIndex ];
             MazeEdge* edge = graph.getEdge( node, *nextNode );
             edge->open = true;
@@ -474,7 +474,7 @@ namespace dkmage {
                     }
 
                     /// generate lava or rock
-                    const std::size_t lavaWall = randi( 2 );
+                    const std::size_t lavaWall = rng_randi( 2 );
                     if ( lavaWall == 1 ) {
                         setWall( x, y, PathType::PT_LAVA );
                     }

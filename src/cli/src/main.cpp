@@ -20,7 +20,6 @@
 #include <ghc/filesystem.hpp>
 
 //#include <filesystem>
-#include <random>
 
 
 using namespace utils;
@@ -45,8 +44,7 @@ std::string getProperSeed( const std::string& seed ) {
         return seed;
     }
 
-    const unsigned int timeSeed = time(NULL);
-    srand_ng( timeSeed );
+    rng_srand();
     const std::string newSeed = genSeed();
     if ( newSeed.empty() ) {
         LOG() << "unable to generate seed";
@@ -58,7 +56,7 @@ std::string getProperSeed( const std::string& seed ) {
 void initializeRand( const std::string& seed ) {
     LOG() << "using seed '" << seed << "'";
     const std::size_t seedValue = std::hash< std::string >{}( seed );
-    srand_ng( seedValue );
+    rng_srand( seedValue );
 }
 
 std::string getProperType( const std::string& mapType ) {
@@ -76,7 +74,7 @@ std::string getProperType( const std::string& mapType ) {
         LOG() << "could not get proper map type: no generators found";
         return "";
     }
-    const std::size_t rIndex = randi( typeSet.size() );
+    const std::size_t rIndex = rng_randi( typeSet.size() );
     return getSetItem( typeSet, rIndex );
 }
 

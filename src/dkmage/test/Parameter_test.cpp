@@ -40,7 +40,7 @@ TEST_CASE( "ParametersMap_getString" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list" ) {
-    srand_ng( 3 );
+    rng_srand( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "aaa,bbb,ccc,ddd" );
@@ -50,7 +50,7 @@ TEST_CASE( "ParametersMap_getString_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list_emptyListElement" ) {
-    srand_ng( 2 );
+    rng_srand( 2 );
 
     ParametersMap parameters;
     parameters.add( "param", ",,," );
@@ -67,7 +67,7 @@ TEST_CASE( "ParametersMap_getSizeT_item" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_list" ) {
-    srand_ng( 3 );
+    rng_srand( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "1,3,5,7" );
@@ -77,7 +77,7 @@ TEST_CASE( "ParametersMap_getSizeT_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_range" ) {
-    srand_ng( 21 );
+    rng_srand( 21 );
 
     ParametersMap parameters;
     parameters.add( "param", "10:20" );

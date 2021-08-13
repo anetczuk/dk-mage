@@ -5,9 +5,8 @@
 
 #include "dkmage/spatial/Dungeon.h"
 
-#include <random>
-
 #include "utils/Rand.h"
+
 
 using namespace utils;
 using namespace adiktedpp;
@@ -139,7 +138,7 @@ namespace dkmage {
             }
 
             while ( roomsList.empty() == false ) {
-                const std::size_t rRoom = randi( roomsList.size() );
+                const std::size_t rRoom = rng_randi( roomsList.size() );
                 DungeonRoom* selected = remove_at( roomsList, rRoom );
                 if ( selected == nullptr ) {
                     continue;
@@ -180,7 +179,7 @@ namespace dkmage {
             }
 
             while ( availableDirs.empty() == false ) {
-                const std::size_t rDir = randi( availableDirs.size() );
+                const std::size_t rDir = rng_randi( availableDirs.size() );
                 const Direction newDir = remove_at( availableDirs, rDir );
                 DungeonRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, addLink, corridorLength );
                 if ( added != nullptr ) {

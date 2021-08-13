@@ -211,9 +211,9 @@ namespace dkmage {
         list.erase( Creature::C_TUNNELLER );
         list.erase( Creature::C_KNIGHT );
         list.erase( Creature::C_AVATAR );
-        const std::size_t index1 = randi( list.size() );
+        const std::size_t index1 = rng_randi( list.size() );
         const Creature creature1 = getSetItem( list, index1 );
-        const std::size_t index2 = randi( list.size() );
+        const std::size_t index2 = rng_randi( list.size() );
         const Creature creature2 = getSetItem( list, index2 );
 
         level.setCreature( point, 3, creature1, 3, cLevel - 1, Player::P_GOOD );

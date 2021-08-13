@@ -6,48 +6,54 @@
 #include "utils/Rand.h"
 
 
-extern "C" {
-    #include "libadikted/rng.h"
+namespace libadikted {
+    extern "C" {
+        #include "libadikted/rng.h"
+    }
 }
 
 
 namespace utils {
 
-    void srand_ng( unsigned int seed ) {
-        rng_srand( seed );
+    void rng_srand( unsigned int seed ) {
+        libadikted::rng_srand( seed );
     }
 
-    bool randb() {
-        return ( rng_rand() % 2 == 1 );
+    void rng_srand() {
+        libadikted::rng_srand_random();
     }
 
-    bool randb( const double probability ) {
-        return ( randd() < probability );
+    bool rng_randb() {
+        return ( libadikted::rng_rand() % 2 == 1 );
+    }
+
+    bool rng_randb( const double probability ) {
+        return ( rng_randd() < probability );
     }
 
     /// returns value from range [ 0, MAX )
-    unsigned int randi() {
-        return rng_rand();
+    unsigned int rng_randi() {
+        return libadikted::rng_rand();
     }
 
     /// returns value from range [ 0, maxValue )
-    unsigned int randi( const unsigned int maxValue ) {
-        const unsigned int rint = rng_rand();
+    unsigned int rng_randi( const unsigned int maxValue ) {
+        const unsigned int rint = libadikted::rng_rand();
         return ( rint % maxValue );
     }
 
     /// returns value from range [ minValue, maxValue )
-    unsigned int randi( const int minValue, const int maxValue ) {
-        const int rint = rng_rand();
+    unsigned int rng_randi( const int minValue, const int maxValue ) {
+        const int rint = libadikted::rng_rand();
         return ( rint % (maxValue - minValue) ) + minValue;
     }
 
     /**
      * Return value in range [0..1].
      */
-    double randd() {
-        const int rint   = rng_rand();
-        const double val = ((double) rint / (RAND_MAX));
+    double rng_randd() {
+        const int rint   = libadikted::rng_rand();
+        const double val = ((double) rint / libadikted::rng_rand_max() );
         return val;
     }
 
@@ -61,7 +67,7 @@ namespace utils {
 
         const int len = sizeof( alphanum ) - 1;
         for ( std::size_t i=0; i<length; ++i ) {
-            const int index = rng_rand() % len;
+            const int index = libadikted::rng_rand() % len;
             ret += alphanum[ index ];
         }
         return ret;

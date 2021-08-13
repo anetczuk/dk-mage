@@ -76,7 +76,7 @@ namespace utils {
         }
 
         T getRandom() const {
-            const double num = randd();
+            const double num = rng_randd();
             return get( num );
         }
 

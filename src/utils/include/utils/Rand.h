@@ -8,31 +8,33 @@
 
 /// inclusion: #include "utils/Rand.h"
 
-#include <random>
 #include <string>
 
 
 namespace utils {
 
-    void srand_ng( unsigned int seed );
+    void rng_srand( unsigned int seed );
 
-    bool randb();
+    /// initialize RNG with random seed
+    void rng_srand();
 
-    bool randb( const double probability );
+    bool rng_randb();
+
+    bool rng_randb( const double probability );
 
     /// returns value from range [ 0, MAX )
-    unsigned int randi();
+    unsigned int rng_randi();
 
     /// returns value from range [ 0, maxValue )
-    unsigned int randi( const unsigned int maxValue );
+    unsigned int rng_randi( const unsigned int maxValue );
 
     /// returns value from range [ minValue, maxValue )
-    unsigned int randi( const unsigned int minValue, const unsigned int maxValue );
+    unsigned int rng_randi( const unsigned int minValue, const unsigned int maxValue );
 
     /**
      * Return value in range [0..1].
      */
-    double randd();
+    double rng_randd();
 
     std::string genSeed( const std::size_t length = 8 );
 

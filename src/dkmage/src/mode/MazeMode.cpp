@@ -131,7 +131,7 @@ namespace dkmage {
             const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
             LOG() << "generating traps chambers: " << trapsChambers;
             for ( std::size_t i=0; i<trapsChambers; ++i ) {
-                const std::size_t setIndex = randi( indexSet.size() );
+                const std::size_t setIndex = rng_randi( indexSet.size() );
                 const std::size_t cIndex = getSetItem( indexSet, setIndex, true );
                 const std::size_t nx = cIndex % maze.nodesX();
                 const std::size_t ny = cIndex / maze.nodesX();
@@ -204,7 +204,7 @@ namespace dkmage {
                 Rect randRect( 25, 11 );
                 randRect.centerize();
                 randRect.moveBottomTo( 0 );
-                const std::size_t randomPosIndex = randi( randRect.area() );
+                const std::size_t randomPosIndex = rng_randi( randRect.area() );
                 const Point center = randRect.pointByIndex( randomPosIndex );
                 dungeon.move( center );
             }
@@ -233,7 +233,7 @@ namespace dkmage {
                 Rect randRect( 25, 11 );
                 randRect.moveRightTo( mapRect.max.x - 7 );
                 randRect.moveBottomTo( mapRect.max.y - 3 );
-                const std::size_t randomPosIndex = randi( randRect.area() );
+                const std::size_t randomPosIndex = rng_randi( randRect.area() );
                 const Point portalCenter = randRect.pointByIndex( randomPosIndex );
                 const Rect portalRect( portalCenter, 3, 3 );
                 level.setRoom( portalRect, Room::R_PORTAL );
