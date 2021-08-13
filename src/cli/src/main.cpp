@@ -53,9 +53,21 @@ std::string getProperSeed( const std::string& seed ) {
     return newSeed;
 }
 
+std::uint32_t hashCode( const std::string& text ) {
+    const std::size_t strlen = text.length();
+    if ( strlen == 0 ) {
+        return 0;
+    }
+    std::uint32_t hash = 0;
+    for ( std::size_t i = 0; i < strlen; ++i ) {
+        hash = (31 * hash) + text.at(i);
+    }
+    return hash;
+}
+
 void initializeRand( const std::string& seed ) {
-    LOG() << "using seed '" << seed << "'";
-    const std::size_t seedValue = std::hash< std::string >{}( seed );
+    const std::uint32_t seedValue = hashCode( seed );
+    LOG() << "using seed '" << seed << "' " << seedValue;
     rng_srand( seedValue );
 }
 
