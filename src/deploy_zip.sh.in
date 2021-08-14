@@ -22,7 +22,7 @@ cp $BIN_DIR/config.ini $DEPLOY_DIR
 cd $DEPLOY_DIR/..
 
 ## -FS -- replaces existing archive
-zip -FSr dkmage_@CMAKE_PROJECT_VERSION@.zip dkmage
+zip -FSr dkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip dkmage
 
 
 echo -e "\ndeployment done"
