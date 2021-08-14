@@ -205,6 +205,18 @@ namespace adiktedpp {
     /// =============================================================================================================
 
 
+    bool Level::verifyMap( const bool silent ) {
+        if ( rawLevel.verifyMap( silent ) == false ) {
+            return false;
+        }
+        const std::size_t creaturesNum = rawLevel.countAllCreatures();
+        if ( creaturesNum > 255 ) {
+            LOG() << "limit of 255 creatures exceeded, creatures number: " << creaturesNum;
+            return false;
+        }
+        return true;
+    }
+
     Slab Level::getSlab( const std::size_t x, const std::size_t y ) {
         const raw::SlabType slab = rawLevel.getSlab( x, y );
         return convertToSlab( slab );

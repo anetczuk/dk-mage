@@ -118,6 +118,19 @@ TEST_CASE("RawLevel_verifyMap_random", "[classic]") {
     REQUIRE( ok == false );
 }
 
+TEST_CASE("RawLevel_countAllCreatures", "[classic]") {
+    RawLevelMock level;
+    level.startNewMap();
+
+//    level.generateTestBmp();
+
+    const Point point( 20, 20 );
+    level.setSlab( point, raw::SlabType::ST_EARTH );
+    level.setCreature( point, 4, raw::SubTypeCreature::STC_FAIRY, 3 );
+    const std::size_t count = level.countAllCreatures();
+    REQUIRE( count == 3 );
+}
+
 TEST_CASE("RawLevel_countSeparatedAreas_new", "[classic]") {
     RawLevelMock level;
     level.startNewMap();

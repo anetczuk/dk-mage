@@ -67,7 +67,8 @@ std::uint32_t hashCode( const std::string& text ) {
 
 void initializeRand( const std::string& seed ) {
     const std::uint32_t seedValue = hashCode( seed );
-    LOG() << "using seed '" << seed << "' " << seedValue;
+    LOG() << "using seed '" << seed << "'";
+//    LOG() << "using seed '" << seed << "' " << seedValue;
     rng_srand( seedValue );
 }
 

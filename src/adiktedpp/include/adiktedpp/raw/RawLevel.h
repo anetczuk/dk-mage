@@ -107,6 +107,8 @@ namespace adiktedpp {
 
             bool verifyMap( const bool silent = false );
 
+            std::size_t countAllCreatures();
+
             /// count separated chambers by impassable rocks and gems
             std::size_t countSeparatedAreas();
 

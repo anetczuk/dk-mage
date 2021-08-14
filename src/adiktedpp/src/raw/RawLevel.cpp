@@ -763,6 +763,31 @@ namespace adiktedpp {
             setTextField( &level->info.desc_text, info.c_str() );
         }
 
+        std::size_t RawLevel::countAllCreatures() {
+            std::size_t creaturesCount = 0;
+
+            LEVEL* level = data->lvl;
+            const int arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
+            const int arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
+
+            std::size_t totalNum = 0;
+            for (int i=0; i < arr_entries_y; ++i) {
+                for (int j=0; j < arr_entries_x; ++j) {
+                    const int things_count = get_thing_subnums( level, i, j );
+                    totalNum += things_count;
+
+                    for (int k=0; k<things_count; ++k) {
+                        unsigned char* thing = (unsigned char*) get_thing( level, i, j, k );
+                        if ( is_creature( thing ) != 0 ) {
+                            ++creaturesCount;
+                        }
+                    }
+                }
+            }
+
+            return creaturesCount;
+        }
+
         std::size_t RawLevel::countSeparatedAreas() {
             AreaDetector data;
 
