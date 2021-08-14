@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# This file was automatically generated from '@GENERATOR_FILE@'. All changes will be lost.
+#
+
+set -eu
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+cd $SCRIPT_DIR
+
+
+make purge && cmake . && make && ctest

@@ -112,6 +112,8 @@ else()
     set( EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dkmagecli" )
 endif()
 
+generate_to_file( rebuild.sh.in rebuild.sh )
+
 generate_to_file( generate_doc.sh.in generate_doc.sh )
 
 generate_to_file( deploy_zip.sh.in deploy_zip.sh )
