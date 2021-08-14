@@ -43,7 +43,7 @@ build_windows() {
     mkdir -p "$BUILD_PATH"
     cd "$BUILD_PATH"
     
-    cmake -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_DIR/../../src/cmake/lin-to-win.toolchain.cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" $SRC_PATH
+    cmake -DCMAKE_TOOLCHAIN_FILE=$SCRIPT_DIR/../../src/cmake/toolchain-i686-w64-mingw32.cmake -DCMAKE_INSTALL_PREFIX="$INSTALL_PATH" $SRC_PATH
     
     cmake --build . --target install
 }

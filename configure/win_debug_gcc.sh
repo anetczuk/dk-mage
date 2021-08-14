@@ -29,6 +29,6 @@ cd $BUILD_DIR
 #export CC=/usr/bin/gcc
 #export CXX=/usr/bin/g++
 
-cmake -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/cmake/lin-to-win.toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
+cmake -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/cmake/toolchain-i686-w64-mingw32.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
 
 #cmake -D CMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
