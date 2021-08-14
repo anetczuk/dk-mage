@@ -14,7 +14,7 @@ if( "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}" )
 endif()
 
 
-project( dk-mage )
+project( dk-mage VERSION 1.3.2 )
 
 
 SET( EXTERNAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external" )
