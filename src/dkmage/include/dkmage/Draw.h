@@ -12,12 +12,9 @@
 namespace dkmage {
 
     namespace spatial {
-        class Dungeon;
         class Maze;
     }
 
-
-    void drawDungeon( adiktedpp::Level& level, const dkmage::spatial::Dungeon& dungeon );
 
     void drawMaze( adiktedpp::Level& level, const dkmage::spatial::Maze& maze );
 

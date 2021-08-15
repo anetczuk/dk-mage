@@ -75,7 +75,7 @@ namespace dkmage {
         }
 
         void CaveMode::preparePlayerDungeon() {
-            spatial::Dungeon dungeon( Player::P_P0 );
+            spatial::EvilDungeon dungeon( Player::P_P0 );
             dungeon.limitNorth = 1;
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
@@ -125,9 +125,9 @@ namespace dkmage {
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
-            drawDungeon( level, dungeon );
+            dungeon.draw( level );
 
-            const spatial::DungeonRoom* heart = dungeon.room( 0 );
+            const spatial::EvilRoom* heart = dungeon.room( 0 );
             const Point firstCenter = heart->position().center();
 
             {
@@ -167,7 +167,7 @@ namespace dkmage {
 
         void CaveMode::prepareEnemyDungeon() {
         //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
-            spatial::Dungeon enemyDungeon( Player::P_P1 );
+            spatial::EvilDungeon enemyDungeon( Player::P_P1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
@@ -180,7 +180,7 @@ namespace dkmage {
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
 
             /// dungeon have to be drawn before placing items inside it's rooms
-            drawDungeon( level, enemyDungeon );
+            enemyDungeon.draw( level );
 
             const Point firstCenter = enemyDungeon.roomCenter( 0 );
             const Rect bbox = enemyDungeon.boundingBox();
@@ -203,8 +203,8 @@ namespace dkmage {
 //                    level.setCreature( firstCenter.x, firstCenter.y-2, 4, SubTypeCreature::STC_SKELETON, 1 );
 
             /// fill treasure with gold
-            const std::vector< spatial::DungeonRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
-            for ( const spatial::DungeonRoom* treasure: treasures ) {
+            const std::vector< spatial::EvilRoom* > treasures = enemyDungeon.findRoom( Room::R_TREASURE );
+            for ( const spatial::EvilRoom* treasure: treasures ) {
                 const Rect& roomRect = treasure->position();
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }

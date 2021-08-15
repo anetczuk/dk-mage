@@ -1,5 +1,5 @@
 /*
- * Dungeon_test.cpp
+ * EvilDungeon_test.cpp
  *
  */
 
@@ -13,8 +13,8 @@ using namespace dkmage;
 using namespace spatial;
 
 
-TEST_CASE( "Dungeon_boundingBox" ) {
-    Dungeon dungeon;
+TEST_CASE( "EvilDungeon_boundingBox" ) {
+    EvilDungeon dungeon;
     dungeon.generate(1, 3);
     const Rect rect = dungeon.boundingBox();
     REQUIRE( rect.area() == 9 );
@@ -24,11 +24,11 @@ TEST_CASE( "Dungeon_boundingBox" ) {
     CHECK( rect.max.y ==  1 );
 }
 
-TEST_CASE( "Dungeon_boundingBox_02" ) {
-    Dungeon dungeon;
-    DungeonRoom* room1 = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
+TEST_CASE( "EvilDungeon_boundingBox_02" ) {
+    EvilDungeon dungeon;
+    EvilRoom* room1 = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
     REQUIRE( room1 != nullptr );
-    DungeonRoom* room2 = dungeon.addRoom( Room::R_TREASURE, 5, *room1, Direction::D_WEST );
+    EvilRoom* room2 = dungeon.addRoom( Room::R_TREASURE, 5, *room1, Direction::D_WEST );
     REQUIRE( room2 != nullptr );
 
     const Rect rect = dungeon.boundingBox();
@@ -39,9 +39,9 @@ TEST_CASE( "Dungeon_boundingBox_02" ) {
     CHECK( rect.max.y ==  2 );
 }
 
-TEST_CASE( "Dungeon_isCollision" ) {
-    Dungeon dungeon;
-    DungeonRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
+TEST_CASE( "EvilDungeon_isCollision" ) {
+    EvilDungeon dungeon;
+    EvilRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
     REQUIRE( first != nullptr );
 
     const Point from( 3, 5 );
@@ -50,12 +50,12 @@ TEST_CASE( "Dungeon_isCollision" ) {
     REQUIRE( colision );
 }
 
-TEST_CASE( "Dungeon_addRoom" ) {
-    Dungeon dungeon;
-    DungeonRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
+TEST_CASE( "EvilDungeon_addRoom" ) {
+    EvilDungeon dungeon;
+    EvilRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
     REQUIRE( first != nullptr );
 
-    DungeonRoom* next = first;
+    EvilRoom* next = first;
     next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_WEST, true, 1 );
     REQUIRE( next != nullptr );
 
@@ -68,12 +68,12 @@ TEST_CASE( "Dungeon_addRoom" ) {
     REQUIRE( dungeon.roomsNum() == 4 );
 }
 
-TEST_CASE( "Dungeon_addRoom_corridors" ) {
-    Dungeon dungeon;
-    DungeonRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
+TEST_CASE( "EvilDungeon_addRoom_corridors" ) {
+    EvilDungeon dungeon;
+    EvilRoom* first = dungeon.addRoom( Room::R_DUNGEON_HEART, 5 );
     REQUIRE( first != nullptr );
 
-    DungeonRoom* next = first;
+    EvilRoom* next = first;
     next = dungeon.addRoom( Room::R_TREASURE, 1, *next, Direction::D_WEST, true, 3 );
     REQUIRE( next != nullptr );
 
@@ -86,12 +86,12 @@ TEST_CASE( "Dungeon_addRoom_corridors" ) {
     REQUIRE( dungeon.roomsNum() == 4 );
 }
 
-TEST_CASE( "Dungeon_addRoom_collision" ) {
-    Dungeon dungeon;
-    DungeonRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
+TEST_CASE( "EvilDungeon_addRoom_collision" ) {
+    EvilDungeon dungeon;
+    EvilRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
     REQUIRE( first != nullptr );
 
-    DungeonRoom* next = first;
+    EvilRoom* next = first;
     next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_WEST );
     REQUIRE( next != nullptr );
 
@@ -101,7 +101,7 @@ TEST_CASE( "Dungeon_addRoom_collision" ) {
     next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_EAST );
     REQUIRE( next != nullptr );
 
-    DungeonRoom* last = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_SOUTH );
+    EvilRoom* last = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_SOUTH );
     REQUIRE( last == nullptr );
 
     REQUIRE( dungeon.roomsNum() == 4 );

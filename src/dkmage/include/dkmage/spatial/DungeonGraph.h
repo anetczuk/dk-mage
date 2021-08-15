@@ -292,7 +292,7 @@ namespace dkmage {
             }
 
             /// return list of directions without connected nodes
-            std::vector< Direction > freeDirections( const TNodeData& item ) {
+            std::vector< Direction > freeDirections( const TNodeData& item ) const {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return std::vector< Direction >();

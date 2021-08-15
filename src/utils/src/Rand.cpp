@@ -57,6 +57,12 @@ namespace utils {
         return val;
     }
 
+    void rng_consume( const std::size_t num ) {
+        for ( std::size_t i=0; i<num; ++i ) {
+            rng_randi();
+        }
+    }
+
     std::string genSeed( const std::size_t length ) {
         static const char alphanum[] =
             "0123456789"

@@ -36,6 +36,8 @@ namespace utils {
      */
     double rng_randd();
 
+    void rng_consume( const std::size_t num );
+
     std::string genSeed( const std::size_t length = 8 );
 
 }

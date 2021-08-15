@@ -5,9 +5,6 @@
 #include "adiktedpp/Level.h"
 
 #include "adiktedpp/LakeGenerator.h"
-//#include "adiktedpp/Messages.h"
-//#include "adiktedpp/ThingType.h"
-//#include "adiktedpp/Version.h"
 
 #include "utils/Log.h"
 

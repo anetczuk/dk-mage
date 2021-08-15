@@ -18,26 +18,6 @@ using namespace adiktedpp;
 
 namespace dkmage {
 
-    void drawDungeon( Level& level, const spatial::Dungeon& dungeon ) {
-        const Player owner = dungeon.owner();
-        const bool fortify = dungeon.fortify();
-        std::vector< const spatial::DungeonRoom* > roomsList = dungeon.rooms();
-        for ( const spatial::DungeonRoom* item: roomsList ) {
-            /// set room
-            const Rect& position = item->position();
-            const Room itemType = item->type();
-            level.setRoom( position, itemType, owner, fortify );
-
-            /// draw corridors
-            const Point& itemCenter = item->position().center();
-            std::vector< const spatial::DungeonRoom* > connectedList = dungeon.connectedRooms( *item );
-            for ( const spatial::DungeonRoom* connected: connectedList ) {
-                const Point& connectedCenter = connected->position().center();
-                level.digLine( itemCenter, connectedCenter, owner, fortify );
-            }
-        }
-    }
-
     void drawMaze( Level& level, const spatial::Maze& maze ) {
         const std::size_t xDimm = maze.dimmensionX();
         const std::size_t yDimm = maze.dimmensionY();
