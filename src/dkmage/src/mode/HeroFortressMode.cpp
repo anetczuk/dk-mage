@@ -224,13 +224,24 @@ namespace dkmage {
 
             /// create branch exit
             std::vector< const spatial::FortressRoom* > exitRooms;
-            const std::size_t qSize = roomQueue.size();
-            for ( std::size_t x=0; x<qSize; ++x ) {
+            std::size_t qSize = roomQueue.size();
+            std::size_t exitsNum = qSize;
+
+            std::size_t entrancesAllowed = qSize;
+            if ( parameters.isSet( ParameterName::PN_ENTRANCES_NUMBER ) ) {
+                entrancesAllowed = parameters.getSizeT( ParameterName::PN_ENTRANCES_NUMBER );
+            } else {
+                entrancesAllowed = rng_randi( 2, 5 );
+            }
+            LOG() << "requested number of fortress entrances: " << entrancesAllowed;
+            exitsNum = std::min( qSize, entrancesAllowed );
+
+            for ( std::size_t x=0; x<exitsNum; ++x ) {
                 const spatial::FortressRoom* item = roomQueue[ x ];
                 std::vector< const spatial::FortressRoom* > next = dungeon.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item, false );
                 if ( next.empty() ) {
                     LOG() << "unable to generate branch exit";
-//                    return std::vector< const spatial::FortressRoom* >();
+                    exitsNum = std::min( exitsNum+1, qSize );
                     continue ;
                 }
                 exitRooms.insert( exitRooms.end(), next.begin(), next.end() );

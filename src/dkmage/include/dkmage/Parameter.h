@@ -32,6 +32,8 @@ namespace dkmage {
         PN_GEM_FACES_NUMBER,
         PN_INIT_GOLD_AMOUNT,
 
+        PN_ENTRANCES_NUMBER,
+
         PN_TEST_MODE,
         PN_STOP_ON_FAIL                         /// do not retry generation if attempt failed
     };

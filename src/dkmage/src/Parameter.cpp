@@ -34,6 +34,8 @@ namespace dkmage {
             data.insert( ParameterName::PN_GEM_FACES_NUMBER );
             data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
 
+            data.insert( ParameterName::PN_ENTRANCES_NUMBER );
+
             data.insert( ParameterName::PN_TEST_MODE );
             data.insert( ParameterName::PN_STOP_ON_FAIL );
         }
@@ -71,6 +73,8 @@ namespace dkmage {
         case ParameterName::PN_GOLD_SLABS_NUMBER:   return "gold_slabs_number";
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
         case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
+
+        case ParameterName::PN_ENTRANCES_NUMBER:    return "entrances_number";
 
         case ParameterName::PN_TEST_MODE:       return "test_mode";
         case ParameterName::PN_STOP_ON_FAIL:    return "stop_on_fail";

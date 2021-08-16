@@ -125,3 +125,6 @@ levels_path =
 
 #init_gold_amount = 20000
 
+## Number of entrances to fortress
+entrances_number=2:4
+
