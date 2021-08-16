@@ -48,9 +48,9 @@ namespace dkmage {
 
             std::vector< const spatial::FortressRoom* > prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches );
 
-            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
+//            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
 
-            bool prepareEntrance( const spatial::FortressRoom& entranceRoom );
+            bool prepareBridge( const spatial::FortressRoom& entranceRoom );
 
             /// find shortest bridge in four directions
             std::vector< Point > findBridge( const Point startPoint );
@@ -71,6 +71,16 @@ namespace dkmage {
             const std::size_t corridorLength = rng_randi( 3 ) + 3;
             std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, corridorLength, false );
             if ( mainCorridor.size() == 1 ) {
+                const spatial::FortressRoom* lastRoom = mainCorridor.back();
+                if ( lastRoom->restrictedDirections().empty() == false ) {
+                    /// restricted room -- add unrestricted one
+                    std::vector< const spatial::FortressRoom* > next = dungeon.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, *lastRoom, false );
+                    if ( next.size() != 1 ) {
+                        LOG() << "unable to create main junction room";
+                        return false;
+                    }
+                    mainCorridor = next;
+                }
                 const spatial::FortressRoom* corridorExit = mainCorridor.back();
                 for ( std::size_t i=0; i<2; ++i ) {
                     mainCorridor.push_back( corridorExit );
@@ -140,7 +150,7 @@ namespace dkmage {
             /// prepare entrances
             std::size_t addedBridges = 0;
             for ( const spatial::FortressRoom* entrance: entrances ) {
-                if ( prepareEntrance( *entrance ) ) {
+                if ( prepareBridge( *entrance ) ) {
                     ++addedBridges;
                 }
             }
@@ -184,7 +194,7 @@ namespace dkmage {
             roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.25 );
             roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.8 );
             roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
-            roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 0.1 );
+            roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 2.0 );
             roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.0 );
             roomProbability.normalize();
 
@@ -195,11 +205,12 @@ namespace dkmage {
                 for ( std::size_t x=0; x<qSize; ++x ) {
                     const spatial::FortressRoomType roomType = roomProbability.getRandom();
                     const spatial::FortressRoom* item = roomQueue[ x ];
-                    std::vector< const spatial::FortressRoom* > next = prepareRoom( roomType, item, allowBranches );
+                    std::vector< const spatial::FortressRoom* > next = dungeon.addRandomRoom( roomType, *item, allowBranches );
+//                    std::vector< const spatial::FortressRoom* > next = prepareRoom( roomType, item, allowBranches );
                     const std::size_t nextSize = next.size();
                     if ( nextSize < 1 ) {
                         LOG() << "unable to generate chamber level " << i;
-//                        return std::vector< const spatial::FortressRoom* >();
+//                        LOG() << "unable to generate chamber level " << i << " " << roomType;
                         continue ;
                     }
                     nextRooms.insert( nextRooms.end(), next.begin(), next.end() );
@@ -216,21 +227,19 @@ namespace dkmage {
             const std::size_t qSize = roomQueue.size();
             for ( std::size_t x=0; x<qSize; ++x ) {
                 const spatial::FortressRoom* item = roomQueue[ x ];
-                const spatial::FortressRoom* next = dungeon.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, 3, *item, true, 3 );
-                if ( next == nullptr ) {
+                std::vector< const spatial::FortressRoom* > next = dungeon.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item, false );
+                if ( next.empty() ) {
                     LOG() << "unable to generate branch exit";
 //                    return std::vector< const spatial::FortressRoom* >();
                     continue ;
                 }
-                exitRooms.push_back( next );
+                exitRooms.insert( exitRooms.end(), next.begin(), next.end() );
             }
 
             return exitRooms;
         }
 
-        std::vector< const spatial::FortressRoom* > Fortress::prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches ) {
-            return dungeon.addRandomRoom( roomType, *startItem, allowBranches );
-
+//        std::vector< const spatial::FortressRoom* > Fortress::prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches ) {
 ////            static const std::size_t ROOM_MAX_SIZE = 4;
 //            static ProbabilityMass<std::size_t> roomSize357;
 //            if ( roomSize357.empty() ) {
@@ -313,92 +322,71 @@ namespace dkmage {
 //
 //            LOG() << "unhandled fortress room: " << (int)roomType;
 //            return {};
-        }
+//        }
 
-        bool Fortress::prepareEntrance( const spatial::FortressRoom& entranceRoom ) {
-            /// create branch exit
-            {
-                /// set entrance traps
-                const std::vector< spatial::Direction > directions = dungeon.availableDirections( entranceRoom );
-                const spatial::Direction corridorDirection = directions[ 0 ];
-                /// LOG() << "corridor direction: " << corridorDirection << " " << directions.size();
+        bool Fortress::prepareBridge( const spatial::FortressRoom& entranceRoom ) {
+            const std::vector< spatial::Direction > directions = dungeon.linkDirections( entranceRoom );
+            const spatial::Direction corridorDirection = directions[ 0 ];
+            const spatial::Direction entranceDirection = spatial::opposite( corridorDirection );
+            const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
 
-                const Point roomCenter = entranceRoom.position().center();
-                const Point corridorStart = entranceRoom.edgePoint( corridorDirection, 1 );
-                const Point boulderPosition = movePoint( corridorStart, corridorDirection, 1 );
-                const Point corridorEnd = movePoint( boulderPosition, corridorDirection, 1 );
-
-                drawTrap3x3Diamond( level, roomCenter, Trap::T_BOULDER );
-                drawTrap3x3Corners( level, roomCenter, Trap::T_LIGHTNING );
-                level.setDoor( corridorStart, Door::D_IRON, true );
-                level.setTrap( boulderPosition, Trap::T_BOULDER );
-                level.setDoor( corridorEnd, Door::D_IRON, true );
+            const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
+            const Point bridgeStart = entrancePoint + initialDirection;
+            const std::vector< Point > bridge = findBridge( bridgeStart );
+            if ( bridge.size() < 2 ) {
+                LOG() << "unable find bridge shore";
+                return false;
             }
-            {
-                /// make a bridge
 
-                const std::vector< spatial::Direction > directions = dungeon.availableDirections( entranceRoom );
-                const spatial::Direction corridorDirection = directions[ 0 ];
-                const spatial::Direction entranceDirection = spatial::opposite( corridorDirection );
-                const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
+            level.setDoor( entrancePoint, Door::D_IRON, true );
 
-                const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
-                const Point bridgeStart = entrancePoint + initialDirection;
-                const std::vector< Point > bridge = findBridge( bridgeStart );
-                if ( bridge.size() < 2 ) {
-                    LOG() << "unable find bridge shore";
-                    return false;
+            const Point bridgeDirection = bridge[1] - bridge[0];
+            const Point bridgeOrtho = bridgeDirection.swapped();
+            std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
+            neighbourDirections.erase( -bridgeDirection );
+
+            std::size_t i = 0;
+            for ( const Point bridgePoint: bridge ) {
+                ++i;
+
+                /// add bridge keepers
+                level.setSlab( bridgePoint, Slab::S_PATH );
+                const int fairyLevel = rng_randi( 4 );
+                level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
+                level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
+                if ( i == 1 ) {
+                    level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                 }
 
-                level.setDoor( entrancePoint, Door::D_IRON, true );
-
-                const Point bridgeDirection = bridge[1] - bridge[0];
-                const Point bridgeOrtho = bridgeDirection.swapped();
-                std::set< Point > heighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
-                heighbourDirections.erase( -bridgeDirection );
-
-                std::size_t i = 0;
-                for ( const Point bridgePoint: bridge ) {
-                    ++i;
-
-                    /// add bridge keepers
-                    level.setSlab( bridgePoint, Slab::S_PATH );
-                    const int fairyLevel = rng_randi( 4 );
-                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
-                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
-                    if ( i == 1 ) {
-                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
-                    }
-
-                    /// add turrets
-                    if ( i % 2 == 1 ) {
-                        bool added = false;
-                        const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
-                        if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
+                /// add turrets
+                if ( i % 2 == 1 ) {
+                    bool added = false;
+                    const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
+                    if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
 //                            const Rect guardPost( rightGuardPosition, 3, 3 );
 //                            level.setSlab( guardPost, Slab::S_LAVA );
-                            level.setSlab( rightGuardPosition, Slab::S_PATH );
-                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
-                            added = true;
-                        }
-                        const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
-                        if ( level.isSlab( leftGuardPosition, Slab::S_LAVA ) ) {
+                        level.setSlab( rightGuardPosition, Slab::S_PATH );
+                        level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                        level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                        level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                        added = true;
+                    }
+                    const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
+                    if ( level.isSlab( leftGuardPosition, Slab::S_LAVA ) ) {
 //                            const Rect guardPost( leftGuardPosition, 3, 3 );
 //                            level.setSlab( guardPost, Slab::S_LAVA );
-                            level.setSlab( leftGuardPosition, Slab::S_PATH );
-                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
-                            added = true;
-                        }
-                        if ( added == false ) {
-                            ++i;
-                        }
+                        level.setSlab( leftGuardPosition, Slab::S_PATH );
+                        level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                        level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                        level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                        added = true;
+                    }
+                    if ( added == false ) {
+                        ++i;
                     }
                 }
             }
+
             return true;
         }
 

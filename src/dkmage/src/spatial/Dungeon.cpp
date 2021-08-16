@@ -44,22 +44,26 @@ namespace dkmage {
 
             switch( direction ) {
             case Direction::D_NORTH: {
-                const int yOffset = ( rect.height() + base.height() ) / 2 + space;
+                const int sum = rect.height() + base.height();
+                const int yOffset = sum / 2 + space + sum % 2;
                 rect.move( 0, -yOffset );
                 break;
             }
             case Direction::D_SOUTH: {
-                const int yOffset = ( rect.height() + base.height() ) / 2 + space;
+                const int sum = rect.height() + base.height();
+                const int yOffset = sum / 2 + space + sum % 2;
                 rect.move( 0, yOffset );
                 break;
             }
             case Direction::D_EAST: {
-                const int xOffset = ( rect.width() + base.width() ) / 2 + space;
+                const int sum = rect.width() + base.width();
+                const int xOffset = sum / 2 + space + sum % 2;
                 rect.move( xOffset, 0 );
                 break;
             }
             case Direction::D_WEST: {
-                const int xOffset = ( rect.width() + base.width() ) / 2 + space;
+                const int sum = rect.width() + base.width();
+                const int xOffset = sum / 2 + space + sum % 2;
                 rect.move( -xOffset, 0 );
                 break;
             }
@@ -74,8 +78,8 @@ namespace dkmage {
             switch( direction ) {
             case Direction::D_NORTH: return roomPosition.centerTop( delta );
             case Direction::D_SOUTH: return roomPosition.centerBottom( delta );
-            case Direction::D_WEST:  return roomPosition.centerLeft( delta );
-            case Direction::D_EAST:  return roomPosition.centerRight( delta );
+            case Direction::D_WEST:  return roomPosition.leftCenter( delta );
+            case Direction::D_EAST:  return roomPosition.rightCenter( delta );
             }
             LOG() << "invalid case";
             return roomPosition.center();

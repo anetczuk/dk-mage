@@ -309,7 +309,7 @@ namespace dkmage {
             }
 
             /// return list of directions with existing edges (connected nodes)
-            std::vector< Direction > availableDirections( const TNodeData& item ) const {
+            std::vector< Direction > linkDirections( const TNodeData& item ) const {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return std::vector< Direction >();
@@ -325,7 +325,7 @@ namespace dkmage {
                 return ret;
             }
 
-            /// is there existing edge (with connected node)?
+            /// is there no edge (with connected node)?
             bool isFree( const lemon::ListDigraph::Node& itemNode, const Direction direction ) const {
                 lemon::ListDigraph::Arc edge = findEdge( itemNode, direction );
                 return ( edge == lemon::INVALID );

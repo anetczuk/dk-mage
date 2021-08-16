@@ -5,6 +5,9 @@
 
 #include "dkmage/spatial/Fortress.h"
 
+#include "dkmage/Draw.h"
+#include "dkmage/spatial/DungeonGraph.h"
+
 #include "adiktedpp/Level.h"
 
 #include "utils/ProbabilityMass.h"
@@ -21,8 +24,8 @@ namespace dkmage {
             switch( direction ) {
             case Direction::D_NORTH: return roomPosition.centerTop( delta );
             case Direction::D_SOUTH: return roomPosition.centerBottom( delta );
-            case Direction::D_WEST:  return roomPosition.centerLeft( delta );
-            case Direction::D_EAST:  return roomPosition.centerRight( delta );
+            case Direction::D_WEST:  return roomPosition.leftCenter( delta );
+            case Direction::D_EAST:  return roomPosition.rightCenter( delta );
             }
             LOG() << "invalid case";
             return roomPosition.center();
@@ -35,6 +38,7 @@ namespace dkmage {
             case FortressRoomType::FR_CORRIDOR:         return Room::R_CLAIMED;
             case FortressRoomType::FR_BRANCH:           return Room::R_CLAIMED;
             case FortressRoomType::FR_BOULDER_CORRIDOR: return Room::R_CLAIMED;
+            case FortressRoomType::FR_EXIT:             return Room::R_CLAIMED;
             case FortressRoomType::FR_EMPTY:            return Room::R_CLAIMED;
             }
 
@@ -52,11 +56,25 @@ namespace dkmage {
         /// ============================================================
 
 
+        static void drawBoulderCorridor( adiktedpp::Level& level, const Player owner, const Point start, const int length, const Point along, const Point ortho ) {
+            for ( int coord=0; coord<length; ++coord ) {
+                if ( coord % 2 == 1 ) {
+                    const Point center = start + along * coord;
+                    level.setTrap( center + ortho, 4, Trap::T_BOULDER );
+                    level.setFortified( center - ortho, owner );
+                } else {
+                    const Point center = start + along * coord;
+                    level.setTrap( center - ortho, 4, Trap::T_BOULDER );
+                    level.setFortified( center + ortho, owner );
+                }
+            }
+        }
+
         void FortressDungeon::draw( adiktedpp::Level& level ) const {
             const Player owner = this->owner();
             const bool fortify = this->fortify();
-            std::vector< const spatial::FortressRoom* > roomsList = rooms();
-            for ( const spatial::FortressRoom* item: roomsList ) {
+            std::vector< const FortressRoom* > roomsList = rooms();
+            for ( const FortressRoom* item: roomsList ) {
                 /// set room
                 const Rect& position = item->position();
                 const Room itemType  = item->roomType();
@@ -64,15 +82,60 @@ namespace dkmage {
 
                 /// draw corridors
                 const Point& itemCenter = item->position().center();
-                std::vector< const spatial::FortressRoom* > connectedList = connectedRooms( *item );
-                for ( const spatial::FortressRoom* connected: connectedList ) {
+                std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
+                for ( const FortressRoom* connected: connectedList ) {
                     const Point& connectedCenter = connected->position().center();
                     level.digLine( itemCenter, connectedCenter, owner, fortify );
+                }
+
+                /// draw content
+                if ( item->type() == FortressRoomType::FR_BOULDER_CORRIDOR ) {
+                    const Rect& roomRect = item->position();
+                    const int width  = roomRect.width();
+                    const int height = roomRect.height();
+                    if ( width > height && height == 3 ) {
+                        /// horizontal
+                        const Point start = roomRect.leftCenter();
+                        if ( rng_randb() ) {
+                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0, 1) );
+                        } else {
+                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0, -1) );
+                        }
+                    } else if ( width < height && width == 3) {
+                        /// vertical
+                        const Point start = roomRect.centerTop();
+                        if ( rng_randb() ) {
+                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point(1, 0) );
+                        } else {
+                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point(-1, 0) );
+                        }
+                    } else {
+                        LOG() << "unable to draw " << item->type();
+                    }
+                }
+
+                if ( item->type() == FortressRoomType::FR_EXIT ) {
+                    /// create branch exit
+                    /// set entrance traps
+                    const std::vector< Direction > directions = linkDirections( *item );
+                    const Direction corridorDirection = directions[ 0 ];
+                    /// LOG() << "corridor direction: " << corridorDirection << " " << directions.size();
+
+                    const Point roomCenter = item->position().center();
+                    const Point corridorStart = item->edgePoint( corridorDirection, 1 );
+                    const Point boulderPosition = movePoint( corridorStart, corridorDirection, 1 );
+                    const Point corridorEnd = movePoint( boulderPosition, corridorDirection, 1 );
+
+                    drawTrap3x3Diamond( level, roomCenter, Trap::T_BOULDER );
+                    drawTrap3x3Corners( level, roomCenter, Trap::T_LIGHTNING );
+                    level.setDoor( corridorStart, Door::D_IRON, true );
+                    level.setTrap( boulderPosition, Trap::T_BOULDER );
+                    level.setDoor( corridorEnd, Door::D_IRON, true );
                 }
             }
         }
 
-        std::vector< const spatial::FortressRoom* > FortressDungeon::addRandomRoom( const FortressRoomType roomType, const FortressRoom& from, const bool allowBranches ) {
+        std::vector< const FortressRoom* > FortressDungeon::addRandomRoom( const FortressRoomType roomType, const FortressRoom& from, const bool allowBranches ) {
             static ProbabilityMass<std::size_t> roomSize357;
             if ( roomSize357.empty() ) {
                 roomSize357.set( 3, 1.0 );
@@ -81,33 +144,33 @@ namespace dkmage {
                 roomSize357.normalize();
             }
 
-            const std::size_t corridorLength = rng_randi( 5 ) + 1;
-
             switch( roomType ) {
-            case spatial::FortressRoomType::FR_DUNGEON_HEART: {
+            case FortressRoomType::FR_DUNGEON_HEART: {
 //                const std::size_t rSize = roomSize357.getRandom();
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, rSize, *startItem, true, corridorLength );
+//                const FortressRoom* next = dungeon.addRandomRoom( roomType, rSize, *startItem, true, corridorLength );
 //                if ( next == nullptr ) {
 //                    return {};
 //                }
 //                return {next};
                 return {nullptr};
             }
-            case spatial::FortressRoomType::FR_TREASURE: {
+            case FortressRoomType::FR_TREASURE: {
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
                 const std::size_t rSize = roomSize357.getRandom();
-                spatial::FortressRoom* next = addRandomRoom( roomType, rSize, from, true, corridorLength );
+                FortressRoom* next = addRandomRoom( roomType, rSize, from, corridorLength );
                 if ( next == nullptr ) {
                     return {};
                 }
                 return {next};
             }
-            case spatial::FortressRoomType::FR_CORRIDOR: {
+            case FortressRoomType::FR_CORRIDOR: {
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
                 std::size_t rSizeX = roomSize357.getRandom();
                 std::size_t rSizeY = 1;
                 if ( rng_randb() ) {
                     std::swap( rSizeX, rSizeY );
                 }
-                spatial::FortressRoom* next = addRandomRoom( roomType, rSizeX, rSizeY, from, true, corridorLength );
+                FortressRoom* next = addRandomRoom( roomType, rSizeX, rSizeY, from, corridorLength );
                 if ( next == nullptr ) {
                     return {};
                 }
@@ -119,8 +182,9 @@ namespace dkmage {
                 }
                 return {next};
             }
-            case spatial::FortressRoomType::FR_BRANCH: {
-                const spatial::FortressRoom* next = addRandomRoom( roomType, 1, from, true, corridorLength );
+            case FortressRoomType::FR_BRANCH: {
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
+                const FortressRoom* next = addRandomRoom( roomType, 1, from, corridorLength );
                 if ( next == nullptr ) {
                     return {};
                 }
@@ -129,21 +193,53 @@ namespace dkmage {
                 }
                 return {next};
             }
-            case spatial::FortressRoomType::FR_BOULDER_CORRIDOR: {
-                const std::vector< spatial::Direction > availableDirs = freeDirections( from );
+            case FortressRoomType::FR_BOULDER_CORRIDOR: {
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
+                const std::size_t roomLength     = rng_randi( 4 ) + 4;
 
-                const spatial::FortressRoom* next = addRandomRoom( roomType, 1, from, true, corridorLength );
+                std::vector< Direction > availableDirs = from.restrictedDirections();
+                if ( availableDirs.empty() ) {
+                    availableDirs = freeDirections( from );
+                }
+
+                FortressRoom* next = nullptr;
+                while ( availableDirs.empty() == false ) {
+                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const Direction newDir = remove_at( availableDirs, rDir );
+                    switch( newDir ) {
+                    case Direction::D_NORTH:
+                    case Direction::D_SOUTH: {
+                        next = addRoom( roomType, 3, roomLength, from, newDir, corridorLength );
+                        break;
+                    }
+                    case Direction::D_EAST:
+                    case Direction::D_WEST: {
+                        next = addRoom( roomType, roomLength, 3, from, newDir, corridorLength );
+                        break;
+                    }
+                    }
+                    if ( next != nullptr ) {
+                        next->setRestrictedDirection( newDir );
+                        break;
+                    }
+                }
+
                 if ( next == nullptr ) {
                     return {};
                 }
-                if ( allowBranches ) {
-                    return {next, next};            /// yes, added twice to make a branch
+                return {next};
+            }
+            case FortressRoomType::FR_EXIT: {
+                const FortressRoom* next = addRandomRoom( roomType, 3, from, 4 );
+                if ( next == nullptr ) {
+                    return {};
                 }
                 return {next};
             }
-            case spatial::FortressRoomType::FR_EMPTY: {
+            case FortressRoomType::FR_EMPTY: {
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
                 const std::size_t rSize = roomSize357.getRandom();
-                const spatial::FortressRoom* next = addRandomRoom( roomType, rSize, from, true, corridorLength );
+                const FortressRoom* next = addRandomRoom( roomType, rSize, from, corridorLength );
                 if ( next == nullptr ) {
                     return {};
                 }

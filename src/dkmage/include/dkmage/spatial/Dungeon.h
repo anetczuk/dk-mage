@@ -108,6 +108,10 @@ namespace dkmage {
             {
             }
 
+            std::size_t size() const {
+                return graph.size();
+            }
+
             adiktedpp::Player owner() const {
                 return player;
             }
@@ -146,8 +150,8 @@ namespace dkmage {
                 return graph.connectedItems( room );
             }
 
-            std::vector< Direction > availableDirections( const TRoom& room ) const {
-                return graph.availableDirections( room );
+            std::vector< Direction > linkDirections( const TRoom& room ) const {
+                return graph.linkDirections( room );
             }
 
             std::vector< Direction > freeDirections( const TRoom& room ) const {
@@ -174,9 +178,6 @@ namespace dkmage {
             }
 
             using Spatialtem::move;
-
-
-            ///
 
         };
 

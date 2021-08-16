@@ -21,6 +21,7 @@ namespace dkmage {
             FR_CORRIDOR,
             FR_BRANCH,
             FR_BOULDER_CORRIDOR,
+            FR_EXIT,
             FR_EMPTY
         };
 
@@ -31,6 +32,7 @@ namespace dkmage {
             case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
             case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
             case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
+            case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
             case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
             }
             os << "UNKNOWN_ROOM[" << (int) data << "]";
@@ -51,9 +53,10 @@ namespace dkmage {
             FortressRoomType fortressType;
             adiktedpp::Player roomOwner;
 
+            std::vector< Direction > restrictedDirs;
+
 
         public:
-
 
             int northCoord;
             int eastCoord;
@@ -62,6 +65,7 @@ namespace dkmage {
             FortressRoom(): roomPosition(),
                 fortressType( FortressRoomType::FR_EMPTY ),
                 roomOwner( adiktedpp::Player::P_P0 ),
+                restrictedDirs(),
                 northCoord(0), eastCoord(0)
             {
             }
@@ -106,6 +110,15 @@ namespace dkmage {
                 roomOwner = newType;
             }
 
+            const std::vector< Direction >& restrictedDirections() const {
+                return restrictedDirs;
+            }
+
+            void setRestrictedDirection( const Direction direction ) {
+                restrictedDirs.clear();
+                restrictedDirs.push_back( direction );
+            }
+
             std::string print() const;
 
         };
@@ -121,12 +134,59 @@ namespace dkmage {
 
             void draw( adiktedpp::Level& level ) const;
 
+            /// size of dungeon
+            Rect boundingBox() const override {
+                std::vector< const FortressRoom* > roomsList = graph.itemsList();
+                const std::size_t rSize = roomsList.size();
+                if ( rSize < 1 ) {
+                    return Rect();
+                }
+                const FortressRoom* firstRoom = roomsList[0];
+                Rect minMax = firstRoom->position();
+                for (std::size_t i=1; i<rSize; ++i) {
+                    const FortressRoom* room = roomsList[ i ];
+                    const Rect& roomPos = room->position();
+                    minMax.expand( roomPos );
+                }
+                return minMax;
+            }
+
+            void move( const int offsetX, const int offsetY ) override {
+                std::vector< FortressRoom* > roomsList = graph.itemsList();
+                for ( FortressRoom* item: roomsList ) {
+                    Rect& pos = item->position();
+                    pos.move( offsetX, offsetY );
+                }
+            }
+
             utils::Point roomCenter( const std::size_t index ) {
                 FortressRoom* aRoom = room( index );
                 if ( aRoom == nullptr ) {
                     return utils::Point();
                 }
                 return aRoom->position().center();
+            }
+
+            std::set< Point > outline() const {
+                std::set< Point > ret;
+
+                std::vector< const FortressRoom* > roomsList = rooms();
+                for ( const FortressRoom* item: roomsList ) {
+                    /// room
+                    Rect position = item->position();
+                    position.grow( 2 );
+                    addOutline( ret, position );
+
+                    /// corridors
+                    const Point& itemCenter = item->position().center();
+                    std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
+                    for ( const FortressRoom* connected: connectedList ) {
+                        const Point& connectedCenter = connected->position().center();
+                        addLine( ret, itemCenter, connectedCenter );
+                    }
+                }
+
+                return ret;
             }
 
             std::vector< FortressRoom* > findRoom( const FortressRoomType roomType ) {
@@ -145,7 +205,7 @@ namespace dkmage {
 
             std::vector< const spatial::FortressRoom* > addRandomRoom( const FortressRoomType roomType, const FortressRoom& from, const bool allowBranches = true );
 
-            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSize, const bool addLink = true, const std::size_t distance = 1 ) {
+            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSize, const std::size_t distance = 1 ) {
                 std::vector< FortressRoom* > roomsList = graph.itemsList();
                 if ( roomsList.empty()) {
                     /// no rooms in dungeon
@@ -165,7 +225,7 @@ namespace dkmage {
                         continue;
                     }
 
-                    FortressRoom* added = addRandomRoom( roomType, roomSize, *selected, addLink, distance );
+                    FortressRoom* added = addRandomRoom( roomType, roomSize, *selected, distance );
                     if ( added != nullptr ) {
                         return added;
                     }
@@ -175,17 +235,87 @@ namespace dkmage {
                 return nullptr;
             }
 
-            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSize, const FortressRoom& from, const bool addLink = true, const std::size_t corridorLength = 1 ) {
-                return addRandomRoom( roomType, roomSize, roomSize, from, addLink, corridorLength );
+            FortressRoom* addRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 ) {                Rect newRect( roomSizeX, roomSizeY );
+                const Rect& basePos = from.position();
+                moveRect( newRect, basePos, direction, corridorLength );
+
+                // check room collision
+                Rect collisionRect = newRect;
+                collisionRect.grow( 1 );
+                if ( isCollision( collisionRect ) ) {
+                    /// collision detected
+    //                LOG() << "unable to add room -- rooms collision detected: " << newRect << " " << direction;
+                    return nullptr;
+                }
+
+                /// check corridor collision
+                const Point start = from.edgePoint( direction, 2 );
+                const Point end = newRect.center();
+                if ( isCollision( start, end ) ) {
+                    /// collision detected
+    //                LOG() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
+                    return nullptr;
+                }
+
+                FortressRoom* newRoom = graph.addItem( from, direction, true );
+                if ( newRoom == nullptr ) {
+                    return newRoom;
+                }
+
+                switch( direction ) {
+                case Direction::D_NORTH: {
+                    newRoom->northCoord = from.northCoord + 1;
+                    newRoom->eastCoord  = from.eastCoord;
+                    break;
+                }
+                case Direction::D_SOUTH: {
+                    newRoom->northCoord = from.northCoord - 1;
+                    newRoom->eastCoord  = from.eastCoord;
+                    break;
+                }
+                case Direction::D_EAST: {
+                    newRoom->northCoord = from.northCoord;
+                    newRoom->eastCoord  = from.eastCoord + 1;
+                    break;
+                }
+                case Direction::D_WEST: {
+                    newRoom->northCoord = from.northCoord;
+                    newRoom->eastCoord  = from.eastCoord - 1;
+                    break;
+                }
+                }
+
+                /// new node added
+                newRoom->position() = newRect;
+                newRoom->type( roomType );
+                newRoom->owner( player );
+                return newRoom;
             }
 
-            FortressRoom* addRandomRoom( FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const bool addLink = true, const std::size_t corridorLength = 1 ) {
-                std::vector< Direction > availableDirs = freeDirections( from );
 
-                while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
-                    const Direction newDir = remove_at( availableDirs, rDir );
-                    FortressRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, addLink, corridorLength );
+        protected:
+
+            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSize, const FortressRoom& from, const std::size_t corridorLength = 1 ) {
+                return addRandomRoom( roomType, roomSize, roomSize, from, corridorLength );
+            }
+
+            FortressRoom* addRandomRoom( FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const std::size_t corridorLength = 1 ) {
+                std::vector< Direction > availableDirs = from.restrictedDirections();
+                if ( availableDirs.empty() ) {
+                    availableDirs = freeDirections( from );
+                }
+//                else {
+//                    LOG() << "yyyyyyyyyyyyy: " << from.type() << " " << roomType << " " << availableDirs.size() << " " << availableDirs[0];
+//                }
+                return addRandomRoom( roomType, roomSizeX, roomSizeY, from, availableDirs, corridorLength );
+            }
+
+            FortressRoom* addRandomRoom( FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const std::vector< Direction >& availableDirs, const std::size_t corridorLength = 1 ) {
+                std::vector< Direction > available = availableDirs;
+                while ( available.empty() == false ) {
+                    const std::size_t rDir = utils::rng_randi( available.size() );
+                    const Direction newDir = remove_at( available, rDir );
+                    FortressRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, corridorLength );
                     if ( added != nullptr ) {
                         return added;
                     }
@@ -224,64 +354,6 @@ namespace dkmage {
 //            FortressRoom* addRoom( const FortressRoomType roomType, const std::size_t roomSize, const FortressRoom& from, const Direction direction, const bool addLink = true, const std::size_t corridorLength = 1 ) {
 //                return addRoom( roomType, roomSize, roomSize, from, direction, addLink, corridorLength );
 //            }
-
-            FortressRoom* addRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const bool addLink = true, const std::size_t corridorLength = 1 ) {
-                Rect newRect( roomSizeX, roomSizeY );
-                const Rect& basePos = from.position();
-                moveRect( newRect, basePos, direction, corridorLength );
-
-                // check room collision
-                Rect collisionRect = newRect;
-                collisionRect.grow( 1 );
-                if ( isCollision( collisionRect ) ) {
-                    /// collision detected
-    //                LOG() << "unable to add room -- rooms collision detected: " << newRect << " " << direction;
-                    return nullptr;
-                }
-
-                /// check corridor collision
-                const Point start = from.edgePoint( direction, 2 );
-                const Point end = newRect.center();
-                if ( isCollision( start, end ) ) {
-                    /// collision detected
-    //                LOG() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
-                    return nullptr;
-                }
-
-                FortressRoom* newRoom = graph.addItem( from, direction, addLink );
-                if ( newRoom == nullptr ) {
-                    return newRoom;
-                }
-
-                switch( direction ) {
-                case Direction::D_NORTH: {
-                    newRoom->northCoord = from.northCoord + 1;
-                    newRoom->eastCoord  = from.eastCoord;
-                    break;
-                }
-                case Direction::D_SOUTH: {
-                    newRoom->northCoord = from.northCoord - 1;
-                    newRoom->eastCoord  = from.eastCoord;
-                    break;
-                }
-                case Direction::D_EAST: {
-                    newRoom->northCoord = from.northCoord;
-                    newRoom->eastCoord  = from.eastCoord + 1;
-                    break;
-                }
-                case Direction::D_WEST: {
-                    newRoom->northCoord = from.northCoord;
-                    newRoom->eastCoord  = from.eastCoord - 1;
-                    break;
-                }
-                }
-
-                /// new node added
-                newRoom->position() = newRect;
-                newRoom->type( roomType );
-                newRoom->owner( player );
-                return newRoom;
-            }
 
             bool isCollision( const Rect& rect ) {
                 std::vector< FortressRoom* > roomsList = graph.itemsList();
@@ -328,53 +400,6 @@ namespace dkmage {
                     }
                 }
                 return false;
-            }
-
-            std::set< Point > outline() const {
-                std::set< Point > ret;
-
-                std::vector< const FortressRoom* > roomsList = rooms();
-                for ( const FortressRoom* item: roomsList ) {
-                    /// room
-                    Rect position = item->position();
-                    position.grow( 2 );
-                    addOutline( ret, position );
-
-                    /// corridors
-                    const Point& itemCenter = item->position().center();
-                    std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
-                    for ( const FortressRoom* connected: connectedList ) {
-                        const Point& connectedCenter = connected->position().center();
-                        addLine( ret, itemCenter, connectedCenter );
-                    }
-                }
-
-                return ret;
-            }
-
-            /// size of dungeon
-            Rect boundingBox() const override {
-                std::vector< const FortressRoom* > roomsList = graph.itemsList();
-                const std::size_t rSize = roomsList.size();
-                if ( rSize < 1 ) {
-                    return Rect();
-                }
-                const FortressRoom* firstRoom = roomsList[0];
-                Rect minMax = firstRoom->position();
-                for (std::size_t i=1; i<rSize; ++i) {
-                    const FortressRoom* room = roomsList[ i ];
-                    const Rect& roomPos = room->position();
-                    minMax.expand( roomPos );
-                }
-                return minMax;
-            }
-
-            void move( const int offsetX, const int offsetY ) override {
-                std::vector< FortressRoom* > roomsList = graph.itemsList();
-                for ( FortressRoom* item: roomsList ) {
-                    Rect& pos = item->position();
-                    pos.move( offsetX, offsetY );
-                }
             }
 
         };

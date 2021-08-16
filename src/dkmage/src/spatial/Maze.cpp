@@ -121,7 +121,7 @@ namespace dkmage {
                 list.pop();
                 const int nextDistance = currNode->distanceToEntry + 1;
 
-                std::vector< Direction > dirs = graph.availableDirections( *currNode );
+                std::vector< Direction > dirs = graph.linkDirections( *currNode );
                 for ( const Direction dir: dirs ) {
                     MazeEdge* edge = graph.getEdge( *currNode, dir );
                     if ( edge->open == false ) {
@@ -195,7 +195,7 @@ namespace dkmage {
                     furthestNode = currNode;
                 }
 
-                std::vector< Direction > dirs = graph.availableDirections( *currNode );
+                std::vector< Direction > dirs = graph.linkDirections( *currNode );
                 for ( const Direction dir: dirs ) {
                     MazeEdge* edge = graph.getEdge( *currNode, dir );
                     if ( edge->open == false ) {
@@ -309,7 +309,7 @@ namespace dkmage {
 
         MazeNode* MazeGraph::openNext( const MazeNode& node ) {
             std::vector< MazeNode* > closed;
-            std::vector< Direction > dirs = graph.availableDirections( node );
+            std::vector< Direction > dirs = graph.linkDirections( node );
             for ( const Direction dir: dirs ) {
                 MazeNode* target = graph.getItem( node, dir );
                 if ( target->visited ) {
@@ -330,7 +330,7 @@ namespace dkmage {
 
         std::vector< Direction > MazeGraph::openDirections( const MazeNode& node ) {
             std::vector< Direction > open;
-            std::vector< Direction > dirs = graph.availableDirections( node );
+            std::vector< Direction > dirs = graph.linkDirections( node );
             for ( const Direction dir: dirs ) {
                 const MazeEdge* edge = graph.getEdge( node, dir );
                 if ( edge == nullptr ) {

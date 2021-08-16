@@ -97,8 +97,8 @@ namespace utils {
      *
      */
     struct Rect {
-        Point min;
-        Point max;
+        Point min;                                  /// inclusive in range
+        Point max;                                  /// inclusive in range
 
         /// empty rect
         Rect(): min(0,0), max(-1,-1) {
@@ -141,15 +141,31 @@ namespace utils {
             return Point( width() -1, height() -1 );
         }
 
-        Point center() const {
-            const int cx = min.x + width() / 2;
+        /// ===================================================
+
+        Point leftTop() const {
+            return Point( min.x, max.y );
+        }
+
+        Point leftCenter( const std::size_t delta = 0 ) const {
+            const int cx = min.x - delta;
             const int cy = min.y + height() / 2;
             return Point( cx, cy );
+        }
+
+        Point leftBottom() const {
+            return Point( min.x, min.y );
         }
 
         Point centerTop( const std::size_t delta = 0 ) const {
             const int cx = min.x + width() / 2;
             const int cy = min.y - delta;
+            return Point( cx, cy );
+        }
+
+        Point center() const {
+            const int cx = min.x + width() / 2;
+            const int cy = min.y + height() / 2;
             return Point( cx, cy );
         }
 
@@ -159,17 +175,21 @@ namespace utils {
             return Point( cx, cy );
         }
 
-        Point centerLeft( const std::size_t delta = 0 ) const {
-            const int cx = min.x - delta;
-            const int cy = min.y + height() / 2;
-            return Point( cx, cy );
+        Point rightTop() const {
+            return Point( max.x, max.y );
         }
 
-        Point centerRight( const std::size_t delta = 0 ) const {
+        Point rightCenter( const std::size_t delta = 0 ) const {
             const int cx = max.x + delta;
             const int cy = min.y + height() / 2;
             return Point( cx, cy );
         }
+
+        Point rightBottom() const {
+            return Point( max.x, min.y );
+        }
+
+        /// ===================================================
 
         Point pointByIndex( const std::size_t pointIndex ) const {
             const int rectWidth = width();
