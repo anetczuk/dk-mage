@@ -8,7 +8,7 @@
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/spatial/Maze.h"
 
-#include "utils/Set.h"
+#include "utils/Container.h"
 #include "utils/Rand.h"
 
 

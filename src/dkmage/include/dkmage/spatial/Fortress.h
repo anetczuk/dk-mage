@@ -220,7 +220,7 @@ namespace dkmage {
 
                 while ( roomsList.empty() == false ) {
                     const std::size_t rRoom = utils::rng_randi( roomsList.size() );
-                    FortressRoom* selected = remove_at( roomsList, rRoom );
+                    FortressRoom* selected = utils::remove_at( roomsList, rRoom );
                     if ( selected == nullptr ) {
                         continue;
                     }
@@ -238,6 +238,10 @@ namespace dkmage {
             FortressRoom* addRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 ) {                Rect newRect( roomSizeX, roomSizeY );
                 const Rect& basePos = from.position();
                 moveRect( newRect, basePos, direction, corridorLength );
+
+                if ( isRectInLimit( newRect ) == false ) {
+                    return nullptr;
+                }
 
                 // check room collision
                 Rect collisionRect = newRect;
@@ -314,7 +318,7 @@ namespace dkmage {
                 std::vector< Direction > available = availableDirs;
                 while ( available.empty() == false ) {
                     const std::size_t rDir = utils::rng_randi( available.size() );
-                    const Direction newDir = remove_at( available, rDir );
+                    const Direction newDir = utils::remove_at( available, rDir );
                     FortressRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, corridorLength );
                     if ( added != nullptr ) {
                         return added;
@@ -355,33 +359,7 @@ namespace dkmage {
 //                return addRoom( roomType, roomSize, roomSize, from, direction, addLink, corridorLength );
 //            }
 
-            bool isCollision( const Rect& rect ) {
-                std::vector< FortressRoom* > roomsList = graph.itemsList();
-                for ( const FortressRoom* item: roomsList ) {
-                    const Rect& itemRect = item->position();
-                    if ( itemRect.isCollision( rect ) ) {
-    //                    LOG() << "collision detected, rectangles: " << itemRect << " " << rect;;
-                        return true;
-                    }
-
-                    /// check existing corridors
-                    const Point itemCenter = itemRect.center();
-                    std::vector< FortressRoom* > connected = connectedRooms( *item );
-                    for ( const FortressRoom* next: connected ) {
-                        const Point nextCenter = next->position().center();
-                        const std::vector<Point> points = line( itemCenter, nextCenter );
-                        const std::size_t pSize = points.size();
-                        for ( std::size_t i=0; i<pSize; ++i ) {
-                            const Rect pointRect( points[i], 1, 1 );
-                            if ( pointRect.isCollision( rect ) ) {
-    //                            LOG() << "collision detected, rectangles: " << pointRect << " " << rect;;
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
+            bool isCollision( const Rect& rect ) const;
 
             /// is collision with corridor
             bool isCollision( const Point& start, const Point& end ) {

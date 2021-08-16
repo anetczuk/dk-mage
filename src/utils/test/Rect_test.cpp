@@ -182,6 +182,46 @@ TEST_CASE( "Rect_distance" ) {
     }
 }
 
+TEST_CASE( "Rect_distanceChebyshev" ) {
+    {
+        const Rect rect( 1, 1 );
+        const Point point(0, 0);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 0 );
+    }
+    {
+        const Rect rect( 1, 1 );
+        const Point point(1, 0);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 1 );
+    }
+    {
+        const Rect rect( 1, 1 );
+        const Point point(0, 1);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 1 );
+    }
+
+    {
+        const Rect rect( 10, 10 );
+        const Point point(-1, -2);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 2 );
+    }
+    {
+        const Rect rect( 10, 10 );
+        const Point point(10, 10);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 1 );
+    }
+    {
+        const Rect rect( 10, 10 );
+        const Point point(11, 12);
+        const std::size_t dist = rect.distanceChebyshev( point );
+        CHECK( dist == 3 );
+    }
+}
+
 TEST_CASE( "Rect_isCollision" ) {
     {
         Rect rect1( 5, 5 );

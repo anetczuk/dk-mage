@@ -10,7 +10,7 @@
 #include "dkmage/spatial/Dungeon.h"
 
 #include "utils/ProbabilityMass.h"
-#include "utils/Set.h"
+#include "utils/Container.h"
 #include "utils/Rand.h"
 
 #include <cmath>

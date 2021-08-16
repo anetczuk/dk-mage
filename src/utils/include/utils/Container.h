@@ -1,10 +1,10 @@
 /*
- * Set.h
+ * Container.h
  *
  */
 
-#ifndef UTILS_INCLUDE_UTILS_SET_H_
-#define UTILS_INCLUDE_UTILS_SET_H_
+#ifndef UTILS_INCLUDE_UTILS_CONTAINER_H_
+#define UTILS_INCLUDE_UTILS_CONTAINER_H_
 
 #include <set>
 #include <algorithm>
@@ -44,6 +44,23 @@ namespace utils {
         return std::set< T >( output.begin(), output.end() );
     }
 
+
+    /// =========================================================================================
+
+
+    template <typename T>
+    void remove( std::vector<T>& vec, const T data ) {
+        vec.erase( std::remove( vec.begin(), vec.end(), data ), vec.end() );
+    }
+
+    template <typename T>
+    T remove_at( std::vector<T>& v, typename std::vector<T>::size_type n ) {
+        std::swap(v[n], v.back());
+        T last = v.back();
+        v.pop_back();
+        return last;
+    }
+
 }
 
-#endif /* UTILS_INCLUDE_UTILS_SET_H_ */
+#endif /* UTILS_INCLUDE_UTILS_CONTAINER_H_ */

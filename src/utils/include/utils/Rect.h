@@ -141,6 +141,16 @@ namespace utils {
             return Point( width() -1, height() -1 );
         }
 
+        Point pointByIndex( const std::size_t pointIndex ) const {
+            const int rectWidth = width();
+            if ( rectWidth == 0 ) {
+                return center();
+            }
+            const int dx = pointIndex % rectWidth;
+            const int dy = pointIndex / rectWidth;
+            return min + Point( dx, dy );
+        }
+
         /// ===================================================
 
         Point leftTop() const {
@@ -191,16 +201,6 @@ namespace utils {
 
         /// ===================================================
 
-        Point pointByIndex( const std::size_t pointIndex ) const {
-            const int rectWidth = width();
-            if ( rectWidth == 0 ) {
-                return center();
-            }
-            const int dx = pointIndex % rectWidth;
-            const int dy = pointIndex / rectWidth;
-            return min + Point( dx, dy );
-        }
-
         void move( const int offsetX, const int offsetY ) {
             min.x += offsetX;
             min.y += offsetY;
@@ -242,6 +242,8 @@ namespace utils {
             const int diffY = height() / 2;
             move( -diffX, -diffY );
         }
+
+        /// ===================================================
 
         void normalize() {
             const int w = width();
@@ -294,6 +296,7 @@ namespace utils {
             return true;
         }
 
+        /// is whole 'rect' inside rectangle?
         bool hasInside( const Rect& rect ) const {
             if ( isInside( rect.min ) == false ) {
                 return false;
@@ -304,14 +307,8 @@ namespace utils {
             return true;
         }
 
-        bool hasInside( const std::set< Point >& points ) const {
-            for ( const Point item: points ) {
-                if ( isInside( item ) == false ) {
-                    return false;
-                }
-            }
-            return true;
-        }
+        /// is every of 'points' inside rectangle?
+        bool hasInside( const std::set< Point >& points ) const;
 
         bool isCollision( const Rect& rect ) const {
             if ( isSmallerThan(rect) ) {
@@ -340,6 +337,8 @@ namespace utils {
             }
             return Point( xdistance, ydistance );
         }
+
+        std::size_t distanceChebyshev( const Point point ) const;
 
         /// ================================================
 
@@ -371,7 +370,18 @@ namespace utils {
     }
 
 
+    ///=============================================================================================
+
+
     std::vector<Point> line( const Point& from, const Point& to );
+
+    /**
+     * Is 'rect' in radius from 'points' vector?
+     * Radius 0 means 'rect' contains any of points. Radius 1 means 'rect' is next to any of points.
+     */
+    bool is_in_radius( const std::vector<Point>& points, const Rect& rect, const std::size_t radius );
+
+    bool is_collision( const std::vector<Point>& points, const Rect& rect );
 
 } /* namespace utils */
 

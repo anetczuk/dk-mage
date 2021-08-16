@@ -20,6 +20,45 @@ namespace utils {
         return xDiff + yDiff;
     }
 
+    /// ==============================================================
+
+    bool Rect::hasInside( const std::set< Point >& points ) const {
+        for ( const Point item: points ) {
+            if ( isInside( item ) == false ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    std::size_t Rect::distanceChebyshev( const Point point ) const {
+        std::size_t distanceX = 0;
+        const int diffMinX = min.x - point.x;
+        if ( diffMinX > 0 ) {
+            distanceX = diffMinX;
+        } else {
+            const int diffMaxX = point.x - max.x;
+            if ( diffMaxX > 0 ) {
+                distanceX = diffMaxX;
+            }
+        }
+
+        std::size_t distanceY = 0;
+        const int diffMinY = min.y - point.y;
+        if ( diffMinY > 0 ) {
+            distanceY = diffMinY;
+        } else {
+            const int diffMaxY = point.y - max.y;
+            if ( diffMaxY > 0 ) {
+                distanceY = diffMaxY;
+            }
+        }
+
+        return std::max( distanceX, distanceY );
+    }
+
+    /// ==============================================================
+
     /// implementation taken and adapted from: https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
     std::vector<Point> line_dda( const Point& from, const Point& to ) {
         std::vector<Point> ret;
@@ -107,6 +146,27 @@ namespace utils {
     std::vector<Point> line( const Point& from, const Point& to ) {
         return line_bresenham( from, to );
 //        return line_dda( from, to );
+    }
+
+    bool is_in_radius( const std::vector<Point>& points, const Rect& rect, const std::size_t radius ) {
+        const std::size_t pSize = points.size();
+        for ( std::size_t i=0; i<pSize; ++i ) {
+            const std::size_t dist = rect.distanceChebyshev( points[i] );
+            if ( dist <= radius ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool is_collision( const std::vector<Point>& points, const Rect& rect ) {
+        const std::size_t pSize = points.size();
+        for ( std::size_t i=0; i<pSize; ++i ) {
+            if ( rect.isInside( points[i] ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 } /* namespace utils */

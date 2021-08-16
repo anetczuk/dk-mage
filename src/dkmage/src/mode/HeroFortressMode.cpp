@@ -13,7 +13,7 @@
 #include "adiktedpp/AreaDetector.h"
 
 #include "utils/ProbabilityMass.h"
-#include "utils/Set.h"
+#include "utils/Container.h"
 
 #include <cmath>
 
@@ -24,6 +24,20 @@ using namespace adiktedpp;
 
 namespace dkmage {
     namespace mode {
+
+        static const ProbabilityMass< spatial::FortressRoomType >& FortressRoomsProbability() {
+            static ProbabilityMass< spatial::FortressRoomType > roomProbability;
+            if ( roomProbability.empty() ) {
+                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.25 );
+                roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.0 );
+                roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
+                roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 2.0 );
+                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.0 );
+                roomProbability.normalize();
+            }
+            return roomProbability;
+        }
+
 
         /**
          *
@@ -37,14 +51,20 @@ namespace dkmage {
 
 
             Fortress( Level& level, ParametersMap& parameters ): level(level), parameters(parameters), fortress( Player::P_GOOD ) {
-                fortress.limitNorth = 3;
-                fortress.limitSouth = 3;
+//                fortress.limitNorth = 3;
+//                fortress.limitSouth = 3;
                 fortress.fortify( true );
             }
 
             bool generate();
 
             std::vector< const spatial::FortressRoom* > prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches );
+
+            std::vector< const spatial::FortressRoom* > prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms );
+
+            void prepareSecondaryPass();
+
+            bool generateLake( const Rect& lakeLimit );
 
 //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
 
@@ -59,6 +79,12 @@ namespace dkmage {
 
 
         bool Fortress::generate() {
+            Rect lakeLimit = raw::RawLevel::mapRect( 4 );
+            lakeLimit.max.y -= 18;                                      /// make space for evil dungeon
+
+            fortress.limitWidth  = lakeLimit.width()  - 6;
+            fortress.limitHeight = lakeLimit.height() - 6;
+
             const spatial::FortressRoom* heart = fortress.addRandomRoom( spatial::FortressRoomType::FR_DUNGEON_HEART, 5 );
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
@@ -87,8 +113,8 @@ namespace dkmage {
 
             LOG() << "generating branch corridors";
             const std::size_t branchLength = rng_randi( 3 ) + 4;
-            const std::vector< const spatial::FortressRoom* > entrances = prepareCorridors( mainCorridor, branchLength, true );
-            if ( entrances.size() < 2 ) {
+            const std::vector< const spatial::FortressRoom* > branches = prepareCorridors( mainCorridor, branchLength, true );
+            if ( branches.size() < 2 ) {
                 LOG() << "unable create at least two branch corridors";
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
@@ -97,51 +123,26 @@ namespace dkmage {
                 }
                 return false;
             }
+            const std::vector< const spatial::FortressRoom* > exitRooms = prepareExitRooms( branches );
+            if ( exitRooms.size() < 2 ) {
+                LOG() << "unable create at least two exits needed";
+                if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
+                    /// draw for debug purpose
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( level );
+                }
+                return false;
+            }
+
+            /// secondary pass
+            prepareSecondaryPass();
 
             fortress.moveToTopEdge( 8 );
 
-            {
-                /// generate lake
-                Rect lakeLimit = raw::RawLevel::mapRect( 4 );
-                lakeLimit.max.y -= 18;                                      /// make space for evil dungeon
-                const Rect dungeonBBox = fortress.boundingBox();
-                if ( lakeLimit.hasInside( dungeonBBox ) == false ) {
-                    LOG() << "fortress too big";
-                    fortress.draw( level );
-                    return false;
-                }
-                const std::set< Point > outline = fortress.outline();
-                if ( lakeLimit.hasInside( outline ) == false ) {
-                    LOG() << "fortress too big";
-                    return false;
-                }
-
-                LakeGenerator lavaLake;
-                lavaLake.available = outline;
-                const std::size_t lakeSize = outline.size() * 1.6;
-                lavaLake.generate( lakeLimit, lakeSize );
-                LakeGenerator::grow( lavaLake.added, 1, 0 );
-
-                /// draw lake
-                level.setSlab( lavaLake.added, Slab::S_LAVA );
-                level.setSlab( outline, Slab::S_LAVA );
-
-                /// draw 'EARTH' shore
-                std::set< Point > lakeEdge = LakeGenerator::edge( lavaLake.added );
-                level.setSlab( lakeEdge, Slab::S_EARTH );
-
-                /// fill islands
-                AreaDetector areaDetector;
-                areaDetector.set( lavaLake.added, 1 );                   /// mark lava
-                areaDetector.fill( 0, 0, 1 );                            /// fill outside as lava
-
-                const std::vector< AreaDetector::AreaInfo > islands = areaDetector.fill( 0 );
-                LOG() << "islands found: " << islands.size();
-
-                for ( const AreaDetector::AreaInfo& item: islands ) {
-                    const std::vector< utils::Point > points = item.cellsAsPoints();
-                    level.setSlab( points, Slab::S_LAVA );
-                }
+            /// generate lake
+            if ( generateLake( lakeLimit ) == false ) {
+                fortress.draw( level );
+                return false;
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
@@ -149,7 +150,7 @@ namespace dkmage {
 
             /// prepare entrances
             std::size_t addedBridges = 0;
-            for ( const spatial::FortressRoom* entrance: entrances ) {
+            for ( const spatial::FortressRoom* entrance: exitRooms ) {
                 if ( prepareBridge( *entrance ) ) {
                     ++addedBridges;
                 }
@@ -186,13 +187,7 @@ namespace dkmage {
         std::vector< const spatial::FortressRoom* > Fortress::prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches ) {
             std::vector< const spatial::FortressRoom* > roomQueue = startRooms;
 
-            ProbabilityMass< spatial::FortressRoomType > roomProbability;
-            roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.25 );
-            roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.0 );
-            roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
-            roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 2.0 );
-            roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.0 );
-            roomProbability.normalize();
+            const ProbabilityMass< spatial::FortressRoomType >& roomProbability = FortressRoomsProbability();
 
             /// create branches
             for ( std::size_t i=0; i<roomsNum; ++i ) {
@@ -214,13 +209,13 @@ namespace dkmage {
                 roomQueue = nextRooms;
             }
 
-            if ( allowBranches == false ) {
-                return roomQueue;
-            }
+            return roomQueue;
+        }
 
+        std::vector< const spatial::FortressRoom* > Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
             /// create branch exit
             std::vector< const spatial::FortressRoom* > exitRooms;
-            std::size_t qSize = roomQueue.size();
+            std::size_t qSize = startRooms.size();
             std::size_t exitsNum = qSize;
 
             std::size_t entrancesAllowed = qSize;
@@ -233,7 +228,7 @@ namespace dkmage {
             exitsNum = std::min( qSize, entrancesAllowed );
 
             for ( std::size_t x=0; x<exitsNum; ++x ) {
-                const spatial::FortressRoom* item = roomQueue[ x ];
+                const spatial::FortressRoom* item = startRooms[ x ];
                 std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item, false );
                 if ( next.empty() ) {
                     LOG() << "unable to generate branch exit";
@@ -246,90 +241,80 @@ namespace dkmage {
             return exitRooms;
         }
 
-//        std::vector< const spatial::FortressRoom* > Fortress::prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches ) {
-////            static const std::size_t ROOM_MAX_SIZE = 4;
-//            static ProbabilityMass<std::size_t> roomSize357;
-//            if ( roomSize357.empty() ) {
-//                roomSize357.set( 3, 1.0 );
-//                roomSize357.set( 5, 1.0 );
-//                roomSize357.set( 7, 0.25 );
-//                roomSize357.normalize();
-//            }
-//
-//            const std::size_t corridorLength = rng_randi( 5 ) + 1;
-//
-//            switch( roomType ) {
-//            case spatial::FortressRoomType::FR_DUNGEON_HEART: {
-////                const std::size_t rSize = roomSize357.getRandom();
-////                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, rSize, *startItem, true, corridorLength );
-////                if ( next == nullptr ) {
-////                    return {};
-////                }
-////                return {next};
-//                return {nullptr};
-//            }
-//            case spatial::FortressRoomType::FR_TREASURE: {
-//                const std::size_t rSize = roomSize357.getRandom();
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, rSize, *startItem, true, corridorLength );
-//                if ( next == nullptr ) {
-//                    return {};
-//                }
-//                return {next};
-//            }
-//            case spatial::FortressRoomType::FR_CORRIDOR: {
-//                std::size_t rSizeX = roomSize357.getRandom();
-//                std::size_t rSizeY = 1;
-//                if ( rng_randb() ) {
-//                    std::swap( rSizeX, rSizeY );
-//                }
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, rSizeX, rSizeY, *startItem, true, corridorLength );
-//                if ( next == nullptr ) {
-//                    return {};
-//                }
-//                if ( allowBranches ) {
-//                    if ( rng_randb( 0.3 ) ) {
-//                        /// give a chance to generate branch
-//                        return {next, next};
-//                    }
-//                }
-//                return {next};
-//            }
-//            case spatial::FortressRoomType::FR_BRANCH: {
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, 1, *startItem, true, corridorLength );
-//                if ( next == nullptr ) {
-//                    return {};
-//                }
-//                if ( allowBranches ) {
-//                    return {next, next};            /// yes, added twice to make a branch
-//                }
-//                return {next};
-//            }
-//            case spatial::FortressRoomType::FR_BOULDER_CORRIDOR: {
-//
-//                const std::vector< spatial::Direction > availableDirs = dungeon.freeDirections( *startItem );
-//
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, 1, *startItem, true, corridorLength );
-//                if ( next == nullptr ) {
-//                    return {};
-//                }
-//                if ( allowBranches ) {
-//                    return {next, next};            /// yes, added twice to make a branch
-//                }
-//                return {next};
-//            }
-//            case spatial::FortressRoomType::FR_EMPTY: {
-//                const std::size_t rSize = roomSize357.getRandom();
-//                const spatial::FortressRoom* next = dungeon.addRandomRoom( roomType, rSize, *startItem, true, corridorLength );
-//                if ( next == nullptr ) {
-//                    return {};
-//                }
-//                return {next};
-//            }
-//            }
-//
-//            LOG() << "unhandled fortress room: " << (int)roomType;
-//            return {};
-//        }
+        void Fortress::prepareSecondaryPass() {
+            LOG() << "performing secondary pass";
+            std::vector< const spatial::FortressRoom* > roomQueue = const_cast< const spatial::FortressDungeon& >( fortress ).rooms();
+
+            const ProbabilityMass< spatial::FortressRoomType >& roomProbability = FortressRoomsProbability();
+
+            /// create branches
+            while ( roomQueue.empty() == false ) {
+                std::vector< const spatial::FortressRoom* > nextRooms;
+                const std::size_t qSize = roomQueue.size();
+                for ( std::size_t x=0; x<qSize; ++x ) {
+                    const spatial::FortressRoom* item = roomQueue[ x ];
+                    const spatial::FortressRoomType itemType = item->type();
+                    if ( itemType == spatial::FortressRoomType::FR_DUNGEON_HEART ) {
+                        continue ;
+                    }
+                    if ( itemType == spatial::FortressRoomType::FR_EXIT ) {
+                        continue ;
+                    }
+
+                        const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                        std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( roomType, *item, true );
+    //                    std::vector< const spatial::FortressRoom* > next = prepareRoom( roomType, item, allowBranches );
+                        const std::size_t nextSize = next.size();
+                        if ( nextSize < 1 ) {
+                            continue ;
+                        }
+                        nextRooms.insert( nextRooms.end(), next.begin(), next.end() );
+                }
+                roomQueue = nextRooms;
+            }
+        }
+
+        bool Fortress::generateLake( const Rect& lakeLimit ) {
+            const Rect dungeonBBox = fortress.boundingBox();
+            if ( lakeLimit.hasInside( dungeonBBox ) == false ) {
+                LOG() << "fortress too big";
+                return false;
+            }
+            const std::set< Point > outline = fortress.outline();
+            if ( lakeLimit.hasInside( outline ) == false ) {
+                LOG() << "fortress too big";
+                return false;
+            }
+
+            LakeGenerator lavaLake;
+            lavaLake.available = outline;
+            const std::size_t lakeSize = outline.size() * 1.4;
+            lavaLake.generate( lakeLimit, lakeSize );
+            LakeGenerator::grow( lavaLake.added, 1, 0 );
+
+            /// draw lake
+            level.setSlab( lavaLake.added, Slab::S_LAVA );
+            level.setSlab( outline, Slab::S_LAVA );
+
+            /// draw 'EARTH' shore
+            std::set< Point > lakeEdge = LakeGenerator::edge( lavaLake.added );
+            level.setSlab( lakeEdge, Slab::S_EARTH );
+
+            /// fill islands
+            AreaDetector areaDetector;
+            areaDetector.set( lavaLake.added, 1 );                   /// mark lava
+            areaDetector.fill( 0, 0, 1 );                            /// fill outside as lava
+
+            const std::vector< AreaDetector::AreaInfo > islands = areaDetector.fill( 0 );
+            LOG() << "islands found: " << islands.size();
+
+            for ( const AreaDetector::AreaInfo& item: islands ) {
+                const std::vector< utils::Point > points = item.cellsAsPoints();
+                level.setSlab( points, Slab::S_LAVA );
+            }
+
+            return true;
+        }
 
         bool Fortress::prepareBridge( const spatial::FortressRoom& entranceRoom ) {
             const std::vector< spatial::Direction > directions = fortress.linkDirections( entranceRoom );
@@ -359,8 +344,8 @@ namespace dkmage {
                 /// add bridge keepers
                 level.setSlab( bridgePoint, Slab::S_PATH );
                 const int fairyLevel = rng_randi( 4 );
-                level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
-                level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 2, 3 + fairyLevel, Player::P_GOOD );
+                level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
+                level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
                 if ( i == 1 ) {
                     level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                 }

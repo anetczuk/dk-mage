@@ -11,6 +11,7 @@
 
 #include "adiktedpp/Type.h"
 
+#include "utils/Container.h"
 #include "utils/Log.h"
 #include "utils/Rect.h"
 #include "utils/Rand.h"
@@ -29,21 +30,6 @@ namespace adiktedpp {
 
 namespace dkmage {
     namespace spatial {
-
-        //TODO: move to utils
-        template <typename T>
-        void remove( std::vector<T>& vec, const T data ) {
-            vec.erase( std::remove( vec.begin(), vec.end(), data ), vec.end() );
-        }
-
-        //TODO: move to utils
-        template <typename T>
-        T remove_at( std::vector<T>& v, typename std::vector<T>::size_type n ) {
-            std::swap(v[n], v.back());
-            T last = v.back();
-            v.pop_back();
-            return last;
-        }
 
         inline void addOutline( std::set< Point >& container, const Rect& rect ) {
             for ( int y = rect.min.y; y<= rect.max.y; ++y ) {
@@ -102,9 +88,13 @@ namespace dkmage {
             std::size_t limitEast;
             std::size_t limitWest;
 
+            std::size_t limitWidth;
+            std::size_t limitHeight;
+
 
             BaseDungeon( const adiktedpp::Player player=adiktedpp::Player::P_P0, const bool fortify=true ): player(player), fortifyWalls( fortify ),
-                    limitNorth( 999 ), limitSouth( 999 ), limitEast( 999 ), limitWest( 999 )
+                    limitNorth( 999 ), limitSouth( 999 ), limitEast( 999 ), limitWest( 999 ),
+                    limitWidth( 255 ), limitHeight( 255 )
             {
             }
 
@@ -159,25 +149,47 @@ namespace dkmage {
 
                 const int northDiff = limitNorth - room.northCoord;
                 if ( northDiff <= 0) {
-                    remove( availableDirs, Direction::D_NORTH );
+                    utils::remove( availableDirs, Direction::D_NORTH );
                 }
                 const int southDiff = limitSouth + room.northCoord;
                 if ( southDiff <= 0) {
-                    remove( availableDirs, Direction::D_SOUTH );
+                    utils::remove( availableDirs, Direction::D_SOUTH );
                 }
                 const int eastDiff = limitEast - room.eastCoord;
                 if ( eastDiff <= 0) {
-                    remove( availableDirs, Direction::D_EAST );
+                    utils::remove( availableDirs, Direction::D_EAST );
                 }
                 const int westDiff = limitWest + room.eastCoord;
                 if ( westDiff == 0) {
-                    remove( availableDirs, Direction::D_WEST );
+                    utils::remove( availableDirs, Direction::D_WEST );
                 }
 
                 return availableDirs;
             }
 
             using Spatialtem::move;
+
+            bool isRectInLimit( const Rect& rect ) const {
+                Rect bbox = boundingBox();
+                bbox.expand( rect );
+
+                const int bw = bbox.width();
+                if ( bw < 0 ) {
+                    return false;
+                }
+                if ( (std::size_t)bw > limitWidth ) {
+                    return false;
+                }
+
+                const int bh = bbox.height();
+                if ( bh < 0 ) {
+                    return false;
+                }
+                if ( (std::size_t)bh > limitHeight ) {
+                    return false;
+                }
+                return true;
+            }
 
         };
 
@@ -311,7 +323,7 @@ namespace dkmage {
 
                 while ( roomsList.empty() == false ) {
                     const std::size_t rRoom = utils::rng_randi( roomsList.size() );
-                    EvilRoom* selected = remove_at( roomsList, rRoom );
+                    EvilRoom* selected = utils::remove_at( roomsList, rRoom );
                     if ( selected == nullptr ) {
                         continue;
                     }
@@ -335,7 +347,7 @@ namespace dkmage {
 
                 while ( availableDirs.empty() == false ) {
                     const std::size_t rDir = utils::rng_randi( availableDirs.size() );
-                    const Direction newDir = remove_at( availableDirs, rDir );
+                    const Direction newDir = utils::remove_at( availableDirs, rDir );
                     EvilRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, addLink, corridorLength );
                     if ( added != nullptr ) {
                         return added;
@@ -380,6 +392,10 @@ namespace dkmage {
                 Rect newRect( roomSizeX, roomSizeY );
                 const Rect& basePos = from.position();
                 moveRect( newRect, basePos, direction, corridorLength );
+
+                if ( isRectInLimit( newRect ) == false ) {
+                    return nullptr;
+                }
 
                 // check room collision
                 Rect collisionRect = newRect;
@@ -463,8 +479,8 @@ namespace dkmage {
                 }
             }
 
-            bool isCollision( const Rect& rect ) {
-                std::vector< EvilRoom* > roomsList = graph.itemsList();
+            bool isCollision( const Rect& rect ) const {
+                std::vector< const EvilRoom* > roomsList = graph.itemsList();
                 for ( const EvilRoom* item: roomsList ) {
                     const Rect& itemRect = item->position();
                     if ( itemRect.isCollision( rect ) ) {
@@ -474,17 +490,12 @@ namespace dkmage {
 
                     /// check existing corridors
                     const Point itemCenter = itemRect.center();
-                    std::vector< EvilRoom* > connected = connectedRooms( *item );
+                    std::vector< const EvilRoom* > connected = connectedRooms( *item );
                     for ( const EvilRoom* next: connected ) {
                         const Point nextCenter = next->position().center();
                         const std::vector<Point> points = line( itemCenter, nextCenter );
-                        const std::size_t pSize = points.size();
-                        for ( std::size_t i=0; i<pSize; ++i ) {
-                            const Rect pointRect( points[i], 1, 1 );
-                            if ( pointRect.isCollision( rect ) ) {
-    //                            LOG() << "collision detected, rectangles: " << pointRect << " " << rect;;
-                                return true;
-                            }
+                        if ( is_collision( points, rect ) ) {
+                            return true;
                         }
                     }
                 }

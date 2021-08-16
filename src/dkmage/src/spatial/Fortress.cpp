@@ -275,5 +275,28 @@ namespace dkmage {
             return {};
         }
 
+        bool FortressDungeon::isCollision( const Rect& rect ) const {
+            std::vector< const FortressRoom* > roomsList = graph.itemsList();
+            for ( const FortressRoom* item: roomsList ) {
+                const Rect& itemRect = item->position();
+                if ( itemRect.isCollision( rect ) ) {
+//                    LOG() << "collision detected, rectangles: " << itemRect << " " << rect;;
+                    return true;
+                }
+
+                /// check existing corridors
+                const Point itemCenter = itemRect.center();
+                std::vector< const FortressRoom* > connected = connectedRooms( *item );
+                for ( const FortressRoom* next: connected ) {
+                    const Point nextCenter = next->position().center();
+                    const std::vector<Point> points = line( itemCenter, nextCenter );
+                    if ( is_collision( points, rect ) ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
     } /* namespace spatial */
 } /* namespace dkmage */
