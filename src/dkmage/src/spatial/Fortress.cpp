@@ -164,22 +164,46 @@ namespace dkmage {
                 return {next};
             }
             case FortressRoomType::FR_CORRIDOR: {
-                const std::size_t corridorLength = rng_randi( 5 ) + 1;
-                std::size_t rSizeX = roomSize357.getRandom();
-                std::size_t rSizeY = 1;
-                if ( rng_randb() ) {
-                    std::swap( rSizeX, rSizeY );
+                const std::size_t corridorLength = 1;
+                const std::size_t roomLength = roomSize357.getRandom() - 1;
+
+                std::vector< Direction > availableDirs = from.restrictedDirections();
+                if ( availableDirs.empty() ) {
+                    availableDirs = freeDirections( from );
                 }
-                FortressRoom* next = addRandomRoom( roomType, rSizeX, rSizeY, from, corridorLength );
+
+                FortressRoom* next = nullptr;
+                while ( availableDirs.empty() == false ) {
+                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const Direction newDir = remove_at( availableDirs, rDir );
+                    switch( newDir ) {
+                    case Direction::D_NORTH:
+                    case Direction::D_SOUTH: {
+                        next = addRoom( roomType, 1, roomLength, from, newDir, corridorLength );
+                        break;
+                    }
+                    case Direction::D_EAST:
+                    case Direction::D_WEST: {
+                        next = addRoom( roomType, roomLength, 1, from, newDir, corridorLength );
+                        break;
+                    }
+                    }
+                    if ( next != nullptr ) {
+                        next->setRestrictedDirection( newDir );
+                        break;
+                    }
+                }
                 if ( next == nullptr ) {
                     return {};
                 }
+
                 if ( allowBranches ) {
                     if ( rng_randb( 0.3 ) ) {
                         /// give a chance to generate branch
                         return {next, next};
                     }
                 }
+
                 return {next};
             }
             case FortressRoomType::FR_BRANCH: {
