@@ -125,6 +125,8 @@ levels_path =
 
 #init_gold_amount = 20000
 
-## Number of entrances to fortress
+## Upper limit of number of entrances to fortress. In case of list or range one value will be drawn from.
+## There is lower boundary of 2. Map is ensured to have at least two entances. Summing up, fortress will have entrances in range [2, entrances_number].
+## Type: list of unsigned numbers and ranges
 entrances_number=2:4
 
