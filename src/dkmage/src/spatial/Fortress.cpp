@@ -57,16 +57,18 @@ namespace dkmage {
 
 
         static void drawBoulderCorridor( adiktedpp::Level& level, const Player owner, const Point start, const int length, const Point along, const Point ortho ) {
+            const std::size_t orthoLen = ortho.length();
+            const Point orthoDir = ortho.dir();
             for ( int coord=0; coord<length; ++coord ) {
+                const Point center = start + along * coord;
+                int multiplier = 1;
                 if ( coord % 2 == 1 ) {
-                    const Point center = start + along * coord;
-                    level.setTrap( center + ortho, 4, Trap::T_BOULDER );
-                    level.setFortified( center - ortho, owner );
-                } else {
-                    const Point center = start + along * coord;
-                    level.setTrap( center - ortho, 4, Trap::T_BOULDER );
-                    level.setFortified( center + ortho, owner );
+                    multiplier = -1;
                 }
+                for ( std::size_t i=1; i<=orthoLen; ++i ) {
+                    level.setFortified( center - orthoDir * i * multiplier, owner );
+                }
+                level.setTrap( center + orthoDir * multiplier, 4, Trap::T_BOULDER );
             }
         }
 
@@ -93,21 +95,23 @@ namespace dkmage {
                     const Rect& roomRect = item->position();
                     const int width  = roomRect.width();
                     const int height = roomRect.height();
-                    if ( width > height && height == 3 ) {
+                    if ( width > height ) {
                         /// horizontal
+                        const int step = height / 2;
                         const Point start = roomRect.leftCenter();
                         if ( rng_randb() ) {
-                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0, 1) );
+                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0,  step) );
                         } else {
-                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0, -1) );
+                            drawBoulderCorridor( level, owner, start, width, Point(1, 0), Point(0, -step) );
                         }
-                    } else if ( width < height && width == 3) {
+                    } else if ( width < height ) {
                         /// vertical
+                        const int step = width / 2;
                         const Point start = roomRect.centerTop();
                         if ( rng_randb() ) {
-                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point(1, 0) );
+                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point( step, 0) );
                         } else {
-                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point(-1, 0) );
+                            drawBoulderCorridor( level, owner, start, height, Point(0, 1), Point(-step, 0) );
                         }
                     } else {
                         LOG() << "unable to draw " << item->type();
@@ -219,7 +223,7 @@ namespace dkmage {
             }
             case FortressRoomType::FR_BOULDER_CORRIDOR: {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
-                const std::size_t roomLength     = rng_randi( 4 ) + 4;
+                const std::size_t roomLength     = rng_randi( 3 ) + 6;
 
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
@@ -233,12 +237,12 @@ namespace dkmage {
                     switch( newDir ) {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
-                        next = addRoom( roomType, 3, roomLength, from, newDir, corridorLength );
+                        next = addRoom( roomType, 5, roomLength, from, newDir, corridorLength );
                         break;
                     }
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
-                        next = addRoom( roomType, roomLength, 3, from, newDir, corridorLength );
+                        next = addRoom( roomType, roomLength, 5, from, newDir, corridorLength );
                         break;
                     }
                     }

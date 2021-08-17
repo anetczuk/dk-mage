@@ -77,6 +77,14 @@ namespace utils {
             return *this;
         }
 
+        std::size_t length() const {
+            return std::abs(x) + std::abs(y);
+        }
+
+        /// ===============================================================
+
+        Point dir() const;
+
         Point diff( const Point& point ) const;
 
         std::size_t distance( const Point& point ) const;

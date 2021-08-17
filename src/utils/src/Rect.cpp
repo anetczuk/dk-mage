@@ -8,6 +8,23 @@
 
 namespace utils {
 
+    Point Point::dir() const {
+        Point ret;
+        if ( x > 0 ) {
+            ret.x = 1;
+        } else if ( x < 0 ) {
+            ret.x = -1;
+        }
+
+        if ( y > 0 ) {
+            ret.y = 1;
+        } else if ( y < 0 ) {
+            ret.y = -1;
+        }
+
+        return ret;
+    }
+
     Point Point::diff( const Point& point ) const {
         const int xDiff = std::abs(x - point.x);
         const int yDiff = std::abs(y - point.y);
