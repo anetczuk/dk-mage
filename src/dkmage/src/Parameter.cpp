@@ -430,4 +430,14 @@ namespace dkmage {
         return (std::size_t) num;
     }
 
+    std::string ParametersMap::print() const {
+        std::stringstream stream;
+        auto iter  = data.begin();
+        auto eiter = data.end();
+        for (; iter != eiter; ++iter ) {
+            stream << "\n    " << iter->first << " = " << iter->second;
+        }
+        return stream.str();
+    }
+
 } /* namespace dkmage */

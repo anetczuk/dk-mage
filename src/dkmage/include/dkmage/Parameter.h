@@ -274,6 +274,8 @@ namespace dkmage {
 
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 
+        std::string print() const;
+
     };
 
 } /* namespace dkmage */
