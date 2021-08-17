@@ -95,12 +95,66 @@ namespace dkmage {
         return ret;
     }
 
-    /// ==============================
 
-    Parameter::Parameter() {
+    /// ==========================================================================================
+
+
+    template<>
+    std::size_t NumberSet<std::size_t>::size() const {
+        std::size_t iSize = data.size();
+        for ( const NumberRange<std::size_t>& item: data ) {
+            iSize += item.size();
+        }
+        return iSize;
     }
 
-    /// ==============================
+    template<>
+    Optional<std::size_t> NumberSet<std::size_t>::getRandom() const {
+        const std::size_t setSize = size();
+        if ( setSize < 1 ) {
+            return {};
+        }
+        if ( setSize == 1 ) {
+            const NumberRange<std::size_t>& item = data[0];
+            return item.item(0);
+        }
+        std::size_t index = rng_randi( setSize );
+        for ( const NumberRange<std::size_t>& item: data ) {
+            const std::size_t iSize = item.size() + 1;
+            if ( index < iSize ) {
+                return item.item( index );
+            }
+            index -= iSize;
+        }
+        return {};
+    }
+
+    template<>
+    NumberSet<std::size_t> NumberSet<std::size_t>::filter( const std::size_t lower, const std::size_t upper ) const {
+        NumberSet<std::size_t> ret;
+        for ( const NumberRange<std::size_t>& item: data ) {
+            if ( item.upperBound < lower ) {
+                continue ;
+            }
+            if ( item.lowerBound > upper ) {
+                continue ;
+            }
+            const std::size_t rLower = std::max( lower, item.lowerBound );
+            const std::size_t rUpper = std::min( upper, item.upperBound );
+            ret.add( rLower, rUpper );
+        }
+        return ret;
+    }
+
+    template<>
+    Optional<std::size_t> NumberSet<std::size_t>::getRandom( const std::size_t lower, const std::size_t upper ) const {
+        NumberSet<std::size_t> filtered = filter( lower, upper );
+        return filtered.getRandom();
+    }
+
+
+    /// ==========================================================================================
+
 
     static std::vector< std::string > parseList( const std::string& rawData, const char* delimiter ) {
         std::vector< std::string > list;
@@ -141,8 +195,36 @@ namespace dkmage {
         return listItem;
     }
 
+//    /// 'rawData' is single number or range in format '{num}:{num}'
+//    static std::vector< int > handleRangeInt( const std::string& rawData ) {
+//        const std::vector< std::string > stringList = parseList( rawData, ":" );
+//
+//        const std::size_t listSize = stringList.size();
+//        switch( listSize ) {
+//        case 0: return {};
+//        case 1: {
+//            const int number = stoi( stringList[0] );
+//            return { number };
+//        }
+//        case 2: {
+//            const int numberA = stoi( stringList[0] );
+//            const int numberB = stoi( stringList[1] );
+//            const int diff = numberB - numberA;
+//            if ( diff < 0 ) {
+//                std::stringstream stream;
+//                stream << FILE_NAME << ": invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
+//                LOG() << stream.str();
+//                throw std::invalid_argument( stream.str() );
+//            }
+//            return { numberA, numberB };
+//        }
+//        }
+//
+//        return {};
+//    }
+
     /// 'rawData' is single number or range in format '{num}:{num}'
-    static std::vector< int > handleRange( const std::string& rawData ) {
+    static std::vector< std::size_t > handleRangeUnsigned( const std::string& rawData ) {
         const std::vector< std::string > stringList = parseList( rawData, ":" );
 
         const std::size_t listSize = stringList.size();
@@ -150,12 +232,37 @@ namespace dkmage {
         case 0: return {};
         case 1: {
             const int number = stoi( stringList[0] );
-            return { number };
+            if ( number < 0 ) {
+                std::stringstream stream;
+                stream << FILE_NAME << ": invalid range -- number have not be negative, passed: " << rawData;
+                LOG() << stream.str();
+                throw std::invalid_argument( stream.str() );
+            }
+            return { (std::size_t)number };
         }
         case 2: {
             const int numberA = stoi( stringList[0] );
+            if ( numberA < 0 ) {
+                std::stringstream stream;
+                stream << FILE_NAME << ": invalid range -- lower range have not be negative, passed: " << rawData;
+                LOG() << stream.str();
+                throw std::invalid_argument( stream.str() );
+            }
             const int numberB = stoi( stringList[1] );
-            return { numberA, numberB };
+            if ( numberB < 0 ) {
+                std::stringstream stream;
+                stream << FILE_NAME << ": invalid range -- upper range have not be negative, passed: " << rawData;
+                LOG() << stream.str();
+                throw std::invalid_argument( stream.str() );
+            }
+            const int diff = numberB - numberA;
+            if ( diff < 0 ) {
+                std::stringstream stream;
+                stream << FILE_NAME << ": invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
+                LOG() << stream.str();
+                throw std::invalid_argument( stream.str() );
+            }
+            return { (std::size_t)numberA, (std::size_t)numberB };
         }
         }
 
@@ -164,7 +271,7 @@ namespace dkmage {
 
     /// parse unsigned number or unsigned range
     static int parseUnsigned( const std::string& parameter, const std::string& rawData ) {
-        const std::vector< int > range = handleRange( rawData );
+        const std::vector< std::size_t > range = handleRangeUnsigned( rawData );
         const std::size_t rSize = range.size();
         if ( rSize == 1 ) {
             return range[ 0 ];
@@ -176,26 +283,8 @@ namespace dkmage {
             throw std::invalid_argument( stream.str() );
         }
         const int rangeFrom = range[ 0 ];
-        if ( rangeFrom < 0 ) {
-            std::stringstream stream;
-            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- lower range have not be negative, passed: " << rawData;
-            LOG() << stream.str();
-            throw std::invalid_argument( stream.str() );
-        }
         const int rangeTo   = range[ 1 ];
-        if ( rangeTo < 0 ) {
-            std::stringstream stream;
-            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- upper range have not be negative, passed: " << rawData;
-            LOG() << stream.str();
-            throw std::invalid_argument( stream.str() );
-        }
         const int diff = rangeTo - rangeFrom;
-        if ( diff < 0 ) {
-            std::stringstream stream;
-            stream << FILE_NAME << ": parameter " << parameter << " invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
-            LOG() << stream.str();
-            throw std::invalid_argument( stream.str() );
-        }
         if ( diff == 0 ) {
             return (std::size_t) rangeFrom;
         }
@@ -302,6 +391,31 @@ namespace dkmage {
     Optional< std::size_t > ParametersMap::getSizeT( const ParameterName parameter ) const {
         const std::string parameterName = getParameterName( parameter );
         return getSizeT( parameterName );
+    }
+
+    Optional< SizeTSet > ParametersMap::getSizeTSet( const std::string& parameter ) const {
+        Optional< std::string > rawData = getRawString( parameter );
+        if ( rawData.has_value() == false ) {
+            return {};
+        }
+        const std::string& value = rawData.value();
+        const std::vector< std::string > stringList = parseList( value, "," );
+
+        SizeTSet ret;
+        for ( const std::string& item: stringList ) {
+            const std::vector< std::size_t > range = handleRangeUnsigned( item );
+            const std::size_t rSize = range.size();
+            if ( rSize == 1 ) {
+                ret.add( range[0] );
+                continue ;
+            }
+            if ( rSize == 2 ) {
+                ret.add( range[0], range[1] );
+                continue ;
+            }
+        }
+
+        return { ret };
     }
 
     std::size_t ParametersMap::getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const {

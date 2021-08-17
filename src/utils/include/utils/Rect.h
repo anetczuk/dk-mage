@@ -87,13 +87,17 @@ namespace utils {
 
         Point diff( const Point& point ) const;
 
-        std::size_t distance( const Point& point ) const;
+        std::size_t distanceManhattan( const Point point ) const;
+
+        std::size_t distanceChebyshev( const Point point ) const;
 
         Point swapped() const {
             return Point( y, x );
         }
 
     };
+
+    using PointList = std::vector< Point >;
 
     inline std::ostream& operator<<( std::ostream& os, const Point& data ) {
         os << "[" << data.x << " " << data.y << "]";
@@ -381,15 +385,19 @@ namespace utils {
     ///=============================================================================================
 
 
-    std::vector<Point> line( const Point& from, const Point& to );
+    PointList line( const Point& from, const Point& to );
+
+    bool is_in_radius( const PointList& points, const Point& point, const std::size_t radius );
 
     /**
      * Is 'rect' in radius from 'points' vector?
      * Radius 0 means 'rect' contains any of points. Radius 1 means 'rect' is next to any of points.
      */
-    bool is_in_radius( const std::vector<Point>& points, const Rect& rect, const std::size_t radius );
+    bool is_in_radius( const PointList& points, const Rect& rect, const std::size_t radius );
 
-    bool is_collision( const std::vector<Point>& points, const Rect& rect );
+    bool is_collision( const PointList& points, const Rect& rect );
+
+    bool is_collision( const PointList& pointsA, const PointList& pointsB );
 
 } /* namespace utils */
 

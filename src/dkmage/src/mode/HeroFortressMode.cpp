@@ -68,12 +68,12 @@ namespace dkmage {
 
 //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
 
-            bool prepareBridge( const spatial::FortressRoom& entranceRoom );
+            bool prepareBridges( const std::vector< const spatial::FortressRoom* >& entranceRooms );
 
             /// find shortest bridge in four directions
-            std::vector< Point > findBridge( const Point startPoint );
+            PointList findBridge( const Point startPoint );
 
-            std::vector< Point > findBridge( const Point startPoint, const Point bridgeDirection );
+            PointList findBridge( const Point startPoint, const Point bridgeDirection );
 
         };
 
@@ -149,15 +149,7 @@ namespace dkmage {
             fortress.draw( level );
 
             /// prepare entrances
-            std::size_t addedBridges = 0;
-            for ( const spatial::FortressRoom* entrance: exitRooms ) {
-                if ( prepareBridge( *entrance ) ) {
-                    ++addedBridges;
-                }
-            }
-
-            if ( addedBridges < 2 ) {
-                LOG() << "unable create at least two bridges";
+            if ( prepareBridges( exitRooms ) == false ) {
                 return false;
             }
 
@@ -215,24 +207,12 @@ namespace dkmage {
         std::vector< const spatial::FortressRoom* > Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
             /// create branch exit
             std::vector< const spatial::FortressRoom* > exitRooms;
-            std::size_t qSize = startRooms.size();
-            std::size_t exitsNum = qSize;
-
-            std::size_t entrancesAllowed = qSize;
-            if ( parameters.isSet( ParameterName::PN_ENTRANCES_NUMBER ) ) {
-                entrancesAllowed = parameters.getSizeT( ParameterName::PN_ENTRANCES_NUMBER );
-            } else {
-                entrancesAllowed = rng_randi( 2, 5 );
-            }
-            LOG() << "requested number of fortress entrances: " << entrancesAllowed;
-            exitsNum = std::min( qSize, entrancesAllowed );
-
-            for ( std::size_t x=0; x<exitsNum; ++x ) {
+            const std::size_t qSize = startRooms.size();
+            for ( std::size_t x=0; x<qSize; ++x ) {
                 const spatial::FortressRoom* item = startRooms[ x ];
                 std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item, false );
                 if ( next.empty() ) {
                     LOG() << "unable to generate branch exit";
-                    exitsNum = std::min( exitsNum+1, qSize );
                     continue ;
                 }
                 exitRooms.insert( exitRooms.end(), next.begin(), next.end() );
@@ -316,65 +296,137 @@ namespace dkmage {
             return true;
         }
 
-        bool Fortress::prepareBridge( const spatial::FortressRoom& entranceRoom ) {
-            const std::vector< spatial::Direction > directions = fortress.linkDirections( entranceRoom );
-            const spatial::Direction corridorDirection = directions[ 0 ];
-            const spatial::Direction entranceDirection = spatial::opposite( corridorDirection );
-            const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
+        bool Fortress::prepareBridges( const std::vector< const spatial::FortressRoom* >& entranceRooms ) {
+            SizeTSet entrancesAllowed;
+            if ( parameters.isSet( ParameterName::PN_ENTRANCES_NUMBER ) ) {
+                Optional< SizeTSet > allowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER );
+                entrancesAllowed = allowed.value();
+            } else {
+                entrancesAllowed.add( 2, 5 );
+            }
 
-            const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
-            const Point bridgeStart = entrancePoint + initialDirection;
-            const std::vector< Point > bridge = findBridge( bridgeStart );
-            if ( bridge.size() < 2 ) {
-                LOG() << "unable find bridge shore";
+            const std::size_t qSize = entranceRooms.size();
+            LOG() << "found exit rooms: " << qSize;
+
+            const SizeTSet entrancesRange = entrancesAllowed.filter( 1, qSize );
+            if ( entrancesRange.size() < 1 ) {
+                LOG() << "unable to create requested number of bridges";
                 return false;
             }
 
-            level.setDoor( entrancePoint, Door::D_IRON, true );
+//            LOG() << "requested number of fortress entrances: " << entrancesAllowed;
 
-            const Point bridgeDirection = bridge[1] - bridge[0];
-            const Point bridgeOrtho = bridgeDirection.swapped();
-            std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
-            neighbourDirections.erase( -bridgeDirection );
+            std::vector< Point > entrances;
+            std::vector< PointList > bridges;
+            for ( const spatial::FortressRoom* entrance: entranceRooms ) {
+                const spatial::FortressRoom& entranceRoom = *entrance;
 
-            std::size_t i = 0;
-            for ( const Point bridgePoint: bridge ) {
-                ++i;
+                const std::vector< spatial::Direction > directions = fortress.linkDirections( entranceRoom );
+                const spatial::Direction corridorDirection = directions[ 0 ];
+                const spatial::Direction entranceDirection = spatial::opposite( corridorDirection );
+                const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
 
-                /// add bridge keepers
-                level.setSlab( bridgePoint, Slab::S_PATH );
-                const int fairyLevel = rng_randi( 4 );
-                level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
-                level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
-                if ( i == 1 ) {
-                    level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
+                const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
+                const Point bridgeStart = entrancePoint + initialDirection;
+                const PointList bridge = findBridge( bridgeStart );
+                if ( bridge.size() < 2 ) {
+                    LOG() << "unable find bridge shore";
+                    continue;
                 }
 
-                /// add turrets
-                if ( i % 2 == 1 ) {
-                    bool added = false;
-                    const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
-                    if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
-//                            const Rect guardPost( rightGuardPosition, 3, 3 );
-//                            level.setSlab( guardPost, Slab::S_LAVA );
-                        level.setSlab( rightGuardPosition, Slab::S_PATH );
-                        level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                        level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                        level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
-                        added = true;
+                bool collision = false;
+                for ( const PointList& item: bridges ) {
+                    if ( is_collision( item, bridge ) ) {
+                        /// collision -- skip bridge
+                        collision = true;
+                        break;
                     }
-                    const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
-                    if ( level.isSlab( leftGuardPosition, Slab::S_LAVA ) ) {
-//                            const Rect guardPost( leftGuardPosition, 3, 3 );
-//                            level.setSlab( guardPost, Slab::S_LAVA );
-                        level.setSlab( leftGuardPosition, Slab::S_PATH );
-                        level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                        level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                        level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
-                        added = true;
+                }
+                if ( collision ) {
+                    continue ;
+                }
+
+                entrances.push_back( entrancePoint );
+                bridges.push_back( bridge );
+            }
+
+            const std::size_t foundBridges = bridges.size();
+            LOG() << "found bridges: " << foundBridges;
+
+
+            /// taking maximum possible
+            std::size_t bSize = 0;
+            for ( std::size_t i = foundBridges; i > 0; --i ) {
+                if ( entrancesRange.contains( i ) ) {
+                    bridges.resize( i );
+                    bSize = i;
+                    break ;
+                }
+            }
+            if ( bSize < 1 ) {
+                LOG() << "unable create required number of bridges";
+                return false;
+            }
+
+            /// take random value
+//            const SizeTSet bridgesRange = entrancesAllowed.filter( 1, foundBridges );
+//            const Optional<std::size_t> createBridges = bridgesRange.getRandom();
+//            if ( createBridges == false ) {
+//                LOG() << "unable to create requested number of bridges";
+//                return false;
+//            }
+//            const std::size_t bSize = createBridges.value();
+
+            LOG() << "creating bridges: " << bSize;
+            for ( std::size_t bIndex=0; bIndex<bSize; ++bIndex ) {
+                const Point entrance = entrances[bIndex];
+                const PointList& bridge = bridges[bIndex];
+                level.setDoor( entrance, Door::D_IRON, true );
+
+                const Point bridgeDirection = bridge[1] - bridge[0];
+                const Point bridgeOrtho = bridgeDirection.swapped();
+                std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
+                neighbourDirections.erase( -bridgeDirection );
+
+                std::size_t i = 0;
+                for ( const Point bridgePoint: bridge ) {
+                    ++i;
+
+                    /// add bridge keepers
+                    level.setSlab( bridgePoint, Slab::S_PATH );
+                    const int fairyLevel = rng_randi( 4 );
+                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
+                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
+                    if ( i == 1 ) {
+                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                     }
-                    if ( added == false ) {
-                        ++i;
+
+                    /// add turrets
+                    if ( i % 2 == 1 ) {
+                        bool added = false;
+                        const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
+                        if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
+    //                            const Rect guardPost( rightGuardPosition, 3, 3 );
+    //                            level.setSlab( guardPost, Slab::S_LAVA );
+                            level.setSlab( rightGuardPosition, Slab::S_PATH );
+                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                            added = true;
+                        }
+                        const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
+                        if ( level.isSlab( leftGuardPosition, Slab::S_LAVA ) ) {
+    //                            const Rect guardPost( leftGuardPosition, 3, 3 );
+    //                            level.setSlab( guardPost, Slab::S_LAVA );
+                            level.setSlab( leftGuardPosition, Slab::S_PATH );
+                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                            added = true;
+                        }
+                        if ( added == false ) {
+                            ++i;
+                        }
                     }
                 }
             }
@@ -382,17 +434,17 @@ namespace dkmage {
             return true;
         }
 
-        std::vector< Point > Fortress::findBridge( const Point startPoint ) {
-            static const std::vector< Point > directions = { Point( 1, 0 ), Point( -1, 0 ), Point( 0, 1 ), Point( 0, -1 ) };
+        PointList Fortress::findBridge( const Point startPoint ) {
+            static const PointList directions = { Point( 1, 0 ), Point( -1, 0 ), Point( 0, 1 ), Point( 0, -1 ) };
 
-            std::vector< Point > ret;
+            PointList ret;
 
             for ( const Point dir: directions ) {
                 Point nextPoint = startPoint + dir;
                 if ( level.isSlab( nextPoint, Slab::S_LAVA ) == false ) {
                     continue ;
                 }
-                std::vector< Point > bridge = findBridge( startPoint, dir );
+                PointList bridge = findBridge( startPoint, dir );
                 if ( bridge.empty() ) {
                     continue ;
                 }
@@ -409,8 +461,8 @@ namespace dkmage {
             return ret;
         }
 
-        std::vector< Point > Fortress::findBridge( const Point startPoint, const Point bridgeDirection ) {
-            std::vector< Point > ret;
+        PointList Fortress::findBridge( const Point startPoint, const Point bridgeDirection ) {
+            PointList ret;
 
             std::set< Point > heighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
             heighbourDirections.erase( -bridgeDirection );
@@ -423,7 +475,7 @@ namespace dkmage {
                 }
                 if ( level.isSlab( bridgePoint, Slab::S_LAVA ) == false ) {
                     /// found other slab -- bridge didn't reach lake's shore
-                    return std::vector< Point >();
+                    return PointList();
                 }
 
                 ret.push_back( bridgePoint );

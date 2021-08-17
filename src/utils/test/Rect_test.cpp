@@ -43,19 +43,19 @@ TEST_CASE( "Point_distance" ) {
     {
         Point p1(0,0);
         Point p2(0,0);
-        const std::size_t dist = p1.distance( p2 );
+        const std::size_t dist = p1.distanceManhattan( p2 );
         CHECK( dist == 0 );
     }
     {
         Point p1(0,0);
         Point p2(1,0);
-        const std::size_t dist = p1.distance( p2 );
+        const std::size_t dist = p1.distanceManhattan( p2 );
         CHECK( dist == 1 );
     }
     {
         Point p1(0,0);
         Point p2(1,1);
-        const std::size_t dist = p1.distance( p2 );
+        const std::size_t dist = p1.distanceManhattan( p2 );
         CHECK( dist == 2 );
     }
 }

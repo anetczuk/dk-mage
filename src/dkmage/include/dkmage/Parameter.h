@@ -8,8 +8,11 @@
 
 /// inclusion: #include "dkmage/Parameter.h"
 
+#include "utils/Rand.h"
+
 #include <map>
 #include <set>
+#include <vector>
 
 
 namespace dkmage {
@@ -109,10 +112,101 @@ namespace dkmage {
     /// ================================================
 
 
+    template<typename TNumber>
+    class NumberRange {
+    public:
+
+        TNumber lowerBound;
+        TNumber upperBound;
+
+
+        NumberRange( const TNumber value ): lowerBound(value), upperBound(value) {
+        }
+
+        NumberRange( const TNumber lower, const TNumber upper ): lowerBound(lower), upperBound(upper) {
+        }
+
+        TNumber size() const {
+            return upperBound - lowerBound;
+        }
+
+        TNumber item( const TNumber index ) const {
+            return lowerBound + index;
+        }
+
+        bool contains( const TNumber value ) const {
+            if ( value < lowerBound )
+                return false;
+            if ( value > upperBound )
+                return false;
+            return true;
+        }
+
+    };
+
+
+    template<typename TNumber>
+    class NumberSet {
+    public:
+
+        std::vector< NumberRange<TNumber> > data;
+
+        TNumber size() const {
+            TNumber iSize = 0;
+            for ( const NumberRange<TNumber>& item: data ) {
+                iSize += item.size();
+            }
+            return iSize;
+        }
+
+        void add( const TNumber value ) {
+            data.push_back( NumberRange<TNumber>(value) );
+        }
+
+        void add( const TNumber lower, const TNumber upper ) {
+            data.push_back( NumberRange<TNumber>(lower, upper) );
+        }
+
+        bool contains( const TNumber value ) const {
+            for ( const auto& item: data ) {
+                if ( item.contains( value ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        NumberSet<TNumber> filter( const TNumber lower, const TNumber upper ) const;
+
+        Optional<TNumber> getRandom() const;
+
+        Optional<TNumber> getRandom( const TNumber lower, const TNumber upper ) const;
+
+    };
+
+    template<>
+    std::size_t NumberSet<std::size_t>::size() const;
+
+    template<>
+    Optional<std::size_t> NumberSet<std::size_t>::getRandom() const;
+
+    template<>
+    NumberSet<std::size_t> NumberSet<std::size_t>::filter( const std::size_t lower, const std::size_t upper ) const;
+
+    template<>
+    Optional<std::size_t> NumberSet<std::size_t>::getRandom( const std::size_t lower, const std::size_t upper ) const;
+
+    using SizeTSet = NumberSet<std::size_t>;
+
+
+    /// ================================================
+
+
     class Parameter {
     public:
 
-        Parameter();
+        Parameter() {
+        }
 
     };
 
@@ -170,6 +264,13 @@ namespace dkmage {
         Optional< std::size_t > getSizeT( const std::string& parameter ) const;
 
         Optional< std::size_t > getSizeT( const ParameterName parameter ) const;
+
+        Optional< SizeTSet > getSizeTSet( const std::string& parameter ) const;
+
+        Optional< SizeTSet > getSizeTSet( const ParameterName parameter ) const {
+            const std::string parameterName = getParameterName( parameter );
+            return getSizeTSet( parameterName );
+        }
 
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 

@@ -31,10 +31,16 @@ namespace utils {
         return Point(xDiff, yDiff);
     }
 
-    std::size_t Point::distance( const Point& point ) const {
+    std::size_t Point::distanceManhattan( const Point point ) const {
         const int xDiff = std::abs(x - point.x);
         const int yDiff = std::abs(y - point.y);
         return xDiff + yDiff;
+    }
+
+    std::size_t Point::distanceChebyshev( const Point point ) const {
+        const int xDiff = std::abs(x - point.x);
+        const int yDiff = std::abs(y - point.y);
+        return std::max(xDiff, yDiff);
     }
 
     /// ==============================================================
@@ -77,8 +83,8 @@ namespace utils {
     /// ==============================================================
 
     /// implementation taken and adapted from: https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
-    std::vector<Point> line_dda( const Point& from, const Point& to ) {
-        std::vector<Point> ret;
+    PointList line_dda( const Point& from, const Point& to ) {
+        PointList ret;
 
         const int x1 = from.x;
         const int y1 = from.y;
@@ -109,8 +115,8 @@ namespace utils {
     }
 
     /// implementation taken and adapted from: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-    std::vector<Point> line_bresenham( const Point& from, const Point& to ) {
-        std::vector<Point> ret;
+    PointList line_bresenham( const Point& from, const Point& to ) {
+        PointList ret;
 
         int x0 = from.x;
         int y0 = from.y;
@@ -160,12 +166,23 @@ namespace utils {
         return ret;
     }
 
-    std::vector<Point> line( const Point& from, const Point& to ) {
+    PointList line( const Point& from, const Point& to ) {
         return line_bresenham( from, to );
 //        return line_dda( from, to );
     }
 
-    bool is_in_radius( const std::vector<Point>& points, const Rect& rect, const std::size_t radius ) {
+    bool is_in_radius( const PointList& points, const Point& point, const std::size_t radius ) {
+        const std::size_t pSize = points.size();
+        for ( std::size_t i=0; i<pSize; ++i ) {
+            const std::size_t dist = point.distanceChebyshev( points[i] );
+            if ( dist <= radius ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool is_in_radius( const PointList& points, const Rect& rect, const std::size_t radius ) {
         const std::size_t pSize = points.size();
         for ( std::size_t i=0; i<pSize; ++i ) {
             const std::size_t dist = rect.distanceChebyshev( points[i] );
@@ -176,10 +193,20 @@ namespace utils {
         return false;
     }
 
-    bool is_collision( const std::vector<Point>& points, const Rect& rect ) {
+    bool is_collision( const PointList& points, const Rect& rect ) {
         const std::size_t pSize = points.size();
         for ( std::size_t i=0; i<pSize; ++i ) {
             if ( rect.isInside( points[i] ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool is_collision( const PointList& pointsA, const PointList& pointsB ) {
+        const std::size_t pSize = pointsA.size();
+        for ( std::size_t i=0; i<pSize; ++i ) {
+            if ( is_in_radius( pointsB, pointsA[i], 1 ) ) {
                 return true;
             }
         }
