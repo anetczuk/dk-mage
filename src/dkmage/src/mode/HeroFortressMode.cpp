@@ -59,8 +59,8 @@ namespace dkmage {
 //                branchStart.push_back( heart );
 //            }
 
-            const std::size_t corridorLength = rng_randi( 3 ) + 3;
-            std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, corridorLength, false );
+            const std::size_t roomsNum = rng_randi( 4 ) + 4;
+            std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, roomsNum, false );
             if ( mainCorridor.size() == 1 ) {
                 const spatial::FortressRoom* lastRoom = mainCorridor.back();
                 if ( lastRoom->restrictedDirections().empty() == false ) {
@@ -79,7 +79,7 @@ namespace dkmage {
             }
 
             LOG() << "generating branch corridors";
-            const std::size_t branchLength = rng_randi( 3 ) + 4;
+            const std::size_t branchLength = rng_randi( 4 ) + 5;
             const std::vector< const spatial::FortressRoom* > branches = prepareCorridors( mainCorridor, branchLength, true );
             if ( branches.size() < 2 ) {
                 LOG() << "unable create at least two branch corridors";
@@ -195,6 +195,7 @@ namespace dkmage {
             const ProbabilityMass< spatial::FortressRoomType >& roomProbability = FortressRoomsProbability();
 
             /// create branches
+            std::size_t stepsCounter = 0;
             while ( roomQueue.empty() == false ) {
                 std::vector< const spatial::FortressRoom* > nextRooms;
                 const std::size_t qSize = roomQueue.size();
@@ -218,6 +219,11 @@ namespace dkmage {
                         nextRooms.insert( nextRooms.end(), next.begin(), next.end() );
                 }
                 roomQueue = nextRooms;
+                ++stepsCounter;
+                if ( stepsCounter > 6 ) {
+                    /// do not generate very long branches in secondary step
+                    break;
+                }
             }
         }
 
