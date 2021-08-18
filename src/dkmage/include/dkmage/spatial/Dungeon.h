@@ -144,29 +144,6 @@ namespace dkmage {
                 return graph.linkDirections( room );
             }
 
-            std::vector< Direction > freeDirections( const TRoom& room ) const {
-                std::vector< Direction > availableDirs = graph.freeDirections( room );
-
-                const int northDiff = limitNorth - room.northCoord;
-                if ( northDiff <= 0) {
-                    utils::remove( availableDirs, Direction::D_NORTH );
-                }
-                const int southDiff = limitSouth + room.northCoord;
-                if ( southDiff <= 0) {
-                    utils::remove( availableDirs, Direction::D_SOUTH );
-                }
-                const int eastDiff = limitEast - room.eastCoord;
-                if ( eastDiff <= 0) {
-                    utils::remove( availableDirs, Direction::D_EAST );
-                }
-                const int westDiff = limitWest + room.eastCoord;
-                if ( westDiff == 0) {
-                    utils::remove( availableDirs, Direction::D_WEST );
-                }
-
-                return availableDirs;
-            }
-
             using Spatialtem::move;
 
             bool isRectInLimit( const Rect& rect ) const {
@@ -477,6 +454,29 @@ namespace dkmage {
                     /// randomize next room
                     addRandomRoom( newRoomType, roomSize );
                 }
+            }
+
+            std::vector< Direction > freeDirections( const EvilRoom& room ) const {
+                std::vector< Direction > availableDirs = graph.freeDirections( room );
+
+                const int northDiff = limitNorth - room.northCoord;
+                if ( northDiff <= 0) {
+                    utils::remove( availableDirs, Direction::D_NORTH );
+                }
+                const int southDiff = limitSouth + room.northCoord;
+                if ( southDiff <= 0) {
+                    utils::remove( availableDirs, Direction::D_SOUTH );
+                }
+                const int eastDiff = limitEast - room.eastCoord;
+                if ( eastDiff <= 0) {
+                    utils::remove( availableDirs, Direction::D_EAST );
+                }
+                const int westDiff = limitWest + room.eastCoord;
+                if ( westDiff == 0) {
+                    utils::remove( availableDirs, Direction::D_WEST );
+                }
+
+                return availableDirs;
             }
 
             bool isCollision( const Rect& rect ) const {
