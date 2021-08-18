@@ -7,7 +7,6 @@
 
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
-#include "dkmage/spatial/Fortress.h"
 
 #include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/AreaDetector.h"
@@ -38,45 +37,13 @@ namespace dkmage {
             return roomProbability;
         }
 
+        ///===================================================================================================
 
-        /**
-         *
-         */
-        class Fortress {
-        public:
-
-            Level& level;
-            ParametersMap& parameters;
-            spatial::FortressDungeon fortress;
-
-
-            Fortress( Level& level, ParametersMap& parameters ): level(level), parameters(parameters), fortress( Player::P_GOOD ) {
+        Fortress::Fortress( adiktedpp::Level& level, ParametersMap& parameters ): level(level), parameters(parameters), fortress( Player::P_GOOD ) {
 //                fortress.limitNorth = 3;
 //                fortress.limitSouth = 3;
-                fortress.fortify( true );
-            }
-
-            bool generate();
-
-            std::vector< const spatial::FortressRoom* > prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches );
-
-            std::vector< const spatial::FortressRoom* > prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms );
-
-            void prepareSecondaryPass();
-
-            bool generateLake( const Rect& lakeLimit );
-
-//            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
-
-            bool prepareBridges( const std::vector< const spatial::FortressRoom* >& entranceRooms );
-
-            /// find shortest bridge in four directions
-            PointList findBridge( const Point startPoint );
-
-            PointList findBridge( const Point startPoint, const Point bridgeDirection );
-
-        };
-
+            fortress.fortify( true );
+        }
 
         bool Fortress::generate() {
             Rect lakeLimit = raw::RawLevel::mapRect( 4 );

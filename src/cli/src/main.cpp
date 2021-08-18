@@ -227,7 +227,6 @@ int main( int argc, char** argv ) {
 
         LOG() << "entered parameters:" << parameters.print();
 
-
         const Optional<std::string> mapTypeParam = parameters.getString( "type" );
         const std::string mapType = mapTypeParam.value();
 
