@@ -30,6 +30,10 @@ namespace adiktedpp {
                 return lines;
             }
 
+            void clear() {
+                lines.clear();
+            }
+
             bool empty() const {
                 return lines.empty();
             }
@@ -112,6 +116,8 @@ namespace adiktedpp {
         public:
 
             Script();
+
+            void clearData();
 
             std::vector< std::string > build();
 

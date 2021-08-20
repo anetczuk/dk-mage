@@ -38,6 +38,10 @@ namespace dkmage {
 
     bool BaseLevelGenerator::generateAttempt() {
         LOG() << "generating map";
+
+        /// reset/clear script
+        script.clearData();
+
         if ( generate() == false ) {
             LOG() << "could not generate map";
             return false;
