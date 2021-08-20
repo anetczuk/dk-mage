@@ -66,6 +66,13 @@ namespace utils {
             return newPoint;
         }
 
+        Point operator/( const int factor ) const {
+            Point newPoint = *this;
+            newPoint.x /= factor;
+            newPoint.y /= factor;
+            return newPoint;
+        }
+
         Point& operator+=( const Point& data ) {
             x += data.x;
             y += data.y;
@@ -249,10 +256,10 @@ namespace utils {
             move( 0, yOffset );
         }
 
+        /// move center of rect to (0,0) point
         void centerize() {
-            const int diffX = width()  / 2;
-            const int diffY = height() / 2;
-            move( -diffX, -diffY );
+            const Point center = (max + min) / 2;
+            move( -center.x, -center.y );
         }
 
         /// ===================================================

@@ -72,7 +72,7 @@ namespace dkmage {
         struct NodeDataWrapper {
             std::unique_ptr<T> data;
 
-            NodeDataWrapper(): data( new T() ) {
+            NodeDataWrapper(): data( nullptr ) {
             }
 
             /// copy constructor
@@ -217,8 +217,7 @@ namespace dkmage {
                 if ( graph.valid( node ) == false ) {
                     return nullptr;
                 }
-                TNodeData& item = getItem( node );
-                return &item;
+                return getItemPtr( node );
             }
 
             std::vector< const TNodeData* > itemsList() const {
@@ -231,6 +230,7 @@ namespace dkmage {
                     }
                     ret.push_back( nItem );
                 }
+//                std::reverse( ret.begin(), ret.end() );
                 return ret;
             }
 
@@ -283,7 +283,7 @@ namespace dkmage {
                 return ret;
             }
 
-            std::size_t itemId( const TNodeData& item ) {
+            std::size_t itemId( const TNodeData& item ) const {
                 lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     return (std::size_t) -1;
@@ -362,6 +362,18 @@ namespace dkmage {
                 }
                 TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
+//                GraphNode& roadPtr = nodesMap[ targetNode ];
+//                roadPtr.reset( new TNodeData() );
+//                return roadPtr.get();
+            }
+
+            void addItem( TNodeData& item ) {
+                lemon::ListDigraph::Node targetNode = graph.addNode();
+                if ( root == lemon::INVALID ) {
+                    root = targetNode;
+                }
+                GraphNode& roadPtr = nodesMap[ targetNode ];
+                roadPtr.reset( &item );
             }
 
             TNodeData* addItem( const TNodeData& from, const Direction direction, const bool addLink = true ) {
@@ -373,6 +385,17 @@ namespace dkmage {
                 lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
                 TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
+            }
+
+            bool setItem( TNodeData& item, const TNodeData& from, const Direction direction, const bool addLink = true ) {
+                const lemon::ListDigraph::Node itemNode = findNode( from );
+                if ( graph.valid( itemNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return false;
+                }
+                lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
+                setItem( targetNode, item );
+                return true;
             }
 
             TEdgeData* getEdge( const TNodeData& from, const TNodeData& to ) {
@@ -429,8 +452,8 @@ namespace dkmage {
                 std::stringstream stream;
                 stream << "nodes:\n";
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TNodeData& nItem = getItem( n );
-                    stream << graph.id( n ) << " " << &nItem << "\n";
+                    const TNodeData* nItem = getItemPtr( n );
+                    stream << graph.id( n ) << " " << nItem << "\n";
                 }
 
                 stream << "edges:\n";
@@ -448,11 +471,11 @@ namespace dkmage {
 
                 stream << "connections:\n";
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
-                    TNodeData& nItem = getItem( n );
+                    const TNodeData* nItem = getItemPtr( n );
                     for (lemon::ListDigraph::OutArcIt e(graph, n); e != lemon::INVALID; ++e) {
                         const lemon::ListDigraph::Node tNode = targetNode( e );
-                        TNodeData& tItem = getItem( tNode );
-                        stream << graph.id( n ) << " " << &nItem << " " << graph.id( tNode ) << " " << &tItem << " " << edgesMap[ e ] << "\n";
+                        const TNodeData* tItem = getItemPtr( tNode );
+                        stream << graph.id( n ) << " " << nItem << " " << graph.id( tNode ) << " " << tItem << " " << edgesMap[ e ] << "\n";
                     }
                 }
                 return stream.str();
@@ -528,6 +551,11 @@ namespace dkmage {
                     }
                 }
                 return lemon::ListDigraph::Arc( lemon::INVALID );
+            }
+
+            void setItem( const lemon::ListDigraph::Node& node, TNodeData& item ) {
+                GraphNode& roadPtr = nodesMap[ node ];
+                roadPtr.reset( &item );
             }
 
             TNodeData& getItem( const lemon::ListDigraph::Node& node ) {

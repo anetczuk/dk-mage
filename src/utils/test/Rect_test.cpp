@@ -100,10 +100,10 @@ TEST_CASE( "Rect_centerize_odd" ) {
 TEST_CASE( "Rect_centerize_even" ) {
     Rect rect( 4, 4 );
     rect.centerize();
-    CHECK( rect.min.x == -2 );
-    CHECK( rect.min.y == -2 );
-    CHECK( rect.max.x ==  1 );
-    CHECK( rect.max.y ==  1 );
+    CHECK( rect.min.x == -1 );
+    CHECK( rect.min.y == -1 );
+    CHECK( rect.max.x ==  2 );
+    CHECK( rect.max.y ==  2 );
 }
 
 TEST_CASE( "Rect_center" ) {

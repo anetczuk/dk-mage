@@ -5,7 +5,6 @@
 
 #include "dkmage/Draw.h"
 
-#include "dkmage/spatial/Dungeon.h"
 #include "dkmage/spatial/Maze.h"
 
 #include "utils/Container.h"

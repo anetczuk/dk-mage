@@ -7,117 +7,11 @@
 #define DKMAGE_INCLUDE_DKMAGE_SPATIAL_FORTRESS_H_
 
 #include "dkmage/spatial/Dungeon.h"
+#include "dkmage/spatial/FortressRoom.h"
 
 
 namespace dkmage {
     namespace spatial {
-
-        /**
-         *
-         */
-        enum class FortressRoomType {
-            FR_DUNGEON_HEART,
-            FR_TREASURE,
-            FR_CORRIDOR,
-            FR_BRANCH,
-            FR_BOULDER_CORRIDOR,
-            FR_EXIT,
-            FR_EMPTY
-        };
-
-        inline std::ostream& operator<<( std::ostream& os, const FortressRoomType data ) {
-            switch( data ) {
-            case FortressRoomType::FR_DUNGEON_HEART:        { os << "FR_DUNGEON_HEART"; return os; }
-            case FortressRoomType::FR_TREASURE:             { os << "FR_TREASURE"; return os; }
-            case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
-            case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
-            case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
-            case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
-            case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
-            }
-            os << "UNKNOWN_ROOM[" << (int) data << "]";
-            return os;
-        }
-
-
-        /// ======================================================================
-
-
-        /**
-         *
-         */
-        class FortressRoom {
-
-            Rect roomPosition;
-
-            FortressRoomType fortressType;
-            adiktedpp::Player roomOwner;
-
-            std::vector< Direction > restrictedDirs;
-
-
-        public:
-
-            FortressRoom(): roomPosition(),
-                fortressType( FortressRoomType::FR_EMPTY ),
-                roomOwner( adiktedpp::Player::P_P0 ),
-                restrictedDirs()
-            {
-            }
-
-            std::size_t roomArea() const {
-                return roomPosition.area();
-            }
-
-            Point roomSize() const {
-                return roomPosition.vector();
-            }
-
-            const Rect& position() const {
-                return roomPosition;
-            }
-
-            Rect& position() {
-                return roomPosition;
-            }
-
-            Point edgePoint( const Direction direction, const std::size_t delta = 0 ) const;
-
-            void resize( const std::size_t newSize ) {
-                roomPosition = Rect( newSize, newSize );
-            }
-
-            FortressRoomType type() const {
-                return fortressType;
-            }
-
-            void type( FortressRoomType newType ) {
-                fortressType = newType;
-            }
-
-            adiktedpp::Room roomType() const;
-
-            adiktedpp::Player owner() const {
-                return roomOwner;
-            }
-
-            void owner( const adiktedpp::Player newType ) {
-                roomOwner = newType;
-            }
-
-            const std::vector< Direction >& restrictedDirections() const {
-                return restrictedDirs;
-            }
-
-            void setRestrictedDirection( const Direction direction ) {
-                restrictedDirs.clear();
-                restrictedDirs.push_back( direction );
-            }
-
-            std::string print() const;
-
-        };
-
 
         /**
          *
@@ -128,6 +22,10 @@ namespace dkmage {
             using BaseDungeon::BaseDungeon;
 
             void draw( adiktedpp::Level& level ) const;
+
+            std::vector< Direction > freeDirections( const FortressRoom& room ) const {
+                return graph.freeDirections( room );
+            }
 
             /// size of dungeon
             Rect boundingBox() const override {
@@ -198,21 +96,27 @@ namespace dkmage {
                 return ret;
             }
 
-            std::vector< const spatial::FortressRoom* > addRandomRoom( const FortressRoomType roomType, const FortressRoom& from, const bool allowBranches = true );
+            FortressRoom* setFirstRoom( const FortressRoomType roomType, const std::size_t roomSize );
 
-            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSize, const std::size_t distance = 1 );
+            FortressRoom* addRandomRoom( const FortressRoomType roomType, const FortressRoom& from );
 
-            FortressRoom* addRandomRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const std::size_t corridorLength = 1 );
+            bool addRandomRoom( FortressRoom& newRoom, const FortressRoom& from, const std::size_t corridorLength = 1 );
 
             FortressRoom* createRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
+
+            bool createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
+
+            std::string print() const;
 
 
         protected:
 
+            bool canAdd( const Rect& roomRect, const FortressRoom& from, const Direction direction ) const;
+
             bool isCollision( const Rect& rect ) const;
 
             /// is collision with corridor
-            bool isCollision( const Point& start, const Point& end ) {
+            bool isCollision( const Point& start, const Point& end ) const {
                 const std::vector<Point> points = line( start, end );
                 const std::size_t pSize = points.size();
                 for ( std::size_t i=0; i<pSize; i += 3 ) {

@@ -132,6 +132,12 @@ namespace dkmage {
                 return graph.itemByindex( index );
             }
 
+            bool exists( const TRoom& room ) const {
+                std::vector< const TRoom* > items = graph.itemsList();
+                auto pos = std::find( items.begin(), items.end(), &room );
+                return ( pos != items.end() );
+            }
+
             std::vector< const TRoom* > connectedRooms( const TRoom& room ) const {
                 return graph.connectedItems( room );
             }

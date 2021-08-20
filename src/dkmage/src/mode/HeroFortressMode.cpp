@@ -52,7 +52,7 @@ namespace dkmage {
             fortress.limitWidth  = lakeLimit.width()  - 6;
             fortress.limitHeight = lakeLimit.height() - 6;
 
-            const spatial::FortressRoom* heart = fortress.addRandomRoom( spatial::FortressRoomType::FR_DUNGEON_HEART, 5 );
+            const spatial::FortressRoom* heart = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART, 5 );
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
 //            for ( std::size_t i=0; i<3; ++i ) {
@@ -65,12 +65,12 @@ namespace dkmage {
                 const spatial::FortressRoom* lastRoom = mainCorridor.back();
                 if ( lastRoom->restrictedDirections().empty() == false ) {
                     /// restricted room -- add unrestricted one
-                    std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, *lastRoom, false );
-                    if ( next.size() != 1 ) {
+                    const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, *lastRoom );
+                    if ( next == nullptr ) {
                         LOG() << "unable to create main junction room";
                         return false;
                     }
-                    mainCorridor = next;
+                    mainCorridor = { next };
                 }
                 const spatial::FortressRoom* corridorExit = mainCorridor.back();
                 for ( std::size_t i=0; i<2; ++i ) {
@@ -155,15 +155,19 @@ namespace dkmage {
                 for ( std::size_t x=0; x<qSize; ++x ) {
                     const spatial::FortressRoomType roomType = roomProbability.getRandom();
                     const spatial::FortressRoom* item = roomQueue[ x ];
-                    std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( roomType, *item, allowBranches );
-//                    std::vector< const spatial::FortressRoom* > next = prepareRoom( roomType, item, allowBranches );
-                    const std::size_t nextSize = next.size();
-                    if ( nextSize < 1 ) {
+                    const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
+                    if ( next == nullptr ) {
                         LOG() << "unable to generate chamber level " << i;
 //                        LOG() << "unable to generate chamber level " << i << " " << roomType;
                         continue ;
                     }
-                    nextRooms.insert( nextRooms.end(), next.begin(), next.end() );
+                    nextRooms.push_back( next );
+                    if ( next->allowedBranches && allowBranches ) {
+                        if ( rng_randb( 0.4 ) ) {
+                            /// add once again
+                            nextRooms.push_back( next );
+                        }
+                    }
                 }
                 roomQueue = nextRooms;
             }
@@ -177,14 +181,13 @@ namespace dkmage {
             const std::size_t qSize = startRooms.size();
             for ( std::size_t x=0; x<qSize; ++x ) {
                 const spatial::FortressRoom* item = startRooms[ x ];
-                std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item, false );
-                if ( next.empty() ) {
+                const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
+                if ( next == nullptr ) {
                     LOG() << "unable to generate branch exit";
                     continue ;
                 }
-                exitRooms.insert( exitRooms.end(), next.begin(), next.end() );
+                exitRooms.push_back( next );
             }
-
             return exitRooms;
         }
 
@@ -209,14 +212,18 @@ namespace dkmage {
                         continue ;
                     }
 
-                        const spatial::FortressRoomType roomType = roomProbability.getRandom();
-                        std::vector< const spatial::FortressRoom* > next = fortress.addRandomRoom( roomType, *item, true );
-    //                    std::vector< const spatial::FortressRoom* > next = prepareRoom( roomType, item, allowBranches );
-                        const std::size_t nextSize = next.size();
-                        if ( nextSize < 1 ) {
-                            continue ;
+                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                    const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
+                    if ( next == nullptr ) {
+                        continue ;
+                    }
+                    nextRooms.push_back( next );
+                    if ( next->allowedBranches ) {
+                        if ( rng_randb( 0.4 ) ) {
+                            /// add once again
+                            nextRooms.push_back( next );
                         }
-                        nextRooms.insert( nextRooms.end(), next.begin(), next.end() );
+                    }
                 }
                 roomQueue = nextRooms;
                 ++stepsCounter;
