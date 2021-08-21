@@ -33,7 +33,7 @@ namespace dkmage {
                 }
 
                 /// draw content
-                item->draw( *this, level );
+                item->draw( level );
             }
         }
 

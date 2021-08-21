@@ -80,9 +80,11 @@ namespace dkmage {
 
             virtual FortressRoomType type() const = 0;
 
+            /// prepare room position and internal state
             virtual void prepare( FortressDungeon& dungeon, const FortressRoom& from ) = 0;
 
-            virtual void draw( const FortressDungeon& dungeon, adiktedpp::Level& level ) const = 0;
+            /// put room to 'level'
+            virtual void draw( adiktedpp::Level& level ) const = 0;
 
             std::size_t roomArea() const {
                 return roomPosition.area();

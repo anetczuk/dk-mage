@@ -33,7 +33,7 @@ namespace dkmage {
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 1.2 );
                 roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2 );
                 roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8 );
-                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 8.8 );
+                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 0.8 );
                 roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.8 );
                 roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.05 );
                 roomProbability.normalize();
