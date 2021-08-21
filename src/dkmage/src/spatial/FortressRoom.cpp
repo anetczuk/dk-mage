@@ -23,6 +23,28 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace spatial {
 
+        std::ostream& operator<<( std::ostream& os, const FortressRoomType data ) {
+            switch( data ) {
+            case FortressRoomType::FR_DUNGEON_HEART:        { os << "FR_DUNGEON_HEART"; return os; }
+            case FortressRoomType::FR_TREASURE:             { os << "FR_TREASURE"; return os; }
+            case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
+            case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
+            case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
+            case FortressRoomType::FR_PRISON:               { os << "FR_PRISON"; return os; }
+            case FortressRoomType::FR_TORTURE:              { os << "FR_TORTURE"; return os; }
+            case FortressRoomType::FR_GRAVEYARD:            { os << "FR_GRAVEYARD"; return os; }
+            case FortressRoomType::FR_LAVA_POST:            { os << "FR_LAVA_POST"; return os; }
+            case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
+            case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
+            }
+            os << "UNKNOWN_ROOM[" << (int) data << "]";
+            return os;
+        }
+
+
+        /// =======================================================================================
+
+
         Point FortressRoom::edgePoint( const Direction direction, const std::size_t delta ) const {
             switch( direction ) {
             case Direction::D_NORTH: return roomPosition.centerTop( delta );
@@ -99,7 +121,7 @@ namespace dkmage {
             void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                roomPosition = Rect( 5, 5 );
+                setPosition( 5, 5 );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
@@ -127,7 +149,7 @@ namespace dkmage {
                 const std::size_t rSize = roomSize357.getRandom();
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                roomPosition = Rect( rSize, rSize );
+                setPosition( rSize, rSize );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
@@ -171,7 +193,7 @@ namespace dkmage {
                     switch( newDir ) {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
-                        roomPosition = Rect( 1, roomLength );
+                        setPosition( 1, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -181,7 +203,7 @@ namespace dkmage {
                     }
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
-                        roomPosition = Rect( roomLength, 1 );
+                        setPosition( roomLength, 1 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -215,7 +237,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 allowedBranches = true;
-                roomPosition = Rect( 1, 1 );
+                setPosition( 1, 1 );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
@@ -255,7 +277,7 @@ namespace dkmage {
                     switch( newDir ) {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
-                        roomPosition = Rect( 5, roomLength );
+                        setPosition( 5, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -265,7 +287,7 @@ namespace dkmage {
                     }
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
-                        roomPosition = Rect( roomLength, 5 );
+                        setPosition( roomLength, 5 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -347,7 +369,7 @@ namespace dkmage {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
                         orientation = 1;
-                        roomPosition = Rect( 5, roomLength );
+                        setPosition( 5, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -358,7 +380,7 @@ namespace dkmage {
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
                         orientation = 2;
-                        roomPosition = Rect( roomLength, 5 );
+                        setPosition( roomLength, 5 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -448,7 +470,7 @@ namespace dkmage {
                     orientation = get_axis( newDir );
                     switch( orientation ) {
                     case Axis::A_VERTICAL: {
-                        roomPosition = Rect( 9, 9 );
+                        setPosition( 9, 9 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -457,7 +479,7 @@ namespace dkmage {
                         break ;
                     }
                     case Axis::A_HORIZONTAL: {
-                        roomPosition = Rect( 9, 9 );
+                        setPosition( 9, 9 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -482,25 +504,25 @@ namespace dkmage {
                 level.setRoom( r1, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r1, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 1, 9, cOwner );
+                level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
                 const Rect r2 = chamber.moved(  3, -3 );
                 level.setRoom( r2, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r2, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 1, 9, cOwner );
+                level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
                 const Rect r3 = chamber.moved(  3,  3 );
                 level.setRoom( r3, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r3, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 1, 9, cOwner );
+                level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
                 const Rect r4 = chamber.moved( -3,  3 );
                 level.setRoom( r4, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r4, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 1, 9, cOwner );
+                level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
                 switch( orientation ) {
                 case Axis::A_VERTICAL: {
@@ -547,6 +569,98 @@ namespace dkmage {
         /**
          *
          */
+        class FortressRoomGraveyard: public FortressRoom {
+        public:
+
+            Axis orientation = Axis::A_HORIZONTAL;
+//            PointList corridor;
+
+
+            FortressRoomType type() const override {
+                return FortressRoomType::FR_GRAVEYARD;
+            }
+
+            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+                std::vector< Direction > availableDirs = from.restrictedDirections();
+                if ( availableDirs.empty() ) {
+                    availableDirs = dungeon.freeDirections( from );
+                    if ( availableDirs.empty() ) {
+                        return ;
+                    }
+                }
+
+//                const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
+
+//                const std::size_t rSize = roomSize357.getRandom();
+                const std::size_t rSize = 3;
+                const std::size_t corridorLength = rng_randi( 5 ) + 1 + 7;
+
+                const Rect baseRect( rSize, rSize );
+
+                while ( availableDirs.empty() == false ) {
+                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const Direction newDir = remove_at( availableDirs, rDir );
+                    orientation = get_axis( newDir );
+                    switch( orientation ) {
+                    case Axis::A_VERTICAL: {
+                        Rect newRect = baseRect;
+                        newRect.growWidth( 1 );
+                        setPosition( newRect );
+                        setJointPoint( 2, 0 );
+                        const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
+                        if ( added ) {
+                            restrictedDirs.push_back( newDir );
+                            restrictedDirs.push_back( Direction::D_EAST );
+                            return;
+                        }
+                        break ;
+                    }
+                    case Axis::A_HORIZONTAL: {
+                        Rect newRect = baseRect;
+                        newRect.growHeight( 1 );
+                        setPosition( newRect );
+                        setJointPoint( 0, 2 );
+                        const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
+                        if ( added ) {
+                            restrictedDirs.push_back( newDir );
+                            restrictedDirs.push_back( Direction::D_SOUTH );
+                            return;
+                        }
+                        break ;
+                    }
+                    }
+                }
+            }
+
+            void draw( const FortressDungeon& /*dungeon*/, adiktedpp::Level& level ) const override {
+                const Rect& roomRect = position();
+
+                Rect room( roomRect.center(), 3, 3 );
+                Point doorPoint = room.center();
+
+                switch( orientation ) {
+                case Axis::A_VERTICAL: {
+                    room.move( -1, 0 );
+                    doorPoint += Point( 1, 0 );
+                    break;
+                }
+                case Axis::A_HORIZONTAL: {
+                    room.move( 0, -1 );
+                    doorPoint += Point( 0, 1 );
+                    break;
+                }
+                }
+
+                level.setRoom( room, Room::R_GRAVEYARD, roomOwner, true );
+                level.setDoor( doorPoint, Door::D_WOOD, true );
+            }
+
+        };
+
+
+        /**
+         *
+         */
         class FortressRoomLavaPost: public FortressRoom {
         public:
 
@@ -575,7 +689,7 @@ namespace dkmage {
                     orientation = get_axis( newDir );
                     switch( orientation ) {
                     case Axis::A_VERTICAL: {
-                        roomPosition = Rect( 7, roomLength );
+                        setPosition( 7, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -584,7 +698,7 @@ namespace dkmage {
                         break ;
                     }
                     case Axis::A_HORIZONTAL: {
-                        roomPosition = Rect( roomLength, 7 );
+                        setPosition( roomLength, 7 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -659,7 +773,7 @@ namespace dkmage {
             }
 
             void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
-                roomPosition = Rect( 3, 3 );
+                setPosition( 3, 3 );
                 dungeon.addRandomRoom( *this, from, 3 );
             }
 
@@ -704,7 +818,7 @@ namespace dkmage {
                 const std::size_t rSize = roomSize357.getRandom();
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                roomPosition = Rect( rSize, rSize );
+                setPosition( rSize, rSize );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
@@ -728,6 +842,7 @@ namespace dkmage {
             case FortressRoomType::FR_BOULDER_CORRIDOR:     return std::make_unique< FortressRoomBoulderCorridor >();
             case FortressRoomType::FR_PRISON:               return std::make_unique< FortressRoomPrison >();
             case FortressRoomType::FR_TORTURE:              return std::make_unique< FortressRoomTorture >();
+            case FortressRoomType::FR_GRAVEYARD:            return std::make_unique< FortressRoomGraveyard >();
             case FortressRoomType::FR_LAVA_POST:            return std::make_unique< FortressRoomLavaPost >();
             case FortressRoomType::FR_EXIT:                 return std::make_unique< FortressRoomExit >();
             case FortressRoomType::FR_EMPTY:                return std::make_unique< FortressRoomEmpty >();

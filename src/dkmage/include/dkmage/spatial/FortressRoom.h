@@ -36,27 +36,13 @@ namespace dkmage {
             FR_BOULDER_CORRIDOR,
             FR_PRISON,
             FR_TORTURE,
+            FR_GRAVEYARD,
             FR_LAVA_POST,
             FR_EXIT,
             FR_EMPTY
         };
 
-        inline std::ostream& operator<<( std::ostream& os, const FortressRoomType data ) {
-            switch( data ) {
-            case FortressRoomType::FR_DUNGEON_HEART:        { os << "FR_DUNGEON_HEART"; return os; }
-            case FortressRoomType::FR_TREASURE:             { os << "FR_TREASURE"; return os; }
-            case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
-            case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
-            case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
-            case FortressRoomType::FR_PRISON:               { os << "FR_PRISON"; return os; }
-            case FortressRoomType::FR_TORTURE:              { os << "FR_TORTURE"; return os; }
-            case FortressRoomType::FR_LAVA_POST:            { os << "FR_LAVA_POST"; return os; }
-            case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
-            case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
-            }
-            os << "UNKNOWN_ROOM[" << (int) data << "]";
-            return os;
-        }
+        std::ostream& operator<<( std::ostream& os, const FortressRoomType data );
 
 
         /// ======================================================================
@@ -66,9 +52,12 @@ namespace dkmage {
          *
          */
         class FortressRoom {
-        protected:
 
             utils::Rect roomPosition;
+            utils::Point corridorJoinPoint;
+
+
+        protected:
 
             adiktedpp::Player roomOwner;
 
@@ -80,7 +69,7 @@ namespace dkmage {
             bool allowedBranches;
 
 
-            FortressRoom(): roomPosition(),
+            FortressRoom(): roomPosition(), corridorJoinPoint(),
                 roomOwner( adiktedpp::Player::P_P0 ),
                 restrictedDirs(),
                 allowedBranches( false )
@@ -107,15 +96,33 @@ namespace dkmage {
                 return roomPosition;
             }
 
-            utils::Rect& position() {
-                return roomPosition;
+            void setPosition( const utils::Rect& rect ) {
+                roomPosition = rect;
+                corridorJoinPoint = roomPosition.center();
+            }
+
+            void setPosition( const std::size_t width, const std::size_t height ) {
+                roomPosition = utils::Rect( width, height );
+                corridorJoinPoint = roomPosition.center();
+            }
+
+            const utils::Point joinPoint() const {
+                return corridorJoinPoint;
+            }
+
+            void setJointPoint( const int offsetX, const int offsetY ) {
+                corridorJoinPoint = roomPosition.center() + utils::Point( offsetX, offsetY );
+            }
+            void setJointPoint( const utils::Point newPoint ) {
+                corridorJoinPoint = roomPosition.center() + newPoint;
+            }
+
+            utils::Point joinCenterOffset() const {
+                return corridorJoinPoint - roomPosition.center();
+
             }
 
             utils::Point edgePoint( const Direction direction, const std::size_t delta = 0 ) const;
-
-            void resize( const std::size_t newSize ) {
-                roomPosition = utils::Rect( newSize, newSize );
-            }
 
             adiktedpp::Player owner() const {
                 return roomOwner;
@@ -132,6 +139,15 @@ namespace dkmage {
             void setRestrictedDirection( const Direction direction ) {
                 restrictedDirs.clear();
                 restrictedDirs.push_back( direction );
+            }
+
+            void move( const utils::Point offset ) {
+                move( offset.x, offset.y );
+            }
+
+            void move( const int offsetX, const int offsetY ) {
+                roomPosition.move( offsetX, offsetY );
+                corridorJoinPoint += utils::Point( offsetX, offsetY );
             }
 
             std::string print() const;

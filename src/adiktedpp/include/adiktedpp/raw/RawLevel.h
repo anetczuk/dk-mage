@@ -141,7 +141,7 @@ namespace adiktedpp {
 
             void setSlab( const std::set< utils::Point >& positions, const SlabType type );
 
-            void setSlab( const std::vector< utils::Point >& positions, const SlabType type );
+            void setSlab( const utils::PointList& positions, const SlabType type );
 
             void setSlab( const std::size_t x, const std::size_t y, const SlabType type, const PlayerType owner );
 

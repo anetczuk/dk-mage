@@ -47,17 +47,8 @@ namespace dkmage {
             void move( const int offsetX, const int offsetY ) override {
                 std::vector< FortressRoom* > roomsList = graph.itemsList();
                 for ( FortressRoom* item: roomsList ) {
-                    Rect& pos = item->position();
-                    pos.move( offsetX, offsetY );
+                    item->move( offsetX, offsetY );
                 }
-            }
-
-            utils::Point roomCenter( const std::size_t index ) {
-                FortressRoom* aRoom = room( index );
-                if ( aRoom == nullptr ) {
-                    return utils::Point();
-                }
-                return aRoom->position().center();
             }
 
             std::set< Point > outline() const {
@@ -101,8 +92,6 @@ namespace dkmage {
             FortressRoom* addRandomRoom( const FortressRoomType roomType, const FortressRoom& from );
 
             bool addRandomRoom( FortressRoom& newRoom, const FortressRoom& from, const std::size_t corridorLength = 1 );
-
-            FortressRoom* createRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
 
             bool createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
 

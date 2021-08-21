@@ -125,14 +125,16 @@ namespace adiktedpp {
 
         void setSlab( const std::set< utils::Point >& positions, const Slab type );
 
-        void setSlab( const std::vector< utils::Point >& positions, const Slab type );
+        void setSlab( const utils::PointList& positions, const Slab type );
 
         void setClaimed( const utils::Point& point, const Player owner );
 
         void setClaimed( const utils::Rect& rect, const Player owner );
 
+        /// set given point a fortified wall
         void setFortified( const utils::Point& point, const Player owner );
 
+        /// set outline of given rect a fortified wall
         void setFortified( const utils::Rect& rect, const Player owner );
 
         void setRoom( const utils::Rect& position, const Room room );

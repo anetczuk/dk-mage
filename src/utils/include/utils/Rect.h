@@ -291,6 +291,11 @@ namespace utils {
             max.x += delta;
         }
 
+        void growHeight( const int delta ) {
+            min.y -= delta;
+            max.y += delta;
+        }
+
         bool isInside( const int minCoord, const int maxCoord ) const {
             if ( min.x < minCoord || min.x > maxCoord ) {
                 return false;

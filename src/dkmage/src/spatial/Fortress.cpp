@@ -25,10 +25,10 @@ namespace dkmage {
             std::vector< const FortressRoom* > roomsList = rooms();
             for ( const FortressRoom* item: roomsList ) {
                 /// draw corridors
-                const Point& itemCenter = item->position().center();
+                const Point& itemCenter = item->joinPoint();
                 std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
                 for ( const FortressRoom* connected: connectedList ) {
-                    const Point& connectedCenter = connected->position().center();
+                    const Point& connectedCenter = connected->joinPoint();
                     level.digLine( itemCenter, connectedCenter, owner, fortify );
                 }
 
@@ -52,9 +52,9 @@ namespace dkmage {
             graph.addItem( newRoom );
 
             newRoom.owner( player );
-            newRoom.position() = Rect( roomSize, roomSize );
-            Rect& basePos = newRoom.position();
-            basePos.centerize();
+            Rect newRect( roomSize, roomSize );
+            newRect.centerize();
+            newRoom.setPosition( newRect );
             return &newRoom;
         }
 
@@ -94,31 +94,25 @@ namespace dkmage {
             return false;
         }
 
-        FortressRoom* FortressDungeon::createRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength ) {
-            std::unique_ptr< FortressRoom > roomPtr = spawn_object( roomType );
-            FortressRoom& newRoom = *roomPtr;
-
-            newRoom.position() = Rect( roomSizeX, roomSizeY );
-
-            const bool added = createRoom( newRoom, from, direction, corridorLength );
-            if ( added == false ) {
-                return nullptr;
-            }
-
-             /// room prepared/added properly
-            roomPtr.release();                              //// release ownership (prevent deleting the object)
-            newRoom.owner( player );
-            return &newRoom;
-        }
-
         bool FortressDungeon::createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength ) {
-            Rect& newRect = newRoom.position();
+            /// move room to fit direction and corridor length
+            Rect newRect = newRoom.position();
             const Rect& basePos = from.position();
             moveRect( newRect, basePos, direction, corridorLength );
 
+            const Point newOffset  = newRoom.joinCenterOffset();
+            const Point fromOffset = from.joinCenterOffset();
+            newRect.move(  fromOffset );
+            newRect.move( -newOffset );
+
+            /// check collision
             if ( canAdd( newRect, from, direction ) == false ) {
                 return false;
             }
+
+            const Point targetOffset = newRect.center() - newRoom.position().center();
+            newRoom.move( targetOffset );
+
             return graph.setItem( newRoom, from, direction, true );
         }
 
@@ -158,10 +152,10 @@ namespace dkmage {
                 }
 
                 /// check existing corridors
-                const Point itemCenter = itemRect.center();
+                const Point itemCenter = item->joinPoint();
                 std::vector< const FortressRoom* > connected = connectedRooms( *item );
                 for ( const FortressRoom* next: connected ) {
-                    const Point nextCenter = next->position().center();
+                    const Point nextCenter = next->joinPoint();
                     const std::vector<Point> points = line( itemCenter, nextCenter );
                     if ( is_collision( points, rect ) ) {
                         return true;

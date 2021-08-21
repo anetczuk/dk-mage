@@ -33,7 +33,8 @@ namespace dkmage {
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 1.2 );
                 roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2 );
                 roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8 );
-                roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 8.2 );
+                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 8.8 );
+                roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.8 );
                 roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.05 );
                 roomProbability.normalize();
 
@@ -72,6 +73,14 @@ namespace dkmage {
 //            for ( std::size_t i=0; i<3; ++i ) {
 //                branchStart.push_back( heart );
 //            }
+
+//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
+//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
+//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
+//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
+//            fortress.moveToTopEdge( 8 );
+//            fortress.draw( level );
+//            return true;
 
             const std::size_t roomsNum = rng_randi( 4 ) + 4;
             std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, roomsNum, false );
@@ -136,7 +145,7 @@ namespace dkmage {
                 return false;
             }
 
-            const Point firstCenter = fortress.roomCenter( 0 );
+            const Point firstCenter = heart->position().center();
 
             /// add guards
             const Player owner = fortress.owner();

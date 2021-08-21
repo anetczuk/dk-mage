@@ -394,7 +394,7 @@ namespace adiktedpp {
             }
         }
 
-        void RawLevel::setSlab( const std::vector< Point >& positions, const SlabType type ) {
+        void RawLevel::setSlab( const PointList& positions, const SlabType type ) {
             for ( const Point& item: positions ) {
                 setSlab( item, type );
             }

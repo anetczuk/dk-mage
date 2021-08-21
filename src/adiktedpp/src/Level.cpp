@@ -248,7 +248,7 @@ namespace adiktedpp {
         rawLevel.setSlab( positions, rawType );
     }
 
-    void Level::setSlab( const std::vector< Point >& positions, const Slab type ) {
+    void Level::setSlab( const PointList& positions, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( positions, rawType );
     }
