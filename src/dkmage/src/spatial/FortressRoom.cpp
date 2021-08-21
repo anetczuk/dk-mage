@@ -12,6 +12,7 @@
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Log.h"
+#include "utils/Macro.h"
 
 //#include <algorithm>
 
@@ -25,17 +26,17 @@ namespace dkmage {
 
         std::ostream& operator<<( std::ostream& os, const FortressRoomType data ) {
             switch( data ) {
-            case FortressRoomType::FR_DUNGEON_HEART:        { os << "FR_DUNGEON_HEART"; return os; }
-            case FortressRoomType::FR_TREASURE:             { os << "FR_TREASURE"; return os; }
-            case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
-            case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
-            case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
-            case FortressRoomType::FR_PRISON:               { os << "FR_PRISON"; return os; }
-            case FortressRoomType::FR_TORTURE:              { os << "FR_TORTURE"; return os; }
-            case FortressRoomType::FR_GRAVEYARD:            { os << "FR_GRAVEYARD"; return os; }
-            case FortressRoomType::FR_LAVA_POST:            { os << "FR_LAVA_POST"; return os; }
-            case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
-            case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
+            ENUM_STREAM_CASE( FortressRoomType, FR_DUNGEON_HEART, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_TREASURE, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_CORRIDOR, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_BRANCH, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_BOULDER_CORRIDOR, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_PRISON, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_TORTURE, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_GRAVEYARD, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_LAVA_POST, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_EXIT, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_EMPTY, os );
             }
             os << "UNKNOWN_ROOM[" << (int) data << "]";
             return os;

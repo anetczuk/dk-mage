@@ -8,9 +8,7 @@
 
 /// inclusion: #include "utils/GlobalScope.h"
 
-
-#define JOIN2(a,b)         JOIN2_PRIV(a,b)
-#define JOIN2_PRIV(a,b)    a ## b
+#include "utils/Macro.h"
 
 
 #define GLOBAL_SCOPE_REG( name )                                    \
