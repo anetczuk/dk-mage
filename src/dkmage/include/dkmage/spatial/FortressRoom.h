@@ -34,6 +34,9 @@ namespace dkmage {
             FR_CORRIDOR,
             FR_BRANCH,
             FR_BOULDER_CORRIDOR,
+            FR_PRISON,
+            FR_TORTURE,
+            FR_LAVA_POST,
             FR_EXIT,
             FR_EMPTY
         };
@@ -45,6 +48,9 @@ namespace dkmage {
             case FortressRoomType::FR_CORRIDOR:             { os << "FR_CORRIDOR"; return os; }
             case FortressRoomType::FR_BRANCH:               { os << "FR_BRANCH"; return os; }
             case FortressRoomType::FR_BOULDER_CORRIDOR:     { os << "FR_BOULDER_CORRIDOR"; return os; }
+            case FortressRoomType::FR_PRISON:               { os << "FR_PRISON"; return os; }
+            case FortressRoomType::FR_TORTURE:              { os << "FR_TORTURE"; return os; }
+            case FortressRoomType::FR_LAVA_POST:            { os << "FR_LAVA_POST"; return os; }
             case FortressRoomType::FR_EXIT:                 { os << "FR_EXIT"; return os; }
             case FortressRoomType::FR_EMPTY:                { os << "FR_EMPTY"; return os; }
             }
@@ -110,8 +116,6 @@ namespace dkmage {
             void resize( const std::size_t newSize ) {
                 roomPosition = utils::Rect( newSize, newSize );
             }
-
-            adiktedpp::Room roomType() const;
 
             adiktedpp::Player owner() const {
                 return roomOwner;

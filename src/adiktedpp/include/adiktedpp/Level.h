@@ -133,9 +133,13 @@ namespace adiktedpp {
 
         void setFortified( const utils::Point& point, const Player owner );
 
+        void setFortified( const utils::Rect& rect, const Player owner );
+
         void setRoom( const utils::Rect& position, const Room room );
 
         void setRoom( const utils::Rect& position, const Room room, const Player owner, const bool fortify );
+
+        void setRoom( const utils::Point& position, const Room room, const Player owner, const bool fortify );
 
         void setTrap( const std::size_t x, const std::size_t y, const Trap trap );
 

@@ -8,6 +8,8 @@
 
 /// inclusion: #include "utils/Rand.h"
 
+#include "utils/Container.h"
+
 #include <string>
 
 
@@ -39,6 +41,19 @@ namespace utils {
     void rng_consume( const std::size_t num );
 
     std::string genSeed( const std::size_t length = 8 );
+
+    template< typename T>
+    T rng_rand( const std::set<T>& data ) {
+        const std::size_t dSize = data.size();
+        if ( dSize < 1 ) {
+            return T();
+        }
+        if ( dSize < 2 ) {
+            return get_item( data, 0 );
+        }
+        const std::size_t index = rng_randi( data.size() );
+        return get_item( data, index );
+    }
 
 }
 

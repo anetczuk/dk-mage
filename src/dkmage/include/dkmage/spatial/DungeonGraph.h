@@ -66,6 +66,43 @@ namespace dkmage {
 
 
         /**
+         *
+         */
+        enum class Axis {
+            A_HORIZONTAL,
+            A_VERTICAL
+        };
+
+        inline std::ostream& operator<<( std::ostream& os, const Axis data ) {
+            switch( data ) {
+            case Axis::A_HORIZONTAL: {
+                os << "A_HORIZONTAL";
+                return os;
+            }
+            case Axis::A_VERTICAL: {
+                os << "A_VERTICAL";
+                return os;
+            }
+            }
+            os << "UNKNOWN[" << (int) data << "]";
+            return os;
+        }
+
+        inline Axis get_axis( const Direction direction ) {
+            switch( direction ) {
+            case Direction::D_NORTH: return Axis::A_VERTICAL;
+            case Direction::D_SOUTH: return Axis::A_VERTICAL;
+            case Direction::D_EAST:  return Axis::A_HORIZONTAL;
+            case Direction::D_WEST:  return Axis::A_HORIZONTAL;
+            }
+            return Axis::A_HORIZONTAL;
+        }
+
+
+        /// ==================================================================
+
+
+        /**
          * Implementation of rule of five.
          */
         template <typename T>

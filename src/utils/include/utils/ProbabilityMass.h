@@ -33,6 +33,10 @@ namespace utils {
             return weights.empty();
         }
 
+        const std::map< T, double >& data() const {
+            return weights;
+        }
+
         void set( const std::set<T>& values, const double weight ) {
             for ( const T& item: values ) {
                 weights[ item ] = weight;

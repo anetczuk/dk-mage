@@ -268,6 +268,14 @@ namespace adiktedpp {
         rawLevel.setSlab( point.x, point.y, raw::SlabType::ST_WALLDRAPE, playerType );          /// fortified wall
     }
 
+    void Level::setFortified( const utils::Rect& rect, const Player owner ) {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        const PointSet points = outline( rect, 1 );
+        for ( const Point item: points ) {
+            rawLevel.setSlab( item.x, item.y, raw::SlabType::ST_WALLDRAPE, playerType );
+        }
+    }
+
     void Level::setRoom( const Rect& position, const Room room ) {
         const raw::SlabType rawType = convertToSlab( room );
         rawLevel.setSlab( position, rawType );
@@ -277,6 +285,13 @@ namespace adiktedpp {
         const raw::SlabType rawType = convertToSlab( room );
         const raw::PlayerType playerType = convertToRaw( owner );
         rawLevel.setRoom( position, rawType, playerType, fortify );
+    }
+
+    void Level::setRoom( const utils::Point& position, const Room room, const Player owner, const bool fortify ) {
+        const raw::SlabType rawType = convertToSlab( room );
+        const raw::PlayerType playerType = convertToRaw( owner );
+        const Rect rect( position, 1, 1 );
+        rawLevel.setRoom( rect, rawType, playerType, fortify );
     }
 
     void Level::setTrap( const std::size_t x, const std::size_t y, const Trap trap ) {

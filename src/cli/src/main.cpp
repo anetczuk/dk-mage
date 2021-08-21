@@ -88,7 +88,7 @@ std::string getProperType( const std::string& mapType ) {
         return "";
     }
     const std::size_t rIndex = rng_randi( typeSet.size() );
-    return getSetItem( typeSet, rIndex );
+    return get_item( typeSet, rIndex );
 }
 
 std::string findFreeMapName( const std::string& levelsPath ) {

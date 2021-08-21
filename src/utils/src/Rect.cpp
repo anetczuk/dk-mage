@@ -171,6 +171,19 @@ namespace utils {
 //        return line_dda( from, to );
     }
 
+    PointSet outline( const Rect& rect, const int offset ) {
+        PointSet ret;
+        for ( int y = rect.min.y - offset; y<= rect.max.y + offset; ++y ) {
+            ret.insert( Point(rect.min.x - offset, y) );
+            ret.insert( Point(rect.max.x + offset, y) );
+        }
+        for ( int x = rect.min.x - offset; x<= rect.max.x + offset; ++x ) {
+            ret.insert( Point(x, rect.min.y - offset) );
+            ret.insert( Point(x, rect.max.y + offset) );
+        }
+        return ret;
+    }
+
     bool is_in_radius( const PointList& points, const Point& point, const std::size_t radius ) {
         const std::size_t pSize = points.size();
         for ( std::size_t i=0; i<pSize; ++i ) {

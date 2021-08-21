@@ -27,12 +27,26 @@ namespace dkmage {
         static const ProbabilityMass< spatial::FortressRoomType >& FortressRoomsProbability() {
             static ProbabilityMass< spatial::FortressRoomType > roomProbability;
             if ( roomProbability.empty() ) {
-                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.25 );
+                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.20 );
                 roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.0 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
-                roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 2.0 );
-                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.0 );
+                roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 1.2 );
+                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2 );
+                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8 );
+                roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 8.2 );
+                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.05 );
                 roomProbability.normalize();
+
+                std::stringstream stream;
+                stream << "fortress rooms probability map:\n";
+                const auto& probData = roomProbability.data();
+                auto iter  = probData.begin();
+                auto eiter = probData.end();
+                for ( ; iter != eiter; ++iter ) {
+                    stream << "     " << iter->first << " = " << iter->second << "\n";
+                }
+                const std::string dataString = stream.str();
+                LOG() << dataString.substr( 0, dataString.length() - 1 );
             }
             return roomProbability;
         }
@@ -68,6 +82,8 @@ namespace dkmage {
                     const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, *lastRoom );
                     if ( next == nullptr ) {
                         LOG() << "unable to create main junction room";
+                        fortress.moveToTopEdge( 8 );
+                        fortress.draw( level );
                         return false;
                     }
                     mainCorridor = { next };

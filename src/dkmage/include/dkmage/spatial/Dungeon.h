@@ -32,14 +32,8 @@ namespace dkmage {
     namespace spatial {
 
         inline void addOutline( std::set< Point >& container, const Rect& rect ) {
-            for ( int y = rect.min.y; y<= rect.max.y; ++y ) {
-                container.insert( Point(rect.min.x, y) );
-                container.insert( Point(rect.max.x, y) );
-            }
-            for ( int x = rect.min.x; x<= rect.max.x; ++x ) {
-                container.insert( Point(x, rect.min.y) );
-                container.insert( Point(x, rect.max.y) );
-            }
+            utils::PointSet points = utils::outline( rect );
+            container.insert( points.begin(), points.end() );
         }
 
         inline void addLine( std::set< Point >& container, const Point& from, const Point& to ) {

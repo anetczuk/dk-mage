@@ -603,12 +603,12 @@ namespace adiktedpp {
                 }
             }
 
-    //        unsigned char * thing = create_door( level, sx, sy, (unsigned char) door );
-    //        if ( thing == nullptr ) {
-    //            return ;
-    //        }
-    //        set_door_lock( level, thing, locked );
-    //        thing_add( level, thing );
+//            unsigned char * thing = create_door( level, sx, sy, (unsigned char) door );
+//            if ( thing == nullptr ) {
+//                return ;
+//            }
+//            set_door_lock( level, thing, locked );
+//            thing_add( level, thing );
         }
 
         void RawLevel::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {

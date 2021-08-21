@@ -106,6 +106,8 @@ namespace utils {
 
     using PointList = std::vector< Point >;
 
+    using PointSet = std::set< Point >;
+
     inline std::ostream& operator<<( std::ostream& os, const Point& data ) {
         os << "[" << data.x << " " << data.y << "]";
         return os;
@@ -393,6 +395,8 @@ namespace utils {
 
 
     PointList line( const Point& from, const Point& to );
+
+    PointSet outline( const Rect& rect, const int offset = 0 );
 
     bool is_in_radius( const PointList& points, const Point& point, const std::size_t radius );
 
