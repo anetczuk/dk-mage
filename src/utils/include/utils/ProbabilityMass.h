@@ -22,7 +22,21 @@ namespace utils {
     template <typename T>
     class ProbabilityMass {
 
-        std::map< T, double > weights;
+        struct ValueSize {
+            double weight;
+            std::size_t allowed = (std::size_t) -1;             /// max possible value
+
+            ValueSize& operator= (const double value) {
+                weight  = value;
+                allowed = (std::size_t) -1;
+                return *this;
+            }
+            operator double() const {
+                return weight;
+            }
+        };
+
+        std::map< T, ValueSize > weights;
 
 
     public:
@@ -33,8 +47,13 @@ namespace utils {
             return weights.empty();
         }
 
-        const std::map< T, double >& data() const {
-            return weights;
+        std::size_t size() const {
+            return weights.size();
+        }
+
+        const std::map< T, double > data() const {
+            std::map< T, double > ret;
+            return ret;
         }
 
         void set( const std::set<T>& values, const double weight ) {
@@ -47,6 +66,10 @@ namespace utils {
             weights[ value ] = weight;
         }
 
+        void set( const T value, const double weight, const std::size_t limit ) {
+            weights[ value ] = { weight, limit };
+        }
+
         void normalize() {
             double weightSum = 0.0;
             auto iter = weights.begin();
@@ -57,7 +80,8 @@ namespace utils {
 
             iter = weights.begin();
             for ( ; iter != eiter; ++iter ) {
-                iter->second = iter->second / weightSum;
+                ValueSize& item = iter->second;
+                item.weight = item.weight / weightSum;
             }
         }
 
@@ -79,9 +103,34 @@ namespace utils {
             return weights.rbegin()->first;
         }
 
+        /// pop map item by value
+        T pop( const double value ) {
+            const T ret = get( value );
+            popItem( ret );
+            return ret;
+        }
+
         T getRandom() const {
             const double num = rng_randd();
             return get( num );
+        }
+
+        T popRandom() {
+            const double num = rng_randd();
+            return pop( num );
+        }
+
+
+    protected:
+
+        void popItem( const T value ) {
+            ValueSize& item = weights[ value ];
+            if ( item.allowed <= 1 ) {
+                weights.erase( value );
+                normalize();
+                return ;
+            }
+            --item.allowed;
         }
 
     };

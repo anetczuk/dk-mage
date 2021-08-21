@@ -31,16 +31,16 @@ namespace dkmage {
                 roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.0 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 1.2 );
-                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2 );
-                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8 );
-                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 0.8 );
+                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2, 1 );
+                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8, 1 );
+                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 0.8, 1 );
                 roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.8 );
                 roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.05 );
                 roomProbability.normalize();
 
                 std::stringstream stream;
                 stream << "fortress rooms probability map:\n";
-                const auto& probData = roomProbability.data();
+                const auto probData = roomProbability.data();
                 auto iter  = probData.begin();
                 auto eiter = probData.end();
                 for ( ; iter != eiter; ++iter ) {
@@ -171,14 +171,14 @@ namespace dkmage {
         std::vector< const spatial::FortressRoom* > Fortress::prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches ) {
             std::vector< const spatial::FortressRoom* > roomQueue = startRooms;
 
-            const ProbabilityMass< spatial::FortressRoomType >& roomProbability = FortressRoomsProbability();
+            ProbabilityMass< spatial::FortressRoomType > roomProbability = FortressRoomsProbability();            /// yes, copy
 
             /// create branches
             for ( std::size_t i=0; i<roomsNum; ++i ) {
                 std::vector< const spatial::FortressRoom* > nextRooms;
                 const std::size_t qSize = roomQueue.size();
                 for ( std::size_t x=0; x<qSize; ++x ) {
-                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                    const spatial::FortressRoomType roomType = roomProbability.popRandom();
                     const spatial::FortressRoom* item = roomQueue[ x ];
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
@@ -220,7 +220,7 @@ namespace dkmage {
             LOG() << "performing secondary pass";
             std::vector< const spatial::FortressRoom* > roomQueue = const_cast< const spatial::FortressDungeon& >( fortress ).rooms();
 
-            const ProbabilityMass< spatial::FortressRoomType >& roomProbability = FortressRoomsProbability();
+            ProbabilityMass< spatial::FortressRoomType > roomProbability = FortressRoomsProbability();            /// yes, copy
 
             /// create branches
             std::size_t stepsCounter = 0;
@@ -237,7 +237,7 @@ namespace dkmage {
                         continue ;
                     }
 
-                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                    const spatial::FortressRoomType roomType = roomProbability.popRandom();
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
                         continue ;

@@ -44,7 +44,7 @@ namespace utils {
 
     /// returns value from range [ minValue, maxValue )
     unsigned int rng_randi( const unsigned int minValue, const unsigned int maxValue ) {
-        const int rint = libadikted::rng_rand();
+        const unsigned int rint = libadikted::rng_rand();
         return ( rint % (maxValue - minValue) ) + minValue;
     }
 
@@ -52,7 +52,7 @@ namespace utils {
      * Return value in range [0..1].
      */
     double rng_randd() {
-        const int rint   = libadikted::rng_rand();
+        const unsigned int rint = libadikted::rng_rand();
         const double val = ((double) rint / libadikted::rng_rand_max() );
         return val;
     }

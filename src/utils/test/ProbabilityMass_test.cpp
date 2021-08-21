@@ -32,3 +32,20 @@ TEST_CASE( "ProbabilityMass_get" ) {
     }
 }
 
+TEST_CASE( "ProbabilityMass_pop" ) {
+    {
+        rng_srand( 0 );
+
+        ProbabilityMass<int> probability;
+        probability.set( 1, 10.0, 1 );
+        probability.set( 3, 10.0, 1 );
+        probability.normalize();
+        REQUIRE( probability.size() == 2 );
+
+
+        const int value = probability.popRandom();
+        REQUIRE( value == 3 );
+        REQUIRE( probability.size() == 1 );
+    }
+}
+
