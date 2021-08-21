@@ -129,6 +129,28 @@ namespace dkmage {
             /// secondary pass
             prepareSecondaryPass();
 
+            /// check required rooms
+            {
+                if ( fortress.findRoom( spatial::FortressRoomType::FR_PRISON ).empty() ) {
+                    LOG() << "missing required prison";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( level );
+                    return false;
+                }
+                if ( fortress.findRoom( spatial::FortressRoomType::FR_TORTURE ).empty() ) {
+                    LOG() << "missing required torture room";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( level );
+                    return false;
+                }
+                if ( fortress.findRoom( spatial::FortressRoomType::FR_GRAVEYARD ).empty() ) {
+                    LOG() << "missing required graveyard";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( level );
+                    return false;
+                }
+            }
+
             fortress.moveToTopEdge( 8 );
 
             /// generate lake
