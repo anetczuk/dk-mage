@@ -126,7 +126,11 @@ namespace utils {
             auto iter  = weights.begin();
             auto eiter = weights.end();
             for ( ; iter != eiter; ++iter ) {
-                stream << "     " << iter->first << " = " << iter->second.weight << " " << iter->second.allowed << "\n";
+                if ( iter->second.allowed != (std::size_t) -1 ) {
+                    stream << "     " << iter->first << " = " << iter->second.weight << " " << iter->second.allowed << "\n";
+                } else {
+                    stream << "     " << iter->first << " = " << iter->second.weight << " inf\n";
+                }
             }
             const std::string dataString = stream.str();
             return dataString.substr( 0, dataString.length() - 1 );

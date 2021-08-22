@@ -27,7 +27,7 @@ namespace dkmage {
             static ProbabilityMass< spatial::FortressRoomType > roomProbability;
             if ( roomProbability.empty() ) {
                 roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 0.3 );
-                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.3 );
+                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.3, 4 );
                 roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 0.5 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 0.8, 3 );      ///
@@ -35,8 +35,8 @@ namespace dkmage {
                 roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8, 1 );               ///
                 roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 1.2, 1 );             ///
                 roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.4, 3 );             ///
-                roomProbability.set( spatial::FortressRoomType::FR_SECRET_INCLVL, 1.0, 2 );         ///
-                roomProbability.set( spatial::FortressRoomType::FR_SECRET_RESURRECT, 1.0, 1 );      ///
+                roomProbability.set( spatial::FortressRoomType::FR_SECRET_INCLVL, 0.8, 2 );         ///
+                roomProbability.set( spatial::FortressRoomType::FR_SECRET_RESURRECT, 0.8, 1 );      ///
                 roomProbability.normalize();
 
                 LOG() << "fortress rooms probability map:\n" << roomProbability.print();
@@ -131,6 +131,12 @@ namespace dkmage {
                     fortress.draw( level );
                     return false;
                 }
+                if ( fortress.findRoom( spatial::FortressRoomType::FR_LAVA_POST ).empty() ) {
+                    LOG() << "missing required lava posts";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( level );
+                    return false;
+                }
             }
 
             cutBlindCorridors();
@@ -210,9 +216,8 @@ namespace dkmage {
         std::vector< const spatial::FortressRoom* > Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
             /// create branch exit
             std::vector< const spatial::FortressRoom* > exitRooms;
-            const std::size_t qSize = startRooms.size();
-            for ( std::size_t x=0; x<qSize; ++x ) {
-                const spatial::FortressRoom* item = startRooms[ x ];
+            const std::set< const spatial::FortressRoom* > uniqueRooms( startRooms.begin(), startRooms.end() );
+            for ( const spatial::FortressRoom* item: uniqueRooms ) {
                 const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
                 if ( next == nullptr ) {
                     LOG() << "unable to generate branch exit";
@@ -434,9 +439,9 @@ namespace dkmage {
 
                     /// add bridge keepers
                     level.setSlab( bridgePoint, Slab::S_PATH );
-                    const int fairyLevel = rng_randi( 4 );
-                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
-                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, 3 + fairyLevel, Player::P_GOOD );
+                    const int fairyLevel = rng_randi( 4 ) + 3;
+                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
+                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
                     if ( i == 1 ) {
                         level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                     }
@@ -444,14 +449,15 @@ namespace dkmage {
                     /// add turrets
                     if ( i % 2 == 1 ) {
                         bool added = false;
+                        const int turrentLevel = rng_randi( 4 ) + 4;
                         const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
                         if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
     //                            const Rect guardPost( rightGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( rightGuardPosition, Slab::S_PATH );
-                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turrentLevel, Player::P_GOOD );
                             added = true;
                         }
                         const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
@@ -459,9 +465,9 @@ namespace dkmage {
     //                            const Rect guardPost( leftGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( leftGuardPosition, Slab::S_PATH );
-                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, 9, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, 9, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, 9, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turrentLevel, Player::P_GOOD );
                             added = true;
                         }
                         if ( added == false ) {
