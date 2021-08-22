@@ -11,7 +11,6 @@
 #include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/AreaDetector.h"
 
-#include "utils/ProbabilityMass.h"
 #include "utils/Container.h"
 
 #include <cmath>
@@ -27,27 +26,20 @@ namespace dkmage {
         static const ProbabilityMass< spatial::FortressRoomType >& FortressRoomsProbability() {
             static ProbabilityMass< spatial::FortressRoomType > roomProbability;
             if ( roomProbability.empty() ) {
-                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.20 );
-                roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 1.0 );
+                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 0.3 );
+                roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.3 );
+                roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 0.5 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
-                roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 1.2 );
-                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 1.2, 1 );
-                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8, 1 );
-                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 0.8, 1 );
-                roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.8 );
-                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 1.05 );
+                roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 0.8, 3 );      ///
+                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 0.4, 1 );                ///
+                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8, 1 );               ///
+                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 1.2, 1 );             ///
+                roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.4, 3 );             ///
+                roomProbability.set( spatial::FortressRoomType::FR_SECRET_INCLVL, 1.0, 2 );         ///
+                roomProbability.set( spatial::FortressRoomType::FR_SECRET_RESURRECT, 1.0, 1 );      ///
                 roomProbability.normalize();
 
-                std::stringstream stream;
-                stream << "fortress rooms probability map:\n";
-                const auto probData = roomProbability.data();
-                auto iter  = probData.begin();
-                auto eiter = probData.end();
-                for ( ; iter != eiter; ++iter ) {
-                    stream << "     " << iter->first << " = " << iter->second << "\n";
-                }
-                const std::string dataString = stream.str();
-                LOG() << dataString.substr( 0, dataString.length() - 1 );
+                LOG() << "fortress rooms probability map:\n" << roomProbability.print();
             }
             return roomProbability;
         }
@@ -58,6 +50,7 @@ namespace dkmage {
 //                fortress.limitNorth = 3;
 //                fortress.limitSouth = 3;
             fortress.fortify( true );
+            roomProbability = FortressRoomsProbability();            /// yes, copy
         }
 
         bool Fortress::generate() {
@@ -70,17 +63,6 @@ namespace dkmage {
             const spatial::FortressRoom* heart = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART, 5 );
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
-//            for ( std::size_t i=0; i<3; ++i ) {
-//                branchStart.push_back( heart );
-//            }
-
-//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
-//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
-//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
-//            fortress.addRandomRoom( spatial::FortressRoomType::FR_GRAVEYARD, *heart );
-//            fortress.moveToTopEdge( 8 );
-//            fortress.draw( level );
-//            return true;
 
             const std::size_t roomsNum = rng_randi( 4 ) + 4;
             std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, roomsNum, false );
@@ -180,20 +162,11 @@ namespace dkmage {
             level.setCreatureAuto( firstCenter.x+2, firstCenter.y-1, Creature::C_MONK, 9, 9, owner );
             level.setCreatureAuto( firstCenter.x-2, firstCenter.y, Creature::C_WIZARD, 9, 9, owner );
 
-            /// fill treasure with gold
-            std::vector< spatial::FortressRoom* > treasureRooms = fortress.findRoom( spatial::FortressRoomType::FR_TREASURE );
-            for ( const spatial::FortressRoom* treasure: treasureRooms ) {
-                const Rect& roomRect = treasure->position();
-                level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
-            }
-
             return true;
         }
 
         std::vector< const spatial::FortressRoom* > Fortress::prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches ) {
             std::vector< const spatial::FortressRoom* > roomQueue = startRooms;
-
-            ProbabilityMass< spatial::FortressRoomType > roomProbability = FortressRoomsProbability();            /// yes, copy
 
             /// create branches
             for ( std::size_t i=0; i<roomsNum; ++i ) {
@@ -241,8 +214,6 @@ namespace dkmage {
         void Fortress::prepareSecondaryPass() {
             LOG() << "performing secondary pass";
             std::vector< const spatial::FortressRoom* > roomQueue = const_cast< const spatial::FortressDungeon& >( fortress ).rooms();
-
-            ProbabilityMass< spatial::FortressRoomType > roomProbability = FortressRoomsProbability();            /// yes, copy
 
             /// create branches
             std::size_t stepsCounter = 0;

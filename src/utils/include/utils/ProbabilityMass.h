@@ -10,6 +10,7 @@
 
 #include "utils/Rand.h"
 
+#include <sstream>
 #include <map>
 #include <set>
 
@@ -51,9 +52,8 @@ namespace utils {
             return weights.size();
         }
 
-        const std::map< T, double > data() const {
-            std::map< T, double > ret;
-            return ret;
+        const std::map< T, ValueSize >& data() const {
+            return weights;
         }
 
         void set( const std::set<T>& values, const double weight ) {
@@ -118,6 +118,18 @@ namespace utils {
         T popRandom() {
             const double num = rng_randd();
             return pop( num );
+        }
+
+        std::string print() const {
+            std::stringstream stream;
+            stream << "fortress rooms probability map:\n";
+            auto iter  = weights.begin();
+            auto eiter = weights.end();
+            for ( ; iter != eiter; ++iter ) {
+                stream << "     " << iter->first << " = " << iter->second.weight << " " << iter->second.allowed << "\n";
+            }
+            const std::string dataString = stream.str();
+            return dataString.substr( 0, dataString.length() - 1 );
         }
 
 

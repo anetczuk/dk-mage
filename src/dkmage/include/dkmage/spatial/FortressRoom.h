@@ -30,6 +30,7 @@ namespace dkmage {
          */
         enum class FortressRoomType {
             FR_DUNGEON_HEART,
+            FR_EMPTY,
             FR_TREASURE,
             FR_CORRIDOR,
             FR_BRANCH,
@@ -38,8 +39,9 @@ namespace dkmage {
             FR_TORTURE,
             FR_GRAVEYARD,
             FR_LAVA_POST,
-            FR_EXIT,
-            FR_EMPTY
+            FR_SECRET_INCLVL,
+            FR_SECRET_RESURRECT,
+            FR_EXIT
         };
 
         std::ostream& operator<<( std::ostream& os, const FortressRoomType data );
@@ -66,7 +68,7 @@ namespace dkmage {
 
         public:
 
-            bool allowedBranches;
+            bool allowedBranches;           /// is it allow to have more than one entrance/exit?
 
 
             FortressRoom(): roomPosition(), corridorJoinPoint(),

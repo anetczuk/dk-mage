@@ -10,6 +10,8 @@
 
 #include "dkmage/spatial/Fortress.h"
 
+#include "utils/ProbabilityMass.h"
+
 
 namespace dkmage {
     namespace mode {
@@ -23,6 +25,8 @@ namespace dkmage {
             adiktedpp::Level& level;
             ParametersMap& parameters;
             spatial::FortressDungeon fortress;
+
+            utils::ProbabilityMass< spatial::FortressRoomType > roomProbability;
 
 
             Fortress( adiktedpp::Level& level, ParametersMap& parameters );
