@@ -68,13 +68,9 @@ namespace dkmage {
 
         public:
 
-            bool allowedBranches;           /// is it allow to have more than one entrance/exit?
-
-
             FortressRoom(): roomPosition(), corridorJoinPoint(),
                 roomOwner( adiktedpp::Player::P_P0 ),
-                restrictedDirs(),
-                allowedBranches( false )
+                restrictedDirs()
             {
             }
 

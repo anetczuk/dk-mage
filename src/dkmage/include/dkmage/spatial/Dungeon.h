@@ -92,8 +92,13 @@ namespace dkmage {
             {
             }
 
-            std::size_t size() const {
-                return graph.size();
+            std::size_t roomsNum() const {
+                return graph.nodesNum();
+            }
+
+            std::size_t connectionsNum() const {
+                /// unidirected graph has two arcs for each connection
+                return graph.edgesNum() / 2;
             }
 
             adiktedpp::Player owner() const {
@@ -108,10 +113,6 @@ namespace dkmage {
             }
             void fortify( const bool value ) {
                 fortifyWalls = value;
-            }
-
-            std::size_t roomsNum() const {
-                return graph.size();
             }
 
             std::vector< const TRoom* > rooms() const {
@@ -130,6 +131,10 @@ namespace dkmage {
                 std::vector< const TRoom* > items = graph.itemsList();
                 auto pos = std::find( items.begin(), items.end(), &room );
                 return ( pos != items.end() );
+            }
+
+            bool removeRoom( TRoom& room ) {
+                return graph.removeItem( room );
             }
 
             std::vector< const TRoom* > connectedRooms( const TRoom& room ) const {
@@ -351,7 +356,7 @@ namespace dkmage {
                 }
 
                 /// new node added
-                if ( graph.size() == 1 ) {
+                if ( graph.nodesNum() == 1 ) {
                     /// only room in dungeon -- centerize root
                     newRect.centerize();
                 }
@@ -444,7 +449,7 @@ namespace dkmage {
                     roomsType.push_back( adiktedpp::Room::R_GRAVEYARD );
                     roomsType.push_back( adiktedpp::Room::R_SCAVENGER );
                 }
-                if ( graph.size() < 1 ) {
+                if ( graph.nodesNum() < 1 ) {
                     /// create dungeon heart
                     addRandomRoom( adiktedpp::Room::R_DUNGEON_HEART, roomSize );
                 }

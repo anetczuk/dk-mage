@@ -142,6 +142,8 @@ namespace dkmage {
         class FortressRoomEmpty: public FortressRoom {
         public:
 
+            std::size_t roomSize = 0;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EMPTY;
             }
@@ -149,16 +151,37 @@ namespace dkmage {
             void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
-                const std::size_t rSize = roomSize357.getRandom();
+                roomSize = roomSize357.getRandom();
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                setPosition( rSize, rSize );
+                setPosition( roomSize, roomSize );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::Level& level ) const override {
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
+
+                std::size_t radius = 0;
+                switch( roomSize ) {
+                case 5: {
+                    radius = 1;
+                    break;
+                }
+                case 7: {
+                    radius = 2;
+                    break;
+                }
+                }
+
+                if ( radius == 0) {
+                    level.setFortified( roomRect.center(), roomOwner );
+                } else {
+                    level.setFortified( roomRect.center() + Point( 1, 1) * radius, roomOwner );
+                    level.setFortified( roomRect.center() + Point(-1, 1) * radius, roomOwner );
+                    level.setFortified( roomRect.center() + Point(-1,-1) * radius, roomOwner );
+                    level.setFortified( roomRect.center() + Point( 1,-1) * radius, roomOwner );
+                }
             }
 
         };
@@ -214,8 +237,6 @@ namespace dkmage {
                     }
                 }
 
-                allowedBranches = true;
-
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
                 const std::size_t roomLength = roomSize357.getRandom() - 1;
@@ -270,7 +291,6 @@ namespace dkmage {
             void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                allowedBranches = true;
                 setPosition( 1, 1 );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }

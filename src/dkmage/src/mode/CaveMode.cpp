@@ -54,7 +54,7 @@ namespace dkmage {
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
                 const int itemIndex = rng_randi( indexSet.size() );
-                const int regionIndex = getSetItem( indexSet, itemIndex, true );
+                const int regionIndex = get_item( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
 

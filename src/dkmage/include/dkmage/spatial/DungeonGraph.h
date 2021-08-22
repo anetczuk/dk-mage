@@ -241,8 +241,12 @@ namespace dkmage {
             DungeonGraph(): graph(), nodesMap( graph ), edgesMap( graph ), root( lemon::INVALID ) {
             }
 
-            std::size_t size() const {
+            std::size_t nodesNum() const {
                 return (std::size_t) lemon::countNodes( graph );
+            }
+
+            std::size_t edgesNum() const {
+                return (std::size_t) lemon::countArcs( graph );
             }
 
             TNodeData* rootItem() {
@@ -259,7 +263,7 @@ namespace dkmage {
 
             std::vector< const TNodeData* > itemsList() const {
                 std::vector< const TNodeData* > ret;
-                ret.reserve( size() );
+                ret.reserve( nodesNum() );
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
                     const TNodeData* nItem = getItemPtr( n );
                     if ( nItem == nullptr ) {
@@ -273,7 +277,7 @@ namespace dkmage {
 
             std::vector< TNodeData* > itemsList() {
                 std::vector< TNodeData* > ret;
-                ret.reserve( size() );
+                ret.reserve( nodesNum() );
                 for (lemon::ListDigraph::NodeIt n(graph); n != lemon::INVALID; ++n) {
                     TNodeData* nItem = getItemPtr( n );
                     if ( nItem == nullptr ) {
@@ -422,6 +426,18 @@ namespace dkmage {
                 lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
                 TNodeData& targetItem = getItem( targetNode );
                 return &targetItem;
+            }
+
+            bool removeItem( TNodeData& item ) {
+                const lemon::ListDigraph::Node itemNode = findNode( item );
+                if ( graph.valid( itemNode ) == false ) {
+                    LOG() << "unable to find node for given item";
+                    return false;
+                }
+
+                /// erase node and connected arcs
+                graph.erase( itemNode );
+                return true;
             }
 
             bool setItem( TNodeData& item, const TNodeData& from, const Direction direction, const bool addLink = true ) {

@@ -71,6 +71,20 @@ TEST_CASE( "FortressDungeon_addBoulderCorridor" ) {
     next = dungeon.createRoom( FortressRoomType::FR_BOULDER_CORRIDOR, 9, 3, *next, Direction::D_WEST, 1 );
     next = dungeon.createRoom( FortressRoomType::FR_BOULDER_CORRIDOR, 9, 3, *next, Direction::D_WEST, 1 );
     REQUIRE( next != nullptr );
-    const std::size_t dSize = dungeon.size();
+    const std::size_t dSize = dungeon.roomsNum();
     REQUIRE( dSize == 4 );
+}
+
+TEST_CASE( "FortressDungeon_freeDirections" ) {
+    utils::rng_srand( 5 );
+
+    FortressDungeonMock dungeon;
+    const FortressRoom* next = nullptr;
+    next = dungeon.setFirstRoom( FortressRoomType::FR_DUNGEON_HEART, 5 );
+    next = dungeon.addRandomRoom( FortressRoomType::FR_BOULDER_CORRIDOR, *next );
+    REQUIRE( next != nullptr );
+    CHECK( dungeon.roomsNum() == 2 );
+
+    const std::vector< Direction > freeDirections = dungeon.freeDirections( *next );
+    CHECK( freeDirections.size() == 1 );
 }

@@ -39,6 +39,8 @@ namespace dkmage {
 
             void prepareSecondaryPass();
 
+            void cutBlindCorridors();
+
             bool generateLake( const utils::Rect& lakeLimit );
 
     //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );

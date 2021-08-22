@@ -133,6 +133,8 @@ namespace dkmage {
                 }
             }
 
+            cutBlindCorridors();
+
             fortress.moveToTopEdge( 8 );
 
             /// generate lake
@@ -181,13 +183,23 @@ namespace dkmage {
 //                        LOG() << "unable to generate chamber level " << i << " " << roomType;
                         continue ;
                     }
+
                     nextRooms.push_back( next );
-                    if ( next->allowedBranches && allowBranches ) {
-                        if ( rng_randb( 0.4 ) ) {
-                            /// add once again
+                    if ( allowBranches == false ) {
+                        /// no additional branches
+                        continue ;
+                    }
+
+                    const std::vector< spatial::Direction > freeDirs = fortress.freeDirections( *next );
+                    const std::size_t fSize = freeDirs.size();
+                    for ( std::size_t i=1; i<fSize; ++i ) {
+                        if ( rng_randb( 0.6 ) ) {
+                            /// add once again to make a branch
                             nextRooms.push_back( next );
                         }
                     }
+
+                    nextRooms.push_back( next );
                 }
                 roomQueue = nextRooms;
             }
@@ -236,9 +248,12 @@ namespace dkmage {
                         continue ;
                     }
                     nextRooms.push_back( next );
-                    if ( next->allowedBranches ) {
-                        if ( rng_randb( 0.4 ) ) {
-                            /// add once again
+
+                    const std::vector< spatial::Direction > freeDirs = fortress.freeDirections( *next );
+                    const std::size_t fSize = freeDirs.size();
+                    for ( std::size_t i=1; i<fSize; ++i ) {
+                        if ( rng_randb( 0.6 ) ) {
+                            /// add once again to make a branch
                             nextRooms.push_back( next );
                         }
                     }
@@ -250,6 +265,27 @@ namespace dkmage {
                     break;
                 }
             }
+        }
+
+        void Fortress::cutBlindCorridors() {
+            bool removed = false;
+            do {
+                removed = false;
+                std::vector< spatial::FortressRoom* > rooms = fortress.rooms();
+                for ( spatial::FortressRoom* item: rooms ) {
+                    const std::vector< spatial::FortressRoom* > neighbours = fortress.connectedRooms( *item );
+                    if ( neighbours.size() > 1 ) {
+                        continue ;
+                    }
+                    const Rect itemRect = item->position();
+                    if ( itemRect.width() > 1 && itemRect.height() > 1 ) {
+                        continue ;
+                    }
+                    /// dead-end corridor
+                    fortress.removeRoom( *item );
+                    removed = true;
+                }
+            } while( removed == true );
         }
 
         bool Fortress::generateLake( const Rect& lakeLimit ) {
@@ -351,12 +387,10 @@ namespace dkmage {
             const std::size_t foundBridges = bridges.size();
             LOG() << "found bridges: " << foundBridges;
 
-
             /// taking maximum possible
             std::size_t bSize = 0;
             for ( std::size_t i = foundBridges; i > 0; --i ) {
                 if ( entrancesRange.contains( i ) ) {
-                    bridges.resize( i );
                     bSize = i;
                     break ;
                 }
@@ -376,9 +410,17 @@ namespace dkmage {
 //            const std::size_t bSize = createBridges.value();
 
             LOG() << "creating bridges: " << bSize;
+            std::set< std::size_t > indexSet;
+            for ( std::size_t bIndex=0; bIndex<foundBridges; ++bIndex ) {
+                indexSet.insert( bIndex );
+            }
+
             for ( std::size_t bIndex=0; bIndex<bSize; ++bIndex ) {
-                const Point entrance = entrances[bIndex];
-                const PointList& bridge = bridges[bIndex];
+                const std::size_t setIndex = rng_randi( indexSet.size() );
+                const int bridgeIndex = get_item( indexSet, setIndex, true );
+
+                const Point entrance    = entrances[ bridgeIndex ];
+                const PointList& bridge = bridges[ bridgeIndex ];
                 level.setDoor( entrance, Door::D_IRON, true );
 
                 const Point bridgeDirection = bridge[1] - bridge[0];
@@ -548,7 +590,7 @@ namespace dkmage {
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
                 const int itemIndex = rng_randi( indexSet.size() );
-                const int regionIndex = getSetItem( indexSet, itemIndex, true );
+                const int regionIndex = get_item( indexSet, itemIndex, true );
                 const int rX = regionIndex % region.width();
                 const int rY = regionIndex / region.width();
 

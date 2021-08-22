@@ -24,6 +24,11 @@ namespace dkmage {
             void draw( adiktedpp::Level& level ) const;
 
             std::vector< Direction > freeDirections( const FortressRoom& room ) const {
+                std::vector< Direction > availableDirs = room.restrictedDirections();
+                if ( availableDirs.empty() == false ) {
+                    /// return restricted directions
+                    return availableDirs;
+                }
                 return graph.freeDirections( room );
             }
 

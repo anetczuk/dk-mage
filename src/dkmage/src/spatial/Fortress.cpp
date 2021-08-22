@@ -23,8 +23,9 @@ namespace dkmage {
             const Player owner = this->owner();
             const bool fortify = this->fortify();
             std::vector< const FortressRoom* > roomsList = rooms();
+
+            /// draw corridors
             for ( const FortressRoom* item: roomsList ) {
-                /// draw corridors
                 const Point& itemCenter = item->joinPoint();
                 std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
                 for ( const FortressRoom* connected: connectedList ) {
@@ -32,7 +33,10 @@ namespace dkmage {
                     level.digLine( itemCenter, connectedCenter, owner, fortify );
                 }
 
-                /// draw content
+            }
+
+            /// draw room content
+            for ( const FortressRoom* item: roomsList ) {
                 item->draw( level );
             }
         }

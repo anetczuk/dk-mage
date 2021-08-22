@@ -26,7 +26,7 @@ namespace utils {
     }
 
     template <typename T>
-    T getSetItem( std::set<T>& container, const std::size_t index, const bool popItem ) {
+    T get_item( std::set<T>& container, const std::size_t index, const bool popItem ) {
         auto iter = container.begin();
         std::advance( iter, index );
         if ( iter == container.end() ) {

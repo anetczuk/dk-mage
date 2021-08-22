@@ -106,3 +106,21 @@ TEST_CASE( "EvilDungeon_addRoom_collision" ) {
 
     REQUIRE( dungeon.roomsNum() == 4 );
 }
+
+TEST_CASE( "EvilDungeon_removeRoom" ) {
+    EvilDungeon dungeon;
+    EvilRoom* first = dungeon.addRoom( Room::R_TREASURE, 5 );
+    REQUIRE( first != nullptr );
+
+    EvilRoom* next = first;
+    next = dungeon.addRoom( Room::R_TREASURE, 5, *next, Direction::D_WEST );
+    REQUIRE( next != nullptr );
+
+    REQUIRE( dungeon.roomsNum() == 2 );
+    REQUIRE( dungeon.connectionsNum() == 1 );
+
+    const bool removed = dungeon.removeRoom( *next );
+    REQUIRE( removed );
+    REQUIRE( dungeon.roomsNum() == 1 );
+    REQUIRE( dungeon.connectionsNum() == 0 );
+}

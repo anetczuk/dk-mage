@@ -132,7 +132,7 @@ namespace dkmage {
             LOG() << "generating traps chambers: " << trapsChambers;
             for ( std::size_t i=0; i<trapsChambers; ++i ) {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
-                const std::size_t cIndex = getSetItem( indexSet, setIndex, true );
+                const std::size_t cIndex = get_item( indexSet, setIndex, true );
                 const std::size_t nx = cIndex % maze.nodesX();
                 const std::size_t ny = cIndex / maze.nodesX();
                 const Rect nodeRect = maze.nodeRect( nx, ny );

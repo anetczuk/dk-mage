@@ -28,7 +28,7 @@ namespace {
 
 TEST_CASE("DungeonGraph_size_new", "[classic]") {
     DungeonGraphMock graph;
-    REQUIRE( graph.size() == 0 );
+    REQUIRE( graph.nodesNum() == 0 );
 }
 
 TEST_CASE("DungeonGraph_itemByindex_invalid", "[classic]") {
