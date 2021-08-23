@@ -287,12 +287,12 @@ namespace adiktedpp {
                     setState( player, item, 0, 0 );
                     break ;
                 }
-                case AvailableRoomMode::ARM_POSSIBLE: {
-                    setState( player, item, 1, 0 );
-                    break ;
-                }
                 case AvailableRoomMode::ARM_ENABLED_FOUND: {
                     setState( player, item, 4, 0 );
+                    break ;
+                }
+                case AvailableRoomMode::ARM_POSSIBLE: {
+                    setState( player, item, 1, 0 );
                     break ;
                 }
                 case AvailableRoomMode::ARM_ENABLED: {

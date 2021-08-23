@@ -637,11 +637,12 @@ namespace adiktedpp {
 
         /// ============================================================
 
-        std::size_t RawLevel::addActionPoint( const std::size_t x, const std::size_t y, const std::size_t subIndex ) {
+        std::size_t RawLevel::addActionPoint( const std::size_t x, const std::size_t y, const std::size_t subIndex, const std::size_t radius ) {
             LEVEL* level = data->lvl;
             const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
             const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
             unsigned char *thing = create_actnpt( level, sx, sy );
+            set_actnpt_range_subtile( thing, 2 + radius * 3 );
             actnpt_add( level, thing );
             return get_actnpt_number( thing );
         }

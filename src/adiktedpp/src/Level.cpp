@@ -368,8 +368,8 @@ namespace adiktedpp {
 
     /// ==============================================================================
 
-    std::size_t Level::addActionPoint( const Point& point, const std::size_t subIndex ) {
-        return rawLevel.addActionPoint( point.x, point.y, subIndex );
+    std::size_t Level::addActionPoint( const Point& point, const std::size_t subIndex, const std::size_t radius ) {
+        return rawLevel.addActionPoint( point.x, point.y, subIndex, radius );
     }
 
     /// ==============================================================================
