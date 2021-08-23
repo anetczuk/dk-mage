@@ -20,10 +20,12 @@ namespace adiktedpp {
         class BasicScript {
 
             std::vector< std::string > lines;
+            std::size_t level;                      /// indent level
+
 
         public:
 
-            BasicScript() {
+            BasicScript(): level(0) {
             }
 
             const std::vector< std::string >& data() const {
@@ -38,6 +40,10 @@ namespace adiktedpp {
                 return lines.empty();
             }
 
+            std::size_t indentLevel() const {
+                return level;
+            }
+
             std::vector< std::string >::const_iterator begin() const {
                 return lines.begin();
             }
@@ -46,11 +52,11 @@ namespace adiktedpp {
                 return lines.end();
             }
 
-            void addLine( const std::string& line ) {
-                lines.push_back( line );
-            }
+            void addLine( const std::string& line );
 
-            void addLine( const std::string& line, const std::size_t position );
+            void addLineIndent( const std::string& line, const std::size_t forceIndent );
+
+//            void addLine( const std::string& line, const std::size_t position );
 
             void addREM( const std::string& comment ) {
                 return addLine( "REM " + comment );
@@ -117,6 +123,17 @@ namespace adiktedpp {
 
             Script();
 
+            BasicScript& operator[]( const ScriptSection section ) {
+                switch( section ) {
+                case ScriptSection::SS_HEADER:      return header;
+                case ScriptSection::SS_INIT:        return init;
+                case ScriptSection::SS_ACTION:      return action;
+                case ScriptSection::SS_ENDCOND:     return endConditions;
+                case ScriptSection::SS_REST:        return other;
+                }
+                return other;
+            }
+
             void clearData();
 
             std::vector< std::string > build();
@@ -138,6 +155,13 @@ namespace adiktedpp {
 
             void addLineAction( const std::string& line ) {
                 action.addLine( line );
+            }
+
+            /// signed, hero gates has negative numbers
+            void addLineActionIf( const int actionNumber, const adiktedpp::Player player );
+
+            void addLineActionEndIf() {
+                action.addLine( "ENDIF" );
             }
 
             void addREM( const ScriptSection section, const std::string& comment ) {

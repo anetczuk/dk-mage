@@ -169,15 +169,40 @@ namespace adiktedpp {
         /// =========================================================================
 
 
-        void BasicScript::addLine( const std::string& line, const std::size_t position ) {
-            if ( position >= lines.size() ) {
-                lines.push_back( line );
+        void BasicScript::addLine( const std::string& line ) {
+            if ( line.find( "ENDIF" ) != std::string::npos ) {
+                if (level > 0) {
+                    --level;
+                }
+                const std::string indent( level * 4, ' ' );
+                lines.push_back( indent + line );
                 return ;
             }
-            auto pos = lines.begin();
-            std::advance( pos, position );
-            lines.insert( pos, line );
+
+            const std::string indent( level * 4, ' ' );
+            lines.push_back( indent + line );
+
+            if ( line.find( "IF(" ) != std::string::npos ) {
+                ++level;
+            } else if ( line.find( "IF_" ) != std::string::npos ) {
+                ++level;
+            }
         }
+
+        void BasicScript::addLineIndent( const std::string& line, const std::size_t forceIndent ) {
+            const std::string indent( forceIndent * 4, ' ' );
+            lines.push_back( indent + line );
+        }
+
+//        void BasicScript::addLine( const std::string& line, const std::size_t position ) {
+//            if ( position >= lines.size() ) {
+//                lines.push_back( line );
+//                return ;
+//            }
+//            auto pos = lines.begin();
+//            std::advance( pos, position );
+//            lines.insert( pos, line );
+//        }
 
         void BasicScript::setFXLevel() {
             addREM( "*** set script compatibility with Keeper FX ***" );
@@ -270,11 +295,11 @@ namespace adiktedpp {
 
         void BasicScript::setWinConditionKillGood() {
             addREM( "require killing all heroes" );
-            addLine( std::string() + "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )" );
-            addLine( std::string() + "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )" );
-            addLine( std::string() + "        WIN_GAME" );
-            addLine( std::string() + "    ENDIF" );
-            addLine( std::string() + "ENDIF" );
+            addLine( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )" );
+            addLine( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )" );
+            addLine( "        WIN_GAME" );
+            addLine( "    ENDIF" );
+            addLine( "ENDIF" );
         }
 
         void BasicScript::setLoseConditionStandard( const Player player ) {
@@ -282,6 +307,7 @@ namespace adiktedpp {
             addLine( std::string() + "    LOSE_GAME" );
             addLine( std::string() + "ENDIF" );
         }
+
 
 
         /// =========================================================================
@@ -302,6 +328,13 @@ namespace adiktedpp {
         void Script::storeParameters( const std::string& mapType, const std::string& seed ) {
             header.addREM( "*** generated map type: '" + mapType + "' ***" );
             header.addREM( "*** seed used for generation: '" + seed + "' ***" );
+        }
+
+        void Script::addLineActionIf( const int actionNumber, const adiktedpp::Player player ) {
+            std::stringstream stream;
+            stream << "IF_ACTION_POINT( " << actionNumber << ", " << scriptName( player ) << " )";
+            const std::string& line = stream.str();
+            action.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
@@ -430,24 +463,27 @@ namespace adiktedpp {
         }
 
         void Script::setWinConditionStandard( const Player player ) {
-            endConditions.addLine( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
-            endConditions.addLine( std::string() + "    WIN_GAME" );
-            endConditions.addLine( std::string() + "ENDIF" );
+            const std::size_t lvl = endConditions.indentLevel();
+            endConditions.addLineIndent( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( std::string() + "    WIN_GAME", lvl );
+            endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
 
         void Script::setWinConditionKillGood() {
+            const std::size_t lvl = endConditions.indentLevel();
             endConditions.addREM( "require killing all heroes" );
-            endConditions.addLine( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )" );
-            endConditions.addLine( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )" );
-            endConditions.addLine( "        WIN_GAME" );
-            endConditions.addLine( "    ENDIF" );
-            endConditions.addLine( "ENDIF" );
+            endConditions.addLineIndent( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )", lvl );
+            endConditions.addLineIndent( "        WIN_GAME", lvl );
+            endConditions.addLineIndent( "    ENDIF", lvl );
+            endConditions.addLineIndent( "ENDIF", lvl );
         }
 
         void Script::setLoseConditionStandard( const Player player ) {
-            endConditions.addLine( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )" );
-            endConditions.addLine( std::string() + "    LOSE_GAME" );
-            endConditions.addLine( std::string() + "ENDIF" );
+            const std::size_t lvl = endConditions.indentLevel();
+            endConditions.addLineIndent( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( std::string() + "    LOSE_GAME", lvl );
+            endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
 
         BasicScript& Script::getSection( const ScriptSection section ) {
