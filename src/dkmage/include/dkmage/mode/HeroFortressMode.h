@@ -22,14 +22,15 @@ namespace dkmage {
         class Fortress {
         public:
 
-            adiktedpp::Level& level;
+            adiktedpp::Map& map;
+            adiktedpp::Level& level;                    //TODO: remove (unnecessary)
             ParametersMap& parameters;
             spatial::FortressDungeon fortress;
 
             utils::ProbabilityMass< spatial::FortressRoomType > roomProbability;
 
 
-            Fortress( adiktedpp::Level& level, ParametersMap& parameters );
+            Fortress( adiktedpp::Map& map, ParametersMap& parameters );
 
             bool generate();
 

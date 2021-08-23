@@ -8,8 +8,7 @@
 
 #include "dkmage/LevelGenerator.h"
 
-#include "adiktedpp/Level.h"
-#include "adiktedpp/script/Script.h"
+#include "adiktedpp/Map.h"
 #include "adiktedpp/Messages.h"
 
 #include "utils/Log.h"
@@ -26,19 +25,19 @@ namespace dkmage {
         ParametersMap parameters;
 
         adiktedpp::ScopeMessages messages;
-        adiktedpp::Level level;
-        adiktedpp::script::Script script;
+        adiktedpp::Map map;
+        adiktedpp::Level& level;
 
 
-        BaseLevelGenerator(): messages( "adikted.log.txt" ), level(), script() {
+        BaseLevelGenerator(): messages( "adikted.log.txt" ), map(), level( map.level ) {
         }
 
         const ParametersMap& getParameters() const override {
             return parameters;
         }
 
-        void setParameters( const ParametersMap& map ) override {
-            parameters = map;
+        void setParameters( const ParametersMap& paramsMap ) override {
+            parameters = paramsMap;
             Optional< std::string > dataPath = parameters.getString( ParameterName::PN_DATA_PATH );
             if ( dataPath.has_value() ) {
                 const std::string& path = dataPath.value();
@@ -47,7 +46,7 @@ namespace dkmage {
 
             const std::string type = parameters.getString( ParameterName::PN_TYPE, "" );
             const std::string seed = parameters.getString( ParameterName::PN_SEED, "" );
-            script.storeParameters( type, seed );
+            map.script.storeParameters( type, seed );
         }
 
         void setLevelName( const std::string& name ) override {

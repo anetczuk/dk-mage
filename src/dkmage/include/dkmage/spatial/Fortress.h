@@ -21,7 +21,7 @@ namespace dkmage {
 
             using BaseDungeon::BaseDungeon;
 
-            void draw( adiktedpp::Level& level ) const;
+            void draw( adiktedpp::Map& map ) const;
 
             std::vector< Direction > freeDirections( const FortressRoom& room ) const {
                 std::vector< Direction > availableDirs = room.restrictedDirections();

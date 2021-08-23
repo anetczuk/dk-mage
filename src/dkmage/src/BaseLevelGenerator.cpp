@@ -40,14 +40,14 @@ namespace dkmage {
         LOG() << "generating map";
 
         /// reset/clear script
-        script.clearData();
+        map.script.clearData();
 
         if ( generate() == false ) {
             LOG() << "could not generate map";
             return false;
         }
 
-        std::vector< std::string > content = script.build();
+        std::vector< std::string > content = map.script.build();
         script::LevelScript dataLevel( level );
         dataLevel.rebuild( content );
 

@@ -27,7 +27,7 @@ namespace dkmage {
 
         virtual const ParametersMap& getParameters() const = 0;
 
-        virtual void setParameters( const ParametersMap& map ) = 0;
+        virtual void setParameters( const ParametersMap& paramsMap ) = 0;
 
         virtual void setLevelName( const std::string& name ) = 0;
 
@@ -59,8 +59,8 @@ namespace dkmage {
             return parameters;
         }
 
-        void setParameters( const ParametersMap& map ) override {
-            parameters = map;
+        void setParameters( const ParametersMap& paramsMap ) override {
+            parameters = paramsMap;
         }
 
         void setLevelName( const std::string& /*name*/ ) override {
@@ -104,9 +104,9 @@ namespace dkmage {
             return implementation->getParameters();
         }
 
-        void setParameters( const ParametersMap& map ) override {
+        void setParameters( const ParametersMap& paramsMap ) override {
             LevelGenerator* implementation = data.get();
-            return implementation->setParameters( map );
+            return implementation->setParameters( paramsMap );
         }
 
         void setLevelName( const std::string& name ) override {

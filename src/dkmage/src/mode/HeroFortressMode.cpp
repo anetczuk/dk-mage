@@ -8,6 +8,7 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Dungeon.h"
 
+#include "adiktedpp/Map.h"
 #include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/AreaDetector.h"
 
@@ -46,7 +47,7 @@ namespace dkmage {
 
         ///===================================================================================================
 
-        Fortress::Fortress( adiktedpp::Level& level, ParametersMap& parameters ): level(level), parameters(parameters), fortress( Player::P_GOOD ) {
+        Fortress::Fortress( adiktedpp::Map& map, ParametersMap& parameters ): map(map), level(map.level), parameters(parameters), fortress( Player::P_GOOD ) {
 //                fortress.limitNorth = 3;
 //                fortress.limitSouth = 3;
             fortress.fortify( true );
@@ -74,7 +75,7 @@ namespace dkmage {
                     if ( next == nullptr ) {
                         LOG() << "unable to create main junction room";
                         fortress.moveToTopEdge( 8 );
-                        fortress.draw( level );
+                        fortress.draw( map );
                         return false;
                     }
                     mainCorridor = { next };
@@ -93,7 +94,7 @@ namespace dkmage {
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                 }
                 return false;
             }
@@ -103,7 +104,7 @@ namespace dkmage {
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                 }
                 return false;
             }
@@ -116,25 +117,25 @@ namespace dkmage {
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_PRISON ).empty() ) {
                     LOG() << "missing required prison";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_TORTURE ).empty() ) {
                     LOG() << "missing required torture room";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_GRAVEYARD ).empty() ) {
                     LOG() << "missing required graveyard";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_LAVA_POST ).empty() ) {
                     LOG() << "missing required lava posts";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( level );
+                    fortress.draw( map );
                     return false;
                 }
             }
@@ -145,12 +146,12 @@ namespace dkmage {
 
             /// generate lake
             if ( generateLake( lakeLimit ) == false ) {
-                fortress.draw( level );
+                fortress.draw( map );
                 return false;
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
-            fortress.draw( level );
+            fortress.draw( map );
 
             /// prepare entrances
             if ( prepareBridges( exitRooms ) == false ) {
@@ -554,7 +555,7 @@ namespace dkmage {
 
 //            generateCaves( 28 );
 
-            Fortress enemyFortress( level, parameters );
+            Fortress enemyFortress( map, parameters );
             if ( enemyFortress.generate() == false ) {
                 return false;
             };
@@ -617,6 +618,8 @@ namespace dkmage {
         }
 
         void HeroFortressMode::preparePlayerDungeon() {
+            adiktedpp::script::Script& script = map.script;
+
             spatial::EvilDungeon dungeon;
             dungeon.limitNorth = 1;
             dungeon.limitSouth = 0;
@@ -700,6 +703,8 @@ namespace dkmage {
         }
 
         void HeroFortressMode::prepareScript() {
+            adiktedpp::script::Script& script = map.script;
+
 //            script.setFXLevel();
 
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );

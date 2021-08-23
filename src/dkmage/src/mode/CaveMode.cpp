@@ -213,6 +213,7 @@ namespace dkmage {
         }
 
         void CaveMode::prepareScript() {
+            adiktedpp::script::Script& script = map.script;
 //            script.setFXLevel();
 
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
