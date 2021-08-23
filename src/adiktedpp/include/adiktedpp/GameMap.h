@@ -1,10 +1,10 @@
 /*
- * Map.h
+ * GameMap.h
  *
  */
 
-#ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_MAP_H_
-#define ADIKTEDPP_INCLUDE_ADIKTEDPP_MAP_H_
+#ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_GAMEMAP_H_
+#define ADIKTEDPP_INCLUDE_ADIKTEDPP_GAMEMAP_H_
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/script/Script.h"
@@ -12,7 +12,7 @@
 
 namespace adiktedpp {
 
-    class Map {
+    class GameMap {
     public:
 
         Level level;
@@ -22,4 +22,4 @@ namespace adiktedpp {
 
 } /* namespace adiktedpp */
 
-#endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_MAP_H_ */
+#endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_GAMEMAP_H_ */

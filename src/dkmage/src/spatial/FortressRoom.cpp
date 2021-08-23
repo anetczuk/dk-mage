@@ -8,7 +8,7 @@
 #include "dkmage/spatial/Fortress.h"
 #include "dkmage/Draw.h"
 
-#include "adiktedpp/Map.h"
+#include "adiktedpp/GameMap.h"
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Log.h"
@@ -128,8 +128,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_DUNGEON_HEART, roomOwner, true );
             }
@@ -159,8 +159,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -209,8 +209,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_TREASURE, roomOwner, true );
 
@@ -273,8 +273,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
             }
@@ -299,8 +299,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
             }
@@ -358,8 +358,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -449,8 +449,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -552,8 +552,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -706,8 +706,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
 
                 Rect room( roomRect.center(), 3, 3 );
@@ -795,8 +795,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -922,8 +922,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 Rect room( roomRect.center(), 3, 3 );
 
@@ -1012,8 +1012,8 @@ namespace dkmage {
                 /// LOG() << "exitDirection: " << exitDirection << " " << directions.size();
             }
 
-            void draw( adiktedpp::Map& map ) const override {
-                adiktedpp::Level& level = map.level;
+            void draw( adiktedpp::GameMap& gameMap ) const override {
+                adiktedpp::Level& level = gameMap.level;
                 /// create branch exit
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );

@@ -14,7 +14,7 @@
 
 
 namespace adiktedpp {
-    class Map;
+    class GameMap;
 }
 
 
@@ -82,7 +82,7 @@ namespace dkmage {
             virtual void prepare( FortressDungeon& dungeon, const FortressRoom& from ) = 0;
 
             /// put room to 'level'
-            virtual void draw( adiktedpp::Map& map ) const = 0;
+            virtual void draw( adiktedpp::GameMap& gameMap ) const = 0;
 
             std::size_t roomArea() const {
                 return roomPosition.area();

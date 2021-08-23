@@ -9,7 +9,7 @@
 #include "dkmage/spatial/DungeonGraph.h"
 #include "dkmage/spatial/FortressRoom.h"
 
-#include "adiktedpp/Map.h"
+#include "adiktedpp/GameMap.h"
 
 
 using namespace utils;
@@ -19,8 +19,8 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace spatial {
 
-        void FortressDungeon::draw( adiktedpp::Map& map ) const {
-            adiktedpp::Level& level = map.level;
+        void FortressDungeon::draw( adiktedpp::GameMap& gameMap ) const {
+            adiktedpp::Level& level = gameMap.level;
             const Player owner = this->owner();
             const bool fortify = this->fortify();
             std::vector< const FortressRoom* > roomsList = rooms();
@@ -38,7 +38,7 @@ namespace dkmage {
 
             /// draw room content
             for ( const FortressRoom* item: roomsList ) {
-                item->draw( map );
+                item->draw( gameMap );
             }
         }
 

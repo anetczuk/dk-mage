@@ -8,7 +8,7 @@
 
 #include "dkmage/LevelGenerator.h"
 
-#include "adiktedpp/Map.h"
+#include "adiktedpp/GameMap.h"
 #include "adiktedpp/Messages.h"
 
 #include "utils/Log.h"
@@ -25,7 +25,7 @@ namespace dkmage {
         ParametersMap parameters;
 
         adiktedpp::ScopeMessages messages;
-        adiktedpp::Map map;
+        adiktedpp::GameMap map;
         adiktedpp::Level& level;
 
 
