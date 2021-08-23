@@ -61,6 +61,8 @@ namespace dkmage {
 
         protected:
 
+            FortressDungeon& dungeon;
+
             adiktedpp::Player roomOwner;
 
             std::vector< Direction > restrictedDirs;                /// allowed directions
@@ -68,8 +70,8 @@ namespace dkmage {
 
         public:
 
-            FortressRoom(): roomPosition(), corridorJoinPoint(),
-                roomOwner( adiktedpp::Player::P_P0 ),
+            FortressRoom( FortressDungeon& dungeon ): roomPosition(), corridorJoinPoint(),
+                dungeon(dungeon), roomOwner( adiktedpp::Player::P_P0 ),
                 restrictedDirs()
             {
             }
@@ -79,7 +81,7 @@ namespace dkmage {
             virtual FortressRoomType type() const = 0;
 
             /// prepare room position and internal state
-            virtual void prepare( FortressDungeon& dungeon, const FortressRoom& from ) = 0;
+            virtual void prepare( const FortressRoom& from ) = 0;
 
             /// put room to 'level'
             virtual void draw( adiktedpp::GameMap& gameMap ) const = 0;
@@ -158,7 +160,7 @@ namespace dkmage {
         /**
          *
          */
-        std::unique_ptr< FortressRoom > spawn_object( const FortressRoomType roomType );
+        std::unique_ptr< FortressRoom > spawn_object( FortressDungeon& dungeon, const FortressRoomType roomType );
 
     } /* namespace spatial */
 } /* namespace dkmage */

@@ -369,8 +369,13 @@ namespace dkmage {
                 const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
                 const Point bridgeStart = entrancePoint + initialDirection;
                 const PointList bridge = findBridge( bridgeStart );
+                const std::size_t bSize = bridge.size();
                 if ( bridge.size() < 2 ) {
                     LOG() << "unable find bridge shore";
+                    continue;
+                }
+                if ( bSize > 10 ) {
+                    LOG() << "bridge too long";
                     continue;
                 }
 
@@ -440,10 +445,10 @@ namespace dkmage {
 
                     /// add bridge keepers
                     level.setSlab( bridgePoint, Slab::S_PATH );
-                    const int fairyLevel = rng_randi( 4 ) + 3;
-                    level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
-                    level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
                     if ( i == 1 ) {
+                        const int fairyLevel = rng_randi( 4 ) + 3;
+                        level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
+                        level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
                         level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
                     }
 
@@ -634,7 +639,7 @@ namespace dkmage {
                 spatial::EvilRoom* heart = dungeon.room( 0 );
                 dungeon.addRoom( Room::R_TREASURE, 5, *heart, spatial::Direction::D_WEST );
                 spatial::EvilRoom* hatchery = dungeon.addRoom( Room::R_HATCHERY, 5, *heart, spatial::Direction::D_EAST );
-                dungeon.addRoom( Room::R_LAIR, 5, *hatchery, spatial::Direction::D_EAST );
+                dungeon.addRoom( Room::R_LAIR, 7, *hatchery, spatial::Direction::D_EAST );
             }
 
             dungeon.moveToBottomEdge( 4 );
@@ -670,7 +675,7 @@ namespace dkmage {
             {
                 /// add neutral portal
                 const Rect mapRect = raw::RawLevel::mapRect();
-                Rect randRect( 21, 11 );
+                Rect randRect( 18, 11 );
                 randRect.moveRightTo( mapRect.max.x - 7 );
                 randRect.moveBottomTo( mapRect.max.y - 3 );
                 const std::size_t randomPosIndex = rng_randi( randRect.area() );

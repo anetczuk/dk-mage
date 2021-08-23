@@ -50,7 +50,7 @@ namespace dkmage {
             }
 
             /// no rooms in dungeon
-            std::unique_ptr< FortressRoom > roomPtr = spawn_object( roomType );
+            std::unique_ptr< FortressRoom > roomPtr = spawn_object( *this, roomType );
             FortressRoom& newRoom = *roomPtr;
             roomPtr.release();                              //// release ownership (prevent deleting the object)
 
@@ -64,9 +64,9 @@ namespace dkmage {
         }
 
         FortressRoom* FortressDungeon::addRandomRoom( const FortressRoomType roomType, const FortressRoom& from ) {
-            std::unique_ptr< FortressRoom > roomPtr = spawn_object( roomType );
+            std::unique_ptr< FortressRoom > roomPtr = spawn_object( *this, roomType );
             FortressRoom& room = *roomPtr;
-            room.prepare( *this, from );
+            room.prepare( from );
             if ( exists( room ) == false ) {
                 return nullptr;
             }

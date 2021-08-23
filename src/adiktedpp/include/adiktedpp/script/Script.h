@@ -97,6 +97,7 @@ namespace adiktedpp {
 
             /// ================================================================================
 
+            /// 'crExp' in range [1..10]
             void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
 
         };

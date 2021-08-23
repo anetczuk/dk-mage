@@ -117,11 +117,13 @@ namespace dkmage {
         class FortressRoomDungeonHeart: public FortressRoom {
         public:
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_DUNGEON_HEART;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 setPosition( 5, 5 );
@@ -132,6 +134,12 @@ namespace dkmage {
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = position();
                 level.setRoom( roomRect, Room::R_DUNGEON_HEART, roomOwner, true );
+
+                const std::vector< Direction > corridors = dungeon.linkDirections( *this );
+                for ( const Direction item: corridors ) {
+                    const Point entrancePoint = edgePoint( item, 1 );
+                    level.setDoor( entrancePoint, Door::D_IRON, true );
+                }
             }
 
         };
@@ -145,11 +153,14 @@ namespace dkmage {
 
             std::size_t roomSize = 0;
 
+
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EMPTY;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
                 roomSize = roomSize357.getRandom();
@@ -195,11 +206,13 @@ namespace dkmage {
         class FortressRoomTreasure: public FortressRoom {
         public:
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_TREASURE;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
                 const std::size_t rSize = roomSize357.getRandom();
@@ -227,11 +240,13 @@ namespace dkmage {
         class FortressRoomCorridor: public FortressRoom {
         public:
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_CORRIDOR;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -288,11 +303,13 @@ namespace dkmage {
         class FortressRoomBranch: public FortressRoom {
         public:
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_BRANCH;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 setPosition( 1, 1 );
@@ -314,11 +331,13 @@ namespace dkmage {
         class FortressRoomBoulderCorridor: public FortressRoom {
         public:
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_BOULDER_CORRIDOR;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -406,11 +425,13 @@ namespace dkmage {
             Axis orientation = Axis::A_HORIZONTAL;
 
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_PRISON;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -510,11 +531,13 @@ namespace dkmage {
             Axis orientation = Axis::A_HORIZONTAL;
 
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_TORTURE;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -638,11 +661,13 @@ namespace dkmage {
             bool alternativePos = false;
 
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_GRAVEYARD;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -742,9 +767,9 @@ namespace dkmage {
                 const Point roomCenter = room.center();
                 level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 9 );           /// neutral
 
-                const std::size_t actionPoint = level.addActionPoint( roomCenter, 1, 2 );
+                const std::size_t actionPoint = level.addActionPoint( roomCenter, 1 );
                 script.addLineActionIf( actionPoint, Player::P_P0 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 1, 7, 1000 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 2, 10, 1000 );
                 script.addLineActionEndIf();
 
                 level.setDoor( doorPoint, Door::D_WOOD, true );
@@ -762,11 +787,13 @@ namespace dkmage {
             Axis orientation = Axis::A_HORIZONTAL;
 
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_LAVA_POST;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -868,7 +895,9 @@ namespace dkmage {
             bool alternativePos = false;
 
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            using FortressRoom::FortressRoom;
+
+            void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
                     availableDirs = dungeon.freeDirections( from );
@@ -971,6 +1000,7 @@ namespace dkmage {
          */
         class FortressRoomSecretIncLvl: public FortressRoomSecret {
         public:
+            using FortressRoomSecret::FortressRoomSecret;
             FortressRoomType type() const override {
                 return FortressRoomType::FR_SECRET_INCLVL;
             }
@@ -987,6 +1017,7 @@ namespace dkmage {
          */
         class FortressRoomSecretResurrect: public FortressRoomSecret {
         public:
+            using FortressRoomSecret::FortressRoomSecret;
             FortressRoomType type() const override {
                 return FortressRoomType::FR_SECRET_RESURRECT;
             }
@@ -1007,11 +1038,13 @@ namespace dkmage {
             Direction exitDirection = Direction::D_EAST;
 
 
+            using FortressRoom::FortressRoom;
+
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EXIT;
             }
 
-            void prepare( FortressDungeon& dungeon, const FortressRoom& from ) override {
+            void prepare( const FortressRoom& from ) override {
                 setPosition( 3, 3 );
                 const bool added = dungeon.addRandomRoom( *this, from, 3 );
                 if ( added == false ) {
@@ -1048,21 +1081,21 @@ namespace dkmage {
         /**
          *
          */
-        std::unique_ptr< FortressRoom > spawn_object( const FortressRoomType roomType ) {
+        std::unique_ptr< FortressRoom > spawn_object( FortressDungeon& dungeon, const FortressRoomType roomType ) {
             switch( roomType ) {
-            case FortressRoomType::FR_DUNGEON_HEART:        return std::make_unique< FortressRoomDungeonHeart >();
-            case FortressRoomType::FR_EMPTY:                return std::make_unique< FortressRoomEmpty >();
-            case FortressRoomType::FR_TREASURE:             return std::make_unique< FortressRoomTreasure >();
-            case FortressRoomType::FR_CORRIDOR:             return std::make_unique< FortressRoomCorridor >();
-            case FortressRoomType::FR_BRANCH:               return std::make_unique< FortressRoomBranch >();
-            case FortressRoomType::FR_BOULDER_CORRIDOR:     return std::make_unique< FortressRoomBoulderCorridor >();
-            case FortressRoomType::FR_PRISON:               return std::make_unique< FortressRoomPrison >();
-            case FortressRoomType::FR_TORTURE:              return std::make_unique< FortressRoomTorture >();
-            case FortressRoomType::FR_GRAVEYARD:            return std::make_unique< FortressRoomGraveyard >();
-            case FortressRoomType::FR_LAVA_POST:            return std::make_unique< FortressRoomLavaPost >();
-            case FortressRoomType::FR_SECRET_INCLVL:        return std::make_unique< FortressRoomSecretIncLvl >();
-            case FortressRoomType::FR_SECRET_RESURRECT:     return std::make_unique< FortressRoomSecretResurrect >();
-            case FortressRoomType::FR_EXIT:                 return std::make_unique< FortressRoomExit >();
+            case FortressRoomType::FR_DUNGEON_HEART:        return std::make_unique< FortressRoomDungeonHeart >( dungeon );
+            case FortressRoomType::FR_EMPTY:                return std::make_unique< FortressRoomEmpty >( dungeon );
+            case FortressRoomType::FR_TREASURE:             return std::make_unique< FortressRoomTreasure >( dungeon );
+            case FortressRoomType::FR_CORRIDOR:             return std::make_unique< FortressRoomCorridor >( dungeon );
+            case FortressRoomType::FR_BRANCH:               return std::make_unique< FortressRoomBranch >( dungeon );
+            case FortressRoomType::FR_BOULDER_CORRIDOR:     return std::make_unique< FortressRoomBoulderCorridor >( dungeon );
+            case FortressRoomType::FR_PRISON:               return std::make_unique< FortressRoomPrison >( dungeon );
+            case FortressRoomType::FR_TORTURE:              return std::make_unique< FortressRoomTorture >( dungeon );
+            case FortressRoomType::FR_GRAVEYARD:            return std::make_unique< FortressRoomGraveyard >( dungeon );
+            case FortressRoomType::FR_LAVA_POST:            return std::make_unique< FortressRoomLavaPost >( dungeon );
+            case FortressRoomType::FR_SECRET_INCLVL:        return std::make_unique< FortressRoomSecretIncLvl >( dungeon );
+            case FortressRoomType::FR_SECRET_RESURRECT:     return std::make_unique< FortressRoomSecretResurrect >( dungeon );
+            case FortressRoomType::FR_EXIT:                 return std::make_unique< FortressRoomExit >( dungeon );
             }
 
             LOG() << "unhandled case: " << roomType;

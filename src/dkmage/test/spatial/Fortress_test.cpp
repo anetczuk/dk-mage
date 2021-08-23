@@ -25,7 +25,7 @@ namespace {
         using FortressDungeon::createRoom;
 
         FortressRoom* createRoom( const FortressRoomType roomType, const std::size_t roomSizeX, const std::size_t roomSizeY, const FortressRoom& from, const Direction direction, const std::size_t corridorLength ) {
-            std::unique_ptr< FortressRoom > roomPtr = spawn_object( roomType );
+            std::unique_ptr< FortressRoom > roomPtr = spawn_object( *this, roomType );
             FortressRoom& newRoom = *roomPtr;
 
             newRoom.setPosition( Rect( roomSizeX, roomSizeY ) );

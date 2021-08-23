@@ -171,7 +171,9 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
-        std::size_t addActionPoint( const utils::Point& point, const std::size_t subIndex, const std::size_t radius = 0 );
+        std::size_t addActionPoint( const utils::Point& point, const std::size_t radius = 0 );
+
+        std::size_t addActionPoint( const utils::Point& point, const std::size_t subIndex, const std::size_t radius );
 
         /// ==============================================================================
 
