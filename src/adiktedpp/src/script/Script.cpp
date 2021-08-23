@@ -308,6 +308,12 @@ namespace adiktedpp {
             addLine( std::string() + "ENDIF" );
         }
 
+        void BasicScript::ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold ) {
+            std::stringstream stream;
+            stream << "ADD_CREATURE_TO_LEVEL( " << scriptName( player ) + ", " << scriptName( creature ) << ", "
+                   << actionPoint << ", " << crNum << ", " << crExp << ", " << gold << ")";
+            addLine( stream.str() );
+        }
 
 
         /// =========================================================================

@@ -95,6 +95,10 @@ namespace adiktedpp {
 
             void setLoseConditionStandard( const Player player );
 
+            /// ================================================================================
+
+            void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
+
         };
 
 
@@ -132,6 +136,10 @@ namespace adiktedpp {
                 case ScriptSection::SS_REST:        return other;
                 }
                 return other;
+            }
+
+            BasicScript& actionSection() {
+                return action;
             }
 
             void clearData();

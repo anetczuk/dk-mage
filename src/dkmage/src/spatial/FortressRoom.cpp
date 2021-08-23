@@ -708,6 +708,8 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
+                adiktedpp::script::Script& script = gameMap.script;
+
                 const Rect& roomRect = position();
 
                 Rect room( roomRect.center(), 3, 3 );
@@ -737,6 +739,14 @@ namespace dkmage {
                 }
 
                 level.setRoom( room, Room::R_GRAVEYARD, roomOwner, true );
+                const Point roomCenter = room.center();
+                level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 9 );           /// neutral
+
+                const std::size_t actionPoint = level.addActionPoint( roomCenter, 1, 2 );
+                script.addLineActionIf( actionPoint, Player::P_P0 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 1, 7, 1000 );
+                script.addLineActionEndIf();
+
                 level.setDoor( doorPoint, Door::D_WOOD, true );
             }
 

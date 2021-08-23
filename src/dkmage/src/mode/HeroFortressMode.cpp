@@ -618,7 +618,7 @@ namespace dkmage {
         }
 
         void HeroFortressMode::preparePlayerDungeon() {
-            adiktedpp::script::Script& script = map.script;
+//            adiktedpp::script::Script& script = map.script;
 
             spatial::EvilDungeon dungeon;
             dungeon.limitNorth = 1;
@@ -729,6 +729,15 @@ namespace dkmage {
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
             availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableRoomMode::ARM_DISABLED );
+
+            availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_DISABLED );
+            /// 'ARM_ENABLED_FOUND' not available in current adikted lib version
+//            availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+//            availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+//            availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+
             script.set( availableRooms );
 
             script.addLineInit( "" );
