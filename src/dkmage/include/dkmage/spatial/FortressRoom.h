@@ -86,37 +86,13 @@ namespace dkmage {
             /// put room to 'level'
             virtual void draw( adiktedpp::GameMap& gameMap ) const = 0;
 
-            std::size_t roomArea() const {
-                return roomPosition.area();
-            }
-
-            utils::Point roomSize() const {
-                return roomPosition.vector();
-            }
-
-            const utils::Rect& position() const {
+            /// bounding box of room
+            const utils::Rect& bbox() const {
                 return roomPosition;
-            }
-
-            void setPosition( const utils::Rect& rect ) {
-                roomPosition = rect;
-                corridorJoinPoint = roomPosition.center();
-            }
-
-            void setPosition( const std::size_t width, const std::size_t height ) {
-                roomPosition = utils::Rect( width, height );
-                corridorJoinPoint = roomPosition.center();
             }
 
             const utils::Point joinPoint() const {
                 return corridorJoinPoint;
-            }
-
-            void setJointPoint( const int offsetX, const int offsetY ) {
-                corridorJoinPoint = roomPosition.center() + utils::Point( offsetX, offsetY );
-            }
-            void setJointPoint( const utils::Point newPoint ) {
-                corridorJoinPoint = roomPosition.center() + newPoint;
             }
 
             utils::Point joinCenterOffset() const {
@@ -125,6 +101,15 @@ namespace dkmage {
             }
 
             utils::Point edgePoint( const Direction direction, const std::size_t delta = 0 ) const;
+
+            void move( const utils::Point offset ) {
+                move( offset.x, offset.y );
+            }
+
+            void move( const int offsetX, const int offsetY ) {
+                roomPosition.move( offsetX, offsetY );
+                corridorJoinPoint += utils::Point( offsetX, offsetY );
+            }
 
             adiktedpp::Player owner() const {
                 return roomOwner;
@@ -143,16 +128,27 @@ namespace dkmage {
                 restrictedDirs.push_back( direction );
             }
 
-            void move( const utils::Point offset ) {
-                move( offset.x, offset.y );
-            }
-
-            void move( const int offsetX, const int offsetY ) {
-                roomPosition.move( offsetX, offsetY );
-                corridorJoinPoint += utils::Point( offsetX, offsetY );
-            }
-
             std::string print() const;
+
+
+        protected:
+
+            void setBbox( const utils::Rect& rect ) {
+                roomPosition = rect;
+                corridorJoinPoint = roomPosition.center();
+            }
+
+            void setBbox( const std::size_t width, const std::size_t height ) {
+                roomPosition = utils::Rect( width, height );
+                corridorJoinPoint = roomPosition.center();
+            }
+
+            void setJointPoint( const int offsetX, const int offsetY ) {
+                corridorJoinPoint = roomPosition.center() + utils::Point( offsetX, offsetY );
+            }
+            void setJointPoint( const utils::Point newPoint ) {
+                corridorJoinPoint = roomPosition.center() + newPoint;
+            }
 
         };
 
@@ -161,6 +157,8 @@ namespace dkmage {
          *
          */
         std::unique_ptr< FortressRoom > spawn_object( FortressDungeon& dungeon, const FortressRoomType roomType );
+
+        std::unique_ptr< FortressRoom > spawn_empty( FortressDungeon& dungeon );
 
     } /* namespace spatial */
 } /* namespace dkmage */

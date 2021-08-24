@@ -42,25 +42,24 @@ namespace dkmage {
             }
         }
 
-        FortressRoom* FortressDungeon::setFirstRoom( const FortressRoomType roomType, const std::size_t roomSize ) {
+        FortressRoom* FortressDungeon::setFirstRoom( const FortressRoomType roomType ) {
             std::vector< FortressRoom* > roomsList = graph.itemsList();
             if ( roomsList.empty() == false ) {
                 LOG() << "unable to add room: " << (int)roomType;
                 return nullptr;
             }
 
-            /// no rooms in dungeon
-            std::unique_ptr< FortressRoom > roomPtr = spawn_object( *this, roomType );
-            FortressRoom& newRoom = *roomPtr;
-            roomPtr.release();                              //// release ownership (prevent deleting the object)
+            /// no rooms in dungeon -- add empty room
+            std::unique_ptr< FortressRoom > emptyPtr = spawn_empty( *this );
+            FortressRoom& emptyRoom = *emptyPtr;
+            emptyPtr.release();                              //// release ownership (prevent deleting the object)
+            emptyRoom.owner( player );
+            graph.addItem( emptyRoom );
 
-            graph.addItem( newRoom );
-
-            newRoom.owner( player );
-            Rect newRect( roomSize, roomSize );
-            newRect.centerize();
-            newRoom.setPosition( newRect );
-            return &newRoom;
+            /// add proper room
+            FortressRoom* firstRoom = addRandomRoom( roomType, emptyRoom );
+            graph.removeItem( emptyRoom );
+            return firstRoom;
         }
 
         FortressRoom* FortressDungeon::addRandomRoom( const FortressRoomType roomType, const FortressRoom& from ) {
@@ -101,8 +100,8 @@ namespace dkmage {
 
         bool FortressDungeon::createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength ) {
             /// move room to fit direction and corridor length
-            Rect newRect = newRoom.position();
-            const Rect& basePos = from.position();
+            Rect newRect = newRoom.bbox();
+            const Rect& basePos = from.bbox();
             moveRect( newRect, basePos, direction, corridorLength );
 
             const Point newOffset  = newRoom.joinCenterOffset();
@@ -115,7 +114,7 @@ namespace dkmage {
                 return false;
             }
 
-            const Point targetOffset = newRect.center() - newRoom.position().center();
+            const Point targetOffset = newRect.center() - newRoom.bbox().center();
             newRoom.move( targetOffset );
 
             return graph.setItem( newRoom, from, direction, true );
@@ -150,7 +149,7 @@ namespace dkmage {
         bool FortressDungeon::isCollision( const Rect& rect ) const {
             std::vector< const FortressRoom* > roomsList = graph.itemsList();
             for ( const FortressRoom* item: roomsList ) {
-                const Rect& itemRect = item->position();
+                const Rect& itemRect = item->bbox();
                 if ( itemRect.isCollision( rect ) ) {
 //                    LOG() << "collision detected, rectangles: " << itemRect << " " << rect;;
                     return true;

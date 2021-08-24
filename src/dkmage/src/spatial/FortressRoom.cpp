@@ -61,7 +61,7 @@ namespace dkmage {
 
         std::string FortressRoom::print() const {
             std::stringstream stream;
-            stream << "position: " << position() << " type: " << type();
+            stream << "bbox: " << bbox() << " type: " << type();
             return stream.str();
         }
 
@@ -126,13 +126,13 @@ namespace dkmage {
             void prepare( const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                setPosition( 5, 5 );
+                setBbox( 5, 5 );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_DUNGEON_HEART, roomOwner, true );
 
                 const std::vector< Direction > corridors = dungeon.linkDirections( *this );
@@ -151,28 +151,35 @@ namespace dkmage {
         class FortressRoomEmpty: public FortressRoom {
         public:
 
-            std::size_t roomSize = 0;
+            std::size_t roomSize       = 0;
+            std::size_t corridorLength = 0;
 
 
-            using FortressRoom::FortressRoom;
+            FortressRoomEmpty( FortressDungeon& dungeon ): FortressRoom( dungeon ) {
+                const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
+                roomSize = roomSize357.getRandom();
+                corridorLength = rng_randi( 5 ) + 1;
+
+                setBbox( roomSize, roomSize );
+            }
+
+            FortressRoomEmpty( FortressDungeon& dungeon, const std::size_t roomSize, const std::size_t corridorLength ): FortressRoom( dungeon ),
+                    roomSize(roomSize), corridorLength(corridorLength)
+            {
+                setBbox( roomSize, roomSize );
+            }
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EMPTY;
             }
 
             void prepare( const FortressRoom& from ) override {
-                const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
-
-                roomSize = roomSize357.getRandom();
-                const std::size_t corridorLength = rng_randi( 5 ) + 1;
-
-                setPosition( roomSize, roomSize );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 std::size_t radius = 0;
@@ -188,7 +195,9 @@ namespace dkmage {
                 }
 
                 if ( radius == 0) {
-                    level.setFortified( roomRect.center(), roomOwner );
+                    if ( roomSize == 3 ) {
+                        level.setFortified( roomRect.center(), roomOwner );
+                    }
                 } else {
                     level.setFortified( roomRect.center() + Point( 1, 1) * radius, roomOwner );
                     level.setFortified( roomRect.center() + Point(-1, 1) * radius, roomOwner );
@@ -218,13 +227,13 @@ namespace dkmage {
                 const std::size_t rSize = roomSize357.getRandom();
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                setPosition( rSize, rSize );
+                setBbox( rSize, rSize );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_TREASURE, roomOwner, true );
 
                 /// fill treasure with gold
@@ -266,7 +275,7 @@ namespace dkmage {
                     switch( newDir ) {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
-                        setPosition( 1, roomLength );
+                        setBbox( 1, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -276,7 +285,7 @@ namespace dkmage {
                     }
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
-                        setPosition( roomLength, 1 );
+                        setBbox( roomLength, 1 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -290,7 +299,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
             }
 
@@ -312,13 +321,13 @@ namespace dkmage {
             void prepare( const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
-                setPosition( 1, 1 );
+                setBbox( 1, 1 );
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
             }
 
@@ -355,7 +364,7 @@ namespace dkmage {
                     switch( newDir ) {
                     case Direction::D_NORTH:
                     case Direction::D_SOUTH: {
-                        setPosition( 5, roomLength );
+                        setBbox( 5, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -365,7 +374,7 @@ namespace dkmage {
                     }
                     case Direction::D_EAST:
                     case Direction::D_WEST: {
-                        setPosition( roomLength, 5 );
+                        setBbox( roomLength, 5 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -379,7 +388,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 const int width  = roomRect.width();
@@ -449,7 +458,7 @@ namespace dkmage {
                     orientation = get_axis( newDir );
                     switch( orientation ) {
                     case Axis::A_VERTICAL: {
-                        setPosition( 5, roomLength );
+                        setBbox( 5, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -458,7 +467,7 @@ namespace dkmage {
                         break ;
                     }
                     case Axis::A_HORIZONTAL: {
-                        setPosition( roomLength, 5 );
+                        setBbox( roomLength, 5 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -472,7 +481,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 const int width  = roomRect.width();
@@ -554,7 +563,7 @@ namespace dkmage {
                     orientation = get_axis( newDir );
                     switch( orientation ) {
                     case Axis::A_VERTICAL: {
-                        setPosition( 9, 9 );
+                        setBbox( 9, 9 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -563,7 +572,7 @@ namespace dkmage {
                         break ;
                     }
                     case Axis::A_HORIZONTAL: {
-                        setPosition( 9, 9 );
+                        setBbox( 9, 9 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -577,7 +586,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 const Rect chamber( roomRect.center(), 3, 3 );
@@ -688,7 +697,7 @@ namespace dkmage {
                     case Axis::A_VERTICAL: {
                         Rect newRect = baseRect;
                         newRect.growWidth( 1 );
-                        setPosition( newRect );
+                        setBbox( newRect );
                         if ( alternativePos ) {
                             setJointPoint( -2, 0 );
                         } else {
@@ -709,7 +718,7 @@ namespace dkmage {
                     case Axis::A_HORIZONTAL: {
                         Rect newRect = baseRect;
                         newRect.growHeight( 1 );
-                        setPosition( newRect );
+                        setBbox( newRect );
                         if ( alternativePos ) {
                             setJointPoint( 0, -2 );
                         } else {
@@ -735,7 +744,7 @@ namespace dkmage {
                 adiktedpp::Level& level = gameMap.level;
                 adiktedpp::script::Script& script = gameMap.script;
 
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
 
                 Rect room( roomRect.center(), 3, 3 );
                 Point doorPoint = room.center();
@@ -811,7 +820,7 @@ namespace dkmage {
                     orientation = get_axis( newDir );
                     switch( orientation ) {
                     case Axis::A_VERTICAL: {
-                        setPosition( 7, roomLength );
+                        setBbox( 7, roomLength );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -820,7 +829,7 @@ namespace dkmage {
                         break ;
                     }
                     case Axis::A_HORIZONTAL: {
-                        setPosition( roomLength, 7 );
+                        setBbox( roomLength, 7 );
                         const bool added = dungeon.createRoom( *this, from, newDir, corridorLength );
                         if ( added ) {
                             setRestrictedDirection( newDir );
@@ -834,7 +843,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 Point start;
@@ -918,7 +927,7 @@ namespace dkmage {
                     case Axis::A_VERTICAL: {
                         Rect newRect = baseRect;
                         newRect.growWidth( 1 );
-                        setPosition( newRect );
+                        setBbox( newRect );
                         if ( alternativePos ) {
                             setJointPoint( -2, 0 );
                         } else {
@@ -939,7 +948,7 @@ namespace dkmage {
                     case Axis::A_HORIZONTAL: {
                         Rect newRect = baseRect;
                         newRect.growHeight( 1 );
-                        setPosition( newRect );
+                        setBbox( newRect );
                         if ( alternativePos ) {
                             setJointPoint( 0, -2 );
                         } else {
@@ -963,7 +972,7 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 Rect room( roomRect.center(), 3, 3 );
 
                 switch( orientation ) {
@@ -1045,7 +1054,7 @@ namespace dkmage {
             }
 
             void prepare( const FortressRoom& from ) override {
-                setPosition( 3, 3 );
+                setBbox( 3, 3 );
                 const bool added = dungeon.addRandomRoom( *this, from, 3 );
                 if ( added == false ) {
                     return ;
@@ -1058,12 +1067,12 @@ namespace dkmage {
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
                 /// create branch exit
-                const Rect& roomRect = position();
+                const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 /// set entrance traps
 
-                const Point roomCenter = position().center();
+                const Point roomCenter = bbox().center();
                 const Point corridorStart = edgePoint( exitDirection, 1 );
                 const Point boulderPosition = movePoint( corridorStart, exitDirection, 1 );
                 const Point corridorEnd = movePoint( boulderPosition, exitDirection, 1 );
@@ -1100,6 +1109,10 @@ namespace dkmage {
 
             LOG() << "unhandled case: " << roomType;
             return nullptr;
+        }
+
+        std::unique_ptr< FortressRoom > spawn_empty( FortressDungeon& dungeon ) {
+            return std::make_unique< FortressRoomEmpty >( dungeon, 1, 1 );
         }
 
 

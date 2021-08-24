@@ -61,7 +61,7 @@ namespace dkmage {
             fortress.limitWidth  = lakeLimit.width()  - 6;
             fortress.limitHeight = lakeLimit.height() - 6;
 
-            const spatial::FortressRoom* heart = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART, 5 );
+            const spatial::FortressRoom* heart = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART );
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
 
@@ -158,7 +158,7 @@ namespace dkmage {
                 return false;
             }
 
-            const Point firstCenter = heart->position().center();
+            const Point firstCenter = heart->bbox().center();
 
             /// add guards
             const Player owner = fortress.owner();
@@ -283,7 +283,7 @@ namespace dkmage {
                     if ( neighbours.size() > 1 ) {
                         continue ;
                     }
-                    const Rect itemRect = item->position();
+                    const Rect itemRect = item->bbox();
                     if ( itemRect.width() > 1 && itemRect.height() > 1 ) {
                         continue ;
                     }

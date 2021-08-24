@@ -40,10 +40,10 @@ namespace dkmage {
                     return Rect();
                 }
                 const FortressRoom* firstRoom = roomsList[0];
-                Rect minMax = firstRoom->position();
+                Rect minMax = firstRoom->bbox();
                 for (std::size_t i=1; i<rSize; ++i) {
                     const FortressRoom* room = roomsList[ i ];
-                    const Rect& roomPos = room->position();
+                    const Rect& roomPos = room->bbox();
                     minMax.expand( roomPos );
                 }
                 return minMax;
@@ -62,15 +62,15 @@ namespace dkmage {
                 std::vector< const FortressRoom* > roomsList = rooms();
                 for ( const FortressRoom* item: roomsList ) {
                     /// room
-                    Rect position = item->position();
+                    Rect position = item->bbox();
                     position.grow( 2 );
                     addOutline( ret, position );
 
                     /// corridors
-                    const Point& itemCenter = item->position().center();
+                    const Point& itemCenter = item->bbox().center();
                     std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
                     for ( const FortressRoom* connected: connectedList ) {
-                        const Point& connectedCenter = connected->position().center();
+                        const Point& connectedCenter = connected->bbox().center();
                         addLine( ret, itemCenter, connectedCenter );
                     }
                 }
@@ -92,7 +92,7 @@ namespace dkmage {
                 return ret;
             }
 
-            FortressRoom* setFirstRoom( const FortressRoomType roomType, const std::size_t roomSize );
+            FortressRoom* setFirstRoom( const FortressRoomType roomType );
 
             FortressRoom* addRandomRoom( const FortressRoomType roomType, const FortressRoom& from );
 
