@@ -223,9 +223,13 @@ namespace adiktedpp {
         return getSlab( point.x, point.y );
     }
 
-    bool Level::isSlab( const utils::Point& point, const Slab type ) {
+    bool Level::isSlab( const utils::Point& point, const Slab type ) const {
         const raw::SlabType rawType = convertToSlab( type );
         return rawLevel.isSlab( point, rawType );
+    }
+
+    bool Level::isFortified( const utils::Point& point ) const {
+        return rawLevel.isFortified( point );
     }
 
     void Level::setSlab( const std::size_t x, const std::size_t y, const Slab type ) {

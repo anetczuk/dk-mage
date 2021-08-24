@@ -428,7 +428,7 @@ namespace dkmage {
                 return &targetItem;
             }
 
-            bool removeItem( TNodeData& item ) {
+            bool removeItem( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
                     LOG() << "unable to find node for given item";

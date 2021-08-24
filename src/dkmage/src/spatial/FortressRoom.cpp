@@ -329,6 +329,16 @@ namespace dkmage {
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
+                const Point roomCenter = roomRect.center();
+                level.setTrap( roomCenter, 4, Trap::T_BOULDER );
+
+                const std::vector< Direction > directions = dungeon.linkDirections( *this );
+                if ( directions.size() > 2 ) {
+                    for ( const Direction item: directions ) {
+                        const Point entrancePoint = edgePoint( item, 1 );
+                        level.setDoor( entrancePoint, Door::D_IRON, true );
+                    }
+                }
             }
 
         };

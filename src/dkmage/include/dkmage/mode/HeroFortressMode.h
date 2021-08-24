@@ -36,22 +36,28 @@ namespace dkmage {
 
             std::vector< const spatial::FortressRoom* > prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches );
 
-            std::vector< const spatial::FortressRoom* > prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms );
+            void prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms );
 
             void prepareSecondaryPass();
 
             void cutBlindCorridors();
 
+            void cutInvalidExits();
+
             bool generateLake( const utils::Rect& lakeLimit );
 
     //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
 
-            bool prepareBridges( const std::vector< const spatial::FortressRoom* >& entranceRooms );
+            bool prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms );
 
             /// find shortest bridge in four directions
             utils::PointList findBridge( const utils::Point startPoint );
 
             utils::PointList findBridge( const utils::Point startPoint, const utils::Point bridgeDirection );
+
+            bool isBridgePossible( const utils::Point startPoint ) const;
+
+            bool findFortified( const utils::Point startPoint, const utils::Point bridgeDirection ) const;
 
         };
 

@@ -128,7 +128,7 @@ namespace utils {
         Rect( const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {
         }
 
-        Rect( const Point& center, const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {
+        Rect( const Point& center, const std::size_t aWidth = 1, const std::size_t aHeight = 1 ): min(), max(aWidth - 1, aHeight - 1) {
             centerize();
             move( center );
         }

@@ -119,13 +119,15 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
-            SlabType getSlab( const std::size_t x, const std::size_t y );
+            SlabType getSlab( const std::size_t x, const std::size_t y ) const;
 
-            SlabType getSlab( const utils::Point& point );
+            SlabType getSlab( const utils::Point& point ) const;
 
-            bool isSlab( const std::size_t x, const std::size_t y, const SlabType slab );
+            bool isSlab( const std::size_t x, const std::size_t y, const SlabType slab ) const;
 
-            bool isSlab( const utils::Point& point, const SlabType slab );
+            bool isSlab( const utils::Point& point, const SlabType slab ) const;
+
+            bool isFortified( const utils::Point& point ) const;
 
             void setSlab( const std::size_t x, const std::size_t y, const SlabType type );
 

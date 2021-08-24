@@ -133,7 +133,7 @@ namespace dkmage {
                 return ( pos != items.end() );
             }
 
-            bool removeRoom( TRoom& room ) {
+            bool removeRoom( const TRoom& room ) {
                 return graph.removeItem( room );
             }
 

@@ -311,29 +311,34 @@ namespace adiktedpp {
 
         /// ============================================================
 
-        SlabType RawLevel::getSlab( const std::size_t x, const std::size_t y ) {
+        SlabType RawLevel::getSlab( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return SlabType::ST_ROCK;
             }
-            LEVEL* level = data->lvl;
+            const LEVEL* level = data->lvl;
             const SlabType slab = (SlabType) get_tile_slab( level, x, y );
             return slab;
         }
 
-        SlabType RawLevel::getSlab( const Point& point ) {
+        SlabType RawLevel::getSlab( const Point& point ) const {
             return getSlab( point.x, point.y );
         }
 
-        bool RawLevel::isSlab( const std::size_t x, const std::size_t y, const SlabType slab ) {
+        bool RawLevel::isSlab( const std::size_t x, const std::size_t y, const SlabType slab ) const {
             const SlabType currSlab = getSlab( x, y );
             return ( currSlab == slab );
         }
 
-        bool RawLevel::isSlab( const Point& point, const SlabType slab ) {
+        bool RawLevel::isSlab( const Point& point, const SlabType slab ) const {
             const SlabType currSlab = getSlab( point.x, point.y );
             return ( currSlab == slab );
+        }
+
+        bool RawLevel::isFortified( const Point& point ) const {
+            const SlabType currSlab = getSlab( point.x, point.y );
+            return isWall( currSlab );
         }
 
         void RawLevel::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {

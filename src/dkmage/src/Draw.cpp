@@ -76,6 +76,7 @@ namespace dkmage {
 
         switch( gemFaces ) {
         case 1: {
+            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
             level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
             level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
@@ -85,6 +86,7 @@ namespace dkmage {
             break;
         }
         case 2: {
+            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
             level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
             level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
@@ -94,6 +96,7 @@ namespace dkmage {
             break;
         }
         case 3: {
+            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
             level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
             level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
@@ -103,6 +106,7 @@ namespace dkmage {
             break;
         }
         case 4: {
+            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
             gemCenter -= Point(0, veinDir);
             const Rect gemRect( gemCenter, 3, 3 );
             level.setSlab( gemRect, Slab::S_EARTH );

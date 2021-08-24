@@ -32,9 +32,9 @@ namespace dkmage {
                 roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 0.5 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 0.8, 3 );      ///
-                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 0.4, 1 );                ///
-                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.8, 1 );               ///
-                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 1.2, 1 );             ///
+                roomProbability.set( spatial::FortressRoomType::FR_PRISON, 0.3, 1 );                ///
+                roomProbability.set( spatial::FortressRoomType::FR_TORTURE, 0.4, 1 );               ///
+                roomProbability.set( spatial::FortressRoomType::FR_GRAVEYARD, 0.8, 1 );             ///
                 roomProbability.set( spatial::FortressRoomType::FR_LAVA_POST, 0.4, 3 );             ///
                 roomProbability.set( spatial::FortressRoomType::FR_SECRET_INCLVL, 0.8, 2 );         ///
                 roomProbability.set( spatial::FortressRoomType::FR_SECRET_RESURRECT, 0.8, 1 );      ///
@@ -44,6 +44,11 @@ namespace dkmage {
             }
             return roomProbability;
         }
+
+        struct Bridge {
+            Point entrance;
+            PointList bridge;
+        };
 
         ///===================================================================================================
 
@@ -98,9 +103,21 @@ namespace dkmage {
                 }
                 return false;
             }
-            const std::vector< const spatial::FortressRoom* > exitRooms = prepareExitRooms( branches );
+            prepareExitRooms( branches );
+
+            /// secondary pass
+            prepareSecondaryPass();
+
+            cutBlindCorridors();
+
+            cutInvalidExits();
+
+            /// once again, in case of removed exit rooms
+            cutBlindCorridors();
+
+            std::vector< const spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
             if ( exitRooms.size() < 2 ) {
-                LOG() << "unable create at least two exits needed";
+                LOG() << "unable create at least two exits";
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
                     fortress.moveToTopEdge( 8 );
@@ -108,9 +125,6 @@ namespace dkmage {
                 }
                 return false;
             }
-
-            /// secondary pass
-            prepareSecondaryPass();
 
             /// check required rooms
             {
@@ -139,8 +153,6 @@ namespace dkmage {
                     return false;
                 }
             }
-
-            cutBlindCorridors();
 
             fortress.moveToTopEdge( 8 );
 
@@ -214,9 +226,8 @@ namespace dkmage {
             return roomQueue;
         }
 
-        std::vector< const spatial::FortressRoom* > Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
+        void Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
             /// create branch exit
-            std::vector< const spatial::FortressRoom* > exitRooms;
             const std::set< const spatial::FortressRoom* > uniqueRooms( startRooms.begin(), startRooms.end() );
             for ( const spatial::FortressRoom* item: uniqueRooms ) {
                 const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
@@ -224,9 +235,7 @@ namespace dkmage {
                     LOG() << "unable to generate branch exit";
                     continue ;
                 }
-                exitRooms.push_back( next );
             }
-            return exitRooms;
         }
 
         void Fortress::prepareSecondaryPass() {
@@ -294,6 +303,27 @@ namespace dkmage {
             } while( removed == true );
         }
 
+        void Fortress::cutInvalidExits() {
+            std::vector< const spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
+
+            for ( const spatial::FortressRoom* entrance: exitRooms ) {
+                const spatial::FortressRoom& entranceRoom = *entrance;
+
+                const std::vector< spatial::Direction > directions = fortress.linkDirections( entranceRoom );
+                const spatial::Direction corridorDirection = directions[ 0 ];
+                const spatial::Direction entranceDirection = spatial::opposite( corridorDirection );
+                const Point entrancePoint = entranceRoom.edgePoint( entranceDirection, 1 );
+
+                const Point initialDirection = movePoint( Point(0, 0), entranceDirection, 1 );
+                const Point bridgeStart = entrancePoint + initialDirection;
+                const bool bridgePossible = isBridgePossible( bridgeStart );
+                if ( bridgePossible == false ) {
+                    fortress.removeRoom( *entrance );
+                    continue;
+                }
+            }
+        }
+
         bool Fortress::generateLake( const Rect& lakeLimit ) {
             const Rect dungeonBBox = fortress.boundingBox();
             if ( lakeLimit.hasInside( dungeonBBox ) == false ) {
@@ -336,7 +366,7 @@ namespace dkmage {
             return true;
         }
 
-        bool Fortress::prepareBridges( const std::vector< const spatial::FortressRoom* >& entranceRooms ) {
+        bool Fortress::prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms ) {
             SizeTSet entrancesAllowed;
             if ( parameters.isSet( ParameterName::PN_ENTRANCES_NUMBER ) ) {
                 Optional< SizeTSet > allowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER );
@@ -345,7 +375,7 @@ namespace dkmage {
                 entrancesAllowed.add( 2, 5 );
             }
 
-            const std::size_t qSize = entranceRooms.size();
+            const std::size_t qSize = exitRooms.size();
             LOG() << "found exit rooms: " << qSize;
 
             const SizeTSet entrancesRange = entrancesAllowed.filter( 1, qSize );
@@ -356,9 +386,8 @@ namespace dkmage {
 
 //            LOG() << "requested number of fortress entrances: " << entrancesAllowed;
 
-            std::vector< Point > entrances;
-            std::vector< PointList > bridges;
-            for ( const spatial::FortressRoom* entrance: entranceRooms ) {
+            std::vector< Bridge > bridges;
+            for ( const spatial::FortressRoom* entrance: exitRooms ) {
                 const spatial::FortressRoom& entranceRoom = *entrance;
 
                 const std::vector< spatial::Direction > directions = fortress.linkDirections( entranceRoom );
@@ -380,8 +409,9 @@ namespace dkmage {
                 }
 
                 bool collision = false;
-                for ( const PointList& item: bridges ) {
-                    if ( is_collision( item, bridge ) ) {
+                for ( const Bridge& item: bridges ) {
+                    const PointList& currBridge = item.bridge;
+                    if ( is_collision( currBridge, bridge ) ) {
                         /// collision -- skip bridge
                         collision = true;
                         break;
@@ -391,8 +421,7 @@ namespace dkmage {
                     continue ;
                 }
 
-                entrances.push_back( entrancePoint );
-                bridges.push_back( bridge );
+                bridges.push_back( { entrancePoint, bridge } );
             }
 
             const std::size_t foundBridges = bridges.size();
@@ -430,17 +459,19 @@ namespace dkmage {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
                 const int bridgeIndex = get_item( indexSet, setIndex, true );
 
-                const Point entrance    = entrances[ bridgeIndex ];
-                const PointList& bridge = bridges[ bridgeIndex ];
+                const Bridge& bridge = bridges[ bridgeIndex ];
+                const Point entrance = bridge.entrance;
+                const PointList& bridgePoints = bridge.bridge;
+
                 level.setDoor( entrance, Door::D_IRON, true );
 
-                const Point bridgeDirection = bridge[1] - bridge[0];
+                const Point bridgeDirection = bridgePoints[1] - bridgePoints[0];
                 const Point bridgeOrtho = bridgeDirection.swapped();
                 std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
                 neighbourDirections.erase( -bridgeDirection );
 
                 std::size_t i = 0;
-                for ( const Point bridgePoint: bridge ) {
+                for ( const Point bridgePoint: bridgePoints ) {
                     ++i;
 
                     /// add bridge keepers
@@ -549,6 +580,37 @@ namespace dkmage {
             }
 
             return ret;
+        }
+
+        bool Fortress::isBridgePossible( const Point startPoint ) const {
+            static const PointList directions = { Point( 1, 0 ), Point( -1, 0 ), Point( 0, 1 ), Point( 0, -1 ) };
+            for ( const Point dir: directions ) {
+                const bool found = findFortified( startPoint, dir );
+                if ( found == false ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool Fortress::findFortified( const Point startPoint, const Point bridgeDirection ) const {
+            const Rect dungeonRect = fortress.boundingBox();
+
+            std::set< Point > heighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
+            heighbourDirections.erase( -bridgeDirection );
+            Point bridgePoint = startPoint;
+            while( true ) {
+                if ( dungeonRect.isInside( bridgePoint ) == false ) {
+                    break;
+                }
+                const Rect bridgeCellRect( bridgePoint, 3, 3 );
+                if ( fortress.isCollision( bridgeCellRect ) ) {
+                    /// fortified found
+                    return true;
+                }
+                bridgePoint += bridgeDirection;
+            }
+            return false;
         }
 
 

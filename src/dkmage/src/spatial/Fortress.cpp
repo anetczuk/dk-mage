@@ -169,6 +169,24 @@ namespace dkmage {
             return false;
         }
 
+        bool FortressDungeon::isCollision( const Point& start, const Point& end ) const {
+            const std::vector<Point> points = line( start, end );
+            const std::size_t pSize = points.size();
+            for ( std::size_t i=0; i<pSize; i += 3 ) {
+                const Rect rect( points[i], 3, 3 );
+                if ( isCollision(rect) ) {
+                    return true;
+                }
+            }
+            if ( pSize > 1 ) {
+                const Rect pointRect( points[pSize-1], 3, 3 );
+                if ( isCollision( pointRect ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         std::string FortressDungeon::print() const {
             std::stringstream stream;
             stream << "bbox: " << boundingBox() << "\n";

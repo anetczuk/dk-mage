@@ -56,6 +56,11 @@ namespace dkmage {
                 }
             }
 
+            bool isCollision( const Rect& rect ) const;
+
+            /// is collision with corridor
+            bool isCollision( const Point& start, const Point& end ) const;
+
             std::set< Point > outline() const {
                 std::set< Point > ret;
 
@@ -78,10 +83,10 @@ namespace dkmage {
                 return ret;
             }
 
-            std::vector< FortressRoom* > findRoom( const FortressRoomType roomType ) {
-                std::vector< FortressRoom* > ret;
+            std::vector< const FortressRoom* > findRoom( const FortressRoomType roomType ) {
+                std::vector< const FortressRoom* > ret;
                 std::vector< FortressRoom* > allRooms = graph.itemsList();
-                for (  FortressRoom* item: allRooms ) {
+                for ( const FortressRoom* item: allRooms ) {
                     if ( item == nullptr ) {
                         continue ;
                     }
@@ -106,27 +111,6 @@ namespace dkmage {
         protected:
 
             bool canAdd( const Rect& roomRect, const FortressRoom& from, const Direction direction ) const;
-
-            bool isCollision( const Rect& rect ) const;
-
-            /// is collision with corridor
-            bool isCollision( const Point& start, const Point& end ) const {
-                const std::vector<Point> points = line( start, end );
-                const std::size_t pSize = points.size();
-                for ( std::size_t i=0; i<pSize; i += 3 ) {
-                    const Rect rect( points[i], 3, 3 );
-                    if ( isCollision(rect) ) {
-                        return true;
-                    }
-                }
-                if ( pSize > 1 ) {
-                    const Rect pointRect( points[pSize-1], 3, 3 );
-                    if ( isCollision( pointRect ) ) {
-                        return true;
-                    }
-                }
-                return false;
-            }
 
         };
 
