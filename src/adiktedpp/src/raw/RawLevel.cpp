@@ -496,6 +496,33 @@ namespace adiktedpp {
             return stream.str();
         }
 
+        std::size_t RawLevel::countItems( const utils::Point& point ) const {
+            return countItems( point.x, point.y );
+        }
+
+        std::size_t RawLevel::countItems( const std::size_t x, const std::size_t y ) const {
+            if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
+                /// out of map
+                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                return 0;
+            }
+            LEVEL* level = data->lvl;
+
+            static const std::size_t slabSubSize = MAP_SUBNUM_X * MAP_SUBNUM_Y;
+
+            std::size_t ret = 0;
+            for ( std::size_t subIndex=0; subIndex<slabSubSize; ++subIndex ) {
+                const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
+                const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
+                const int things_count = get_thing_subnums( level, sx, sy );
+                if ( things_count < 0 ) {
+                    continue ;
+                }
+                ret += (std::size_t) things_count;
+            }
+            return ret;
+        }
+
         /// prevents setting two items inside the same subtile
         void RawLevel::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {

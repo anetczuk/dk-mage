@@ -49,14 +49,7 @@ namespace dkmage {
 
 
         Point FortressRoom::edgePoint( const Direction direction, const std::size_t delta ) const {
-            switch( direction ) {
-            case Direction::D_NORTH: return roomPosition.centerTop( delta );
-            case Direction::D_SOUTH: return roomPosition.centerBottom( delta );
-            case Direction::D_WEST:  return roomPosition.leftCenter( delta );
-            case Direction::D_EAST:  return roomPosition.rightCenter( delta );
-            }
-            LOG() << "invalid case";
-            return roomPosition.center();
+            return spatial::edgePoint( roomPosition, direction, delta );
         }
 
         std::string FortressRoom::print() const {
@@ -126,6 +119,14 @@ namespace dkmage {
                 return FortressRoomType::FR_DUNGEON_HEART;
             }
 
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
+            }
+
             void prepare( const FortressRoom& from ) override {
                 const std::vector<Direction>& dirs = DirectionValues();
                 direction = rng_rand( dirs );
@@ -157,6 +158,8 @@ namespace dkmage {
                 heartPoint = movePoint( heartPoint, direction, 2 );
                 const Rect heartRect( heartPoint, 5, 5 );
                 level.setRoom( heartRect, Room::R_DUNGEON_HEART, roomOwner, false );
+                const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
+                level.setDoor( heartEntrancePoint, Door::D_IRON, true );
 
                 const Point entrancePoint = edgePoint( direction, 1 );
                 level.setDoor( entrancePoint, Door::D_IRON, true );
@@ -172,7 +175,6 @@ namespace dkmage {
                 level.setCreatureAuto( heartPoint.x-2, heartPoint.y, Creature::C_WIZARD, 9, 9, roomOwner );
 
                 /// entrance chamber
-
                 Point wallDir;
                 const Axis orientation = get_axis( direction );
                 switch( orientation ) {
@@ -201,11 +203,11 @@ namespace dkmage {
                     level.setSlab( offset + wallDir, Slab::S_LAVA );
 
                     if ( i % 2 == 0 ) {
-                        level.setCreatureAuto( offset + wallDir * 2, Creature::C_SAMURAI, 1, 9, roomOwner );
-                        level.setCreatureAuto( offset - wallDir * 2, Creature::C_SAMURAI, 1, 9, roomOwner );
+                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
+                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
                     } else {
-                        level.setCreatureAuto( offset + wallDir * 2, Creature::C_MONK, 1, 9, roomOwner );
-                        level.setCreatureAuto( offset - wallDir * 2, Creature::C_MONK, 1, 9, roomOwner );
+                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
+                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
                     }
                 }
             }
@@ -239,6 +241,14 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EMPTY;
+            }
+
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {
@@ -289,6 +299,14 @@ namespace dkmage {
                 return FortressRoomType::FR_TREASURE;
             }
 
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
+            }
+
             void prepare( const FortressRoom& from ) override {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
@@ -321,6 +339,10 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_CORRIDOR;
+            }
+
+            bool isCorridor( const utils::Point /*point*/ ) const {
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {
@@ -386,6 +408,10 @@ namespace dkmage {
                 return FortressRoomType::FR_BRANCH;
             }
 
+            bool isCorridor( const utils::Point /*point*/ ) const {
+                return true;
+            }
+
             void prepare( const FortressRoom& from ) override {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
@@ -422,6 +448,14 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_BOULDER_CORRIDOR;
+            }
+
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {
@@ -516,6 +550,14 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_PRISON;
+            }
+
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {
@@ -624,6 +666,10 @@ namespace dkmage {
                 return FortressRoomType::FR_TORTURE;
             }
 
+            bool isCorridor( const utils::Point /*point*/ ) const {
+                return true;
+            }
+
             void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
@@ -672,24 +718,28 @@ namespace dkmage {
                 static std::set< Player > PlayerSet = { Player::P_UNSET, Player::P_GOOD };
                 Player cOwner = Player::P_UNSET;
 
+                /// chamber
                 const Rect r1 = chamber.moved( -3, -3 );
                 level.setRoom( r1, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r1, roomOwner );
                 cOwner = rng_rand( PlayerSet );
                 level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
+                /// chamber
                 const Rect r2 = chamber.moved(  3, -3 );
                 level.setRoom( r2, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r2, roomOwner );
                 cOwner = rng_rand( PlayerSet );
                 level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
+                /// chamber
                 const Rect r3 = chamber.moved(  3,  3 );
                 level.setRoom( r3, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r3, roomOwner );
                 cOwner = rng_rand( PlayerSet );
                 level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
 
+                /// chamber
                 const Rect r4 = chamber.moved( -3,  3 );
                 level.setRoom( r4, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r4, roomOwner );
@@ -705,7 +755,6 @@ namespace dkmage {
                     level.setDoor( door1a1, Door::D_IRON, true );
                     const Point door1a2 = door1 + Point( -2, -1 );
                     level.setDoor( door1a2, Door::D_IRON, true );
-
 
                     const Point door2 = roomRect.center() + Point(  1, 0 );
                     level.setDoor( door2, Door::D_IRON, true );
@@ -752,6 +801,10 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_GRAVEYARD;
+            }
+
+            bool isCorridor( const utils::Point /*point*/ ) const {
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {
@@ -880,6 +933,14 @@ namespace dkmage {
                 return FortressRoomType::FR_LAVA_POST;
             }
 
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
+            }
+
             void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
                 if ( availableDirs.empty() ) {
@@ -983,6 +1044,10 @@ namespace dkmage {
 
 
             using FortressRoom::FortressRoom;
+
+            bool isCorridor( const utils::Point /*point*/ ) const {
+                return true;
+            }
 
             void prepare( const FortressRoom& from ) override {
                 std::vector< Direction > availableDirs = from.restrictedDirections();
@@ -1129,6 +1194,14 @@ namespace dkmage {
 
             FortressRoomType type() const override {
                 return FortressRoomType::FR_EXIT;
+            }
+
+            bool isCorridor( const utils::Point point ) const {
+                const Rect& roomBox = bbox();
+                if ( roomBox.isInside( point ) ) {
+                    return false;
+                }
+                return true;
             }
 
             void prepare( const FortressRoom& from ) override {

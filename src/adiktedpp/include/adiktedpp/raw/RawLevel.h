@@ -161,6 +161,10 @@ namespace adiktedpp {
 
             std::string printItems() const;
 
+            std::size_t countItems( const utils::Point& point ) const;
+
+            std::size_t countItems( const std::size_t x, const std::size_t y ) const;
+
             void setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item );
 
             void setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );

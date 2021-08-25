@@ -145,6 +145,8 @@ namespace adiktedpp {
 
         void setRoom( const utils::Point& position, const Room room, const Player owner, const bool fortify );
 
+        std::size_t countItems( const utils::Point& point ) const;
+
         void setTrap( const std::size_t x, const std::size_t y, const Trap trap );
 
         void setTrap( const utils::Point& point, const Trap trap );
@@ -190,6 +192,10 @@ namespace adiktedpp {
         void digLine( const utils::Point& from, const utils::Point& to, const Slab type = Slab::S_PATH );
 
         void digLine( const utils::Point& from, const utils::Point& to, const Player owner, const bool fortify );
+
+        void digCorridor( const utils::PointList& corridor, const Slab type );
+
+        void digCorridor( const utils::PointList& corridor, const Player owner, const bool fortify );
 
     };
 

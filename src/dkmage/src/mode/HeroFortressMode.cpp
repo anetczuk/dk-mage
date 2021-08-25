@@ -170,6 +170,8 @@ namespace dkmage {
                 return false;
             }
 
+            prepareCorridorTraps();
+
             return true;
         }
 
@@ -502,6 +504,86 @@ namespace dkmage {
             }
 
             return true;
+        }
+
+        enum class CorridorFurniture {
+            CF_EMPTY,
+            CF_DOOR_OPEN,
+            CF_DOOR_LOCKED,
+            CF_GAS,
+            CF_LIGHTNING,
+            CF_BOULDER,
+            CF_HERO1,
+            CF_HERO2,
+        };
+
+        void Fortress::prepareCorridorTraps() {
+            static ProbabilityMass< CorridorFurniture > corridorItem;
+            if ( corridorItem.empty() ) {
+                corridorItem.set( CorridorFurniture::CF_EMPTY, 0.6 );
+                corridorItem.set( CorridorFurniture::CF_DOOR_OPEN, 0.12 );
+                corridorItem.set( CorridorFurniture::CF_DOOR_LOCKED, 0.08 );
+                corridorItem.set( CorridorFurniture::CF_GAS, 0.1 );
+                corridorItem.set( CorridorFurniture::CF_LIGHTNING, 0.1 );
+                corridorItem.set( CorridorFurniture::CF_BOULDER, 0.1 );
+                corridorItem.set( CorridorFurniture::CF_HERO1, 0.04 );
+                corridorItem.set( CorridorFurniture::CF_HERO2, 0.04 );
+                corridorItem.normalize();
+            }
+
+            const Player dungeonOwner = fortress.owner();
+
+            /// draw corridors
+            const auto connectedList = fortress.connectedRooms();
+            for ( const std::pair< const spatial::FortressRoom*, const spatial::FortressRoom* >& pair: connectedList ) {
+                const spatial::FortressRoom* room      = pair.first;
+                const spatial::FortressRoom* connected = pair.second;
+
+                const PointList corridor = fortress.getCorridor( *room, *connected );
+                for ( const Point pt: corridor ) {
+                    if ( level.countItems( pt ) > 0 ) {
+                        continue ;
+                    }
+
+                    const CorridorFurniture furniture = corridorItem.getRandom();
+                    switch( furniture ) {
+                    case CorridorFurniture::CF_EMPTY: {
+                        /// do nothing
+                        break ;
+                    }
+                    case CorridorFurniture::CF_DOOR_OPEN: {
+                        level.setDoor( pt, Door::D_IRON, false );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_DOOR_LOCKED: {
+                        level.setDoor( pt, Door::D_IRON, true );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_GAS: {
+                        level.setTrap( pt, Trap::T_POISON_GAS );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_LIGHTNING: {
+                        level.setTrap( pt, Trap::T_LIGHTNING );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_BOULDER: {
+                        level.setTrap( pt, Trap::T_BOULDER );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_HERO1: {
+                        level.setCreature( pt, 1, Creature::C_ARCHER, 2, 7, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_DWARF, 2, 7, dungeonOwner );
+                        break ;
+                    }
+                    case CorridorFurniture::CF_HERO2: {
+                        level.setCreature( pt, 1, Creature::C_SAMURAI, 2, 7, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_WIZARD, 2, 7, dungeonOwner );
+                        break ;
+                    }
+                    }
+                }
+            }
         }
 
         PointList Fortress::findBridge( const Point startPoint ) {

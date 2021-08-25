@@ -6,10 +6,13 @@
 #ifndef DKMAGE_INCLUDE_DKMAGE_SPATIAL_DUNGEONGRAPH_H_
 #define DKMAGE_INCLUDE_DKMAGE_SPATIAL_DUNGEONGRAPH_H_
 
+#include "utils/Rect.h"
 #include "utils/Log.h"
 
 #include <lemon/list_graph.h>
 
+#include <set>
+#include <map>
 #include <sstream>
 
 
@@ -60,6 +63,8 @@ namespace dkmage {
             }
             return Direction::D_NORTH;
         }
+
+        utils::Point edgePoint( const utils::Rect& rect, const Direction direction, const std::size_t delta );
 
 
         /// ==================================================================
@@ -286,6 +291,31 @@ namespace dkmage {
                     ret.push_back( nItem );
                 }
                 return std::vector< TNodeData* >( ret.rbegin(), ret.rend() );
+            }
+
+            std::vector< std::pair<const TNodeData*, const TNodeData*> > connectedItems() const {
+                std::vector< std::pair<const TNodeData*, const TNodeData*> > ret;
+
+                const std::vector< const TNodeData* > allItems = itemsList();
+                std::map< const TNodeData*, std::set< const TNodeData* > > handled;
+                for ( const TNodeData* item: allItems ) {
+                    auto& subset = handled[ item ];
+
+                    const std::vector< const TNodeData* > connectedList = connectedItems( *item );
+                    for ( const TNodeData* connected: connectedList ) {
+                        if ( subset.count(connected) > 0 ) {
+                            continue ;
+                        }
+                        subset.insert(connected);
+                        auto& reverseset = handled[ connected ];
+                        reverseset.insert(item);
+
+                        ret.push_back( std::make_pair(item, connected) );
+                    }
+
+                }
+
+                return ret;
             }
 
             /// find nodes connected to given 'item'

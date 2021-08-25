@@ -26,14 +26,13 @@ namespace dkmage {
             std::vector< const FortressRoom* > roomsList = rooms();
 
             /// draw corridors
-            for ( const FortressRoom* item: roomsList ) {
-                const Point& itemCenter = item->joinPoint();
-                std::vector< const FortressRoom* > connectedList = connectedRooms( *item );
-                for ( const FortressRoom* connected: connectedList ) {
-                    const Point& connectedCenter = connected->joinPoint();
-                    level.digLine( itemCenter, connectedCenter, owner, fortify );
-                }
+            const auto connectedList = connectedRooms();
+            for ( const std::pair< const FortressRoom*, const FortressRoom* >& pair: connectedList ) {
+                const FortressRoom* room      = pair.first;
+                const FortressRoom* connected = pair.second;
 
+                const PointList corridor = getCorridor( *room, *connected );
+                level.digCorridor( corridor, owner, fortify );
             }
 
             /// draw room content
@@ -137,7 +136,7 @@ namespace dkmage {
             /// check corridor collision
             const Point start = from.edgePoint( direction, 2 );
             const Point end   = roomRect.center();
-            if ( isCollision( start, end ) ) {
+            if ( isCollisionLine( start, end ) ) {
                 /// collision detected
 //                LOG() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
                 return false;
@@ -169,7 +168,7 @@ namespace dkmage {
             return false;
         }
 
-        bool FortressDungeon::isCollision( const Point& start, const Point& end ) const {
+        bool FortressDungeon::isCollisionLine( const Point& start, const Point& end ) const {
             const std::vector<Point> points = line( start, end );
             const std::size_t pSize = points.size();
             for ( std::size_t i=0; i<pSize; i += 3 ) {
@@ -185,6 +184,26 @@ namespace dkmage {
                 }
             }
             return false;
+        }
+
+        const PointList FortressDungeon::getCorridor( const FortressRoom& from, const FortressRoom& to ) const {
+            const Point& fromPoint = from.joinPoint();
+            const Point& toPoint   = to.joinPoint();
+//            return line( fromPoint, toPoint );
+
+            const PointList points = line( fromPoint, toPoint );
+            PointList ret;
+            ret.reserve( points.size() );
+            for ( const Point pt: points ) {
+                if ( from.isCorridor( pt ) == false ) {
+                    continue ;
+                }
+                if ( to.isCorridor( pt ) == false ) {
+                    continue ;
+                }
+                ret.push_back( pt );
+            }
+            return ret;
         }
 
         std::string FortressDungeon::print() const {

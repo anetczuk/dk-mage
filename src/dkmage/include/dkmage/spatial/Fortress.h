@@ -59,7 +59,7 @@ namespace dkmage {
             bool isCollision( const Rect& rect ) const;
 
             /// is collision with corridor
-            bool isCollision( const Point& start, const Point& end ) const;
+            bool isCollisionLine( const Point& start, const Point& end ) const;
 
             std::set< Point > outline() const {
                 std::set< Point > ret;
@@ -104,6 +104,8 @@ namespace dkmage {
             bool addRandomRoom( FortressRoom& newRoom, const FortressRoom& from, const std::size_t corridorLength = 1 );
 
             bool createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
+
+            const utils::PointList getCorridor( const FortressRoom& from, const FortressRoom& to ) const;
 
             std::string print() const;
 

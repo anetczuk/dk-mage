@@ -50,6 +50,8 @@ namespace dkmage {
 
             bool prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms );
 
+            void prepareCorridorTraps();
+
             /// find shortest bridge in four directions
             utils::PointList findBridge( const utils::Point startPoint );
 

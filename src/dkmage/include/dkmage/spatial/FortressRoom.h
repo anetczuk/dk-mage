@@ -80,6 +80,9 @@ namespace dkmage {
 
             virtual FortressRoomType type() const = 0;
 
+            /// is point part of room's corridor?
+            virtual bool isCorridor( const utils::Point point ) const = 0;
+
             /// prepare room position and internal state
             virtual void prepare( const FortressRoom& from ) = 0;
 

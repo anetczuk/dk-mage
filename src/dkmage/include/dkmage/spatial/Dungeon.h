@@ -137,6 +137,10 @@ namespace dkmage {
                 return graph.removeItem( room );
             }
 
+            std::vector< std::pair<const TRoom*, const TRoom*> > connectedRooms() const {
+                return graph.connectedItems();
+            }
+
             std::vector< const TRoom* > connectedRooms( const TRoom& room ) const {
                 return graph.connectedItems( room );
             }

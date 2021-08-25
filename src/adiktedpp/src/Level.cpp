@@ -298,6 +298,10 @@ namespace adiktedpp {
         rawLevel.setRoom( rect, rawType, playerType, fortify );
     }
 
+    std::size_t Level::countItems( const utils::Point& point ) const {
+        return rawLevel.countItems( point );
+    }
+
     void Level::setTrap( const std::size_t x, const std::size_t y, const Trap trap ) {
         const raw::SubTypeTrap rawTrap = convertToRaw( trap );
         rawLevel.setTrap( x, y, 4, rawTrap );
@@ -421,10 +425,18 @@ namespace adiktedpp {
     }
 
     void Level::digLine( const Point& from, const Point& to, const Slab type ) {
-        const raw::SlabType slabType = convertToSlab( type );
+        const PointList points = line( from, to );
+        digCorridor( points, type );
+    }
 
-        const std::vector<Point> points = line( from, to );
-        for ( const Point& item: points ) {
+    void Level::digLine( const Point& from, const Point& to, const Player owner, const bool fortify ) {
+        const PointList points = line( from, to );
+        digCorridor( points, owner, fortify );
+    }
+
+    void Level::digCorridor( const utils::PointList& corridor, const Slab type ) {
+        const raw::SlabType slabType = convertToSlab( type );
+        for ( const Point& item: corridor ) {
             const raw::SlabType currSlab = rawLevel.getSlab( item );
             if ( raw::isEarth( currSlab ) ||
                  raw::isWall( currSlab ) ||
@@ -436,11 +448,9 @@ namespace adiktedpp {
         }
     }
 
-    void Level::digLine( const Point& from, const Point& to, const Player owner, const bool fortify ) {
+    void Level::digCorridor( const utils::PointList& corridor, const Player owner, const bool fortify ) {
         const raw::PlayerType playerType = convertToRaw( owner );
-
-        const std::vector<Point> points = line( from, to );
-        for ( const Point& item: points ) {
+        for ( const Point& item: corridor ) {
             const raw::SlabType currSlab = rawLevel.getSlab( item );
             if ( raw::isEarth( currSlab ) ||
                  raw::isWall( currSlab ) ||
