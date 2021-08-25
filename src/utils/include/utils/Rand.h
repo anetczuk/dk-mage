@@ -55,6 +55,19 @@ namespace utils {
         return get_item( data, index );
     }
 
+    template< typename T>
+    T rng_rand( const std::vector<T>& data ) {
+        const std::size_t dSize = data.size();
+        if ( dSize < 1 ) {
+            return T();
+        }
+        if ( dSize < 2 ) {
+            return data[ 0 ];
+        }
+        const std::size_t index = rng_randi( data.size() );
+        return data[ index ];
+    }
+
 }
 
 

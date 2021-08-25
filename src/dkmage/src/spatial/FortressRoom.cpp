@@ -117,6 +117,9 @@ namespace dkmage {
         class FortressRoomDungeonHeart: public FortressRoom {
         public:
 
+            Direction direction = Direction::D_EAST;
+            std::size_t roomLength = 11;
+
             using FortressRoom::FortressRoom;
 
             FortressRoomType type() const override {
@@ -124,21 +127,86 @@ namespace dkmage {
             }
 
             void prepare( const FortressRoom& from ) override {
-                const std::size_t corridorLength = rng_randi( 5 ) + 1;
+                const std::vector<Direction>& dirs = DirectionValues();
+                direction = rng_rand( dirs );
+                const Axis orientation = get_axis( direction );
+                switch( orientation ) {
+                case Axis::A_VERTICAL: {
+                    setBbox( 5, 11 );
+                    setRestrictedDirection( direction );
+                    break ;
+                }
+                case Axis::A_HORIZONTAL: {
+                    setBbox( 11, 5 );
+                    setRestrictedDirection( direction );
+                    break ;
+                }
+                }
 
-                setBbox( 5, 5 );
+                const std::size_t corridorLength = rng_randi( 5 ) + 1;
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
-                level.setRoom( roomRect, Room::R_DUNGEON_HEART, roomOwner, true );
+                level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
-                const std::vector< Direction > corridors = dungeon.linkDirections( *this );
-                for ( const Direction item: corridors ) {
-                    const Point entrancePoint = edgePoint( item, 1 );
-                    level.setDoor( entrancePoint, Door::D_IRON, true );
+                const Direction oppositeDir = opposite( direction );
+                Point heartPoint = edgePoint( oppositeDir, 0 );
+                heartPoint = movePoint( heartPoint, direction, 2 );
+                const Rect heartRect( heartPoint, 5, 5 );
+                level.setRoom( heartRect, Room::R_DUNGEON_HEART, roomOwner, false );
+
+                const Point entrancePoint = edgePoint( direction, 1 );
+                level.setDoor( entrancePoint, Door::D_IRON, true );
+
+                /// add guards
+                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-2, Creature::C_SAMURAI, 7, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x-1, heartPoint.y-2, Creature::C_THIEF, 9, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x,   heartPoint.y-2, Creature::C_FAIRY, 9, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x+1, heartPoint.y-2, Creature::C_GIANT, 9, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-2, Creature::C_BARBARIAN, 9, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-1, Creature::C_KNIGHT, 7, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-1, Creature::C_MONK, 9, 9, roomOwner );
+                level.setCreatureAuto( heartPoint.x-2, heartPoint.y, Creature::C_WIZARD, 9, 9, roomOwner );
+
+                /// entrance chamber
+
+                Point wallDir;
+                const Axis orientation = get_axis( direction );
+                switch( orientation ) {
+                case Axis::A_VERTICAL: {
+                    wallDir = Point( 1, 0 );
+                    break ;
+                }
+                case Axis::A_HORIZONTAL: {
+                    wallDir = Point( 0, 1 );
+                    break ;
+                }
+                }
+
+                Point chamberEntrance = movePoint( heartPoint, direction, 3 );
+                level.setFortified( chamberEntrance + wallDir, roomOwner );
+                level.setFortified( chamberEntrance + wallDir * 2, roomOwner );
+                level.setFortified( chamberEntrance - wallDir, roomOwner );
+                level.setFortified( chamberEntrance - wallDir * 2, roomOwner );
+
+                const Point dirr = movePoint( Point(0,0), direction, 1 );
+
+                const std::size_t length = roomLength - 5;
+                for ( std::size_t i=1; i<length; ++i) {
+                    const Point offset = chamberEntrance + dirr * i;
+                    level.setSlab( offset - wallDir, Slab::S_LAVA );
+                    level.setSlab( offset + wallDir, Slab::S_LAVA );
+
+                    if ( i % 2 == 0 ) {
+                        level.setCreatureAuto( offset + wallDir * 2, Creature::C_SAMURAI, 1, 9, roomOwner );
+                        level.setCreatureAuto( offset - wallDir * 2, Creature::C_SAMURAI, 1, 9, roomOwner );
+                    } else {
+                        level.setCreatureAuto( offset + wallDir * 2, Creature::C_MONK, 1, 9, roomOwner );
+                        level.setCreatureAuto( offset - wallDir * 2, Creature::C_MONK, 1, 9, roomOwner );
+                    }
                 }
             }
 
