@@ -297,6 +297,7 @@ namespace dkmage {
         void Fortress::cutInvalidExits() {
             std::vector< const spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
 
+            /// remove inner exits (cannot make bridge)
             for ( const spatial::FortressRoom* entrance: exitRooms ) {
                 const spatial::FortressRoom& entranceRoom = *entrance;
 
@@ -312,6 +313,51 @@ namespace dkmage {
                     fortress.removeRoom( *entrance );
                     continue;
                 }
+            }
+
+            /// remove close exits
+            static const std::size_t MIN_DISTANCE = 20;
+            exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
+
+            while( true ) {
+                const std::size_t eSize = exitRooms.size();
+                std::vector< std::size_t > neighbourCounter( eSize );
+                std::size_t maxNeighbour = 0;
+                std::size_t maxIndex     = 0;
+
+                for ( std::size_t i=0; i<eSize; ++i ) {
+                    const spatial::FortressRoom* from = exitRooms[ i ];
+                    const Point fromCenter = from->bbox().center();
+                    for ( std::size_t j=i+1; j<eSize; ++j ) {
+                        const spatial::FortressRoom* to = exitRooms[ j ];
+                        const Point toCenter = to->bbox().center();
+                        const std::size_t distance = fromCenter.distanceChebyshev( toCenter );
+                        if ( distance < MIN_DISTANCE ) {
+                            neighbourCounter[ i ] += 1;
+                            neighbourCounter[ j ] += 1;
+                        }
+                    }
+                    const std::size_t currNeigh = neighbourCounter[ i ];
+                    if ( currNeigh > maxNeighbour ) {
+                        maxNeighbour = currNeigh;
+                        maxIndex     = i;
+                    }
+                }
+                if ( eSize > 0 ) {
+                    const std::size_t currIndex = eSize - 1;
+                    const std::size_t currNeigh = neighbourCounter[ currIndex ];
+                    if ( currNeigh > maxNeighbour ) {
+                        maxNeighbour = currNeigh;
+                        maxIndex     = currIndex;
+                    }
+                }
+                if ( maxNeighbour < 1 ) {
+                    break ;
+                }
+                /// remove first most popular exit
+                const spatial::FortressRoom* room = exitRooms[ maxIndex ];
+                fortress.removeRoom( *room );
+                exitRooms.erase( exitRooms.begin() + maxIndex );
             }
         }
 
