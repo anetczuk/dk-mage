@@ -61,6 +61,7 @@ namespace dkmage {
         }
         LOG() << "map generated successfully";
         LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
+        LOG() << "access points number: " << level.getRawLevel().countAccessPoints();
         return true;
     }
 

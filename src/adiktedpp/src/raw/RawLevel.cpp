@@ -311,6 +311,19 @@ namespace adiktedpp {
 
         /// ============================================================
 
+        std::size_t RawLevel::countSolid( const utils::Rect& area ) const {
+            std::size_t ret = 0;
+            for ( int x = area.min.x; x<= area.max.x; ++x ) {
+                for ( int y = area.min.y; y<= area.max.y; ++y ) {
+                    const raw::SlabType currSlab = getSlab( x, y );
+                    if ( raw::isSolid( currSlab ) ) {
+                        ++ret;
+                    }
+                }
+            }
+            return ret;
+        }
+
         SlabType RawLevel::getSlab( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
@@ -598,6 +611,24 @@ namespace adiktedpp {
             setDoor( point.x, point.y, door, locked );
         }
 
+        bool RawLevel::canPlaceDoor( const utils::Point& point ) const {
+            {
+                const raw::SlabType currSlab1 = getSlab( point.x+1, point.y );
+                const raw::SlabType currSlab2 = getSlab( point.x-1, point.y );
+                if ( raw::isSolid( currSlab1 ) && raw::isSolid( currSlab2 ) ) {
+                    return true;
+                }
+            }
+            {
+                const raw::SlabType currSlab1 = getSlab( point.x, point.y+1 );
+                const raw::SlabType currSlab2 = getSlab( point.x, point.y-1 );
+                if ( raw::isSolid( currSlab1 ) && raw::isSolid( currSlab2 ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         void RawLevel::setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
@@ -819,6 +850,20 @@ namespace adiktedpp {
             }
 
             return creaturesCount;
+        }
+
+        std::size_t RawLevel::countAccessPoints() {
+            const LEVEL* level = data->lvl;
+            const std::size_t arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
+            const std::size_t arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
+
+            std::size_t ret = 0;
+            for ( std::size_t cy=0; cy<arr_entries_y; ++cy ) {
+                for ( std::size_t cx=0; cx<arr_entries_x; ++cx ) {
+                    ret += get_actnpt_subnums( level, cx, cy );
+                }
+            }
+            return ret;
         }
 
         std::size_t RawLevel::countSeparatedAreas() {

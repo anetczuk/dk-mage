@@ -109,6 +109,8 @@ namespace adiktedpp {
 
             std::size_t countAllCreatures();
 
+            std::size_t countAccessPoints();
+
             /// count separated chambers by impassable rocks and gems
             std::size_t countSeparatedAreas();
 
@@ -118,6 +120,8 @@ namespace adiktedpp {
             void fillSeparatedAreas( const std::size_t areaLimit );
 
             /// ===========================================================================
+
+            std::size_t countSolid( const utils::Rect& area ) const;
 
             SlabType getSlab( const std::size_t x, const std::size_t y ) const;
 
@@ -178,6 +182,8 @@ namespace adiktedpp {
             void setTrap( const utils::Point& point, const std::size_t subIndex, const SubTypeTrap trap );
 
             void setTrap( const utils::Point& point, const SubTypeTrap trap );
+
+            bool canPlaceDoor( const utils::Point& point ) const;
 
             void setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked = false );
 

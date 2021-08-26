@@ -214,6 +214,16 @@ namespace adiktedpp {
         return true;
     }
 
+    std::size_t Level::countSolid( const utils::Point& point, const std::size_t radius ) const {
+        Rect rect( point );
+        rect.grow( radius );
+        return rawLevel.countSolid( rect );
+    }
+
+    std::size_t Level::countSolid( const utils::Rect& rect ) const {
+        return rawLevel.countSolid( rect );
+    }
+
     Slab Level::getSlab( const std::size_t x, const std::size_t y ) {
         const raw::SlabType slab = rawLevel.getSlab( x, y );
         return convertToSlab( slab );
@@ -315,6 +325,10 @@ namespace adiktedpp {
     void Level::setTrap( const Point& point, const std::size_t subIndex, const Trap trap ) {
         const raw::SubTypeTrap rawTrap = convertToRaw( trap );
         rawLevel.setTrap( point, subIndex, rawTrap );
+    }
+
+    bool Level::canPlaceDoor( const utils::Point& point ) const {
+        return rawLevel.canPlaceDoor( point );
     }
 
     void Level::setDoor( const std::size_t x, const std::size_t y, const Door door, const bool locked ) {

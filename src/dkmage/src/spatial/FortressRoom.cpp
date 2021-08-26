@@ -150,6 +150,8 @@ namespace dkmage {
 
             void draw( adiktedpp::GameMap& gameMap ) const override {
                 adiktedpp::Level& level = gameMap.level;
+                script::Script& script  = gameMap.script;
+
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -161,20 +163,32 @@ namespace dkmage {
                 const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
                 level.setDoor( heartEntrancePoint, Door::D_IRON, true );
 
+                /// add guards
+                const std::size_t heartEntranceAP = level.addActionPoint( heartEntrancePoint, 1 );
+                const std::size_t heartAP         = level.addActionPoint( heartPoint, 2 );
+                script.actionSection().REM( "dungeon heart guards" );
+                script.actionSection().REM( std::to_string( heartEntranceAP ) + " -- dungeon heart entrance" );
+                script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
+                script.addLineActionIf( heartEntranceAP, Player::P_P0 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_KNIGHT,  heartAP, 1, 10, 1000 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, heartAP, 3,  9,  800 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_GIANT,   heartAP, 4,  8,  600 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK,    heartAP, 5,  7,  400 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
+                script.addLineActionEndIf();
+
+//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-1, Creature::C_KNIGHT,  1, 9, roomOwner );
+//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-2, Creature::C_SAMURAI, 3, 9, roomOwner );
+//                level.setCreatureAuto( heartPoint.x+1, heartPoint.y-2, Creature::C_GIANT,   4, 9, roomOwner );
+//                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-1, Creature::C_MONK,    5, 9, roomOwner );
+//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y,   Creature::C_WIZARD,  5, 9, roomOwner );
+//                level.setCreatureAuto( heartPoint.x,   heartPoint.y-2, Creature::C_FAIRY,   6, 9, roomOwner );
+
+                /// entrance chamber
                 const Point entrancePoint = edgePoint( direction, 1 );
                 level.setDoor( entrancePoint, Door::D_IRON, true );
 
-                /// add guards
-                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-2, Creature::C_SAMURAI, 7, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x-1, heartPoint.y-2, Creature::C_THIEF, 9, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x,   heartPoint.y-2, Creature::C_FAIRY, 9, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x+1, heartPoint.y-2, Creature::C_GIANT, 9, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-2, Creature::C_BARBARIAN, 9, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-1, Creature::C_KNIGHT, 7, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-1, Creature::C_MONK, 9, 9, roomOwner );
-                level.setCreatureAuto( heartPoint.x-2, heartPoint.y, Creature::C_WIZARD, 9, 9, roomOwner );
-
-                /// entrance chamber
                 Point wallDir;
                 const Axis orientation = get_axis( direction );
                 switch( orientation ) {
@@ -196,6 +210,15 @@ namespace dkmage {
 
                 const Point dirr = movePoint( Point(0,0), direction, 1 );
 
+                const std::size_t chamberEntranceAP = level.addActionPoint( chamberEntrance, 1 );
+                const std::size_t leftSideAP  = level.addActionPoint( chamberEntrance + dirr + wallDir * 2, 0 );
+                const std::size_t rightSideAP = level.addActionPoint( chamberEntrance + dirr - wallDir * 2, 0 );
+
+                script.actionSection().REM( "vestibule guards of dungeon heart" );
+                script.actionSection().REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
+                script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
+                script.actionSection().REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
+                script.addLineActionIf( chamberEntranceAP, Player::P_P0 );
                 const std::size_t length = roomLength - 5;
                 for ( std::size_t i=1; i<length; ++i) {
                     const Point offset = chamberEntrance + dirr * i;
@@ -203,13 +226,18 @@ namespace dkmage {
                     level.setSlab( offset + wallDir, Slab::S_LAVA );
 
                     if ( i % 2 == 0 ) {
-                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
-                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, 10, 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, 10, 0 );
+//                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
+//                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
                     } else {
-                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
-                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, 10, 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, 10, 0 );
+//                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
+//                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
                     }
                 }
+                script.addLineActionEndIf();
             }
 
         };
@@ -908,6 +936,8 @@ namespace dkmage {
                 level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 9 );           /// neutral
 
                 const std::size_t actionPoint = level.addActionPoint( roomCenter, 1 );
+                script.actionSection().REM( "graveyard guard" );
+                script.actionSection().REM( std::to_string( actionPoint ) + " -- graveyard center" );
                 script.addLineActionIf( actionPoint, Player::P_P0 );
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 2, 10, 1000 );
                 script.addLineActionEndIf();

@@ -151,6 +151,19 @@ namespace adiktedpp {
             }
         }
 
+        inline bool isSolid( const SlabType type ) {
+            if ( isWall(type) ) {
+                return true;
+            }
+            if ( isEarth(type) ) {
+                return true;
+            }
+            if ( isImpassable(type) ) {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
 

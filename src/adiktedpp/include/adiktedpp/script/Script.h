@@ -58,10 +58,6 @@ namespace adiktedpp {
 
 //            void addLine( const std::string& line, const std::size_t position );
 
-            void addREM( const std::string& comment ) {
-                return addLine( "REM " + comment );
-            }
-
             void setFXLevel();
 
             void setStartMoney( const adiktedpp::Player player, const std::size_t amount );
@@ -96,6 +92,10 @@ namespace adiktedpp {
             void setLoseConditionStandard( const Player player );
 
             /// ================================================================================
+
+            void REM( const std::string& comment ) {
+                return addLine( "REM " + comment );
+            }
 
             /// 'crExp' in range [1..10]
             void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );

@@ -552,10 +552,16 @@ namespace dkmage {
                         break ;
                     }
                     case CorridorFurniture::CF_DOOR_OPEN: {
+                        if ( level.canPlaceDoor( pt ) == false ) {
+                            break ;
+                        }
                         level.setDoor( pt, Door::D_IRON, false );
                         break ;
                     }
                     case CorridorFurniture::CF_DOOR_LOCKED: {
+                        if ( level.canPlaceDoor( pt ) == false ) {
+                            break ;
+                        }
                         level.setDoor( pt, Door::D_IRON, true );
                         break ;
                     }

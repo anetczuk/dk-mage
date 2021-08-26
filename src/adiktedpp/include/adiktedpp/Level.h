@@ -111,6 +111,10 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
+        std::size_t countSolid( const utils::Point& point, const std::size_t radius ) const;
+
+        std::size_t countSolid( const utils::Rect& rect ) const;
+
         Slab getSlab( const std::size_t x, const std::size_t y );
 
         Slab getSlab( const utils::Point& point );
@@ -152,6 +156,8 @@ namespace adiktedpp {
         void setTrap( const utils::Point& point, const Trap trap );
 
         void setTrap( const utils::Point& point, const std::size_t subIndex, const Trap trap );
+
+        bool canPlaceDoor( const utils::Point& point ) const;
 
         void setDoor( const std::size_t x, const std::size_t y, const Door door, const bool locked = false );
 
