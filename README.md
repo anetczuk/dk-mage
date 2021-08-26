@@ -96,6 +96,19 @@ To build one have to `cmake` directly in order to configure project and then exe
 
 - *CMake*'s `FetchContent` and proper configuration for `add_directory` (`target_include_directories`)
 
+### Source of randomness
+
+- random number generator (```stdlib.h```)
+- uninitialized variables
+- order of objects stored as pointers, especially pointers in ```std::set``` -- e.g.
+```
+std::set< int* > data;
+data.insert( new int(1) );
+data.insert( new int(2) );
+data.insert( new int(3) );
+/// each time order of numbers can be different
+```
+
 
 ## References:
 

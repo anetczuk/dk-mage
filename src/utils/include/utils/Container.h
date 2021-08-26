@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <set>
+#include <unordered_set>
 #include <algorithm>
 
 
@@ -62,6 +63,20 @@ namespace utils {
         T last = v.back();
         v.pop_back();
         return last;
+    }
+
+    template <typename T>
+    void remove_dupes( std::vector< T >& vec ) {
+        typename std::vector< T >::iterator itr = vec.begin();
+        std::unordered_set< T > s;
+
+        for ( auto curr = vec.begin(); curr != vec.end(); ++curr ) {
+            if (s.insert(*curr).second) {
+                *itr++ = *curr;
+            }
+        }
+
+        vec.erase( itr, vec.end() );
     }
 
 }

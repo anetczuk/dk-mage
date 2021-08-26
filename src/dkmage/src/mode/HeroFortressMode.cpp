@@ -217,8 +217,10 @@ namespace dkmage {
 
         void Fortress::prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms ) {
             /// create branch exit
-            const std::set< const spatial::FortressRoom* > uniqueRooms( startRooms.begin(), startRooms.end() );
-            for ( const spatial::FortressRoom* item: uniqueRooms ) {
+            std::vector< const spatial::FortressRoom* > uniqueRooms( startRooms.begin(), startRooms.end() );
+            remove_dupes( uniqueRooms );
+
+            for ( const spatial::FortressRoom* item: startRooms ) {
                 const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
                 if ( next == nullptr ) {
                     LOG() << "unable to generate branch exit";
@@ -822,17 +824,17 @@ namespace dkmage {
             }
 
             /// add other
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-                const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
-                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
-
-                const adiktedpp::Player player = dungeon.owner();
-                level.setFortified( revPos + Point(0, 1), player );
-                level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
-                const Point monstersPos = revPos + Point(0, 3);
-                level.setSlab( monstersPos, Slab::S_PATH );
-                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 9 );
-            }
+//            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+//                const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
+//                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
+//
+//                const adiktedpp::Player player = dungeon.owner();
+//                level.setFortified( revPos + Point(0, 1), player );
+//                level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
+//                const Point monstersPos = revPos + Point(0, 3);
+//                level.setSlab( monstersPos, Slab::S_PATH );
+//                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 9 );
+//            }
 
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 
