@@ -187,8 +187,8 @@ namespace dkmage {
         LOG() << "unsupported rect dimensions";
     }
 
-    void drawHeroTrap( Level& level, const Point& point, const int creatureLevel ) {
-        const int cLevel = std::min( std::max( creatureLevel, 1 ), 9 );
+    void drawHeroTrap( Level& level, const Point& point, const std::size_t creatureLevel ) {
+        const int cLevel = std::min( std::max( creatureLevel, (std::size_t)2 ), (std::size_t)10 );
 
         std::set< Creature > list = HeroCreatures();                /// yes, copy
         list.erase( Creature::C_TUNNELLER );

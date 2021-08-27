@@ -680,6 +680,14 @@ namespace adiktedpp {
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
+            if ( expLevel < 1 ) {
+                LOG() << "invalid experience level value: " << expLevel;
+                return ;
+            }
+            if ( expLevel > 10 ) {
+                LOG() << "invalid experience level value: " << expLevel;
+                return ;
+            }
             LEVEL* level = data->lvl;
             const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
             const std::size_t sy = y * MAP_SUBNUM_Y + subIndex / MAP_SUBNUM_X;
@@ -688,7 +696,7 @@ namespace adiktedpp {
                 if ( thing == nullptr ) {
                     return ;
                 }
-                set_thing_level( thing, expLevel );
+                set_thing_level( thing, expLevel - 1 );
                 set_thing_owner( thing, (unsigned char) owner );
                 thing_add( level, thing );
             }

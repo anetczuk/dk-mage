@@ -163,17 +163,21 @@ namespace adiktedpp {
 
         void setDoor( const utils::Point& point, const Door door, const bool locked = false );
 
+        /// 'expLevel' counts from 1
         void setCreature( const utils::Point& point, const std::size_t subIndex, const Creature creature,
-                          const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
+                          const std::size_t number=1, const std::size_t expLevel=1, const Player owner = Player::P_UNSET );
 
+        /// 'expLevel' counts from 1
         void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const Creature creature,
-                          const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
+                          const std::size_t number=1, const std::size_t expLevel=1, const Player owner = Player::P_UNSET );
 
+        /// 'expLevel' counts from 1
         void setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=1, const Player owner = Player::P_UNSET );
 
+        /// 'expLevel' counts from 1
         void setCreatureAuto( const utils::Point& point, const Creature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const Player owner = Player::P_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=1, const Player owner = Player::P_UNSET );
 
         void setItem( const utils::Point& point, const std::size_t subIndex, const Item item );
 
@@ -181,7 +185,7 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
-        std::size_t addActionPoint( const utils::Point& point, const std::size_t radius = 0 );
+        std::size_t addActionPoint( const utils::Point& point, const std::size_t radius );
 
         std::size_t addActionPoint( const utils::Point& point, const std::size_t subIndex, const std::size_t radius );
 

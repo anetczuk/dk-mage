@@ -189,11 +189,13 @@ namespace adiktedpp {
 
             void setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked = false );
 
+            /// 'expLevel' counts from 1
             void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=1, const PlayerType owner = PlayerType::PT_UNSET );
 
+            /// 'expLevel' counts from 1
             void setCreature( const utils::Point& point, const std::size_t subIndex, const SubTypeCreature creature,
-                              const std::size_t number=1, const std::size_t expLevel=0, const PlayerType owner = PlayerType::PT_UNSET );
+                              const std::size_t number=1, const std::size_t expLevel=1, const PlayerType owner = PlayerType::PT_UNSET );
 
             /// ===========================================================================
 

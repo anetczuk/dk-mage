@@ -249,7 +249,7 @@ namespace dkmage {
                 level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
                 const Point monstersPos = revPos + Point(0, 3);
                 level.setSlab( monstersPos, Slab::S_PATH );
-                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 9 );
+                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 10 );
             }
 
             level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, Creature::C_WARLOCK, 1 );
