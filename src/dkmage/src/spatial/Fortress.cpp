@@ -19,8 +19,8 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace spatial {
 
-        void FortressDungeon::draw( adiktedpp::GameMap& gameMap ) const {
-            adiktedpp::Level& level = gameMap.level;
+        void FortressDungeon::draw( FortressData& data ) const {
+            adiktedpp::Level& level = data.level();
             const Player owner = this->owner();
             const bool fortify = this->fortify();
             std::vector< const FortressRoom* > roomsList = rooms();
@@ -37,7 +37,7 @@ namespace dkmage {
 
             /// draw room content
             for ( const FortressRoom* item: roomsList ) {
-                item->draw( gameMap );
+                item->draw( data );
             }
         }
 

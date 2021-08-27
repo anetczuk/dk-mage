@@ -6,6 +6,7 @@
 #include "dkmage/spatial/FortressRoom.h"
 
 #include "dkmage/spatial/Fortress.h"
+#include "dkmage/Parameter.h"
 #include "dkmage/Draw.h"
 
 #include "adiktedpp/GameMap.h"
@@ -23,6 +24,14 @@ using namespace adiktedpp;
 
 namespace dkmage {
     namespace spatial {
+
+        adiktedpp::Level& FortressData::level() {
+            return gameMap.level;
+        }
+
+
+        /// ========================================================================
+
 
         std::ostream& operator<<( std::ostream& os, const FortressRoomType data ) {
             switch( data ) {
@@ -148,7 +157,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 script::Script& script  = gameMap.script;
 
@@ -163,9 +173,10 @@ namespace dkmage {
                 const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
                 level.setDoor( heartEntrancePoint, Door::D_IRON, true );
 
-                /// add guards
+                /// add lord of the land guards
                 const std::size_t heartEntranceAP = level.addActionPoint( heartEntrancePoint, 1 );
                 const std::size_t heartAP         = level.addActionPoint( heartPoint, 2 );
+
                 script.actionSection().REM( "dungeon heart guards" );
                 script.actionSection().REM( std::to_string( heartEntranceAP ) + " -- dungeon heart entrance" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
@@ -214,6 +225,8 @@ namespace dkmage {
                 const std::size_t leftSideAP  = level.addActionPoint( chamberEntrance + dirr + wallDir * 2, 0 );
                 const std::size_t rightSideAP = level.addActionPoint( chamberEntrance + dirr - wallDir * 2, 0 );
 
+                const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 7, 10 );
+
                 script.actionSection().REM( "vestibule guards of dungeon heart" );
                 script.actionSection().REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
                 script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
@@ -226,13 +239,13 @@ namespace dkmage {
                     level.setSlab( offset + wallDir, Slab::S_LAVA );
 
                     if ( i % 2 == 0 ) {
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, 10, 0 );
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, 10, 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
 //                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
 //                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
                     } else {
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, 10, 0 );
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, 10, 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
 //                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
 //                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
                     }
@@ -283,7 +296,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -345,7 +359,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_TREASURE, roomOwner, true );
@@ -415,7 +430,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -447,7 +463,8 @@ namespace dkmage {
                 dungeon.addRandomRoom( *this, from, corridorLength );
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -526,7 +543,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -627,7 +645,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -668,7 +687,7 @@ namespace dkmage {
                         const std::size_t pIndex = rng_randi( slots.size() );
                         const Point point = remove_at( slots, pIndex );
                         level.setRoom( point, Room::R_PRISON, roomOwner, true );
-                        level.setCreature( point, 1, Creature::C_SKELETON, 1, 9, Player::P_UNSET );
+                        level.setCreature( point, 1, Creature::C_SKELETON, 1, 10, Player::P_UNSET );
                     }
                 }
                 for ( const Point item: slots ) {
@@ -736,7 +755,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -745,34 +765,35 @@ namespace dkmage {
 
                 static std::set< Player > PlayerSet = { Player::P_UNSET, Player::P_GOOD };
                 Player cOwner = Player::P_UNSET;
+                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_TORTURE_GUARD_LEVEL, 5, 8 );
 
                 /// chamber
                 const Rect r1 = chamber.moved( -3, -3 );
                 level.setRoom( r1, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r1, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
+                level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r2 = chamber.moved(  3, -3 );
                 level.setRoom( r2, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r2, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
+                level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r3 = chamber.moved(  3,  3 );
                 level.setRoom( r3, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r3, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
+                level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r4 = chamber.moved( -3,  3 );
                 level.setRoom( r4, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r4, roomOwner );
                 cOwner = rng_rand( PlayerSet );
-                level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 2, 9, cOwner );
+                level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 switch( orientation ) {
                 case Axis::A_VERTICAL: {
@@ -899,7 +920,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 adiktedpp::script::Script& script = gameMap.script;
 
@@ -931,15 +953,16 @@ namespace dkmage {
                 }
                 }
 
+                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_GRAVEYARD_GUARD_LEVEL, 7, 10 );
                 level.setRoom( room, Room::R_GRAVEYARD, roomOwner, true );
                 const Point roomCenter = room.center();
-                level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 9 );           /// neutral
+                level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 10 );           /// neutral
 
                 const std::size_t actionPoint = level.addActionPoint( roomCenter, 1 );
                 script.actionSection().REM( "graveyard guard" );
                 script.actionSection().REM( std::to_string( actionPoint ) + " -- graveyard center" );
                 script.addLineActionIf( actionPoint, Player::P_P0 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 2, 10, 1000 );
+                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 2, guardLevel.randomized(), 1000 );
                 script.addLineActionEndIf();
 
                 level.setDoor( doorPoint, Door::D_WOOD, true );
@@ -1010,7 +1033,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -1055,9 +1079,11 @@ namespace dkmage {
 
                     static std::set< Creature > CreatureSet = { Creature::C_ARCHER, Creature::C_MONK, Creature::C_WIZARD };
                     const Creature cOwner1 = rng_rand( CreatureSet );
-                    level.setCreature( center - orthoDir * 3, 1, cOwner1, 1, 9, roomOwner );
+                    const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 7, 9 );
+
+                    level.setCreature( center - orthoDir * 3, 1, cOwner1, 1, guardLevel.randomized(), roomOwner );
                     const Creature cOwner2 = rng_rand( CreatureSet );
-                    level.setCreature( center + orthoDir * 3, 1, cOwner2, 1, 9, roomOwner );
+                    level.setCreature( center + orthoDir * 3, 1, cOwner2, 1, guardLevel.randomized(), roomOwner );
                 }
             }
         };
@@ -1143,7 +1169,8 @@ namespace dkmage {
                 }
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
                 Rect room( roomRect.center(), 3, 3 );
@@ -1245,7 +1272,8 @@ namespace dkmage {
                 /// LOG() << "exitDirection: " << exitDirection << " " << directions.size();
             }
 
-            void draw( adiktedpp::GameMap& gameMap ) const override {
+            void draw( FortressData& data ) const override {
+                adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 /// create branch exit
                 const Rect& roomRect = bbox();

@@ -66,6 +66,8 @@ namespace dkmage {
             fortress.limitWidth  = lakeLimit.width()  - 6;
             fortress.limitHeight = lakeLimit.height() - 6;
 
+            spatial::FortressData fortressData = { gameMap, parameters };
+
             const spatial::FortressRoom* heart = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART );
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
@@ -80,7 +82,7 @@ namespace dkmage {
                     if ( next == nullptr ) {
                         LOG() << "unable to create main junction room";
                         fortress.moveToTopEdge( 8 );
-                        fortress.draw( gameMap );
+                        fortress.draw( fortressData );
                         return false;
                     }
                     mainCorridor = { next };
@@ -99,7 +101,7 @@ namespace dkmage {
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                 }
                 return false;
             }
@@ -121,7 +123,7 @@ namespace dkmage {
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
                     /// draw for debug purpose
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                 }
                 return false;
             }
@@ -131,25 +133,25 @@ namespace dkmage {
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_PRISON ).empty() ) {
                     LOG() << "missing required prison";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_TORTURE ).empty() ) {
                     LOG() << "missing required torture room";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_GRAVEYARD ).empty() ) {
                     LOG() << "missing required graveyard";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                     return false;
                 }
                 if ( fortress.findRoom( spatial::FortressRoomType::FR_LAVA_POST ).empty() ) {
                     LOG() << "missing required lava posts";
                     fortress.moveToTopEdge( 8 );
-                    fortress.draw( gameMap );
+                    fortress.draw( fortressData );
                     return false;
                 }
             }
@@ -158,12 +160,12 @@ namespace dkmage {
 
             /// generate lake
             if ( generateLake( lakeLimit ) == false ) {
-                fortress.draw( gameMap );
+                fortress.draw( fortressData );
                 return false;
             }
 
             /// dungeon have to be drawn before placing items inside it's rooms
-            fortress.draw( gameMap );
+            fortress.draw( fortressData );
 
             /// prepare entrances
             if ( prepareBridges( exitRooms ) == false ) {
@@ -404,13 +406,7 @@ namespace dkmage {
         }
 
         bool Fortress::prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms ) {
-            SizeTSet entrancesAllowed;
-            if ( parameters.isSet( ParameterName::PN_ENTRANCES_NUMBER ) ) {
-                Optional< SizeTSet > allowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER );
-                entrancesAllowed = allowed.value();
-            } else {
-                entrancesAllowed.add( 2, 5 );
-            }
+            const SizeTSet entrancesAllowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER, 2, 5 );
 
             const std::size_t qSize = exitRooms.size();
             LOG() << "found exit rooms: " << qSize;
@@ -492,6 +488,8 @@ namespace dkmage {
                 indexSet.insert( bIndex );
             }
 
+            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_BRIDGE_GUARD_LEVEL, 2, 5 );
+
             for ( std::size_t bIndex=0; bIndex<bSize; ++bIndex ) {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
                 const int bridgeIndex = get_item( indexSet, setIndex, true );
@@ -514,24 +512,23 @@ namespace dkmage {
                     /// add bridge keepers
                     level.setSlab( bridgePoint, Slab::S_PATH );
                     if ( i == 1 ) {
-                        const int fairyLevel = rng_randi( 4 ) + 3;
-                        level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
-                        level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, fairyLevel, Player::P_GOOD );
-                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 7, Player::P_GOOD );
+                        level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
+                        level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
+                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 8, Player::P_GOOD );
                     }
 
                     /// add turrets
                     if ( i % 2 == 1 ) {
                         bool added = false;
-                        const int turrentLevel = rng_randi( 4 ) + 4;
+                        const int turretLevel = guardLevel.randomized();
                         const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
                         if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
     //                            const Rect guardPost( rightGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( rightGuardPosition, Slab::S_PATH );
-                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turrentLevel, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turrentLevel, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
+                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
                             added = true;
                         }
                         const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
@@ -539,9 +536,9 @@ namespace dkmage {
     //                            const Rect guardPost( leftGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( leftGuardPosition, Slab::S_PATH );
-                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turrentLevel, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turrentLevel, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turrentLevel, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
+                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
                             added = true;
                         }
                         if ( added == false ) {
@@ -582,6 +579,7 @@ namespace dkmage {
             const Player dungeonOwner = fortress.owner();
 
             /// draw corridors
+            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
             const auto connectedList = fortress.connectedRooms();
             for ( const std::pair< const spatial::FortressRoom*, const spatial::FortressRoom* >& pair: connectedList ) {
                 const spatial::FortressRoom* room      = pair.first;
@@ -626,13 +624,13 @@ namespace dkmage {
                         break ;
                     }
                     case CorridorFurniture::CF_HERO1: {
-                        level.setCreature( pt, 1, Creature::C_ARCHER, 2, 7, dungeonOwner );
-                        level.setCreature( pt, 1, Creature::C_DWARF, 2, 7, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_ARCHER, 2, guardLevel.randomized(), dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_DWARF,  2, guardLevel.randomized(), dungeonOwner );
                         break ;
                     }
                     case CorridorFurniture::CF_HERO2: {
-                        level.setCreature( pt, 1, Creature::C_SAMURAI, 2, 7, dungeonOwner );
-                        level.setCreature( pt, 1, Creature::C_WIZARD, 2, 7, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_SAMURAI, 2, guardLevel.randomized(), dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_WIZARD,  2, guardLevel.randomized(), dungeonOwner );
                         break ;
                     }
                     }

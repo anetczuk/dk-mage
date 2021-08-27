@@ -35,6 +35,11 @@ namespace dkmage {
             data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
 
             data.insert( ParameterName::PN_ENTRANCES_NUMBER );
+            data.insert( ParameterName::PN_BRIDGE_GUARD_LEVEL );
+            data.insert( ParameterName::PN_CORRIDOR_GUARD_LEVEL );
+            data.insert( ParameterName::PN_TORTURE_GUARD_LEVEL );
+            data.insert( ParameterName::PN_GRAVEYARD_GUARD_LEVEL );
+            data.insert( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL );
 
             data.insert( ParameterName::PN_TEST_MODE );
             data.insert( ParameterName::PN_STOP_ON_FAIL );
@@ -74,7 +79,12 @@ namespace dkmage {
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
         case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
 
-        case ParameterName::PN_ENTRANCES_NUMBER:    return "entrances_number";
+        case ParameterName::PN_ENTRANCES_NUMBER:            return "entrances_number";
+        case ParameterName::PN_BRIDGE_GUARD_LEVEL:          return "bridge_guard_level";
+        case ParameterName::PN_CORRIDOR_GUARD_LEVEL:        return "corridor_guard_level";
+        case ParameterName::PN_TORTURE_GUARD_LEVEL:         return "torture_guard_level";
+        case ParameterName::PN_GRAVEYARD_GUARD_LEVEL:       return "graveyard_guard_level";
+        case ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL:  return "dungeon_header_guard_level";
 
         case ParameterName::PN_TEST_MODE:       return "test_mode";
         case ParameterName::PN_STOP_ON_FAIL:    return "stop_on_fail";
@@ -106,6 +116,27 @@ namespace dkmage {
             iSize += item.size();
         }
         return iSize;
+    }
+
+    template<>
+    std::size_t NumberSet<std::size_t>::randomized() const {
+        const std::size_t setSize = size();
+        if ( setSize < 1 ) {
+            return std::size_t();
+        }
+        if ( setSize == 1 ) {
+            const NumberRange<std::size_t>& item = data[0];
+            return item.item(0);
+        }
+        std::size_t index = rng_randi( setSize );
+        for ( const NumberRange<std::size_t>& item: data ) {
+            const std::size_t iSize = item.size() + 1;
+            if ( index < iSize ) {
+                return item.item( index );
+            }
+            index -= iSize;
+        }
+        return std::size_t();
     }
 
     template<>

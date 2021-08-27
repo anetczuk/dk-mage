@@ -36,6 +36,11 @@ namespace dkmage {
         PN_INIT_GOLD_AMOUNT,
 
         PN_ENTRANCES_NUMBER,
+        PN_BRIDGE_GUARD_LEVEL,
+        PN_CORRIDOR_GUARD_LEVEL,
+        PN_TORTURE_GUARD_LEVEL,
+        PN_GRAVEYARD_GUARD_LEVEL,
+        PN_DUNGEON_HEADER_GUARD_LEVEL,
 
         PN_TEST_MODE,
         PN_STOP_ON_FAIL                         /// do not retry generation if attempt failed
@@ -178,6 +183,8 @@ namespace dkmage {
 
         NumberSet<TNumber> filter( const TNumber lower, const TNumber upper ) const;
 
+        TNumber randomized() const;
+
         Optional<TNumber> getRandom() const;
 
         Optional<TNumber> getRandom( const TNumber lower, const TNumber upper ) const;
@@ -186,6 +193,9 @@ namespace dkmage {
 
     template<>
     std::size_t NumberSet<std::size_t>::size() const;
+
+    template<>
+    std::size_t NumberSet<std::size_t>::randomized() const;
 
     template<>
     Optional<std::size_t> NumberSet<std::size_t>::getRandom() const;
@@ -270,6 +280,17 @@ namespace dkmage {
         Optional< SizeTSet > getSizeTSet( const ParameterName parameter ) const {
             const std::string parameterName = getParameterName( parameter );
             return getSizeTSet( parameterName );
+        }
+
+        SizeTSet getSizeTSet( const ParameterName parameter, const std::size_t defaultMinValue, const std::size_t defaultMaxValue ) const {
+            const std::string parameterName = getParameterName( parameter );
+            Optional< SizeTSet > retSet = getSizeTSet( parameterName );
+            if ( retSet.has_value() ) {
+                return retSet.value();
+            }
+            SizeTSet defaultSet;
+            defaultSet.add( defaultMinValue, defaultMaxValue );
+            return defaultSet;
         }
 
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;

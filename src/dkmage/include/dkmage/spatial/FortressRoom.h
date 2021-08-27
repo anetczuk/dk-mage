@@ -15,11 +15,23 @@
 
 namespace adiktedpp {
     class GameMap;
+    class Level;
 }
 
 
 namespace dkmage {
+
+    class ParametersMap;
+
+
     namespace spatial {
+
+        struct FortressData {
+            adiktedpp::GameMap& gameMap;
+            ParametersMap& parameters;
+
+            adiktedpp::Level& level();
+        };
 
 
         class FortressDungeon;
@@ -87,7 +99,7 @@ namespace dkmage {
             virtual void prepare( const FortressRoom& from ) = 0;
 
             /// put room to 'level'
-            virtual void draw( adiktedpp::GameMap& gameMap ) const = 0;
+            virtual void draw( FortressData& gameData ) const = 0;
 
             /// bounding box of room
             const utils::Rect& bbox() const {
