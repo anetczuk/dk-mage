@@ -216,6 +216,10 @@ namespace adiktedpp {
             addLine( line );
         }
 
+        void BasicScript::addAvailable( const Player player, const Room item ) {
+            addAvailable( player, item, 1, 1 );
+        }
+
         void BasicScript::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
             stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
@@ -306,6 +310,12 @@ namespace adiktedpp {
             addLine( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )" );
             addLine( std::string() + "    LOSE_GAME" );
             addLine( std::string() + "ENDIF" );
+        }
+
+        void BasicScript::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
+            std::stringstream stream;
+            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
+            addLine( stream.str() );
         }
 
         /// 'crExp' in range [1..10]

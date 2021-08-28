@@ -177,8 +177,20 @@ namespace dkmage {
             return true;
         }
 
+        bool Fortress::generateTest() {
+            spatial::FortressData fortressData = { gameMap, parameters };
+            const spatial::FortressRoom* heart  = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART );
+            const spatial::FortressRoom* prison = fortress.addRandomRoom( spatial::FortressRoomType::FR_PRISON, *heart );
+            fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *prison );
+            fortress.moveToTopEdge( 8 );
+            fortress.draw( fortressData );
+            return true;
+        }
+
         std::vector< const spatial::FortressRoom* > Fortress::prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches ) {
             std::vector< const spatial::FortressRoom* > roomQueue = startRooms;
+
+            std::size_t failedAttempts = 0;
 
             /// create branches
             for ( std::size_t i=0; i<roomsNum; ++i ) {
@@ -189,7 +201,8 @@ namespace dkmage {
                     const spatial::FortressRoom* item = roomQueue[ x ];
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
-                        LOG() << "unable to generate chamber level " << i;
+                        ++failedAttempts;
+//                        LOG() << "unable to generate chamber level " << i;
 //                        LOG() << "unable to generate chamber level " << i << " " << roomType;
                         continue ;
                     }
@@ -214,6 +227,8 @@ namespace dkmage {
                 roomQueue = nextRooms;
             }
 
+            LOG() << "chamber generation failed attempts " << failedAttempts;
+
             return roomQueue;
         }
 
@@ -222,13 +237,18 @@ namespace dkmage {
             std::vector< const spatial::FortressRoom* > uniqueRooms( startRooms.begin(), startRooms.end() );
             remove_dupes( uniqueRooms );
 
+            std::size_t failedAttempts = 0;
+
             for ( const spatial::FortressRoom* item: startRooms ) {
                 const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
                 if ( next == nullptr ) {
-                    LOG() << "unable to generate branch exit";
+//                    LOG() << "unable to generate branch exit";
+                    ++failedAttempts;
                     continue ;
                 }
             }
+
+            LOG() << "exit room failed attempts " << failedAttempts;
         }
 
         void Fortress::prepareSecondaryPass() {
@@ -495,10 +515,7 @@ namespace dkmage {
                 const int bridgeIndex = get_item( indexSet, setIndex, true );
 
                 const Bridge& bridge = bridges[ bridgeIndex ];
-                const Point entrance = bridge.entrance;
                 const PointList& bridgePoints = bridge.bridge;
-
-                level.setDoor( entrance, Door::D_IRON, true );
 
                 const Point bridgeDirection = bridgePoints[1] - bridgePoints[0];
                 const Point bridgeOrtho = bridgeDirection.swapped();
@@ -566,8 +583,8 @@ namespace dkmage {
             static ProbabilityMass< CorridorFurniture > corridorItem;
             if ( corridorItem.empty() ) {
                 corridorItem.set( CorridorFurniture::CF_EMPTY, 0.6 );
-                corridorItem.set( CorridorFurniture::CF_DOOR_OPEN, 0.12 );
-                corridorItem.set( CorridorFurniture::CF_DOOR_LOCKED, 0.08 );
+                corridorItem.set( CorridorFurniture::CF_DOOR_OPEN, 0.06 );
+                corridorItem.set( CorridorFurniture::CF_DOOR_LOCKED, 0.14 );
                 corridorItem.set( CorridorFurniture::CF_GAS, 0.1 );
                 corridorItem.set( CorridorFurniture::CF_LIGHTNING, 0.1 );
                 corridorItem.set( CorridorFurniture::CF_BOULDER, 0.1 );
@@ -744,7 +761,8 @@ namespace dkmage {
 //            generateCaves( 28 );
 
             Fortress enemyFortress( map, parameters );
-            if ( enemyFortress.generate() == false ) {
+//            if ( enemyFortress.generate() == false ) {
+            if ( enemyFortress.generateTest() == false ) {
                 return false;
             };
 
@@ -868,17 +886,17 @@ namespace dkmage {
             }
 
             /// add other
-//            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-//                const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
-//                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
-//
-//                const adiktedpp::Player player = dungeon.owner();
-//                level.setFortified( revPos + Point(0, 1), player );
-//                level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
-//                const Point monstersPos = revPos + Point(0, 3);
-//                level.setSlab( monstersPos, Slab::S_PATH );
-//                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 9 );
-//            }
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
+                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
+
+                const adiktedpp::Player player = dungeon.owner();
+                level.setFortified( revPos + Point(0, 1), player );
+                level.setSlab( revPos + Point(0, 2), Slab::S_EARTH );
+                const Point monstersPos = revPos + Point(0, 3);
+                level.setSlab( monstersPos, Slab::S_PATH );
+                level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 10 );
+            }
 
             level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
 

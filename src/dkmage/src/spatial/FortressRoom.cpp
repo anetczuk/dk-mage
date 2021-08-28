@@ -120,7 +120,9 @@ namespace dkmage {
         public:
 
             Direction direction = Direction::D_EAST;
-            std::size_t roomLength = 11;
+            std::size_t heartSize       = 7;
+            std::size_t gapSize         = 1;
+            std::size_t vestibuleLength = 5;
 
             using FortressRoom::FortressRoom;
 
@@ -140,14 +142,15 @@ namespace dkmage {
                 const std::vector<Direction>& dirs = DirectionValues();
                 direction = rng_rand( dirs );
                 const Axis orientation = get_axis( direction );
+                const std::size_t totalLength = heartSize + gapSize + vestibuleLength;
                 switch( orientation ) {
                 case Axis::A_VERTICAL: {
-                    setBbox( 5, 11 );
+                    setBbox( 7, totalLength );
                     setRestrictedDirection( direction );
                     break ;
                 }
                 case Axis::A_HORIZONTAL: {
-                    setBbox( 11, 5 );
+                    setBbox( totalLength, 7 );
                     setRestrictedDirection( direction );
                     break ;
                 }
@@ -162,25 +165,30 @@ namespace dkmage {
                 adiktedpp::Level& level = gameMap.level;
                 script::Script& script  = gameMap.script;
 
-                const Rect& roomRect = bbox();
-                level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
-
                 const Direction oppositeDir = opposite( direction );
-                Point heartPoint = edgePoint( oppositeDir, 0 );
-                heartPoint = movePoint( heartPoint, direction, 2 );
-                const Rect heartRect( heartPoint, 5, 5 );
-                level.setRoom( heartRect, Room::R_DUNGEON_HEART, roomOwner, false );
+                Point heartCenter = edgePoint( oppositeDir, 0 );
+                heartCenter = movePoint( heartCenter, direction, 3 );
+                const Rect heartRect( heartCenter, heartSize, heartSize );
+                level.setRoom( heartRect, Room::R_CLAIMED, roomOwner, true );
+                {
+                    Rect heartPos( 3, 3 );
+                    moveRect( heartPos, heartRect, oppositeDir, -3 );
+                    level.setRoom( heartPos, Room::R_DUNGEON_HEART, roomOwner, true );
+
+                }
                 const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
                 level.setDoor( heartEntrancePoint, Door::D_IRON, true );
 
-                /// add lord of the land guards
-                const std::size_t heartEntranceAP = level.addActionPoint( heartEntrancePoint, 1 );
-                const std::size_t heartAP         = level.addActionPoint( heartPoint, 2 );
+                level.setTrap( heartRect.leftBottom(), Trap::T_LIGHTNING );
+                level.setTrap( heartRect.rightBottom(), Trap::T_LIGHTNING );
+                level.setTrap( heartRect.leftTop(), Trap::T_LIGHTNING );
+                level.setTrap( heartRect.rightTop(), Trap::T_LIGHTNING );
 
+                /// add lord of the land guards
+                const std::size_t heartAP = level.addActionPoint( heartCenter, 3 );
                 script.actionSection().REM( "dungeon heart guards" );
-                script.actionSection().REM( std::to_string( heartEntranceAP ) + " -- dungeon heart entrance" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
-                script.addLineActionIf( heartEntranceAP, Player::P_P0 );
+                script.addLineActionIf( heartAP, Player::P_P0 );
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_KNIGHT,  heartAP, 1, 10, 1000 );
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, heartAP, 3,  9,  800 );
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_GIANT,   heartAP, 4,  8,  600 );
@@ -189,41 +197,33 @@ namespace dkmage {
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
                 script.addLineActionEndIf();
 
-//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-1, Creature::C_KNIGHT,  1, 9, roomOwner );
-//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y-2, Creature::C_SAMURAI, 3, 9, roomOwner );
-//                level.setCreatureAuto( heartPoint.x+1, heartPoint.y-2, Creature::C_GIANT,   4, 9, roomOwner );
-//                level.setCreatureAuto( heartPoint.x+2, heartPoint.y-1, Creature::C_MONK,    5, 9, roomOwner );
-//                level.setCreatureAuto( heartPoint.x-2, heartPoint.y,   Creature::C_WIZARD,  5, 9, roomOwner );
-//                level.setCreatureAuto( heartPoint.x,   heartPoint.y-2, Creature::C_FAIRY,   6, 9, roomOwner );
-
                 /// entrance chamber
                 const Point entrancePoint = edgePoint( direction, 1 );
                 level.setDoor( entrancePoint, Door::D_IRON, true );
 
-                Point wallDir;
+                level.digLine( heartEntrancePoint, entrancePoint, roomOwner, true  );
+
+                Rect entranceRect;
                 const Axis orientation = get_axis( direction );
                 switch( orientation ) {
                 case Axis::A_VERTICAL: {
-                    wallDir = Point( 1, 0 );
+                    entranceRect = Rect( heartCenter, 5, vestibuleLength );
                     break ;
                 }
                 case Axis::A_HORIZONTAL: {
-                    wallDir = Point( 0, 1 );
+                    entranceRect = Rect( heartCenter, vestibuleLength, 5 );
                     break ;
                 }
                 }
+                moveRect( entranceRect, heartRect, direction, gapSize );
+                level.setRoom( entranceRect, Room::R_CLAIMED, roomOwner, true );
 
-                Point chamberEntrance = movePoint( heartPoint, direction, 3 );
-                level.setFortified( chamberEntrance + wallDir, roomOwner );
-                level.setFortified( chamberEntrance + wallDir * 2, roomOwner );
-                level.setFortified( chamberEntrance - wallDir, roomOwner );
-                level.setFortified( chamberEntrance - wallDir * 2, roomOwner );
+                const Point corridorDirr = movePoint( Point(0,0), direction, 1 );
+                const Point wallDir = corridorDirr.swapped();
 
-                const Point dirr = movePoint( Point(0,0), direction, 1 );
-
-                const std::size_t chamberEntranceAP = level.addActionPoint( chamberEntrance, 1 );
-                const std::size_t leftSideAP  = level.addActionPoint( chamberEntrance + dirr + wallDir * 2, 0 );
-                const std::size_t rightSideAP = level.addActionPoint( chamberEntrance + dirr - wallDir * 2, 0 );
+                const std::size_t chamberEntranceAP = level.addActionPoint( entrancePoint, 0 );
+                const std::size_t leftSideAP  = level.addActionPoint( heartEntrancePoint + corridorDirr + wallDir * 2, 0 );
+                const std::size_t rightSideAP = level.addActionPoint( heartEntrancePoint + corridorDirr - wallDir * 2, 0 );
 
                 const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 7, 10 );
 
@@ -232,9 +232,8 @@ namespace dkmage {
                 script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
                 script.actionSection().REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
                 script.addLineActionIf( chamberEntranceAP, Player::P_P0 );
-                const std::size_t length = roomLength - 5;
-                for ( std::size_t i=1; i<length; ++i) {
-                    const Point offset = chamberEntrance + dirr * i;
+                for ( std::size_t i=0; i<vestibuleLength; ++i) {
+                    const Point offset = heartEntrancePoint + corridorDirr * (i + gapSize);
                     level.setSlab( offset - wallDir, Slab::S_LAVA );
                     level.setSlab( offset + wallDir, Slab::S_LAVA );
 
@@ -648,6 +647,8 @@ namespace dkmage {
             void draw( FortressData& data ) const override {
                 adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
+                adiktedpp::script::Script& script = gameMap.script;
+
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -688,6 +689,16 @@ namespace dkmage {
                         const Point point = remove_at( slots, pIndex );
                         level.setRoom( point, Room::R_PRISON, roomOwner, true );
                         level.setCreature( point, 1, Creature::C_SKELETON, 1, 10, Player::P_UNSET );
+                        if ( i == 0 ) {
+                            /// add technology
+                            const std::size_t actionPoint = level.addActionPoint( point );
+                            script.actionSection().REM( "prison technology" );
+                            script.actionSection().REM( std::to_string( actionPoint ) + " -- prison center" );
+                            script.addLineActionIf( actionPoint, Player::P_P0 );
+                            script.actionSection().QUICK_INFORMATION( 1, "You have discovered how to build a prison" );
+                            script.actionSection().addAvailable( Player::P_P0, Room::R_PRISON );
+                            script.addLineActionEndIf();
+                        }
                     }
                 }
                 for ( const Point item: slots ) {
@@ -1291,6 +1302,10 @@ namespace dkmage {
                 level.setDoor( corridorStart, Door::D_IRON, true );
                 level.setTrap( boulderPosition, Trap::T_BOULDER );
                 level.setDoor( corridorEnd, Door::D_IRON, true );
+
+                const Direction bridgeDir = opposite( exitDirection );
+                Point exitDoorPoint = edgePoint( bridgeDir, 1 );
+                level.setDoor( exitDoorPoint, Door::D_IRON, true );
             }
 
         };

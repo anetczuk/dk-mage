@@ -37,7 +37,7 @@ namespace dkmage {
             return base;
         }
 
-        void moveRect( Rect& rect, const Rect& base, const Direction direction, const std::size_t space ) {
+        void moveRect( Rect& rect, const Rect& base, const Direction direction, const int space ) {
             rect.centerize();
             const Point baseCenter = base.center();
             rect.move( baseCenter );

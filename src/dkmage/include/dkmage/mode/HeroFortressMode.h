@@ -34,6 +34,8 @@ namespace dkmage {
 
             bool generate();
 
+            bool generateTest();
+
             std::vector< const spatial::FortressRoom* > prepareCorridors( const std::vector< const spatial::FortressRoom* >& startRooms, const std::size_t roomsNum, const bool allowBranches );
 
             void prepareExitRooms( const std::vector< const spatial::FortressRoom* >& startRooms );

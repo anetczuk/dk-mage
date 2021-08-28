@@ -62,6 +62,8 @@ namespace adiktedpp {
 
             void setStartMoney( const adiktedpp::Player player, const std::size_t amount );
 
+            void addAvailable( const adiktedpp::Player player, const Room item );
+
             void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 
             void addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
@@ -96,6 +98,8 @@ namespace adiktedpp {
             void REM( const std::string& comment ) {
                 return addLine( "REM " + comment );
             }
+
+            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
 
             /// 'crExp' in range [1..10]
             void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
