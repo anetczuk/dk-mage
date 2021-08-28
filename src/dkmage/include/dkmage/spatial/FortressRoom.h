@@ -78,13 +78,14 @@ namespace dkmage {
             adiktedpp::Player roomOwner;
 
             std::vector< Direction > restrictedDirs;                /// allowed directions
+            int distanceToHeart;
 
 
         public:
 
             FortressRoom( FortressDungeon& dungeon ): roomPosition(), corridorJoinPoint(),
                 dungeon(dungeon), roomOwner( adiktedpp::Player::P_P0 ),
-                restrictedDirs()
+                restrictedDirs(), distanceToHeart( -1 )
             {
             }
 
