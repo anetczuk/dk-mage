@@ -119,6 +119,60 @@ namespace dkmage {
     }
 
     template<>
+    Optional<std::size_t> NumberSet<std::size_t>::valueByIndex( const std::size_t index ) const {
+        std::size_t currIndex = index;
+        for ( const NumberRange<std::size_t>& item: data ) {
+            const std::size_t currSize = item.size() + 1;
+            if ( currIndex >= currSize ) {
+                currIndex -= currSize;
+                continue ;
+            }
+            return item.item( currIndex );
+        }
+        return {};
+    }
+
+    template<>
+    std::size_t NumberSet<std::size_t>::valueByFactor( const double factor ) const {
+        const std::size_t iSize = size();
+        if ( iSize < 1 ) {
+            return std::size_t();
+        }
+        if ( iSize == 1 ) {
+            Optional<std::size_t> item = valueByIndex( 0 );
+            if ( item.has_value() == false ) {
+                return std::size_t();
+            }
+            return item.value();
+        }
+
+        const int index = factor * iSize;
+
+        if ( index < 0 ) {
+            Optional<std::size_t> item = valueByIndex( 0 );
+            if ( item.has_value() == false ) {
+                return std::size_t();
+            }
+            return item.value();
+        }
+
+        const std::size_t uIndex = (std::size_t) index;
+        if ( uIndex >= iSize ) {
+            Optional<std::size_t> item = valueByIndex( iSize - 1 );
+            if ( item.has_value() == false ) {
+                return std::size_t();
+            }
+            return item.value();
+        }
+
+        Optional<std::size_t> item = valueByIndex( uIndex );
+        if ( item.has_value() == false ) {
+            return std::size_t();
+        }
+        return item.value();
+    }
+
+    template<>
     std::size_t NumberSet<std::size_t>::randomized() const {
         const std::size_t setSize = size();
         if ( setSize < 1 ) {

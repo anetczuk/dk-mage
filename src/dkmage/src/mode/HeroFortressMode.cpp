@@ -22,8 +22,8 @@ namespace dkmage {
 //            generateCaves( 28 );
 
             spatial::Fortress enemyFortress( map, parameters );
-//            if ( enemyFortress.generate() == false ) {
-            if ( enemyFortress.generateTest() == false ) {
+            if ( enemyFortress.generate() == false ) {
+//            if ( enemyFortress.generateTest() == false ) {
                 return false;
             };
 

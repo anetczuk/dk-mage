@@ -14,6 +14,67 @@ using namespace utils;
 using namespace dkmage;
 
 
+TEST_CASE( "NumberSet_sizet_valueByIndex" ) {
+    SizeTSet container;
+    container.add( 5 );
+    container.add( 10, 12 );
+    {
+        Optional<std::size_t> item = container.valueByIndex( 0 );
+        REQUIRE( item == true );
+        CHECK( item.value() == 5 );
+    }
+    {
+        Optional<std::size_t> item = container.valueByIndex( 1);
+        REQUIRE( item == true );
+        CHECK( item.value() == 10 );
+    }
+    {
+        Optional<std::size_t> item = container.valueByIndex( 2 );
+        REQUIRE( item == true );
+        CHECK( item.value() == 11 );
+    }
+    {
+        Optional<std::size_t> item = container.valueByIndex( 3 );
+        REQUIRE( item == true );
+        CHECK( item.value() == 12 );
+    }
+}
+
+TEST_CASE( "NumberSet_sizet_valueByFactor_empty" ) {
+    SizeTSet container;
+    const std::size_t item = container.valueByFactor( 0.5 );
+    REQUIRE( item == 0 );
+}
+
+TEST_CASE( "NumberSet_sizet_valueByFactor_1" ) {
+    SizeTSet container;
+    container.add( 5 );
+    const std::size_t item = container.valueByFactor( 0.5 );
+    CHECK( item == 5 );
+}
+
+TEST_CASE( "NumberSet_sizet_valueByFactor" ) {
+    SizeTSet container;
+    container.add( 5 );
+    container.add( 10, 12 );
+    {
+        const std::size_t item = container.valueByFactor( 0.2 );
+        CHECK( item == 5 );
+    }
+    {
+        const std::size_t item = container.valueByFactor( 0.4 );
+        CHECK( item == 10 );
+    }
+    {
+        const std::size_t item = container.valueByFactor( 0.6 );
+        CHECK( item == 11 );
+    }
+    {
+        const std::size_t item = container.valueByFactor( 0.8 );
+        CHECK( item == 12 );
+    }
+}
+
 TEST_CASE( "NumberSet_sizet_getRandom_empty" ) {
     SizeTSet container;
     Optional<std::size_t> item = container.getRandom();

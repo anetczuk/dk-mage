@@ -78,10 +78,12 @@ namespace dkmage {
             adiktedpp::Player roomOwner;
 
             std::vector< Direction > restrictedDirs;                /// allowed directions
-            int distanceToHeart;
 
 
         public:
+
+            int distanceToHeart;
+
 
             FortressRoom( FortressDungeon& dungeon ): roomPosition(), corridorJoinPoint(),
                 dungeon(dungeon), roomOwner( adiktedpp::Player::P_P0 ),
@@ -107,7 +109,7 @@ namespace dkmage {
                 return roomPosition;
             }
 
-            const utils::Point joinPoint() const {
+            utils::Point joinPoint() const {
                 return corridorJoinPoint;
             }
 

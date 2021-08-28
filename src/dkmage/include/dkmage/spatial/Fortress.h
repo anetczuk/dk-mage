@@ -86,10 +86,24 @@ namespace dkmage {
                 return ret;
             }
 
-            std::vector< const FortressRoom* > findRoom( const FortressRoomType roomType ) {
+            std::vector< const FortressRoom* > findRoom( const FortressRoomType roomType ) const {
                 std::vector< const FortressRoom* > ret;
-                std::vector< FortressRoom* > allRooms = graph.itemsList();
+                std::vector< const FortressRoom* > allRooms = graph.itemsList();
                 for ( const FortressRoom* item: allRooms ) {
+                    if ( item == nullptr ) {
+                        continue ;
+                    }
+                    if ( item->type() == roomType ) {
+                        ret.push_back( item );
+                    }
+                }
+                return ret;
+            }
+
+            std::vector< FortressRoom* > findRoom( const FortressRoomType roomType ) {
+                std::vector< FortressRoom* > ret;
+                std::vector< FortressRoom* > allRooms = graph.itemsList();
+                for ( FortressRoom* item: allRooms ) {
                     if ( item == nullptr ) {
                         continue ;
                     }
@@ -109,6 +123,10 @@ namespace dkmage {
             bool createRoom( FortressRoom& newRoom, const FortressRoom& from, const Direction direction, const std::size_t corridorLength = 1 );
 
             const utils::PointList getCorridor( const FortressRoom& from, const FortressRoom& to ) const;
+
+            void calculateDistances();
+
+            std::size_t maxDistance() const;
 
             std::string print() const;
 
@@ -157,7 +175,7 @@ namespace dkmage {
 
     //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
 
-            bool prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms );
+            bool prepareBridges( const std::vector< spatial::FortressRoom* >& exitRooms );
 
             void prepareCorridorTraps();
 

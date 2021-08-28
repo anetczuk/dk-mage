@@ -181,6 +181,11 @@ namespace dkmage {
             return false;
         }
 
+        Optional<TNumber> valueByIndex( const std::size_t index ) const;
+
+        /// factor in range [0..1]
+        TNumber valueByFactor( const double factor ) const;
+
         NumberSet<TNumber> filter( const TNumber lower, const TNumber upper ) const;
 
         TNumber randomized() const;
@@ -193,6 +198,12 @@ namespace dkmage {
 
     template<>
     std::size_t NumberSet<std::size_t>::size() const;
+
+    template<>
+    Optional<std::size_t> NumberSet<std::size_t>::valueByIndex( const std::size_t index ) const;
+
+    template<>
+    std::size_t NumberSet<std::size_t>::valueByFactor( const double factor ) const;
 
     template<>
     std::size_t NumberSet<std::size_t>::randomized() const;

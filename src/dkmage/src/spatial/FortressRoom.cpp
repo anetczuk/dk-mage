@@ -63,7 +63,7 @@ namespace dkmage {
 
         std::string FortressRoom::print() const {
             std::stringstream stream;
-            stream << "bbox: " << bbox() << " type: " << type();
+            stream << "bbox: " << bbox() << " type: " << type() << " dist: " << distanceToHeart;
             return stream.str();
         }
 
@@ -178,6 +178,8 @@ namespace dkmage {
                 }
                 const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
                 level.setDoor( heartEntrancePoint, Door::D_IRON, true );
+
+//                level.setFortified( heartEntrancePoint - Point(0, 2), roomOwner );
 
                 level.setTrap( heartRect.leftBottom(), Trap::T_LIGHTNING );
                 level.setTrap( heartRect.rightBottom(), Trap::T_LIGHTNING );

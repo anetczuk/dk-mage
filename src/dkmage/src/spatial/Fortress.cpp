@@ -208,6 +208,47 @@ namespace dkmage {
             return ret;
         }
 
+        void FortressDungeon::calculateDistances() {
+            std::vector< FortressRoom* > dungeonHearts = findRoom( FortressRoomType::FR_DUNGEON_HEART );
+            for ( FortressRoom* heart: dungeonHearts ) {
+                heart->distanceToHeart = 0;
+                std::vector< FortressRoom* > queue;
+                queue.push_back( heart );
+                std::set< FortressRoom* > visited;
+                visited.insert( heart );
+                while( queue.empty() == false ) {
+                    FortressRoom* start = queue.back();                                     /// yes, copy
+                    queue.pop_back();
+                    std::vector< FortressRoom* > connected = connectedRooms( *start );
+                    if ( connected.empty() ) {
+                        continue ;
+                    }
+                    const utils::Point joint = start->joinPoint();
+                    for ( FortressRoom* next: connected ) {
+                        if ( visited.count( next ) > 0 ) {
+                            continue ;
+                        }
+                        visited.insert( next );
+
+                        const utils::Point nextJoint = next->joinPoint();
+                        const std::size_t jointDistance = nextJoint.distanceManhattan( joint );
+                        next->distanceToHeart = start->distanceToHeart + jointDistance;
+                        queue.push_back( next );
+                    }
+                }
+            }
+        }
+
+        std::size_t FortressDungeon::maxDistance() const {
+            int maxDist = 0;
+            std::vector< const FortressRoom* > roomsList = graph.itemsList();
+            for ( const FortressRoom* item: roomsList ) {
+                const int currDistance = item->distanceToHeart;
+                maxDist = std::max( maxDist, currDistance );
+            }
+            return (std::size_t) maxDist;
+        }
+
         std::string FortressDungeon::print() const {
             std::stringstream stream;
             stream << "bbox: " << boundingBox() << "\n";
@@ -338,7 +379,7 @@ namespace dkmage {
             /// once again, in case of removed exit rooms
             cutBlindCorridors();
 
-            std::vector< const spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
+            std::vector< spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
             if ( exitRooms.size() < 2 ) {
                 LOG() << "unable create at least two exits";
                 if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
@@ -392,6 +433,10 @@ namespace dkmage {
             if ( prepareBridges( exitRooms ) == false ) {
                 return false;
             }
+
+            fortress.calculateDistances();
+
+//            LOG() << "fortress:\n" << fortress.print();
 
             prepareCorridorTraps();
 
@@ -538,7 +583,7 @@ namespace dkmage {
         }
 
         void Fortress::cutInvalidExits() {
-            std::vector< const spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
+            std::vector< spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
 
             /// remove inner exits (cannot make bridge)
             for ( const spatial::FortressRoom* entrance: exitRooms ) {
@@ -646,7 +691,7 @@ namespace dkmage {
             return true;
         }
 
-        bool Fortress::prepareBridges( const std::vector< const spatial::FortressRoom* >& exitRooms ) {
+        bool Fortress::prepareBridges( const std::vector< spatial::FortressRoom* >& exitRooms ) {
             const SizeTSet entrancesAllowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER, 2, 5 );
 
             const std::size_t qSize = exitRooms.size();
@@ -816,12 +861,33 @@ namespace dkmage {
 
             const Player dungeonOwner = fortress.owner();
 
-            /// draw corridors
             const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
+            const int maxDistance = fortress.maxDistance();
+            double distanceMinFactor = 1.0;
+            double distanceMaxFactor = 0.0;
+
             const auto connectedList = fortress.connectedRooms();
             for ( const std::pair< const spatial::FortressRoom*, const spatial::FortressRoom* >& pair: connectedList ) {
                 const spatial::FortressRoom* room      = pair.first;
                 const spatial::FortressRoom* connected = pair.second;
+
+                const int distanceToHeart = std::min( room->distanceToHeart, connected->distanceToHeart );
+                const double distanceFactor = (double)distanceToHeart / maxDistance;
+
+                distanceMinFactor = std::min( distanceMinFactor, distanceFactor );
+                distanceMaxFactor = std::max( distanceMaxFactor, distanceFactor );
+            }
+            const double distanceDiff = distanceMaxFactor - distanceMinFactor;
+
+            /// draw corridors
+            for ( const std::pair< const spatial::FortressRoom*, const spatial::FortressRoom* >& pair: connectedList ) {
+                const spatial::FortressRoom* room      = pair.first;
+                const spatial::FortressRoom* connected = pair.second;
+
+                const int distanceToHeart = std::min( room->distanceToHeart, connected->distanceToHeart );
+                const double distanceFactor = (double)distanceToHeart / maxDistance;
+                const double corridorFactor = 1.0 - (distanceFactor - distanceMinFactor) / distanceDiff;
+                const std::size_t creatureLevel = guardLevel.valueByFactor( corridorFactor );
 
                 const PointList corridor = fortress.getCorridor( *room, *connected );
                 for ( const Point pt: corridor ) {
@@ -862,13 +928,13 @@ namespace dkmage {
                         break ;
                     }
                     case CorridorFurniture::CF_HERO1: {
-                        level.setCreature( pt, 1, Creature::C_ARCHER, 2, guardLevel.randomized(), dungeonOwner );
-                        level.setCreature( pt, 1, Creature::C_DWARF,  2, guardLevel.randomized(), dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_ARCHER, 2, creatureLevel, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_DWARF,  2, creatureLevel, dungeonOwner );
                         break ;
                     }
                     case CorridorFurniture::CF_HERO2: {
-                        level.setCreature( pt, 1, Creature::C_SAMURAI, 2, guardLevel.randomized(), dungeonOwner );
-                        level.setCreature( pt, 1, Creature::C_WIZARD,  2, guardLevel.randomized(), dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_SAMURAI, 2, creatureLevel, dungeonOwner );
+                        level.setCreature( pt, 1, Creature::C_WIZARD,  2, creatureLevel, dungeonOwner );
                         break ;
                     }
                     }
