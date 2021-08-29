@@ -523,10 +523,73 @@ namespace adiktedpp {
 
         void Script::setImpRotting( const bool rotting ) {
             if ( rotting ) {
-                init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
-            } else {
                 init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 0 )" );
+            } else {
+                init.addLine( "REM prevent imp bodies be taken to graveyard" );
+                init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
             }
+        }
+
+        void Script::setPrisonConvertLimits() {
+            init.addLineIndent( "REM prevent prison convert snow-balling" );
+            init.addLineIndent( "IF( PLAYER0, SKELETON > 2 )" );
+            init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 80 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,SKELETON > 5 )" );
+            init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 60 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,SKELETON > 8 )" );
+            init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 40 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,GHOST > 3 )" );
+            init.addLineIndent( "    SET_GAME_RULE( GhostConvertChance, 30 )" );
+            init.addLineIndent( "ENDIF" );
+        }
+
+        void Script::setTortureConvertLimits() {
+            init.addLineIndent( "REM prevent torture convert snow-balling" );
+            init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 2 )" );
+            init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 33 )" );
+            init.addLineIndent( "    ADD_TO_FLAG( PLAYER0, FLAG7, 1 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 5 )" );
+            init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 50 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,CREATURES_CONVERTED > 8 )" );
+            init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 80 )" );
+            init.addLineIndent( "ENDIF" );
+        }
+
+        void Script::setSacrificeLimits() {
+            init.addLineIndent( "REM set sacrifice limits" );
+            init.addLineIndent( "IF( PLAYER0, SACRIFICED[IMP] >= 9 )" );
+            init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( IMP )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, REWARDED[BILE_DEMON] >= 1 )" );
+            init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( SPIDER, SPIDER, SPIDER )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, REWARDED[DARK_MISTRESS] >= 1 )" );
+            init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( SPIDER, BUG )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, REWARDED[TENTACLE] >= 1 )" );
+            init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( SPIDER, TROLL )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, REWARDED[HORNY] >= 1 )" );
+            init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( TROLL, BILE_DEMON, DARK_MISTRESS )" );
+            init.addLineIndent( "ENDIF" );
+        }
+
+        void Script::setGraveyardLimits() {
+            init.addLineIndent( "REM set graveyard limits" );
+            init.addLineIndent( "IF( PLAYER0, VAMPIRE >= 2 )" );
+            init.addLineIndent( "    SET_GAME_RULE( BodiesForVampire, 15 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, VAMPIRE >= 4 )" );
+            init.addLineIndent( "    SET_GAME_RULE( BodiesForVampire, 20 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0, VAMPIRE >= 6 )" );
+            init.addLineIndent( "    SET_GAME_RULE( BodiesForVampire, 25 )" );
+            init.addLineIndent( "ENDIF" );
         }
 
         void Script::setWinConditionStandard( const Player player ) {

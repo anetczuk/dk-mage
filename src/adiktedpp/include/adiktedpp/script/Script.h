@@ -70,7 +70,7 @@ namespace adiktedpp {
 
             void addLine( const std::string& line );
 
-            void addLineIndent( const std::string& line, const std::size_t forceIndent );
+            void addLineIndent( const std::string& line, const std::size_t forceIndent = 0 );
 
 //            void addLine( const std::string& line, const std::size_t position );
 
@@ -285,6 +285,14 @@ namespace adiktedpp {
             /// disable or enable imps corpses be brought to graveyard
             /// not supported by adikted
             void setImpRotting( const bool rotting = true );
+
+            void setPrisonConvertLimits();
+
+            void setTortureConvertLimits();
+
+            void setSacrificeLimits();
+
+            void setGraveyardLimits();
 
             void setWinConditionStandard( const Player player );
 
