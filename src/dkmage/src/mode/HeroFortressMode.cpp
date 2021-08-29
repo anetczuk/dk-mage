@@ -159,7 +159,8 @@ namespace dkmage {
                 level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 10 );
             }
 
-            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8 );
+            const adiktedpp::Player player = dungeon.owner();
+            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8, 1, player );
 
 //                    /// fill treasure with gold
 //                    spatial::FortressRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );

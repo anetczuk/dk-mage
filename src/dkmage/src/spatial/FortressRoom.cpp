@@ -172,14 +172,28 @@ namespace dkmage {
                 level.setRoom( heartRect, Room::R_CLAIMED, roomOwner, true );
                 {
                     Rect heartPos( 3, 3 );
-                    moveRect( heartPos, heartRect, oppositeDir, -3 );
+                    moveRect( heartPos, heartRect, oppositeDir, -4 );
                     level.setRoom( heartPos, Room::R_DUNGEON_HEART, roomOwner, true );
 
                 }
                 const Point heartEntrancePoint = spatial::edgePoint( heartRect, direction, 1 );
                 level.setDoor( heartEntrancePoint, Door::D_IRON, true );
 
-//                level.setFortified( heartEntrancePoint - Point(0, 2), roomOwner );
+                const Point corridorDirr = movePoint( direction, 1 );
+                const Point wallDir = corridorDirr.swapped();
+
+                {
+                    /// center wall
+                    const Point wallCenter = heartEntrancePoint - corridorDirr * 2;
+                    const Point wallA = wallCenter + wallDir;
+                    const Point wallB = wallCenter - wallDir;
+                    level.setFortified( wallCenter, roomOwner );
+                    level.setFortified( wallA, roomOwner );
+                    level.setFortified( wallB, roomOwner );
+
+                    level.setTrap( wallA + corridorDirr, Trap::T_WORD_OF_POWER );
+                    level.setTrap( wallB + corridorDirr, Trap::T_WORD_OF_POWER );
+                }
 
                 level.setTrap( heartRect.leftBottom(), Trap::T_LIGHTNING );
                 level.setTrap( heartRect.rightBottom(), Trap::T_LIGHTNING );
@@ -219,9 +233,6 @@ namespace dkmage {
                 }
                 moveRect( entranceRect, heartRect, direction, gapSize );
                 level.setRoom( entranceRect, Room::R_CLAIMED, roomOwner, true );
-
-                const Point corridorDirr = movePoint( Point(0,0), direction, 1 );
-                const Point wallDir = corridorDirr.swapped();
 
                 const std::size_t chamberEntranceAP = level.addActionPoint( entrancePoint, 0 );
                 const std::size_t leftSideAP  = level.addActionPoint( heartEntrancePoint + corridorDirr + wallDir * 2, 0 );

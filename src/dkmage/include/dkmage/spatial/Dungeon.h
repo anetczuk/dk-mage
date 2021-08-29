@@ -55,7 +55,9 @@ namespace dkmage {
             }
         }
 
-        Point movePoint( const Point& base, const Direction direction, const std::size_t space );
+        Point movePoint( const Direction direction, const int space );
+
+        Point movePoint( const Point& base, const Direction direction, const int space );
 
         /// move 'rect' to side of 'base' rect in given 'direction' with 'space' between them
         void moveRect( Rect& rect, const Rect& base, const Direction direction, const int space );

@@ -17,7 +17,11 @@ using namespace adiktedpp;
 namespace dkmage {
     namespace spatial {
 
-        Point movePoint( const Point& base, const Direction direction, const std::size_t space ) {
+        Point movePoint( const Direction direction, const int space ) {
+            return movePoint( Point(0,0), direction, space );
+        }
+
+        Point movePoint( const Point& base, const Direction direction, const int space ) {
             switch( direction ) {
             case Direction::D_NORTH: {
                 return base + Point( 0, -space );
