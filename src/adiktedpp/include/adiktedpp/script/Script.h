@@ -14,6 +14,22 @@
 namespace adiktedpp {
     namespace script {
 
+        enum class PartyObjective {
+            PO_ATTACK_DUNGEON_HEART,            /// Attack the nearest Dungeon Heart.
+            PO_ATTACK_ENEMIES,                  /// Attack any enemies.
+            PO_ATTACK_ROOMS,                    /// Attack the nearest rooms.
+            PO_DEFEND_HEART,                    /// Go to own heart and defend it until destroyed.
+            PO_DEFEND_LOCATION,                 /// Never do any objective.
+            PO_DEFEND_PARTY,                    /// Will not do any objective so will not assume party leadership.
+            PO_DEFEND_ROOMS,                    /// Defend nearest owned room, not counting portals, hearts or bridges.
+            PO_STEAL_GOLD,                      /// Steal gold from the Treasure Room until unit carries 1000 gold.
+            PO_STEAL_SPELLS                     /// Go to Library and steal one spell book.
+        };
+
+
+        /// ==================================================================
+
+
         /**
          *
          */
@@ -103,6 +119,13 @@ namespace adiktedpp {
 
             /// 'crExp' in range [1..10]
             void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
+
+            void CREATE_PARTY( const std::string& partyName );
+
+            void ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown = 0 );
+
+            /// 'copies' -- how many copies of party will be placed at given action point?
+            void ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies = 1 );
 
         };
 

@@ -166,6 +166,26 @@ namespace adiktedpp {
         }
 
 
+        std::string scriptName( const PartyObjective data ) {
+            switch( data ) {
+            case PartyObjective::PO_ATTACK_DUNGEON_HEART:   { return "ATTACK_DUNGEON_HEART"; }
+            case PartyObjective::PO_ATTACK_ENEMIES:         { return "POWER_SLAP"; }
+            case PartyObjective::PO_ATTACK_ROOMS:           { return "ATTACK_ROOMS"; }
+            case PartyObjective::PO_DEFEND_HEART:           { return "DEFEND_HEART"; }
+            case PartyObjective::PO_DEFEND_LOCATION:        { return "DEFEND_LOCATION"; }
+            case PartyObjective::PO_DEFEND_PARTY:           { return "DEFEND_PARTY"; }
+            case PartyObjective::PO_DEFEND_ROOMS:           { return "DEFEND_ROOMS"; }
+            case PartyObjective::PO_STEAL_GOLD:             { return "STEAL_GOLD"; }
+            case PartyObjective::PO_STEAL_SPELLS:           { return "STEAL_SPELLS"; }
+            }
+
+            LOG() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
         /// =========================================================================
 
 
@@ -323,6 +343,36 @@ namespace adiktedpp {
             std::stringstream stream;
             stream << "ADD_CREATURE_TO_LEVEL( " << scriptName( player ) + ", " << scriptName( creature ) << ", "
                    << actionPoint << ", " << crNum << ", " << crExp << ", " << gold << " )";
+            addLine( stream.str() );
+        }
+
+        void BasicScript::CREATE_PARTY( const std::string& partyName ) {
+            std::stringstream stream;
+            stream << "CREATE_PARTY( " << partyName << " )";
+            addLine( stream.str() );
+        }
+
+        void BasicScript::ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown ) {
+            for ( std::size_t i=0; i<crNum; ++i ) {
+                std::stringstream stream;
+                stream << "ADD_TO_PARTY( ";
+                stream << partyName << ", ";
+                stream << scriptName( creature ) << ", ";
+                stream << crExp << ", ";
+                stream << gold << ", ";
+                stream << scriptName( objective ) << ", ";
+                stream << countdown << " )";
+                addLine( stream.str() );
+            }
+        }
+
+        void BasicScript::ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies ) {
+            std::stringstream stream;
+            stream << "ADD_PARTY_TO_LEVEL( ";
+            stream << scriptName( player ) << ", ";
+            stream << partyName << ", ";
+            stream << actionPoint << ", ";
+            stream << copies << " )";
             addLine( stream.str() );
         }
 

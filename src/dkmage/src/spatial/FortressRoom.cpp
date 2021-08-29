@@ -205,12 +205,29 @@ namespace dkmage {
                 script.actionSection().REM( "dungeon heart guards" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
                 script.addLineActionIf( heartAP, Player::P_P0 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_KNIGHT,  heartAP, 1, 10, 1000 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, heartAP, 3,  9,  800 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_GIANT,   heartAP, 4,  8,  600 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK,    heartAP, 5,  7,  400 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
-                script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
+                {
+                    script::BasicScript& action = script.actionSection();
+                    action.CREATE_PARTY( "lord_of_the_land_1" );
+                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_KNIGHT,  1, 10, 1000, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_SAMURAI, 3,  9,  800, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_FAIRY,   2,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.CREATE_PARTY( "lord_of_the_land_2" );
+                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_GIANT,   1,  8,  600, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_FAIRY,   1,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
+                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_1", heartAP );
+                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_2", heartAP, 4 );
+
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_KNIGHT,  heartAP, 1, 10, 1000 );
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, heartAP, 3,  9,  800 );
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_GIANT,   heartAP, 4,  8,  600 );
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK,    heartAP, 5,  7,  400 );
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
+//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
+                }
                 script.addLineActionEndIf();
 
                 /// entrance chamber
