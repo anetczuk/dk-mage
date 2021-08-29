@@ -16,6 +16,10 @@
 namespace adiktedpp {
     class GameMap;
     class Level;
+
+    namespace script {
+        class Script;
+    }
 }
 
 
@@ -31,6 +35,8 @@ namespace dkmage {
             ParametersMap& parameters;
 
             adiktedpp::Level& level();
+
+            adiktedpp::script::Script& script();
         };
 
 
@@ -43,6 +49,7 @@ namespace dkmage {
         enum class FortressRoomType {
             FR_DUNGEON_HEART,
             FR_EMPTY,
+            FR_TRAP,
             FR_TREASURE,
             FR_CORRIDOR,
             FR_BRANCH,

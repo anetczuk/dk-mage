@@ -29,6 +29,10 @@ namespace dkmage {
             return gameMap.level;
         }
 
+        adiktedpp::script::Script& FortressData::script() {
+            return gameMap.script;
+        }
+
 
         /// ========================================================================
 
@@ -37,6 +41,7 @@ namespace dkmage {
             switch( data ) {
             ENUM_STREAM_CASE( FortressRoomType, FR_DUNGEON_HEART, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_EMPTY, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_TRAP, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_TREASURE, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_CORRIDOR, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_BRANCH, os );
@@ -288,14 +293,14 @@ namespace dkmage {
         /**
          *
          */
-        class FortressRoomEmpty: public FortressRoom {
+        class FortressRoomColumnRect: public FortressRoom {
         public:
 
             std::size_t roomSize       = 0;
             std::size_t corridorLength = 0;
 
 
-            FortressRoomEmpty( FortressDungeon& dungeon ): FortressRoom( dungeon ) {
+            FortressRoomColumnRect( FortressDungeon& dungeon ): FortressRoom( dungeon ) {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
                 roomSize = roomSize357.getRandom();
                 corridorLength = rng_randi( 5 ) + 1;
@@ -303,14 +308,10 @@ namespace dkmage {
                 setBbox( roomSize, roomSize );
             }
 
-            FortressRoomEmpty( FortressDungeon& dungeon, const std::size_t roomSize, const std::size_t corridorLength ): FortressRoom( dungeon ),
+            FortressRoomColumnRect( FortressDungeon& dungeon, const std::size_t roomSize, const std::size_t corridorLength ): FortressRoom( dungeon ),
                     roomSize(roomSize), corridorLength(corridorLength)
             {
                 setBbox( roomSize, roomSize );
-            }
-
-            FortressRoomType type() const override {
-                return FortressRoomType::FR_EMPTY;
             }
 
             bool isCorridor( const utils::Point point ) const {
@@ -352,6 +353,184 @@ namespace dkmage {
                     level.setFortified( roomRect.center() + Point(-1, 1) * radius, roomOwner );
                     level.setFortified( roomRect.center() + Point(-1,-1) * radius, roomOwner );
                     level.setFortified( roomRect.center() + Point( 1,-1) * radius, roomOwner );
+                }
+            }
+
+        };
+
+
+        /**
+         *
+         */
+        class FortressRoomEmpty: public FortressRoomColumnRect {
+        public:
+
+            using FortressRoomColumnRect::FortressRoomColumnRect;
+
+            FortressRoomType type() const override {
+                return FortressRoomType::FR_EMPTY;
+            }
+
+        };
+
+
+        /**
+         *
+         */
+        class FortressRoomTrap: public FortressRoomColumnRect {
+        public:
+
+            using FortressRoomColumnRect::FortressRoomColumnRect;
+
+            FortressRoomType type() const override {
+                return FortressRoomType::FR_TRAP;
+            }
+
+            void draw( FortressData& data ) const override {
+                FortressRoomColumnRect::draw( data );
+
+                static ProbabilityMass<std::size_t> trapIndexMass;
+                if ( trapIndexMass.empty() ) {
+                    trapIndexMass.set( 0, 1.0 );
+                    trapIndexMass.set( 1, 1.0 );
+                    trapIndexMass.set( 2, 1.0 );
+                    trapIndexMass.set( 3, 2.0 );
+                    trapIndexMass.normalize();
+                }
+
+                const std::size_t trapIndex = trapIndexMass.getRandom();
+                switch( trapIndex ) {
+                case 0: {
+                    /// gas traps
+                    adiktedpp::Level& level = data.level();
+                    setTraps( level, Trap::T_POISON_GAS );
+                    break;
+                }
+                case 1: {
+                    /// word of power traps
+                    adiktedpp::Level& level = data.level();
+                    setTraps( level, Trap::T_WORD_OF_POWER );
+                    break;
+                }
+                case 2: {
+                    /// boulder traps
+                    adiktedpp::Level& level = data.level();
+                    setTraps( level, Trap::T_BOULDER );
+                    break;
+                }
+                case 3: {
+                    /// ambush
+                    adiktedpp::Level& level = data.level();
+                    adiktedpp::script::Script& script = data.script();
+
+                    const Rect& roomRect = bbox();
+                    const Point roomCenter = roomRect.center();
+                    const std::size_t radius = roomSize / 2;
+
+                    static std::set< Creature > ambushHeroes;
+                    if ( ambushHeroes.empty() ) {
+                        ambushHeroes.insert( Creature::C_FAIRY );
+                        ambushHeroes.insert( Creature::C_ARCHER );
+                        ambushHeroes.insert( Creature::C_PRIESTESS );
+                        ambushHeroes.insert( Creature::C_WIZARD );
+                        ambushHeroes.insert( Creature::C_THIEF );
+                        ambushHeroes.insert( Creature::C_MONK );
+                        ambushHeroes.insert( Creature::C_DWARF );
+                        ambushHeroes.insert( Creature::C_BARBARIAN );
+                        ambushHeroes.insert( Creature::C_GIANT );
+                    }
+
+                    /// ambush party
+                    const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
+                    script.actionSection().REM( "ambush party" );
+                    script.actionSection().REM( std::to_string( ambushAP ) + " -- ambush room center" );
+                    script.addLineActionIf( ambushAP, Player::P_P0 );
+                    {
+                        const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
+                        const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
+
+                        script::BasicScript& action = script.actionSection();
+                        action.CREATE_PARTY( ambushName );
+                        action.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                        for ( std::size_t i=0; i<3; ++i ) {
+                            const Creature creature = rng_rand( ambushHeroes );
+                            action.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                            action.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                        }
+                        action.ADD_PARTY_TO_LEVEL( roomOwner, ambushName, ambushAP );
+                    }
+                    script.addLineActionEndIf();
+
+                    break;
+                }
+                default: {
+                    LOG() << "unknown trap index: " << trapIndex;
+                }
+                }
+
+//                adiktedpp::GameMap& gameMap = data.gameMap;
+//                const Rect& roomRect = bbox();
+//
+//
+//                std::size_t radius = 0;
+//                switch( roomSize ) {
+//                case 5: {
+//                    radius = 1;
+//                    break;
+//                }
+//                case 7: {
+//                    radius = 2;
+//                    break;
+//                }
+//                }
+//
+//                if ( radius == 0) {
+//                    if ( roomSize == 3 ) {
+//                        level.setFortified( roomRect.center(), roomOwner );
+//                    }
+//                } else {
+//                    level.setFortified( roomRect.center() + Point( 1, 1) * radius, roomOwner );
+//                    level.setFortified( roomRect.center() + Point(-1, 1) * radius, roomOwner );
+//                    level.setFortified( roomRect.center() + Point(-1,-1) * radius, roomOwner );
+//                    level.setFortified( roomRect.center() + Point( 1,-1) * radius, roomOwner );
+//                }
+            }
+
+            void setTraps( adiktedpp::Level& level, const Trap trap ) const {
+                const Rect& roomRect = bbox();
+
+                {
+                    const Point point = roomRect.leftBottom();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.leftTop();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.rightTop();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.rightBottom();
+                    level.setTrap( point, trap );
+                }
+
+                {
+                    const Point point = roomRect.centerTop();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.centerTop();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.rightCenter();
+                    level.setTrap( point, trap );
+                }
+                {
+                    const Point point = roomRect.leftCenter();
+                    level.setTrap( point, trap );
                 }
             }
 
@@ -1120,7 +1299,7 @@ namespace dkmage {
 
                     static std::set< Creature > CreatureSet = { Creature::C_ARCHER, Creature::C_MONK, Creature::C_WIZARD };
                     const Creature cOwner1 = rng_rand( CreatureSet );
-                    const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 7, 9 );
+                    const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
 
                     level.setCreature( center - orthoDir * 3, 1, cOwner1, 1, guardLevel.randomized(), roomOwner );
                     const Creature cOwner2 = rng_rand( CreatureSet );
@@ -1348,6 +1527,7 @@ namespace dkmage {
             switch( roomType ) {
             case FortressRoomType::FR_DUNGEON_HEART:        return std::make_unique< FortressRoomDungeonHeart >( dungeon );
             case FortressRoomType::FR_EMPTY:                return std::make_unique< FortressRoomEmpty >( dungeon );
+            case FortressRoomType::FR_TRAP:                 return std::make_unique< FortressRoomTrap >( dungeon );
             case FortressRoomType::FR_TREASURE:             return std::make_unique< FortressRoomTreasure >( dungeon );
             case FortressRoomType::FR_CORRIDOR:             return std::make_unique< FortressRoomCorridor >( dungeon );
             case FortressRoomType::FR_BRANCH:               return std::make_unique< FortressRoomBranch >( dungeon );

@@ -287,8 +287,9 @@ namespace dkmage {
         static const ProbabilityMass< spatial::FortressRoomType >& FortressRoomsProbability() {
             static ProbabilityMass< spatial::FortressRoomType > roomProbability;
             if ( roomProbability.empty() ) {
-                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 0.3 );
+                roomProbability.set( spatial::FortressRoomType::FR_EMPTY, 0.05 );
                 roomProbability.set( spatial::FortressRoomType::FR_TREASURE, 0.3, 4 );
+                roomProbability.set( spatial::FortressRoomType::FR_TRAP, 0.3 );
                 roomProbability.set( spatial::FortressRoomType::FR_CORRIDOR, 0.5 );
                 roomProbability.set( spatial::FortressRoomType::FR_BRANCH, 0.3 );
                 roomProbability.set( spatial::FortressRoomType::FR_BOULDER_CORRIDOR, 0.8, 3 );      ///
@@ -340,7 +341,7 @@ namespace dkmage {
                 const spatial::FortressRoom* lastRoom = mainCorridor.back();
                 if ( lastRoom->restrictedDirections().empty() == false ) {
                     /// restricted room -- add unrestricted one
-                    const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EMPTY, *lastRoom );
+                    const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_TRAP, *lastRoom );
                     if ( next == nullptr ) {
                         LOG() << "unable to create main junction room";
                         fortress.moveToTopEdge( 8 );
