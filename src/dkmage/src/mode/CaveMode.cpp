@@ -244,10 +244,14 @@ namespace dkmage {
             script.setTrapsAvailable( Player::P_ALL, 0 );
 
             script.addLineInit( "" );
-            script.setMagicStandard( Player::P_ALL );
-//            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-//                script.setMagicAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
-//            }
+//            script.setMagicStandard( Player::P_ALL );
+            script::MagicAvailableState availableMagic;
+            availableMagic.setStandard( Player::P_ALL );
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::AvailableMode::AM_ENABLED );
+//                availableMagic.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
+            }
+            script.set( availableMagic );
 
 //            script.addLineInit( "" );
 //            script.setImpRotting( false );

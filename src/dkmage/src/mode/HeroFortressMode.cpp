@@ -224,6 +224,10 @@ namespace dkmage {
             availableMagic.setStandard( Player::P_ALL );
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
+            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::AvailableMode::AM_ENABLED );
+//                magicAvailableState.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
+            }
             script.set( availableMagic );
 
 //            script.addLineInit( "" );
