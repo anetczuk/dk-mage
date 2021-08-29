@@ -574,7 +574,7 @@ namespace adiktedpp {
             if ( init.empty() == false ) {
                 merged.push_back( "" );
                 merged.push_back( "" );
-                merged.push_back( "REM --- initialization ---" );
+                merged.push_back( "REM --- setup ---" );
                 merged.push_back( "" );
                 merged.insert( merged.end(), init.begin(), init.end() );
             }

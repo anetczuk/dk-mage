@@ -218,8 +218,6 @@ namespace dkmage {
 
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
             script.addLineInit( "COMPUTER_PLAYER( PLAYER1, 0 )" );
-            script.addLineInit( "MAX_CREATURES( PLAYER0, 30 )" );
-            script.addLineInit( "MAX_CREATURES( PLAYER1, 50 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -227,6 +225,9 @@ namespace dkmage {
             }
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
             script.setStartMoney( Player::P_P1, 200000 );                     /// does not show in treasure
+
+            script.addLineInit( "MAX_CREATURES( PLAYER0, 30 )" );
+            script.addLineInit( "MAX_CREATURES( PLAYER1, 50 )" );
 
             script.addLineInit( "" );
             script.setEvilCreaturesPool( 30 );
