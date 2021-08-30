@@ -3,7 +3,7 @@ REM *** generated map type: 'maze' ***
 REM *** seed used for generation: 'Sample' ***
 
 
-REM --- initialization ---
+REM --- setup ---
 
 SET_GENERATE_SPEED( 500 )
 COMPUTER_PLAYER( PLAYER1, 0 )
