@@ -26,6 +26,11 @@ namespace dkmage {
 
             void draw( FortressData& data ) const;
 
+            std::size_t countRooms( const FortressRoomType roomType ) const {
+                std::vector< const FortressRoom* > rooms = findRoom( roomType );
+                return rooms.size();
+            }
+
             std::vector< Direction > freeDirections( const FortressRoom& room ) const {
                 std::vector< Direction > availableDirs = room.restrictedDirections();
                 if ( availableDirs.empty() == false ) {
@@ -171,6 +176,8 @@ namespace dkmage {
 
             void cutInvalidExits();
 
+            void ensureExits();
+
             bool generateLake( const utils::Rect& lakeLimit );
 
     //            std::vector< const spatial::FortressRoom* > prepareRoom( const spatial::FortressRoomType roomType, const spatial::FortressRoom* startItem, const bool allowBranches );
@@ -187,6 +194,11 @@ namespace dkmage {
             bool isBridgePossible( const utils::Point startPoint ) const;
 
             bool findFortified( const utils::Point startPoint, const utils::Point bridgeDirection ) const;
+
+
+        protected:
+
+            const spatial::FortressRoom* cutBlindCorridor( const spatial::FortressRoom& room );
 
         };
 

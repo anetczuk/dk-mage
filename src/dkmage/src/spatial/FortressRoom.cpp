@@ -979,7 +979,7 @@ namespace dkmage {
                 adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
                 const Rect& roomRect = bbox();
-                level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
+//                level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
                 const Rect chamber( roomRect.center(), 3, 3 );
 
@@ -1015,9 +1015,12 @@ namespace dkmage {
                 cOwner = rng_rand( PlayerSet );
                 level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
+                /// add doors
                 switch( orientation ) {
                 case Axis::A_VERTICAL: {
                     /// vertical
+                    const Point center1 = roomRect.center() + Point( -3, 0 );
+                    level.digLine( center1, roomRect.center(), roomOwner, true );
                     const Point door1 = roomRect.center() + Point( -1, 0 );
                     level.setDoor( door1, Door::D_IRON, true );
                     const Point door1a1 = door1 + Point( -2,  1 );
@@ -1025,6 +1028,8 @@ namespace dkmage {
                     const Point door1a2 = door1 + Point( -2, -1 );
                     level.setDoor( door1a2, Door::D_IRON, true );
 
+                    const Point center2 = roomRect.center() + Point( 3, 0 );
+                    level.digLine( center2, roomRect.center(), roomOwner, true );
                     const Point door2 = roomRect.center() + Point(  1, 0 );
                     level.setDoor( door2, Door::D_IRON, true );
                     const Point door2a1 = door2 + Point(  2,  1 );
@@ -1035,6 +1040,8 @@ namespace dkmage {
                 }
                 case Axis::A_HORIZONTAL: {
                     /// horizontal
+                    const Point center1 = roomRect.center() + Point( 0, -3 );
+                    level.digLine( center1, roomRect.center(), roomOwner, true );
                     const Point door1 = roomRect.center() + Point( 0, -1 );
                     level.setDoor( door1, Door::D_IRON, true );
                     const Point door1a1 = door1 + Point( -1, -2 );
@@ -1042,7 +1049,8 @@ namespace dkmage {
                     const Point door1a2 = door1 + Point(  1, -2 );
                     level.setDoor( door1a2, Door::D_IRON, true );
 
-
+                    const Point center2 = roomRect.center() + Point( 0, 3 );
+                    level.digLine( center2, roomRect.center(), roomOwner, true );
                     const Point door2 = roomRect.center() + Point(  0, 1 );
                     level.setDoor( door2, Door::D_IRON, true );
                     const Point door2a1 = door2 + Point( -1, 2 );

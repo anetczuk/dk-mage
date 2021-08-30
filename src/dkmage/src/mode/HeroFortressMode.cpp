@@ -173,8 +173,9 @@ namespace dkmage {
         void HeroFortressMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
 
-//            script.setFXLevel();
+            script.setFXLevel();
 
+            script.addLineInit( "" );
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
@@ -231,8 +232,16 @@ namespace dkmage {
             }
             script.set( availableMagic );
 
-//            script.addLineInit( "" );
-//            script.setImpRotting( false );
+            script.addLineInit( "" );
+            script.setImpRotting( false );
+            script.addLineInit( "" );
+            script.setPrisonConvertLimits();
+            script.addLineInit( "" );
+            script.setTortureConvertLimits();
+            script.addLineInit( "" );
+            script.setSacrificeLimits();
+            script.addLineInit( "" );
+            script.setGraveyardLimits();
 
             /// end game conditions
             script.setWinConditionStandard( Player::P_P0 );

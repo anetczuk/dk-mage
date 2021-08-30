@@ -225,7 +225,7 @@ namespace adiktedpp {
 //        }
 
         void BasicScript::setFXLevel() {
-            REM( "*** set script compatibility with Keeper FX ***" );
+            REM( "- set script compatibility with Keeper FX -" );
             addLine( "LEVEL_VERSION(1)" );
         }
 
@@ -525,13 +525,13 @@ namespace adiktedpp {
             if ( rotting ) {
                 init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 0 )" );
             } else {
-                init.addLine( "REM prevent imp bodies be taken to graveyard" );
+                init.addLine( "REM - prevent imp bodies be taken to graveyard -" );
                 init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
             }
         }
 
         void Script::setPrisonConvertLimits() {
-            init.addLineIndent( "REM prevent prison convert snow-balling" );
+            init.addLineIndent( "REM - prevent prison convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, SKELETON > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 80 )" );
             init.addLineIndent( "ENDIF" );
@@ -547,7 +547,7 @@ namespace adiktedpp {
         }
 
         void Script::setTortureConvertLimits() {
-            init.addLineIndent( "REM prevent torture convert snow-balling" );
+            init.addLineIndent( "REM - prevent torture convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 33 )" );
             init.addLineIndent( "    ADD_TO_FLAG( PLAYER0, FLAG7, 1 )" );
@@ -561,7 +561,7 @@ namespace adiktedpp {
         }
 
         void Script::setSacrificeLimits() {
-            init.addLineIndent( "REM set sacrifice limits" );
+            init.addLineIndent( "REM - set sacrifice limits -" );
             init.addLineIndent( "IF( PLAYER0, SACRIFICED[IMP] >= 9 )" );
             init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( IMP )" );
             init.addLineIndent( "ENDIF" );
@@ -580,7 +580,7 @@ namespace adiktedpp {
         }
 
         void Script::setGraveyardLimits() {
-            init.addLineIndent( "REM set graveyard limits" );
+            init.addLineIndent( "REM - set graveyard limits -" );
             init.addLineIndent( "IF( PLAYER0, VAMPIRE >= 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( BodiesForVampire, 15 )" );
             init.addLineIndent( "ENDIF" );

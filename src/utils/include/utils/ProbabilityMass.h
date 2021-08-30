@@ -70,6 +70,16 @@ namespace utils {
             weights[ value ] = { weight, limit };
         }
 
+        void multiply( const T value, const double factor ) {
+            auto iter = weights.find( value );
+            if ( iter == weights.end() ) {
+                /// no item to multiply
+                return ;
+            }
+            ValueSize& data = iter->second;
+            data.weight *= factor;
+        }
+
         void normalize() {
             double weightSum = 0.0;
             auto iter = weights.begin();
@@ -103,6 +113,21 @@ namespace utils {
             return weights.rbegin()->first;
         }
 
+        void popItem( const T value ) {
+            auto iter = weights.find( value );
+            if ( iter == weights.end() ) {
+                /// no item
+                return ;
+            }
+            ValueSize& data = iter->second;
+            if ( data.allowed <= 1 ) {
+                weights.erase( value );
+                normalize();
+                return ;
+            }
+            --data.allowed;
+        }
+
         /// pop map item by value
         T pop( const double value ) {
             const T ret = get( value );
@@ -134,19 +159,6 @@ namespace utils {
             }
             const std::string dataString = stream.str();
             return dataString.substr( 0, dataString.length() - 1 );
-        }
-
-
-    protected:
-
-        void popItem( const T value ) {
-            ValueSize& item = weights[ value ];
-            if ( item.allowed <= 1 ) {
-                weights.erase( value );
-                normalize();
-                return ;
-            }
-            --item.allowed;
         }
 
     };

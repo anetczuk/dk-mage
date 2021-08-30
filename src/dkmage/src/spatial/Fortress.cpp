@@ -335,14 +335,16 @@ namespace dkmage {
             std::vector< const spatial::FortressRoom* > branchStart;
             branchStart.push_back( heart );
 
-            const std::size_t roomsNum = rng_randi( 4 ) + 4;
+            const std::size_t roomsNum = rng_randi( 4 ) + 3;
             std::vector< const spatial::FortressRoom* > mainCorridor = prepareCorridors( branchStart, roomsNum, false );
-            if ( mainCorridor.size() == 1 ) {
+            {
+                /// add junction room
                 const spatial::FortressRoom* lastRoom = mainCorridor.back();
                 if ( lastRoom->restrictedDirections().empty() == false ) {
                     /// restricted room -- add unrestricted one
                     const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_TRAP, *lastRoom );
                     if ( next == nullptr ) {
+                        /// unable to create next room
                         LOG() << "unable to create main junction room";
                         fortress.moveToTopEdge( 8 );
                         fortress.draw( fortressData );
@@ -371,14 +373,45 @@ namespace dkmage {
             prepareExitRooms( branches );
 
             /// secondary pass
+//            if ( fortress.countRooms( spatial::FortressRoomType::FR_EXIT ) < 3 ) {
+//                roomProbability.multiply( spatial::FortressRoomType::FR_EXIT, 3.0 );
+//            }
             prepareSecondaryPass();
 
+            /// check required rooms
+            {
+                if ( fortress.countRooms( spatial::FortressRoomType::FR_PRISON ) < 1 ) {
+                    LOG() << "missing required prison";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( fortressData );
+                    return false;
+                }
+                if ( fortress.countRooms( spatial::FortressRoomType::FR_TORTURE ) < 1 ) {
+                    LOG() << "missing required torture room";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( fortressData );
+                    return false;
+                }
+                if ( fortress.countRooms( spatial::FortressRoomType::FR_GRAVEYARD ) < 1 ) {
+                    LOG() << "missing required graveyard";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( fortressData );
+                    return false;
+                }
+                if ( fortress.countRooms( spatial::FortressRoomType::FR_LAVA_POST ) < 1 ) {
+                    LOG() << "missing required lava posts";
+                    fortress.moveToTopEdge( 8 );
+                    fortress.draw( fortressData );
+                    return false;
+                }
+            }
+
             cutBlindCorridors();
-
             cutInvalidExits();
-
             /// once again, in case of removed exit rooms
             cutBlindCorridors();
+
+            ensureExits();
 
             std::vector< spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
             if ( exitRooms.size() < 2 ) {
@@ -389,34 +422,6 @@ namespace dkmage {
                     fortress.draw( fortressData );
                 }
                 return false;
-            }
-
-            /// check required rooms
-            {
-                if ( fortress.findRoom( spatial::FortressRoomType::FR_PRISON ).empty() ) {
-                    LOG() << "missing required prison";
-                    fortress.moveToTopEdge( 8 );
-                    fortress.draw( fortressData );
-                    return false;
-                }
-                if ( fortress.findRoom( spatial::FortressRoomType::FR_TORTURE ).empty() ) {
-                    LOG() << "missing required torture room";
-                    fortress.moveToTopEdge( 8 );
-                    fortress.draw( fortressData );
-                    return false;
-                }
-                if ( fortress.findRoom( spatial::FortressRoomType::FR_GRAVEYARD ).empty() ) {
-                    LOG() << "missing required graveyard";
-                    fortress.moveToTopEdge( 8 );
-                    fortress.draw( fortressData );
-                    return false;
-                }
-                if ( fortress.findRoom( spatial::FortressRoomType::FR_LAVA_POST ).empty() ) {
-                    LOG() << "missing required lava posts";
-                    fortress.moveToTopEdge( 8 );
-                    fortress.draw( fortressData );
-                    return false;
-                }
             }
 
             fortress.moveToTopEdge( 8 );
@@ -464,7 +469,7 @@ namespace dkmage {
                 std::vector< const spatial::FortressRoom* > nextRooms;
                 const std::size_t qSize = roomQueue.size();
                 for ( std::size_t x=0; x<qSize; ++x ) {
-                    const spatial::FortressRoomType roomType = roomProbability.popRandom();
+                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
                     const spatial::FortressRoom* item = roomQueue[ x ];
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
@@ -474,6 +479,7 @@ namespace dkmage {
                         continue ;
                     }
 
+                    roomProbability.popItem( roomType );
                     nextRooms.push_back( next );
                     if ( allowBranches == false ) {
                         /// no additional branches
@@ -491,6 +497,9 @@ namespace dkmage {
 
                     nextRooms.push_back( next );
                 }
+                if ( nextRooms.empty() ) {
+                    break ;
+                }
                 roomQueue = nextRooms;
             }
 
@@ -506,7 +515,7 @@ namespace dkmage {
 
             std::size_t failedAttempts = 0;
 
-            for ( const spatial::FortressRoom* item: startRooms ) {
+            for ( const spatial::FortressRoom* item: uniqueRooms ) {
                 const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *item );
                 if ( next == nullptr ) {
 //                    LOG() << "unable to generate branch exit";
@@ -522,13 +531,16 @@ namespace dkmage {
             LOG() << "performing secondary pass";
             std::vector< const spatial::FortressRoom* > roomQueue = const_cast< const spatial::FortressDungeon& >( fortress ).rooms();
 
+//            LOG() << "fortress:\n" << fortress.print();
+
             /// create branches
             std::size_t stepsCounter = 0;
             while ( roomQueue.empty() == false ) {
+                std::set< const spatial::FortressRoom* > blindCandidates;
                 std::vector< const spatial::FortressRoom* > nextRooms;
-                const std::size_t qSize = roomQueue.size();
-                for ( std::size_t x=0; x<qSize; ++x ) {
-                    const spatial::FortressRoom* item = roomQueue[ x ];
+
+                /// add new rooms
+                for ( const spatial::FortressRoom* item: roomQueue ) {
                     const spatial::FortressRoomType itemType = item->type();
                     if ( itemType == spatial::FortressRoomType::FR_DUNGEON_HEART ) {
                         continue ;
@@ -537,13 +549,32 @@ namespace dkmage {
                         continue ;
                     }
 
-                    const spatial::FortressRoomType roomType = roomProbability.popRandom();
+                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
+                        /// unable to add next room from 'item' room
+                        blindCandidates.insert( item );
                         continue ;
                     }
+                    roomProbability.popItem( roomType );
                     nextRooms.push_back( next );
+                }
 
+                /// remove blind corridors
+                for ( const spatial::FortressRoom* item: blindCandidates ) {
+                    remove( nextRooms, item );
+
+                    const spatial::FortressRoom* prev = cutBlindCorridor( *item );
+                    if ( prev == nullptr ) {
+                        continue ;
+                    }
+                    nextRooms.push_back( prev );
+                }
+
+                /// make additional branches
+                const std::size_t nSize = nextRooms.size();
+                for ( std::size_t i=0; i<nSize; ++i ) {
+                    const spatial::FortressRoom* next = nextRooms[i];
                     const std::vector< spatial::Direction > freeDirs = fortress.freeDirections( *next );
                     const std::size_t fSize = freeDirs.size();
                     for ( std::size_t i=1; i<fSize; ++i ) {
@@ -553,6 +584,7 @@ namespace dkmage {
                         }
                     }
                 }
+
                 roomQueue = nextRooms;
                 ++stepsCounter;
                 if ( stepsCounter > 6 ) {
@@ -568,19 +600,29 @@ namespace dkmage {
                 removed = false;
                 std::vector< spatial::FortressRoom* > rooms = fortress.rooms();
                 for ( spatial::FortressRoom* item: rooms ) {
-                    const std::vector< spatial::FortressRoom* > neighbours = fortress.connectedRooms( *item );
-                    if ( neighbours.size() > 1 ) {
-                        continue ;
+                    const spatial::FortressRoom* next = item;
+                    while ( next != nullptr ) {
+                        next = cutBlindCorridor( *next );
+                        if ( next != nullptr ) {
+                            removed = true;
+                        }
                     }
-                    const Rect itemRect = item->bbox();
-                    if ( itemRect.width() > 1 && itemRect.height() > 1 ) {
-                        continue ;
-                    }
-                    /// dead-end corridor
-                    fortress.removeRoom( *item );
-                    removed = true;
                 }
             } while( removed == true );
+        }
+
+        const spatial::FortressRoom* Fortress::cutBlindCorridor( const spatial::FortressRoom& room ) {
+            const std::vector< spatial::FortressRoom* > neighbours = fortress.connectedRooms( room );
+            if ( neighbours.size() > 1 ) {
+                return nullptr;
+            }
+            const Rect itemRect = room.bbox();
+            if ( itemRect.width() > 1 && itemRect.height() > 1 ) {
+                return nullptr;
+            }
+            /// dead-end corridor
+            fortress.removeRoom( room );
+            return neighbours[0];
         }
 
         void Fortress::cutInvalidExits() {
@@ -648,6 +690,15 @@ namespace dkmage {
                 fortress.removeRoom( *room );
                 exitRooms.erase( exitRooms.begin() + maxIndex );
             }
+        }
+
+        void Fortress::ensureExits() {
+            std::vector< spatial::FortressRoom* > exitRooms = fortress.findRoom( spatial::FortressRoomType::FR_EXIT );
+            if ( exitRooms.size() > 2 ) {
+                return ;
+            }
+//            /// try to insert exits
+//            std::vector< spatial::FortressRoom* > allRooms = fortress.rooms();
         }
 
         bool Fortress::generateLake( const Rect& lakeLimit ) {
@@ -719,14 +770,14 @@ namespace dkmage {
                 const Point bridgeStart = entrancePoint + initialDirection;
                 const PointList bridge = findBridge( bridgeStart );
                 const std::size_t bSize = bridge.size();
-                if ( bridge.size() < 2 ) {
+                if ( bSize < 2 ) {
                     LOG() << "unable find bridge shore";
                     continue;
                 }
-                if ( bSize > 10 ) {
-                    LOG() << "bridge too long";
-                    continue;
-                }
+//                if ( bSize > 10 ) {
+//                    LOG() << "bridge too long";
+//                    continue;
+//                }
 
                 bool collision = false;
                 for ( const Bridge& item: bridges ) {
@@ -795,6 +846,12 @@ namespace dkmage {
 
                     /// add bridge keepers
                     level.setSlab( bridgePoint, Slab::S_PATH );
+
+                    if ( i > 11 ) {
+                        /// do not add more guards along long bridges
+                        continue ;
+                    }
+
                     if ( i == 1 ) {
                         level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
