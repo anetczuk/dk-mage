@@ -27,7 +27,7 @@ namespace adiktedpp {
             case Player::P_P2:      return "PLAYER2";
             case Player::P_P3:      return "PLAYER3";
             case Player::P_GOOD:    return "PLAYER_GOOD";
-            case Player::P_UNSET:   return "PLAYER_UNSET";          /// unavailable in script
+            case Player::P_UNSET:   return "PLAYER_NEUTRAL";          /// unavailable in script
             case Player::P_ALL:     return "ALL_PLAYERS";
             }
             return "UNKNOWN_PLAYER";
@@ -169,7 +169,7 @@ namespace adiktedpp {
         std::string scriptName( const PartyObjective data ) {
             switch( data ) {
             case PartyObjective::PO_ATTACK_DUNGEON_HEART:   { return "ATTACK_DUNGEON_HEART"; }
-            case PartyObjective::PO_ATTACK_ENEMIES:         { return "POWER_SLAP"; }
+            case PartyObjective::PO_ATTACK_ENEMIES:         { return "ATTACK_ENEMIES"; }
             case PartyObjective::PO_ATTACK_ROOMS:           { return "ATTACK_ROOMS"; }
             case PartyObjective::PO_DEFEND_HEART:           { return "DEFEND_HEART"; }
             case PartyObjective::PO_DEFEND_LOCATION:        { return "DEFEND_LOCATION"; }
