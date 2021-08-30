@@ -21,8 +21,11 @@ cp $BIN_DIR/config.ini $DEPLOY_DIR
 
 cd $DEPLOY_DIR/..
 
+OUT_NAME="dkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip"
+
 ## -FS -- replaces existing archive
-zip -FSr dkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip dkmage
+zip -FSr "$OUT_NAME" dkmage
 
+echo -e "\nfile generatet: $OUT_NAME"
 
-echo -e "\ndeployment done"
+echo -e "deployment done"
