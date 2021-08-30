@@ -20,25 +20,42 @@ extern "C" {
 namespace adiktedpp {
     namespace script {
 
-        std::string scriptName( const Player item ) {
-            switch( item ) {
+        std::string scriptName( const Player data ) {
+            switch( data ) {
             case Player::P_P0:      return "PLAYER0";
             case Player::P_P1:      return "PLAYER1";
             case Player::P_P2:      return "PLAYER2";
             case Player::P_P3:      return "PLAYER3";
             case Player::P_GOOD:    return "PLAYER_GOOD";
-            case Player::P_UNSET:   return "PLAYER_NEUTRAL";          /// unavailable in script
+            case Player::P_UNSET:   return "PLAYER_NEUTRAL";          /// available in Keeper FX
             case Player::P_ALL:     return "ALL_PLAYERS";
             }
-            return "UNKNOWN_PLAYER";
+
+            LOG_ERR() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
         }
 
 
         std::string scriptName( const Room data ) {
             switch( data ) {
-            case Room::R_CLAIMED:        { return "UNSUPPORTED_CLAIMED"; }
+            case Room::R_CLAIMED: {
+                /// value not allowed in script file
+                LOG_ERR() << "unsupported argument: " << (int)data;
+                std::stringstream stream;
+                stream << FILE_NAME << ": unsupported argument: " << (int)data;
+                throw std::invalid_argument( stream.str() );
+            }
+            case Room::R_PORTAL: {
+                /// value not allowed in script file
+                LOG_ERR() << "unsupported argument: " << (int)data;
+                std::stringstream stream;
+                stream << FILE_NAME << ": unsupported argument: " << (int)data;
+                throw std::invalid_argument( stream.str() );
+            }
+
             case Room::R_DUNGEON_HEART:  { return "DUNGEON_HEART"; }
-            case Room::R_PORTAL:         { return "UNSUPPORTED_PORTAL"; }
 
             case Room::R_TREASURE:       { return "TREASURE"; }
             case Room::R_LIBRARY:        { return "RESEARCH"; }
@@ -56,7 +73,7 @@ namespace adiktedpp {
             case Room::R_SCAVENGER:      { return "SCAVENGER"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
@@ -98,7 +115,7 @@ namespace adiktedpp {
             case Creature::C_HORNY:         { return "HORNY"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
@@ -113,7 +130,7 @@ namespace adiktedpp {
             case Door::D_MAGIC:          { return "MAGIC"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
@@ -130,7 +147,7 @@ namespace adiktedpp {
             case Trap::T_LAVA:           { return "LAVA"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
@@ -159,7 +176,7 @@ namespace adiktedpp {
             case Spell::S_POWER_ARMAGEDDON:     { return "POWER_ARMAGEDDON"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );
@@ -179,7 +196,7 @@ namespace adiktedpp {
             case PartyObjective::PO_STEAL_SPELLS:           { return "STEAL_SPELLS"; }
             }
 
-            LOG() << "invalid argument: " << (int)data;
+            LOG_ERR() << "invalid argument: " << (int)data;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid argument: " << (int)data;
             throw std::invalid_argument( stream.str() );

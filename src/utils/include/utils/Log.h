@@ -56,6 +56,7 @@ namespace utils {
 #define LOG()        utils::Logger( "INFO ", __FILE__, __LINE__ ).stream()
 #define LOG_INFO()   utils::Logger( "INFO ", __FILE__, __LINE__ ).stream()
 #define LOG_WARN()   utils::Logger( "WARN ", __FILE__, __LINE__ ).stream()
+#define LOG_ERR()    utils::Logger( "ERR  ", __FILE__, __LINE__ ).stream()
 
 
 #endif /* UTILS_INCLUDE_UTILS_LOG_H_ */
