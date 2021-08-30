@@ -62,11 +62,13 @@ if( CMAKE_TESTING_ENABLED )
 endif()
 
 
-## ================= building modules =================
-
 ### build adikted project
 FetchContent_Declare( adikted
                       URL ${EXTERNAL_DIR}/adikted/ADiKtEd-master.zip
+                      
+## Hash is only checked once during first configuration (extract of zip).
+##                      URL_HASH MD5=0a5c6b4259775a80c6c1f54bc4811234
+
 ## It has been found that 'SOURCE_SUBDIR' does not work under WLS (Ubuntu 20 & cmake 3.16). 
 ## Workaround is to maunally execute 'FetchContent_Populate()' instead of 'FetchContent_MakeAvailable()'.
 ##                      SOURCE_SUBDIR libadikted
@@ -86,6 +88,9 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     target_compile_options( adikted PRIVATE "-w" )
 endif()
 ## install( TARGETS adikted LIBRARY DESTINATION "." )
+
+
+## ================= building modules =================
 
 
 add_subdirectory( utils )
