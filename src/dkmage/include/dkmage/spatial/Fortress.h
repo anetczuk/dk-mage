@@ -133,6 +133,8 @@ namespace dkmage {
 
             std::size_t maxDistance() const;
 
+            std::size_t closestDistance( const FortressRoomType roomType ) const;
+
             std::string print() const;
 
 
@@ -197,6 +199,8 @@ namespace dkmage {
 
 
         protected:
+
+            const spatial::FortressRoom* addMainJunction( const spatial::FortressRoom& room );
 
             const spatial::FortressRoom* cutBlindCorridor( const spatial::FortressRoom& room );
 

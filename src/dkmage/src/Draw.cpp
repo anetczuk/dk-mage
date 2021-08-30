@@ -87,6 +87,7 @@ namespace dkmage {
         }
         case 2: {
             level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
+            level.digLine( gemCenter + Point(1,0), veinCenter, Slab::S_GOLD );          /// ensure access to gem
             level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
             level.setSlab( gemCenter, Slab::S_GEMS );
             level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face

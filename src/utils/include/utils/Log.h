@@ -26,7 +26,7 @@ namespace utils {
 
     public:
 
-        Logger( const char* file, const int lane );
+        Logger( const std::string& prefix, const char* file, const int lane );
 
         ~Logger();
 
@@ -53,7 +53,9 @@ namespace utils {
 }
 
 
-#define LOG()   utils::Logger( __FILE__, __LINE__ ).stream()
+#define LOG()        utils::Logger( "INFO ", __FILE__, __LINE__ ).stream()
+#define LOG_INFO()   utils::Logger( "INFO ", __FILE__, __LINE__ ).stream()
+#define LOG_WARN()   utils::Logger( "WARN ", __FILE__, __LINE__ ).stream()
 
 
 #endif /* UTILS_INCLUDE_UTILS_LOG_H_ */

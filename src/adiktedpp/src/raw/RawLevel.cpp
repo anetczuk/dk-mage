@@ -237,7 +237,7 @@ namespace adiktedpp {
                 if ( countSeparatedAreas() < 1 ) {
                     break ;
                 }
-                LOG() << "found inaccessible areas -- restarting generation";
+                LOG_WARN() << "found inaccessible areas -- restarting generation";
             }
         }
 
@@ -256,9 +256,9 @@ namespace adiktedpp {
                 if ( silent == false ) {
                     const char* recentError = Messages::get().getRecent();
                     if ( recentError != nullptr ) {
-                        LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
+                        LOG_WARN() << "map problem found at position: (" << errpt.x << ", " << errpt.y << "): " << recentError;
                     } else {
-                        LOG() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
+                        LOG_WARN() << "map problem found at position: (" << errpt.x << ", " << errpt.y << ")";
                     }
                 }
                 return false;
@@ -266,7 +266,7 @@ namespace adiktedpp {
 
             if ( countSeparatedAreas() > 0 ) {
                 if ( silent == false ) {
-                    LOG() << "map problem found: inaccessible areas";
+                    LOG_WARN() << "map problem found: inaccessible areas";
                 }
                 return false;
             }

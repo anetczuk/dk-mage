@@ -29,10 +29,10 @@ namespace dkmage {
         }
         if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
             /// do not attempt to generate
-            LOG() << "detected invalid map -- stopping";
+            LOG_WARN() << "detected invalid map -- stopping";
             return ;
         }
-        LOG() << "detected invalid map -- restarting generation";
+        LOG_WARN() << "detected invalid map -- restarting generation";
         generateLevel();
     }
 
@@ -43,7 +43,7 @@ namespace dkmage {
         map.script.clearData();
 
         if ( generate() == false ) {
-            LOG() << "could not generate map";
+            LOG_WARN() << "could not generate map";
             return false;
         }
 
@@ -53,14 +53,14 @@ namespace dkmage {
 
         const bool extendedScript = map.script.isFXLevel();
         if ( extendedScript ) {
-            LOG() << "detected FX script -- txt verification disabled";
+            LOG_WARN() << "detected FX script -- txt verification disabled";
         }
         if ( level.verifyMap( false, extendedScript ) == false ) {
-            LOG() << "generated level is invalid";
+            LOG_WARN() << "generated level is invalid";
             return false;
         }
         if ( check() == false ) {
-            LOG() << "generated map is invalid";
+            LOG_WARN() << "generated map is invalid";
             return false;
         }
         LOG() << "map generated successfully";

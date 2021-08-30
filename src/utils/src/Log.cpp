@@ -20,8 +20,8 @@ namespace utils {
         return fileStream;
     }
 
-    Logger::Logger( const char* file, const int lane ): file(file), lane(lane) {
-        buffer << extractFileName( file ) << "(" << lane << "): ";
+    Logger::Logger( const std::string& prefix, const char* file, const int lane ): file(file), lane(lane) {
+        buffer << prefix << extractFileName( file ) << "(" << lane << "): ";
     }
 
     Logger::~Logger() {
