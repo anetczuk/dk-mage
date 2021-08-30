@@ -21,7 +21,7 @@ Linked samples and following previews were generated with *Sample* seed.
 
 ## Running generator
 
-Before first run edit `config.ini` placed along main executable. Inside the file fill required variables (paths to game directories).
+Before first run edit `config.ini` placed along main executable. Inside the file fill required variables (paths to game directories). Example of configuration file is described [here](doc/config.ini.md).
 
 For simple generation just execute `dkmagecli` to generate random map. Generated map will be stored in `level_path` defined in config. If the path is game's directory then map will be ready to play from within `Free Play levels` game's menu. For advanced use of generator execute `dkmagecli --help` or open [dkmagecli help](doc/dkmagecli-help.md) description.
 
