@@ -601,7 +601,7 @@ namespace adiktedpp {
 
         void Script::setWinConditionKillGood() {
             const std::size_t lvl = endConditions.indentLevel();
-            endConditions.REM( "require killing all heroes" );
+            endConditions.REM( "- require killing all heroes -" );
             endConditions.addLineIndent( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )", lvl );
             endConditions.addLineIndent( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )", lvl );
             endConditions.addLineIndent( "        WIN_GAME", lvl );

@@ -244,7 +244,7 @@ namespace dkmage {
             script.setGraveyardLimits();
 
             /// end game conditions
-            script.setWinConditionStandard( Player::P_P0 );
+            script.setWinConditionKillGood();
             script.setLoseConditionStandard( Player::P_P0 );
         }
 
