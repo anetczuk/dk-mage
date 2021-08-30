@@ -202,8 +202,8 @@ namespace adiktedpp {
     /// =============================================================================================================
 
 
-    bool Level::verifyMap( const bool silent ) {
-        if ( rawLevel.verifyMap( silent ) == false ) {
+    bool Level::verifyMap( const bool silent, const bool skipScriptVerification ) {
+        if ( rawLevel.verifyMap( silent, skipScriptVerification ) == false ) {
             return false;
         }
         const std::size_t creaturesNum = rawLevel.countAllCreatures();

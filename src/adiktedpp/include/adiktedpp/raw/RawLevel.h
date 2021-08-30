@@ -105,7 +105,7 @@ namespace adiktedpp {
 
             void generateRandomMap( const std::size_t areaLimit );
 
-            bool verifyMap( const bool silent = false );
+            bool verifyMap( const bool silent = false, const bool skipScriptVerification = false );
 
             std::size_t countAllCreatures();
 

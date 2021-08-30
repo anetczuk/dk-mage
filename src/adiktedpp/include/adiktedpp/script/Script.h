@@ -150,6 +150,8 @@ namespace adiktedpp {
             BasicScript endConditions;
             BasicScript other;
 
+            bool isFX;
+
 
         public:
 
@@ -205,7 +207,12 @@ namespace adiktedpp {
                 script.addLine( "REM " + comment );
             }
 
+            bool isFXLevel() const {
+                return isFX;
+            }
+
             void setFXLevel() {
+                isFX = true;
                 init.setFXLevel();
             }
 

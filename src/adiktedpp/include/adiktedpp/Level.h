@@ -93,7 +93,7 @@ namespace adiktedpp {
             return rawLevel.generateRandomMap( areaLimit );
         }
 
-        bool verifyMap( const bool silent = false );
+        bool verifyMap( const bool silent = false, const bool skipScriptVerification = false );
 
         /// count separated chambers by impassable rocks and gems
         std::size_t countSeparatedAreas() {

@@ -51,7 +51,11 @@ namespace dkmage {
         script::LevelScript dataLevel( level );
         dataLevel.rebuild( content );
 
-        if ( level.verifyMap() == false ) {
+        const bool extendedScript = map.script.isFXLevel();
+        if ( extendedScript ) {
+            LOG() << "detected FX script -- txt verification disabled";
+        }
+        if ( level.verifyMap( false, extendedScript ) == false ) {
             LOG() << "generated level is invalid";
             return false;
         }

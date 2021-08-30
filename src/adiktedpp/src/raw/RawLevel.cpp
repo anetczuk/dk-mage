@@ -241,12 +241,18 @@ namespace adiktedpp {
             }
         }
 
-        bool RawLevel::verifyMap( const bool silent ) {
+        bool RawLevel::verifyMap( const bool silent, const bool skipScriptVerification ) {
             LEVEL* level = data->lvl;
             struct IPOINT_2D errpt = {-1,-1};
-            const short result = level_verify( level, (char*) "check", &errpt );
-            const bool ok = ( result == VERIF_OK );
-            if ( ok == false ) {
+            short result = VERIF_OK;
+            if ( skipScriptVerification ) {
+                static const unsigned long SKIP_STEPS = VSF_TXT;
+                result = level_verify_control( level, (char*) "check", SKIP_STEPS, &errpt );
+            } else {
+                ///
+                result = level_verify( level, (char*) "check", &errpt );
+            }
+            if ( result != VERIF_OK ) {
                 if ( silent == false ) {
                     const char* recentError = Messages::get().getRecent();
                     if ( recentError != nullptr ) {
