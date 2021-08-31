@@ -115,6 +115,13 @@ namespace adiktedpp {
                 return addLine( "REM " + comment );
             }
 
+            /// value in range [0..10]
+            /// note: the official manual claims that numbers for computer players other than 0, 1, 3, 4, 5, or 10 will not make the game work properly
+            /// further details: https://lubiki.keeperklan.com/dk1_docs/dk_scripting_ref.htm#scrpt_cmd_computer_player
+            void COMPUTER_PLAYER( const Player player, const std::size_t attitude );
+
+            void MAX_CREATURES( const Player player, const std::size_t limit );
+
             void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
 
             /// 'crExp' in range [1..10]
@@ -166,6 +173,10 @@ namespace adiktedpp {
                 case ScriptSection::SS_REST:        return other;
                 }
                 return other;
+            }
+
+            BasicScript& initSection() {
+                return init;
             }
 
             BasicScript& actionSection() {

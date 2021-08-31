@@ -22,7 +22,7 @@ namespace dkmage {
         bool CaveMode::generate() {
             level.generateRandomMap( 9 );
 
-            generateCaves( 28 );
+            generateCaves();
 
             preparePlayerDungeon();
 
@@ -34,7 +34,7 @@ namespace dkmage {
             return true;
         }
 
-        void CaveMode::generateCaves( const std::size_t cavesNum ) {
+        void CaveMode::generateCaves() {
             const Rect mapRect = raw::RawLevel::mapRect();
             const Point mapCenter = mapRect.center();
             const Rect region( mapCenter, 70, 35 );
@@ -50,7 +50,11 @@ namespace dkmage {
                 indexSet.insert( i );
             }
 
+            const std::size_t cavesNum = parameters.getSizeT( ParameterName::PN_CENTAL_CAVERNS_NUMBER, 28 );
             const std::size_t trapsNum = std::min( (std::size_t)regionArea, cavesNum );
+
+            const SizeTSet creatureNum = parameters.getSizeTSet( ParameterName::PN_CAVERN_CREATURES_NUMBER, 3, 7 );
+            const SizeTSet creatureExp = parameters.getSizeTSet( ParameterName::PN_CAVERN_CREATURES_LEVEL, 3, 10 );
 
             for ( std::size_t i=0; i<trapsNum; ++i ) {
                 const int itemIndex = rng_randi( indexSet.size() );
@@ -68,9 +72,10 @@ namespace dkmage {
                 level.setCave( chamber, Slab::S_PATH, 12 );
 
                 const int centerDistance = std::abs(mapCenter.y - caveCenter.y);
-                const double centerFactor = ( 1.0 - 2.0 * centerDistance / region.height() );        /// in range [0.5, 1.0]
-                const int creatureLevel = centerFactor * 7 + 3;
-                drawHeroTrap( level, caveCenter, creatureLevel );
+                const double centerFactor = ( 1.0 - (double) 2.0 * centerDistance / region.height() );        /// in range [0.0, 1.0]
+                const std::size_t creatureLevel = creatureExp.valueByFactor( centerFactor );
+                const std::size_t creaturesNum  = creatureNum.randomized();
+                drawHeroTrap( level, caveCenter, creatureLevel, creaturesNum );
             }
         }
 
@@ -166,15 +171,14 @@ namespace dkmage {
         }
 
         void CaveMode::prepareEnemyDungeon() {
-        //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
             spatial::EvilDungeon enemyDungeon( Player::P_P1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
 
-//                enemyDungeon.generate( 6, 5 );
-            enemyDungeon.generate( 12, 5 );
-//                enemyDungeon.addRandomRoom( SlabType::ST_PORTAL, 3 );
+            const std::size_t roomsNum = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER, 11 ) + 1;
+            enemyDungeon.generate( roomsNum, 5 );
+
             enemyDungeon.moveToTopEdge( 4 );
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
@@ -217,7 +221,9 @@ namespace dkmage {
 //            script.setFXLevel();
 
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
-            script.addLineInit( "COMPUTER_PLAYER( PLAYER1, 0 )" );
+
+            const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, 0 );
+            script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -226,8 +232,10 @@ namespace dkmage {
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
             script.setStartMoney( Player::P_P1, 200000 );                     /// does not show in treasure
 
-            script.addLineInit( "MAX_CREATURES( PLAYER0, 30 )" );
-            script.addLineInit( "MAX_CREATURES( PLAYER1, 50 )" );
+            const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 30 );
+            const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, 50 );
+            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
+            script.initSection().MAX_CREATURES( Player::P_P1, aiMaxCreatures );
 
             script.addLineInit( "" );
             script.setEvilCreaturesPool( 30 );

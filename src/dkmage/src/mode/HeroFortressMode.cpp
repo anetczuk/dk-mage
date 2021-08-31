@@ -184,7 +184,8 @@ namespace dkmage {
             }
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
 
-            script.addLineInit( "MAX_CREATURES( PLAYER0, 25 )" );
+            const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 25 );
+            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
 
             script.addLineInit( "" );
             script.setEvilCreaturesPool( 10 );

@@ -265,18 +265,14 @@ namespace dkmage {
         }
 
         void MazeMode::prepareEnemyDungeon() {
-        //    spatial::Dungeon enemyDungeon( Player::PT_GOOD );
             spatial::EvilDungeon enemyDungeon( Player::P_P1 );
             enemyDungeon.limitNorth = 0;
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
 
-//                enemyDungeon.generate( 6, 5 );
-            enemyDungeon.generate( 12, 5 );
-//                enemyDungeon.addRandomRoom( SlabType::ST_TREASURE, 5 );
-//                enemyDungeon.addRandomRoom( SlabType::ST_TREASURE, 5 );
-//                enemyDungeon.addRandomRoom( SlabType::ST_TREASURE, 5 );
-//                enemyDungeon.addRandomRoom( SlabType::ST_PORTAL, 3 );
+            const std::size_t roomsNum = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER, 11 ) + 1;
+            enemyDungeon.generate( roomsNum, 5 );
+
             enemyDungeon.moveToTopEdge( 4 );
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
@@ -318,7 +314,9 @@ namespace dkmage {
 //            script.setFXLevel();
 
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
-            script.addLineInit( "COMPUTER_PLAYER( PLAYER1, 0 )" );
+
+            const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, 0 );
+            script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
@@ -327,8 +325,10 @@ namespace dkmage {
             script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
             script.setStartMoney( Player::P_P1, 250000 );                     /// does not show in treasure
 
-            script.addLineInit( "MAX_CREATURES( PLAYER0, 10 )" );
-            script.addLineInit( "MAX_CREATURES( PLAYER1, 50 )" );
+            const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 10 );
+            const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, 50 );
+            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
+            script.initSection().MAX_CREATURES( Player::P_P1, aiMaxCreatures );
 
             script.addLineInit( "" );
             script.setHeroCreaturesPool( 20 );

@@ -20,7 +20,7 @@ namespace dkmage {
 
             bool generate() override;
 
-            void generateCaves( const std::size_t cavesNum );
+            void generateCaves();
 
             void preparePlayerDungeon();
 

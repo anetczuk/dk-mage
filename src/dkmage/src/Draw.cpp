@@ -188,7 +188,7 @@ namespace dkmage {
         LOG() << "unsupported rect dimensions";
     }
 
-    void drawHeroTrap( Level& level, const Point& point, const std::size_t creatureLevel ) {
+    void drawHeroTrap( Level& level, const Point& point, const std::size_t creatureLevel, const std::size_t creaturesNum ) {
         const int cLevel = std::min( std::max( creatureLevel, (std::size_t)2 ), (std::size_t)10 );
 
         std::set< Creature > list = HeroCreatures();                /// yes, copy
@@ -200,8 +200,10 @@ namespace dkmage {
         const std::size_t index2 = rng_randi( list.size() );
         const Creature creature2 = get_item( list, index2 );
 
-        level.setCreature( point, 3, creature1, 3, cLevel - 1, Player::P_GOOD );
-        level.setCreature( point, 5, creature2, 2, cLevel, Player::P_GOOD );
+        const std::size_t num1 = creaturesNum / 2 + creaturesNum % 2;
+        const std::size_t num2 = creaturesNum / 2;
+        level.setCreature( point, 3, creature1, num1, cLevel, Player::P_GOOD );
+        level.setCreature( point, 5, creature2, num2, cLevel, Player::P_GOOD );
     }
 
 } /* namespace dkmage */

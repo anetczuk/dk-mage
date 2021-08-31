@@ -349,6 +349,18 @@ namespace adiktedpp {
             addLine( std::string() + "ENDIF" );
         }
 
+        void BasicScript::COMPUTER_PLAYER( const Player player, const std::size_t attitude ) {
+            std::stringstream stream;
+            stream << "COMPUTER_PLAYER( " << script_keyword( player ) + ", " << attitude << " )";
+            addLine( stream.str() );
+        }
+
+        void BasicScript::MAX_CREATURES( const Player player, const std::size_t limit ) {
+            std::stringstream stream;
+            stream << "MAX_CREATURES( " << script_keyword( player ) + ", " << limit << " )";
+            addLine( stream.str() );
+        }
+
         void BasicScript::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
             std::stringstream stream;
             stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";

@@ -30,9 +30,19 @@ namespace dkmage {
 
             data.insert( ParameterName::PN_SEED );
             data.insert( ParameterName::PN_TYPE );
+
             data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
             data.insert( ParameterName::PN_GEM_FACES_NUMBER );
             data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
+            data.insert( ParameterName::PN_CREATURES_LIMIT );
+
+            data.insert( ParameterName::PN_ENEMY_KEEPER_ATTITUDE );
+            data.insert( ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER );
+            data.insert( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT );
+
+            data.insert( ParameterName::PN_CENTAL_CAVERNS_NUMBER );
+            data.insert( ParameterName::PN_CAVERN_CREATURES_NUMBER );
+            data.insert( ParameterName::PN_CAVERN_CREATURES_LEVEL );
 
             data.insert( ParameterName::PN_ENTRANCES_NUMBER );
             data.insert( ParameterName::PN_BRIDGE_GUARD_LEVEL );
@@ -75,9 +85,19 @@ namespace dkmage {
 
         case ParameterName::PN_SEED:                return "seed";
         case ParameterName::PN_TYPE:                return "type";
+
         case ParameterName::PN_GOLD_SLABS_NUMBER:   return "gold_slabs_number";
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
         case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
+        case ParameterName::PN_CREATURES_LIMIT:     return "creatures_limit";
+
+        case ParameterName::PN_ENEMY_KEEPER_ATTITUDE:           return "enemy_keeper_attitude";
+        case ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER:       return "enemy_keeper_rooms_number";
+        case ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT:    return "enemy_keeper_creatures_limit";
+
+        case ParameterName::PN_CENTAL_CAVERNS_NUMBER:    return "cental_caverns_number";
+        case ParameterName::PN_CAVERN_CREATURES_NUMBER:  return "cavern_creatures_number";
+        case ParameterName::PN_CAVERN_CREATURES_LEVEL:   return "cavern_creatures_level";
 
         case ParameterName::PN_ENTRANCES_NUMBER:            return "entrances_number";
         case ParameterName::PN_BRIDGE_GUARD_LEVEL:          return "bridge_guard_level";

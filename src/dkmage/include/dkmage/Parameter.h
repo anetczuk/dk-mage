@@ -31,9 +31,19 @@ namespace dkmage {
 
         PN_SEED,
         PN_TYPE,
+
         PN_GOLD_SLABS_NUMBER,
         PN_GEM_FACES_NUMBER,
         PN_INIT_GOLD_AMOUNT,
+        PN_CREATURES_LIMIT,
+
+        PN_ENEMY_KEEPER_ATTITUDE,
+        PN_ENEMY_KEEPER_ROOMS_NUMBER,
+        PN_ENEMY_KEEPER_CREATURES_LIMIT,
+
+        PN_CENTAL_CAVERNS_NUMBER,
+        PN_CAVERN_CREATURES_NUMBER,
+        PN_CAVERN_CREATURES_LEVEL,
 
         PN_ENTRANCES_NUMBER,
         PN_BRIDGE_GUARD_LEVEL,
@@ -304,6 +314,7 @@ namespace dkmage {
             return defaultSet;
         }
 
+        /// handles list of values and ranges
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 
         std::string print() const;
