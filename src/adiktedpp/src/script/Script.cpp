@@ -20,7 +20,7 @@ extern "C" {
 namespace adiktedpp {
     namespace script {
 
-        std::string scriptName( const Player data ) {
+        std::string script_keyword( const Player data ) {
             switch( data ) {
             case Player::P_P0:      return "PLAYER0";
             case Player::P_P1:      return "PLAYER1";
@@ -38,7 +38,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const Room data ) {
+        std::string script_keyword( const Room data ) {
             switch( data ) {
             case Room::R_CLAIMED: {
                 /// value not allowed in script file
@@ -80,7 +80,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const Creature data ) {
+        std::string script_keyword( const Creature data ) {
             switch( data ) {
             case Creature::C_TUNNELLER:   { return "TUNNELLER"; }
             case Creature::C_FAIRY:       { return "FAIRY"; }
@@ -122,7 +122,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const Door data ) {
+        std::string script_keyword( const Door data ) {
             switch( data ) {
             case Door::D_WOOD:           { return "WOOD"; }
             case Door::D_BRACED:         { return "BRACED"; }
@@ -137,7 +137,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const Trap data ) {
+        std::string script_keyword( const Trap data ) {
             switch( data ) {
             case Trap::T_BOULDER:        { return "BOULDER"; }
             case Trap::T_ALARM:          { return "ALARM"; }
@@ -154,7 +154,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const Spell data ) {
+        std::string script_keyword( const Spell data ) {
             switch( data ) {
             case Spell::S_POWER_HAND:           { return "POWER_HAND"; }
             case Spell::S_POWER_SLAP:           { return "POWER_SLAP"; }
@@ -183,7 +183,7 @@ namespace adiktedpp {
         }
 
 
-        std::string scriptName( const PartyObjective data ) {
+        std::string script_keyword( const PartyObjective data ) {
             switch( data ) {
             case PartyObjective::PO_ATTACK_DUNGEON_HEART:   { return "ATTACK_DUNGEON_HEART"; }
             case PartyObjective::PO_ATTACK_ENEMIES:         { return "ATTACK_ENEMIES"; }
@@ -248,7 +248,7 @@ namespace adiktedpp {
 
         void BasicScript::setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
             std::stringstream stream;
-            stream << "START_MONEY( " << scriptName( player ) << ", " << amount << " )";
+            stream << "START_MONEY( " << script_keyword( player ) << ", " << amount << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
@@ -259,35 +259,35 @@ namespace adiktedpp {
 
         void BasicScript::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
         void BasicScript::addAvailable( const Player player, const Creature item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
         void BasicScript::addAvailable( const Player player, const Door item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
         void BasicScript::addAvailable( const Player player, const Trap item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
         void BasicScript::addAvailable( const Player player, const Spell item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
@@ -315,7 +315,7 @@ namespace adiktedpp {
 
         void BasicScript::setCreaturePool( const Creature creature, const std::size_t number ) {
             std::stringstream stream;
-            stream << "ADD_CREATURE_TO_POOL( " << scriptName( creature ) << ", " << number << " )";
+            stream << "ADD_CREATURE_TO_POOL( " << script_keyword( creature ) << ", " << number << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
@@ -329,7 +329,7 @@ namespace adiktedpp {
         }
 
         void BasicScript::setWinConditionStandard( const Player player ) {
-            addLine( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
+            addLine( std::string() + "IF( " + script_keyword( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
             addLine( std::string() + "    WIN_GAME" );
             addLine( std::string() + "ENDIF" );
         }
@@ -344,7 +344,7 @@ namespace adiktedpp {
         }
 
         void BasicScript::setLoseConditionStandard( const Player player ) {
-            addLine( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )" );
+            addLine( std::string() + "IF( " + script_keyword( player ) + ", DUNGEON_DESTROYED == 1 )" );
             addLine( std::string() + "    LOSE_GAME" );
             addLine( std::string() + "ENDIF" );
         }
@@ -358,7 +358,7 @@ namespace adiktedpp {
         /// 'crExp' in range [1..10]
         void BasicScript::ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold ) {
             std::stringstream stream;
-            stream << "ADD_CREATURE_TO_LEVEL( " << scriptName( player ) + ", " << scriptName( creature ) << ", "
+            stream << "ADD_CREATURE_TO_LEVEL( " << script_keyword( player ) + ", " << script_keyword( creature ) << ", "
                    << actionPoint << ", " << crNum << ", " << crExp << ", " << gold << " )";
             addLine( stream.str() );
         }
@@ -374,10 +374,10 @@ namespace adiktedpp {
                 std::stringstream stream;
                 stream << "ADD_TO_PARTY( ";
                 stream << partyName << ", ";
-                stream << scriptName( creature ) << ", ";
+                stream << script_keyword( creature ) << ", ";
                 stream << crExp << ", ";
                 stream << gold << ", ";
-                stream << scriptName( objective ) << ", ";
+                stream << script_keyword( objective ) << ", ";
                 stream << countdown << " )";
                 addLine( stream.str() );
             }
@@ -386,7 +386,7 @@ namespace adiktedpp {
         void BasicScript::ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies ) {
             std::stringstream stream;
             stream << "ADD_PARTY_TO_LEVEL( ";
-            stream << scriptName( player ) << ", ";
+            stream << script_keyword( player ) << ", ";
             stream << partyName << ", ";
             stream << actionPoint << ", ";
             stream << copies << " )";
@@ -416,42 +416,42 @@ namespace adiktedpp {
 
         void Script::addLineActionIf( const int actionNumber, const adiktedpp::Player player ) {
             std::stringstream stream;
-            stream << "IF_ACTION_POINT( " << actionNumber << ", " << scriptName( player ) << " )";
+            stream << "IF_ACTION_POINT( " << actionNumber << ", " << script_keyword( player ) << " )";
             const std::string& line = stream.str();
             action.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Room item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Creature item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Door item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Trap item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_TRAP_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
         void Script::addAvailable( const Player player, const Spell item, const int accessible, const int available ) {
             std::stringstream stream;
-            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << scriptName( player ) << ", " << scriptName( item ) << ", " << accessible << ", " << available << " )";
+            stream << AvailableCommand::SAC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << accessible << ", " << available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
@@ -479,7 +479,7 @@ namespace adiktedpp {
 
         void Script::setCreaturePool( const Creature creature, const std::size_t number ) {
             std::stringstream stream;
-            stream << "ADD_CREATURE_TO_POOL( " << scriptName( creature ) << ", " << number << " )";
+            stream << "ADD_CREATURE_TO_POOL( " << script_keyword( creature ) << ", " << number << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
@@ -611,7 +611,7 @@ namespace adiktedpp {
 
         void Script::setWinConditionStandard( const Player player ) {
             const std::size_t lvl = endConditions.indentLevel();
-            endConditions.addLineIndent( std::string() + "IF( " + scriptName( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( std::string() + "IF( " + script_keyword( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )", lvl );
             endConditions.addLineIndent( std::string() + "    WIN_GAME", lvl );
             endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
@@ -628,7 +628,7 @@ namespace adiktedpp {
 
         void Script::setLoseConditionStandard( const Player player ) {
             const std::size_t lvl = endConditions.indentLevel();
-            endConditions.addLineIndent( std::string() + "IF( " + scriptName( player ) + ", DUNGEON_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( std::string() + "IF( " + script_keyword( player ) + ", DUNGEON_DESTROYED == 1 )", lvl );
             endConditions.addLineIndent( std::string() + "    LOSE_GAME", lvl );
             endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
