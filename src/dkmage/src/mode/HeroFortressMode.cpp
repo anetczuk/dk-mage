@@ -182,7 +182,7 @@ namespace dkmage {
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 initialGold += 200000;
             }
-            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
+            script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
 
             const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 25 );
             script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );

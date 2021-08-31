@@ -229,8 +229,8 @@ namespace dkmage {
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 initialGold += 200000;
             }
-            script.setStartMoney( Player::P_P0, initialGold );                /// does not show in treasure
-            script.setStartMoney( Player::P_P1, 200000 );                     /// does not show in treasure
+            script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
+            script.initSection().START_MONEY( Player::P_P1, 200000 );                     /// does not show in treasure
 
             const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 30 );
             const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, 50 );

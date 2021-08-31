@@ -33,7 +33,7 @@ namespace adiktedpp {
         /**
          *
          */
-        class BasicScript {
+        class ScriptContainer {
 
             std::vector< std::string > lines;
             std::size_t level;                      /// indent level
@@ -41,7 +41,7 @@ namespace adiktedpp {
 
         public:
 
-            BasicScript(): level(0) {
+            ScriptContainer(): level(0) {
             }
 
             const std::vector< std::string >& data() const {
@@ -74,9 +74,50 @@ namespace adiktedpp {
 
 //            void addLine( const std::string& line, const std::size_t position );
 
-            void setFXLevel();
+        };
 
-            void setStartMoney( const adiktedpp::Player player, const std::size_t amount );
+
+        /**
+         *
+         */
+        class ScriptCommand: public ScriptContainer {
+        public:
+
+            void REM( const std::string& comment ) {
+                return addLine( "REM " + comment );
+            }
+
+            void START_MONEY( const adiktedpp::Player player, const std::size_t amount );
+
+            /// value in range [0..10]
+            /// note: the official manual claims that numbers for computer players other than 0, 1, 3, 4, 5, or 10 will not make the game work properly
+            /// further details: https://lubiki.keeperklan.com/dk1_docs/dk_scripting_ref.htm#scrpt_cmd_computer_player
+            void COMPUTER_PLAYER( const Player player, const std::size_t attitude );
+
+            void MAX_CREATURES( const Player player, const std::size_t limit );
+
+            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
+
+            /// 'crExp' in range [1..10]
+            void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
+
+            void CREATE_PARTY( const std::string& partyName );
+
+            void ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown = 0 );
+
+            /// 'copies' -- how many copies of party will be placed at given action point?
+            void ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies = 1 );
+
+        };
+
+
+        /**
+         *
+         */
+        class BasicScript: public ScriptCommand {
+        public:
+
+            void setFXLevel();
 
             void addAvailable( const adiktedpp::Player player, const Room item );
 
@@ -109,32 +150,10 @@ namespace adiktedpp {
 
             void setLoseConditionStandard( const Player player );
 
-            /// ================================================================================
-
-            void REM( const std::string& comment ) {
-                return addLine( "REM " + comment );
-            }
-
-            /// value in range [0..10]
-            /// note: the official manual claims that numbers for computer players other than 0, 1, 3, 4, 5, or 10 will not make the game work properly
-            /// further details: https://lubiki.keeperklan.com/dk1_docs/dk_scripting_ref.htm#scrpt_cmd_computer_player
-            void COMPUTER_PLAYER( const Player player, const std::size_t attitude );
-
-            void MAX_CREATURES( const Player player, const std::size_t limit );
-
-            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
-
-            /// 'crExp' in range [1..10]
-            void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
-
-            void CREATE_PARTY( const std::string& partyName );
-
-            void ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown = 0 );
-
-            /// 'copies' -- how many copies of party will be placed at given action point?
-            void ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies = 1 );
-
         };
+
+
+        /// ================================================================================
 
 
         enum class ScriptSection {
@@ -225,10 +244,6 @@ namespace adiktedpp {
             void setFXLevel() {
                 isFX = true;
                 init.setFXLevel();
-            }
-
-            void setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
-                init.setStartMoney( player, amount );
             }
 
             void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
@@ -327,7 +342,7 @@ namespace adiktedpp {
 
 
         /**
-         *
+         * Wrapper class for script related functions of adikted lib.
          */
         class LevelScript {
 

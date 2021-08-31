@@ -206,7 +206,7 @@ namespace adiktedpp {
         /// =========================================================================
 
 
-        void BasicScript::addLine( const std::string& line ) {
+        void ScriptContainer::addLine( const std::string& line ) {
             if ( line.find( "ENDIF" ) != std::string::npos ) {
                 if (level > 0) {
                     --level;
@@ -226,12 +226,12 @@ namespace adiktedpp {
             }
         }
 
-        void BasicScript::addLineIndent( const std::string& line, const std::size_t forceIndent ) {
+        void ScriptContainer::addLineIndent( const std::string& line, const std::size_t forceIndent ) {
             const std::string indent( forceIndent * 4, ' ' );
             lines.push_back( indent + line );
         }
 
-//        void BasicScript::addLine( const std::string& line, const std::size_t position ) {
+//        void ScriptContainer::addLine( const std::string& line, const std::size_t position ) {
 //            if ( position >= lines.size() ) {
 //                lines.push_back( line );
 //                return ;
@@ -241,16 +241,79 @@ namespace adiktedpp {
 //            lines.insert( pos, line );
 //        }
 
+
+        /// =========================================================================
+
+
+        void ScriptCommand::START_MONEY( const adiktedpp::Player player, const std::size_t amount ) {
+            std::stringstream stream;
+            stream << "START_MONEY( " << script_keyword( player ) << ", " << amount << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::COMPUTER_PLAYER( const Player player, const std::size_t attitude ) {
+            std::stringstream stream;
+            stream << "COMPUTER_PLAYER( " << script_keyword( player ) + ", " << attitude << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::MAX_CREATURES( const Player player, const std::size_t limit ) {
+            std::stringstream stream;
+            stream << "MAX_CREATURES( " << script_keyword( player ) + ", " << limit << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
+            std::stringstream stream;
+            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
+            addLine( stream.str() );
+        }
+
+        /// 'crExp' in range [1..10]
+        void ScriptCommand::ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold ) {
+            std::stringstream stream;
+            stream << "ADD_CREATURE_TO_LEVEL( " << script_keyword( player ) + ", " << script_keyword( creature ) << ", "
+                   << actionPoint << ", " << crNum << ", " << crExp << ", " << gold << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::CREATE_PARTY( const std::string& partyName ) {
+            std::stringstream stream;
+            stream << "CREATE_PARTY( " << partyName << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown ) {
+            for ( std::size_t i=0; i<crNum; ++i ) {
+                std::stringstream stream;
+                stream << "ADD_TO_PARTY( ";
+                stream << partyName << ", ";
+                stream << script_keyword( creature ) << ", ";
+                stream << crExp << ", ";
+                stream << gold << ", ";
+                stream << script_keyword( objective ) << ", ";
+                stream << countdown << " )";
+                addLine( stream.str() );
+            }
+        }
+
+        void ScriptCommand::ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies ) {
+            std::stringstream stream;
+            stream << "ADD_PARTY_TO_LEVEL( ";
+            stream << script_keyword( player ) << ", ";
+            stream << partyName << ", ";
+            stream << actionPoint << ", ";
+            stream << copies << " )";
+            addLine( stream.str() );
+        }
+
+
+        /// =========================================================================
+
+
         void BasicScript::setFXLevel() {
             REM( "- set script compatibility with Keeper FX -" );
             addLine( "LEVEL_VERSION(1)" );
-        }
-
-        void BasicScript::setStartMoney( const adiktedpp::Player player, const std::size_t amount ) {
-            std::stringstream stream;
-            stream << "START_MONEY( " << script_keyword( player ) << ", " << amount << " )";
-            const std::string& line = stream.str();
-            addLine( line );
         }
 
         void BasicScript::addAvailable( const Player player, const Room item ) {
@@ -347,62 +410,6 @@ namespace adiktedpp {
             addLine( std::string() + "IF( " + script_keyword( player ) + ", DUNGEON_DESTROYED == 1 )" );
             addLine( std::string() + "    LOSE_GAME" );
             addLine( std::string() + "ENDIF" );
-        }
-
-        void BasicScript::COMPUTER_PLAYER( const Player player, const std::size_t attitude ) {
-            std::stringstream stream;
-            stream << "COMPUTER_PLAYER( " << script_keyword( player ) + ", " << attitude << " )";
-            addLine( stream.str() );
-        }
-
-        void BasicScript::MAX_CREATURES( const Player player, const std::size_t limit ) {
-            std::stringstream stream;
-            stream << "MAX_CREATURES( " << script_keyword( player ) + ", " << limit << " )";
-            addLine( stream.str() );
-        }
-
-        void BasicScript::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
-            std::stringstream stream;
-            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
-            addLine( stream.str() );
-        }
-
-        /// 'crExp' in range [1..10]
-        void BasicScript::ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold ) {
-            std::stringstream stream;
-            stream << "ADD_CREATURE_TO_LEVEL( " << script_keyword( player ) + ", " << script_keyword( creature ) << ", "
-                   << actionPoint << ", " << crNum << ", " << crExp << ", " << gold << " )";
-            addLine( stream.str() );
-        }
-
-        void BasicScript::CREATE_PARTY( const std::string& partyName ) {
-            std::stringstream stream;
-            stream << "CREATE_PARTY( " << partyName << " )";
-            addLine( stream.str() );
-        }
-
-        void BasicScript::ADD_TO_PARTY( const std::string& partyName, const Creature creature, const std::size_t crNum, const std::size_t crExp, const std::size_t gold, const PartyObjective objective, const std::size_t countdown ) {
-            for ( std::size_t i=0; i<crNum; ++i ) {
-                std::stringstream stream;
-                stream << "ADD_TO_PARTY( ";
-                stream << partyName << ", ";
-                stream << script_keyword( creature ) << ", ";
-                stream << crExp << ", ";
-                stream << gold << ", ";
-                stream << script_keyword( objective ) << ", ";
-                stream << countdown << " )";
-                addLine( stream.str() );
-            }
-        }
-
-        void BasicScript::ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies ) {
-            std::stringstream stream;
-            stream << "ADD_PARTY_TO_LEVEL( ";
-            stream << script_keyword( player ) << ", ";
-            stream << partyName << ", ";
-            stream << actionPoint << ", ";
-            stream << copies << " )";
-            addLine( stream.str() );
         }
 
 
