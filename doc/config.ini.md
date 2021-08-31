@@ -79,6 +79,26 @@ levels_path =
 ## Example 3: 10000,40000:60000
 #init_gold_amount =
 
+## Creatures limit of human player. Parameter is passed to 'MAX_CREATURES' script command. Number will be random from given set.
+## Type: NUMERIC_SET of unsigned integers
+#creatures_limit = 
+
+## Attitude of enemy AI. Parameter is passed to 'COMPUTER_PLAYER' script command. Number will be random from given set.
+## Used in cave and maze mode.
+## Oficially supported values: 0, 1, 3, 4, 5 or 10
+## Type: NUMERIC_SET of unsigned integers
+#enemy_keeper_attitude = 0
+
+## Number of rooms enemy keeper have at start apart of dungeon heart and portal.
+## Used in cave and maze mode.
+## Type: NUMERIC_SET of unsigned integers
+#enemy_keeper_rooms_number = 11
+
+## Creatures limit of enemy keeper can have. Parameter is passed to 'MAX_CREATURES' script command. Number will be random from given set.
+## Used in cave and maze mode.
+## Type: NUMERIC_SET of unsigned integers
+#enemy_keeper_creatures_limit = 50
+
 ## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
 ## To disable comment-out parameter.
 ## Type: any string
@@ -101,6 +121,21 @@ levels_path =
 #gem_faces_number = 1
 
 #init_gold_amount = 20000
+
+## Number of central caverns with hidden creatures. Number will be random from given set.
+## Type: NUMERIC_SET of unsigned integers
+## Default: 28
+#cental_caverns_number = 28
+
+## Number of creatures in each cavern. Number for each cavern will be random from given set.
+## Type: NUMERIC_SET of unsigned integers
+## Default: 3:7
+#cavern_creatures_number = 3:7
+
+## Experience of creatures inside central caverns. The closer to map center, greater the level.
+## Type: NUMERIC_SET of unsigned integers in range [1..10]
+## Default: 3:10
+#cavern_creatures_level = 3:10
 
 
 ##
