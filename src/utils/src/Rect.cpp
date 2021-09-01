@@ -5,6 +5,8 @@
 
 #include "utils/Rect.h"
 
+#include "utils/Container.h"
+
 
 namespace utils {
 
@@ -42,6 +44,38 @@ namespace utils {
         const int yDiff = std::abs(y - point.y);
         return std::max(xDiff, yDiff);
     }
+
+    /// ==============================================================
+
+
+    Point PointsField::get( const std::size_t index ) const {
+        return get_item( points, index );
+    }
+
+    void PointsField::add( const Rect& rect ) {
+        const int area = rect.area();
+        if ( area < 1 ) {
+            return ;
+        }
+        const std::size_t rSize = (std::size_t) area;
+        for ( std::size_t i=0; i<rSize; ++i ) {
+            const Point pt = rect.pointByIndex( i );
+            points.insert( pt );
+        }
+    }
+
+    void PointsField::remove( const Rect& rect ) {
+        const int area = rect.area();
+        if ( area < 1 ) {
+            return ;
+        }
+        const std::size_t rSize = (std::size_t) area;
+        for ( std::size_t i=0; i<rSize; ++i ) {
+            const Point pt = rect.pointByIndex( i );
+            points.erase( pt );
+        }
+    }
+
 
     /// ==============================================================
 

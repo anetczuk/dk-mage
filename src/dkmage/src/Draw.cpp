@@ -66,52 +66,57 @@ namespace dkmage {
         const Rect mapSize = raw::RawLevel::mapSize();
         if ( veinCenter.y > mapSize.center().y / 2 ) {
             /// on south
-            veinDir = 1;
+            veinDir = -1;
             gemCenter = veinRect.centerBottom();
         } else {
             /// on north
-            veinDir = -1;
+            veinDir =  1;
             gemCenter = veinRect.centerTop();
         }
 
-        switch( gemFaces ) {
-        case 1: {
+        if ( gemFaces > 0 && gemFaces < 5 ) {
             level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
             level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
+        }
+        const Point corridorDir( 0, veinDir );
+        drawGemFaces( level, gemCenter, gemFaces, Slab::S_GOLD, corridorDir );
+    }
+
+    void drawGemFaces( adiktedpp::Level& level, const utils::Point gemCenter, const std::size_t gemFaces, const adiktedpp::Slab fillType, const utils::Point corridorDir ) {
+        switch( gemFaces ) {
+        case 1: {
+            const Point ortho = corridorDir.swapped();
             level.setSlab( gemCenter, Slab::S_GEMS );
-            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
-            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
+            level.setSlab( gemCenter - ortho, Slab::S_ROCK );                           /// ensure available face
+            level.setSlab( gemCenter + ortho, Slab::S_ROCK );                           /// ensure available face
+            level.setSlab( gemCenter - corridorDir, Slab::S_ROCK );                     /// ensure available face
+            level.setSlab( gemCenter + corridorDir, fillType );                         /// ensure available face
             break;
         }
         case 2: {
-            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
-            level.digLine( gemCenter + Point(1,0), veinCenter, Slab::S_GOLD );          /// ensure access to gem
-            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
+            const Point ortho = corridorDir.swapped();
             level.setSlab( gemCenter, Slab::S_GEMS );
-            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_ROCK );                /// ensure available face
-            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
+            level.setSlab( gemCenter - ortho, Slab::S_ROCK );                           /// ensure available face
+            level.setSlab( gemCenter + ortho, fillType );                               /// ensure available face
+            level.setSlab( gemCenter + corridorDir + ortho, fillType );                 /// ensure available face
+            level.setSlab( gemCenter - corridorDir, Slab::S_ROCK );                     /// ensure available face
+            level.setSlab( gemCenter + corridorDir, fillType );                         /// ensure available face
             break;
         }
         case 3: {
-            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
-            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
+            const Point ortho = corridorDir.swapped();
             level.setSlab( gemCenter, Slab::S_GEMS );
-            level.setSlab( gemCenter.x - 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
-            level.setSlab( gemCenter.x + 1, gemCenter.y, Slab::S_GOLD );                /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y + veinDir, Slab::S_ROCK );          /// ensure available face
-            level.setSlab( gemCenter.x, gemCenter.y - veinDir, Slab::S_GOLD );          /// ensure available face
+            level.setSlab( gemCenter - ortho, fillType );                               /// ensure available face
+            level.setSlab( gemCenter + ortho, fillType );                               /// ensure available face
+            level.setSlab( gemCenter + corridorDir + ortho, fillType );                 /// ensure available face
+            level.setSlab( gemCenter + corridorDir - ortho, fillType );                 /// ensure available face
+            level.setSlab( gemCenter - corridorDir, Slab::S_ROCK );                     /// ensure available face
+            level.setSlab( gemCenter + corridorDir, fillType );                         /// ensure available face
             break;
         }
         case 4: {
-            level.digLine( gemCenter, veinCenter, Slab::S_GOLD );                       /// ensure access to gem
-            gemCenter -= Point(0, veinDir);
             const Rect gemRect( gemCenter, 3, 3 );
-            level.setSlab( gemRect, Slab::S_EARTH );
-            level.setCave( veinRect, Slab::S_GOLD, goldSlabs );
+            level.setSlab( gemRect, fillType );
             level.setSlab( gemCenter, Slab::S_GEMS );
             break;
         }

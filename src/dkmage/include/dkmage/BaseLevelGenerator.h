@@ -26,7 +26,7 @@ namespace dkmage {
 
         adiktedpp::ScopeMessages messages;
         adiktedpp::GameMap map;
-        adiktedpp::Level& level;
+        adiktedpp::Level& level;            //TODO: remove
 
 
         BaseLevelGenerator(): messages( "adikted.log.txt" ), map(), level( map.level ) {
@@ -94,6 +94,8 @@ namespace dkmage {
         }
 
         void writeIniFile() const;
+
+        void generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum );
 
         void generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount );
 

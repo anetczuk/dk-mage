@@ -13,6 +13,9 @@
 
 namespace utils {
 
+    struct Rect;
+
+
     /**
      *
      */
@@ -112,6 +115,27 @@ namespace utils {
         os << "[" << data.x << " " << data.y << "]";
         return os;
     }
+
+
+    /**
+     *
+     */
+    class PointsField {
+        PointSet points;
+
+    public:
+
+        std::size_t size() const {
+            return points.size();
+        }
+
+        Point get( const std::size_t index ) const;
+
+        void add( const Rect& rect );
+
+        void remove( const Rect& rect );
+
+    };
 
 
     /**

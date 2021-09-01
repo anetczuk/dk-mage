@@ -32,7 +32,11 @@ namespace dkmage {
             data.insert( ParameterName::PN_TYPE );
 
             data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
+            data.insert( ParameterName::PN_GEM_SLABS_NUMBER );
             data.insert( ParameterName::PN_GEM_FACES_NUMBER );
+            data.insert( ParameterName::PN_GEM_TRAPS_NUMBER );
+            data.insert( ParameterName::PN_GEM_GUARD_NUMBER );
+            data.insert( ParameterName::PN_GEM_GUARD_LEVEL );
             data.insert( ParameterName::PN_INIT_GOLD_AMOUNT );
             data.insert( ParameterName::PN_CREATURES_LIMIT );
 
@@ -87,7 +91,11 @@ namespace dkmage {
         case ParameterName::PN_TYPE:                return "type";
 
         case ParameterName::PN_GOLD_SLABS_NUMBER:   return "gold_slabs_number";
+        case ParameterName::PN_GEM_SLABS_NUMBER:    return "gem_slabs_number";
         case ParameterName::PN_GEM_FACES_NUMBER:    return "gem_faces_number";
+        case ParameterName::PN_GEM_TRAPS_NUMBER:    return "gem_traps_number";
+        case ParameterName::PN_GEM_GUARD_NUMBER:    return "gem_guard_number";
+        case ParameterName::PN_GEM_GUARD_LEVEL:     return "gem_guard_level";
         case ParameterName::PN_INIT_GOLD_AMOUNT:    return "init_gold_amount";
         case ParameterName::PN_CREATURES_LIMIT:     return "creatures_limit";
 

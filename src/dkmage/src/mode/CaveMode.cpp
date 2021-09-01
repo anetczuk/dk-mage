@@ -113,21 +113,8 @@ namespace dkmage {
                 dungeon.move( center );
             }
 
-            {
-                /// add gold vein
-                std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, 80 );
-                LOG() << "gold slabs number: " << goldSlabsNum;
-
-                std::size_t gemsNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, 1 );
-                gemsNum = std::min( gemsNum, (std::size_t)4 );
-                LOG() << "gems number: " << gemsNum;
-
-                const std::size_t leftVeinGold = goldSlabsNum / 3;
-                generateLeftGoldVein( leftVeinGold, gemsNum );
-
-                const std::size_t rightVeinGold = goldSlabsNum - leftVeinGold;
-                generateRightGoldVein( rightVeinGold, 0 );
-            }
+            /// add gold vein
+            generateGoldSlabs( 80, 1 );
 
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );

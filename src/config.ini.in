@@ -59,18 +59,36 @@ levels_path =
 ## Example 2: cave,maze
 #type =
 
+
 ## Number of gold slabs initailly available for human player.
-## Type: NUMERIC_SET of unsigned integers. One value will be picked.
+## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example: 60:80,90,100
 #gold_slabs_number =
 
-## Number of gem faces initailly available for human player.
-## Type: NUMERIC_SET of unsigned integers. One value will be picked.
+## Number of gem slabs available for human player. Slabs number is upper limited by 'gem_faces_number'.
+## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
+## Example: 2,3
+#gem_slabs_number =
+
+## Number of gem faces available for human player. Faces number is upper limited by 'gem_slabs_number' * 4.
+## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example: 2,3
 #gem_faces_number =
 
+## Gem trap consists of guard chamber and leading corridor, but without gem slab.
+## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
+#gem_traps_number = 
+
+## Number of creatures guarding each gem slab. Number will be random from given set.
+## Type: NUMERIC_SET of unsigned integers
+gem_guard_number = 5
+
+## Experience of gem guards. Number will be random from given set.
+## Type: NUMERIC_SET of unsigned integers in range [1..10]
+gem_guard_level = 6:9
+
 ## Initial gold amount for human player.
-## Type: NUMERIC_SET of unsigned integers. One value will be picked.
+## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example 1: 10000
 ## Example 2: 10000,20000
 ## Example 3: 10000,40000:60000
@@ -95,6 +113,7 @@ levels_path =
 ## Used in cave and maze mode.
 ## Type: NUMERIC_SET of unsigned integers
 #enemy_keeper_creatures_limit = 50
+
 
 ## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
 ## To disable comment-out parameter.

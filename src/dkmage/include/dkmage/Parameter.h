@@ -33,7 +33,11 @@ namespace dkmage {
         PN_TYPE,
 
         PN_GOLD_SLABS_NUMBER,
+        PN_GEM_SLABS_NUMBER,
         PN_GEM_FACES_NUMBER,
+        PN_GEM_TRAPS_NUMBER,
+        PN_GEM_GUARD_NUMBER,
+        PN_GEM_GUARD_LEVEL,
         PN_INIT_GOLD_AMOUNT,
         PN_CREATURES_LIMIT,
 
