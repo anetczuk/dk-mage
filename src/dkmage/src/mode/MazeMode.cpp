@@ -243,9 +243,10 @@ namespace dkmage {
                 level.setCreatureAuto( monstersPos, Creature::C_MISTRESS, 20, 10 );
             }
 
-            level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, Creature::C_WARLOCK, 1 );
-            level.setCreature( firstCenter.x+1, firstCenter.y-2, 4, Creature::C_SKELETON, 3 );
-            level.setCreatureAuto( firstCenter.x, firstCenter.y+2, Creature::C_IMP, 8 );
+            const adiktedpp::Player player = dungeon.owner();
+            level.setCreature( firstCenter.x-1, firstCenter.y-2, 4, Creature::C_WARLOCK, 1, 1, player );
+            level.setCreature( firstCenter.x+1, firstCenter.y-2, 4, Creature::C_SKELETON, 3, 1, player );
+            level.setCreatureAuto( firstCenter.x, firstCenter.y+2, Creature::C_IMP, 8, 1, player );
 
 //                    /// fill treasure with gold
 //                    spatial::DungeonRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
