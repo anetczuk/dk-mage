@@ -62,5 +62,5 @@ Usage generated for version:
 
 ```
 
-dkmagecli  version: 1.4.0
+dkmagecli  version: 1.4.1
 ```
