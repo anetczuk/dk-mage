@@ -87,6 +87,8 @@ namespace adiktedpp {
                 return addLine( "REM " + comment );
             }
 
+            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
+
             void START_MONEY( const adiktedpp::Player player, const std::size_t amount );
 
             /// value in range [0..10]
@@ -98,7 +100,14 @@ namespace adiktedpp {
 
             void CONCEAL_MAP_RECT( const Player player, const utils::Rect rect, const bool hideAll = false );
 
-            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
+            void CHANGE_SLAB_TYPE( const utils::Point position, const Slab slab );
+
+            void IF_SLAB_TYPE( const utils::Point position, const Slab slab );
+
+            void ENDIF();
+
+            /// signed, hero gates has negative numbers
+            void IF_ACTION_POINT( const int actionNumber, const adiktedpp::Player player );
 
             /// 'crExp' in range [1..10]
             void ADD_CREATURE_TO_LEVEL( const Player player, const Creature creature, const int actionPoint, const std::size_t crNum, const std::size_t crExp, const std::size_t gold );
@@ -175,8 +184,8 @@ namespace adiktedpp {
             BasicScript header;
             BasicScript init;
             BasicScript action;
-            BasicScript endConditions;
             BasicScript other;
+            BasicScript endConditions;
 
             bool isFX;
 
@@ -204,6 +213,10 @@ namespace adiktedpp {
                 return action;
             }
 
+            BasicScript& otherSection() {
+                return other;
+            }
+
             void clearData();
 
             std::vector< std::string > build();
@@ -225,13 +238,6 @@ namespace adiktedpp {
 
             void addLineAction( const std::string& line ) {
                 action.addLine( line );
-            }
-
-            /// signed, hero gates has negative numbers
-            void addLineActionIf( const int actionNumber, const adiktedpp::Player player );
-
-            void addLineActionEndIf() {
-                action.addLine( "ENDIF" );
             }
 
             void addREM( const ScriptSection section, const std::string& comment ) {

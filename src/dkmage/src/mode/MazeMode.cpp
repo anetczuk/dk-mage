@@ -210,7 +210,7 @@ namespace dkmage {
             }
 
             /// add gold vein
-            generateGoldSlabs( 40, 2 );
+            generateGoldSlabs( 40, 2, 4, 25 );
 
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );

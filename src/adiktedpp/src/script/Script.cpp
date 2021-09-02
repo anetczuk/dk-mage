@@ -37,6 +37,24 @@ namespace adiktedpp {
             throw std::invalid_argument( stream.str() );
         }
 
+        std::string script_keyword( const Slab data ) {
+            /// names come from 'fxdata\terrain.cfg'
+            switch( data ) {
+            case Slab::S_ROCK:      return "HARD";
+            case Slab::S_GOLD:      return "GOLD";
+            case Slab::S_GEMS:      return "GEMS";
+            case Slab::S_EARTH:     return "DIRT";
+            case Slab::S_PATH:      return "PATH";
+            case Slab::S_LAVA:      return "LAVA";
+            case Slab::S_WATER:     return "WATER";
+            }
+
+            LOG_ERR() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
 
         std::string script_keyword( const Room data ) {
             switch( data ) {
@@ -245,6 +263,12 @@ namespace adiktedpp {
         /// =========================================================================
 
 
+        void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
+            std::stringstream stream;
+            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
+            addLine( stream.str() );
+        }
+
         void ScriptCommand::START_MONEY( const adiktedpp::Player player, const std::size_t amount ) {
             std::stringstream stream;
             stream << "START_MONEY( " << script_keyword( player ) << ", " << amount << " )";
@@ -303,10 +327,29 @@ namespace adiktedpp {
             }
         }
 
-        void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
+        void ScriptCommand::CHANGE_SLAB_TYPE( const utils::Point position, const Slab slab ) {
             std::stringstream stream;
-            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
-            addLine( stream.str() );
+            stream << "CHANGE_SLAB_TYPE( " << position.x << ", " << position.y << ", " << script_keyword( slab ) << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
+        void ScriptCommand::IF_SLAB_TYPE( const utils::Point position, const Slab slab ) {
+            std::stringstream stream;
+            stream << "IF_SLAB_TYPE( " << position.x << ", " << position.y << ", " << script_keyword( slab ) << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
+        void ScriptCommand::ENDIF() {
+            addLine( "ENDIF" );
+        }
+
+        void ScriptCommand::IF_ACTION_POINT( const int actionNumber, const adiktedpp::Player player ) {
+            std::stringstream stream;
+            stream << "IF_ACTION_POINT( " << actionNumber << ", " << script_keyword( player ) << " )";
+            const std::string& line = stream.str();
+            addLine( line );
         }
 
         /// 'crExp' in range [1..10]
@@ -471,13 +514,6 @@ namespace adiktedpp {
         void Script::storeParameters( const std::string& mapType, const std::string& seed ) {
             header.REM( "*** generated map type: '" + mapType + "' ***" );
             header.REM( "*** seed used for generation: '" + seed + "' ***" );
-        }
-
-        void Script::addLineActionIf( const int actionNumber, const adiktedpp::Player player ) {
-            std::stringstream stream;
-            stream << "IF_ACTION_POINT( " << actionNumber << ", " << script_keyword( player ) << " )";
-            const std::string& line = stream.str();
-            action.addLine( line );
         }
 
         void Script::concealWholeMap( const Player player ) {
@@ -729,19 +765,19 @@ namespace adiktedpp {
                 merged.push_back( "" );
                 merged.insert( merged.end(), action.begin(), action.end() );
             }
-            if ( endConditions.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- win conditions ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), endConditions.begin(), endConditions.end() );
-            }
             if ( other.empty() == false ) {
                 merged.push_back( "" );
                 merged.push_back( "" );
                 merged.push_back( "REM --- other ---" );
                 merged.push_back( "" );
                 merged.insert( merged.end(), other.begin(), other.end() );
+            }
+            if ( endConditions.empty() == false ) {
+                merged.push_back( "" );
+                merged.push_back( "" );
+                merged.push_back( "REM --- end conditions ---" );
+                merged.push_back( "" );
+                merged.insert( merged.end(), endConditions.begin(), endConditions.end() );
             }
 
             return merged;

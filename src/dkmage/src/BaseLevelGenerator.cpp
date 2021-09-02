@@ -135,7 +135,9 @@ namespace dkmage {
         return ret;
     }
 
-    void BaseLevelGenerator::generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum ) {
+    void BaseLevelGenerator::generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum,
+                                                const std::size_t gemRegionWidth, const std::size_t gemRegionHeight )
+    {
         std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, defaultGoldNum );
         LOG() << "gold slabs number: " << goldSlabsNum;
 
@@ -164,14 +166,14 @@ namespace dkmage {
         PointsField gemsField;
         {
             /// add left side
-            Rect randPosArea( 4, 20 );
+            Rect randPosArea( gemRegionWidth, gemRegionHeight );
             randPosArea.moveLeftTo( 2 );
             randPosArea.moveBottomTo( mapRect.max.y - 1 );
             gemsField.add( randPosArea );
         }
         {
             /// add right side
-            Rect randPosArea( 4, 20 );
+            Rect randPosArea( gemRegionWidth, gemRegionHeight );
             randPosArea.moveRightTo( mapRect.max.x - 1 );
             randPosArea.moveBottomTo( mapRect.max.y - 1 );
             gemsField.add( randPosArea );
@@ -199,12 +201,28 @@ namespace dkmage {
             }
             if ( i >= gemTrapsNum) {
                 /// first add traps then actual gems
-                level.setSlab( gemCenter, Slab::S_GEMS );
+
+//                const std::size_t gemAP = level.addActionPoint( gemCenter, 1 );
+//                script::BasicScript& actionSec = map.script.actionSection();
+//                actionSec.REM( "gem reveal" );
+//                actionSec.REM( std::to_string( gemAP ) + " -- gem position" );
+//                actionSec.IF_ACTION_POINT( gemAP, Player::P_P0 );
+//                actionSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
+//                actionSec.ENDIF();
+
+                script::BasicScript& otherSec = map.script.otherSection();
+                const Point gemSide = gemCenter + corridorDir;
+                otherSec.REM( "- reveal hidden gem -" );
+                otherSec.IF_SLAB_TYPE( gemSide, Slab::S_PATH );
+                otherSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
+                otherSec.ENDIF();
+
                 std::size_t faces = slabFaces;
                 if ( i <= gemFacesNum % gemSlabsNum ) {
                     ++faces;
                 }
                 drawGemFaces( level, gemCenter, faces, Slab::S_EARTH, corridorDir );
+                level.setSlab( gemCenter, Slab::S_EARTH );
             }
 
             /// draw cavern with creatures

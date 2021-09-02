@@ -209,7 +209,7 @@ namespace dkmage {
                 const std::size_t heartAP = level.addActionPoint( heartCenter, 3 );
                 script.actionSection().REM( "dungeon heart guards" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
-                script.addLineActionIf( heartAP, Player::P_P0 );
+                script.actionSection().IF_ACTION_POINT( heartAP, Player::P_P0 );
                 {
                     script::BasicScript& action = script.actionSection();
                     action.CREATE_PARTY( "lord_of_the_land_1" );
@@ -233,7 +233,7 @@ namespace dkmage {
 //                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
 //                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
                 }
-                script.addLineActionEndIf();
+                script.actionSection().ENDIF();
 
                 /// entrance chamber
                 const Point entrancePoint = edgePoint( direction, 1 );
@@ -266,7 +266,7 @@ namespace dkmage {
                 script.actionSection().REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
                 script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
                 script.actionSection().REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
-                script.addLineActionIf( chamberEntranceAP, Player::P_P0 );
+                script.actionSection().IF_ACTION_POINT( chamberEntranceAP, Player::P_P0 );
                 for ( std::size_t i=0; i<vestibuleLength; ++i) {
                     const Point offset = heartEntrancePoint + corridorDirr * (i + gapSize);
                     level.setSlab( offset - wallDir, Slab::S_LAVA );
@@ -284,7 +284,7 @@ namespace dkmage {
 //                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
                     }
                 }
-                script.addLineActionEndIf();
+                script.actionSection().ENDIF();
             }
 
         };
@@ -444,7 +444,7 @@ namespace dkmage {
                     const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
                     script.actionSection().REM( "ambush party" );
                     script.actionSection().REM( std::to_string( ambushAP ) + " -- ambush room center" );
-                    script.addLineActionIf( ambushAP, Player::P_P0 );
+                    script.actionSection().IF_ACTION_POINT( ambushAP, Player::P_P0 );
                     {
                         const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
                         const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
@@ -459,7 +459,7 @@ namespace dkmage {
                         }
                         action.ADD_PARTY_TO_LEVEL( roomOwner, ambushName, ambushAP );
                     }
-                    script.addLineActionEndIf();
+                    script.actionSection().ENDIF();
 
                     break;
                 }
@@ -900,13 +900,14 @@ namespace dkmage {
                         level.setCreature( point, 1, Creature::C_SKELETON, 1, 10, Player::P_UNSET );
                         if ( i == 0 ) {
                             /// add technology
+                            //TODO: refactor
                             const std::size_t actionPoint = level.addActionPoint( point );
                             script.actionSection().REM( "prison technology" );
                             script.actionSection().REM( std::to_string( actionPoint ) + " -- prison center" );
-                            script.addLineActionIf( actionPoint, Player::P_P0 );
+                            script.actionSection().IF_ACTION_POINT( actionPoint, Player::P_P0 );
                             script.actionSection().QUICK_INFORMATION( 1, "You have discovered how to build a prison" );
                             script.actionSection().addAvailable( Player::P_P0, Room::R_PRISON );
-                            script.addLineActionEndIf();
+                            script.actionSection().ENDIF();
                         }
                     }
                 }
@@ -1189,9 +1190,9 @@ namespace dkmage {
                 const std::size_t actionPoint = level.addActionPoint( roomCenter, 1 );
                 script.actionSection().REM( "graveyard guard" );
                 script.actionSection().REM( std::to_string( actionPoint ) + " -- graveyard center" );
-                script.addLineActionIf( actionPoint, Player::P_P0 );
+                script.actionSection().IF_ACTION_POINT( actionPoint, Player::P_P0 );
                 script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_VAMPIRE, actionPoint, 2, guardLevel.randomized(), 1000 );
-                script.addLineActionEndIf();
+                script.actionSection().ENDIF();
 
                 level.setDoor( doorPoint, Door::D_WOOD, true );
             }

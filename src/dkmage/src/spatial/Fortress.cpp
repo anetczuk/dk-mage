@@ -351,6 +351,7 @@ namespace dkmage {
 
         bool Fortress::generate() {
             Rect lakeLimit = raw::RawLevel::mapRect( 6 );
+            lakeLimit.growWidth( -1 );
             lakeLimit.max.y -= 24;                                      /// make space for evil dungeon
 
             fortress.limitWidth  = lakeLimit.width()  - 6;
