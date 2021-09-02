@@ -96,6 +96,8 @@ namespace adiktedpp {
 
             void MAX_CREATURES( const Player player, const std::size_t limit );
 
+            void CONCEAL_MAP_RECT( const Player player, const utils::Rect rect, const bool hideAll = false );
+
             void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
 
             /// 'crExp' in range [1..10]
@@ -245,6 +247,8 @@ namespace adiktedpp {
                 isFX = true;
                 init.setFXLevel();
             }
+
+            void concealWholeMap( const Player player );
 
             void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
 

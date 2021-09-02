@@ -259,8 +259,48 @@ namespace adiktedpp {
 
         void ScriptCommand::MAX_CREATURES( const Player player, const std::size_t limit ) {
             std::stringstream stream;
-            stream << "MAX_CREATURES( " << script_keyword( player ) + ", " << limit << " )";
+            stream << "MAX_CREATURES( " << script_keyword( player ) << ", " << limit << " )";
             addLine( stream.str() );
+        }
+
+        void ScriptCommand::CONCEAL_MAP_RECT( const Player player, const utils::Rect rect, const bool hideAll ) {
+            REM( "- hide whole map -" );
+//            const utils::Point center = rect.center();
+//            const std::size_t xSub = center.x * 3;
+//            const std::size_t ySub = center.y * 3;
+            const std::size_t widthSub  = rect.width()  * 3;
+            const std::size_t heightSub = rect.height() * 3;
+
+            static const std::size_t MAX_DIM = 128;
+
+            const std::size_t wSteps = widthSub  / MAX_DIM + ( (widthSub  % MAX_DIM > 0) ? 1 : 0 );
+            const std::size_t hSteps = heightSub / MAX_DIM + ( (heightSub % MAX_DIM > 0) ? 1 : 0 );
+
+            const std::size_t rWidth  = widthSub  / wSteps;
+            const std::size_t rHeight = heightSub / wSteps;
+
+            const utils::Point corner = rect.leftBottom() * 3;
+
+            for ( std::size_t w=0; w<wSteps; ++w ) {
+                std::size_t xCenter = corner.x + rWidth  / 2 + rWidth  * w;
+                for ( std::size_t h=0; h<hSteps; ++h ) {
+                    std::size_t yCenter = corner.y + rHeight / 2 + rHeight * h;
+
+        //            const std::size_t xSub = center.x * 3;
+        //            const std::size_t ySub = center.y * 3;
+        //            const std::size_t widthSub  = rect.width()  * 3;
+        //            const std::size_t heightSub = rect.height() * 3;
+                    std::stringstream stream;
+                    stream << "CONCEAL_MAP_RECT( " << script_keyword( player )
+                                                   << ", " << xCenter << ", " << yCenter
+                                                   << ", " << rWidth << ", " << rHeight;
+                    if ( hideAll ) {
+                        stream << ", ALL";
+                    }
+                    stream << " )";
+                    addLine( stream.str() );
+                }
+            }
         }
 
         void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
@@ -438,6 +478,11 @@ namespace adiktedpp {
             stream << "IF_ACTION_POINT( " << actionNumber << ", " << script_keyword( player ) << " )";
             const std::string& line = stream.str();
             action.addLine( line );
+        }
+
+        void Script::concealWholeMap( const Player player ) {
+            const utils::Rect map = adiktedpp::raw::RawLevel::mapRect();
+            init.CONCEAL_MAP_RECT( player, map, true );
         }
 
         void Script::addAvailable( const Player player, const Room item, const int accessible, const int available ) {

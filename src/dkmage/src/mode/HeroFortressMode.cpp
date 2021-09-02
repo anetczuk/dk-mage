@@ -224,6 +224,9 @@ namespace dkmage {
             }
             script.set( availableMagic );
 
+//            script.addLineInit( "" );
+//            script.concealWholeMap( Player::P_P0 );
+
             script.addLineInit( "" );
             script.setImpRotting( false );
             script.addLineInit( "" );

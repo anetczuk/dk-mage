@@ -205,8 +205,10 @@ namespace dkmage {
 
         void CaveMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
-//            script.setFXLevel();
 
+            script.setFXLevel();
+
+            script.addLineInit( "" );
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
 
             const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, 0 );
@@ -248,6 +250,9 @@ namespace dkmage {
 //                availableMagic.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
             }
             script.set( availableMagic );
+
+//            script.addLineInit( "" );
+//            script.concealWholeMap( Player::P_P0 );
 
 //            script.addLineInit( "" );
 //            script.setImpRotting( false );
