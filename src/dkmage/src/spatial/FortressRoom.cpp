@@ -856,7 +856,6 @@ namespace dkmage {
             void draw( FortressData& data ) const override {
                 adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
-                adiktedpp::script::Script& script = gameMap.script;
 
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
@@ -898,17 +897,17 @@ namespace dkmage {
                         const Point point = remove_at( slots, pIndex );
                         level.setRoom( point, Room::R_PRISON, roomOwner, true );
                         level.setCreature( point, 1, Creature::C_SKELETON, 1, 10, Player::P_UNSET );
-                        if ( i == 0 ) {
-                            /// add technology
-                            //TODO: refactor
-                            const std::size_t actionPoint = level.addActionPoint( point );
-                            script.actionSection().REM( "prison technology" );
-                            script.actionSection().REM( std::to_string( actionPoint ) + " -- prison center" );
-                            script.actionSection().IF_ACTION_POINT( actionPoint, Player::P_P0 );
-                            script.actionSection().QUICK_INFORMATION( 1, "You have discovered how to build a prison" );
-                            script.actionSection().addAvailable( Player::P_P0, Room::R_PRISON );
-                            script.actionSection().ENDIF();
-                        }
+//                        if ( i == 0 ) {
+//                            /// add technology
+//                            //TODO: refactor
+//                            const std::size_t actionPoint = level.addActionPoint( point );
+//                            script.actionSection().REM( "prison technology" );
+//                            script.actionSection().REM( std::to_string( actionPoint ) + " -- prison center" );
+//                            script.actionSection().IF_ACTION_POINT( actionPoint, Player::P_P0 );
+//                            script.actionSection().QUICK_INFORMATION( 1, "You have discovered how to build a prison" );
+//                            script.actionSection().addAvailable( Player::P_P0, Room::R_PRISON );
+//                            script.actionSection().ENDIF();
+//                        }
                     }
                 }
                 for ( const Point item: slots ) {

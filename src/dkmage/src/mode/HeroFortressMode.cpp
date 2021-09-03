@@ -201,10 +201,10 @@ namespace dkmage {
             availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::AvailableRoomMode::ARM_DISABLED );
             availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::AvailableRoomMode::ARM_DISABLED );
             availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_DISABLED );
-            /// 'ARM_ENABLED_FOUND' not available in current adikted lib version
-//            availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::AvailableRoomMode::ARM_ENABLED_FOUND );
-//            availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::AvailableRoomMode::ARM_ENABLED_FOUND );
-//            availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+
+            availableRooms.setStateMode( Player::P_P0, Room::R_PRISON, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+            availableRooms.setStateMode( Player::P_P0, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_ENABLED_FOUND );
 
             script.set( availableRooms );
 
