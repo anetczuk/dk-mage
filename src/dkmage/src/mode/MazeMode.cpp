@@ -33,6 +33,8 @@ namespace dkmage {
         /// ================================================
 
         bool MazeMode::generate() {
+            Level& level = map.level;
+
             level.generateRandomMap( 9 );
 
             spatial::Maze maze;
@@ -59,6 +61,8 @@ namespace dkmage {
         }
 
         void MazeMode::generateMazeItems( spatial::Maze& maze ) {
+            Level& level = map.level;
+
             const std::size_t corrNum = maze.corridorsNum();
             std::set< std::size_t > indexSet;
             for ( std::size_t i=0; i<corrNum; ++i ) {
@@ -173,6 +177,8 @@ namespace dkmage {
         }
 
         void MazeMode::randHeroTrap( spatial::Maze& maze, const Point& nodeCenter, const double distanceFactor ) {
+            Level& level = map.level;
+
 //                level.setVein( chamber, SlabType::ST_PATH, cSize );
             const Rect chamber( nodeCenter, maze.corridorSize, maze.corridorSize );
             level.setSlab( chamber, Slab::S_PATH );
@@ -211,6 +217,8 @@ namespace dkmage {
 
             /// add gold vein
             generateGoldSlabs( 40, 2, 4, 25 );
+
+            Level& level = map.level;
 
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );
@@ -268,6 +276,8 @@ namespace dkmage {
             enemyDungeon.moveToTopEdge( 4 );
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
+
+            Level& level = map.level;
 
             /// dungeon have to be drawn before placing items inside it's rooms
             enemyDungeon.draw( level );

@@ -20,6 +20,8 @@ namespace dkmage {
     namespace mode {
 
         bool CaveMode::generate() {
+            Level& level = map.level;
+
             level.generateRandomMap( 9 );
 
             generateCaves();
@@ -35,6 +37,8 @@ namespace dkmage {
         }
 
         void CaveMode::generateCaves() {
+            Level& level = map.level;
+
             const Rect mapRect = raw::RawLevel::mapRect();
             const Point mapCenter = mapRect.center();
             const Rect region( mapCenter, 70, 35 );
@@ -116,6 +120,8 @@ namespace dkmage {
             /// add gold vein
             generateGoldSlabs( 80, 1, 4, 40 );
 
+            Level& level = map.level;
+
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );
 
@@ -170,6 +176,8 @@ namespace dkmage {
             enemyDungeon.moveToTopEdge( 4 );
 
         //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
+
+            Level& level = map.level;
 
             /// dungeon have to be drawn before placing items inside it's rooms
             enemyDungeon.draw( level );

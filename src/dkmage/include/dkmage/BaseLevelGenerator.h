@@ -26,10 +26,9 @@ namespace dkmage {
 
         adiktedpp::ScopeMessages messages;
         adiktedpp::GameMap map;
-        adiktedpp::Level& level;            //TODO: remove
 
 
-        BaseLevelGenerator(): messages( "adikted.log.txt" ), map(), level( map.level ) {
+        BaseLevelGenerator(): messages( "adikted.log.txt" ), map() {
         }
 
         const ParametersMap& getParameters() const override {
@@ -50,16 +49,16 @@ namespace dkmage {
         }
 
         void setLevelName( const std::string& name ) override {
-            level.getRawLevel().setLevelName( name );
+            map.level.getRawLevel().setLevelName( name );
         }
 
         void setDataPath( const std::string& dataPath ) override {
-            level.setDataPath( dataPath );
+            map.level.setDataPath( dataPath );
         }
 
         void storeLevel( const std::string& levelPath ) override {
             LOG() << "storing level in: " << levelPath;
-            const bool saved = level.saveMapByPath( levelPath );
+            const bool saved = map.level.saveMapByPath( levelPath );
         //    const bool saved = level.saveMapById( 333 );
             if ( saved == false ) {
                 LOG() << "unable to save map: " << saved;
@@ -70,8 +69,8 @@ namespace dkmage {
 
         void storePreview( const std::string& filePath ) override {
             LOG() << "storing bmp in: " << filePath;
-            level.setRescale( 3 );
-            if ( level.generateBmp( filePath ) == false ) {
+            map.level.setRescale( 3 );
+            if ( map.level.generateBmp( filePath ) == false ) {
                 messages.readRecent();
             }
         }

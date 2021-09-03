@@ -155,7 +155,6 @@ namespace dkmage {
         public:
 
             adiktedpp::GameMap& gameMap;
-            adiktedpp::Level& level;                    //TODO: remove (unnecessary)
             ParametersMap& parameters;
             spatial::FortressDungeon fortress;
 

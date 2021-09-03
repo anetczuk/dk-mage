@@ -17,6 +17,8 @@ namespace dkmage {
     namespace mode {
 
         bool HeroFortressMode::generate() {
+            Level& level = map.level;
+
             level.generateRandomMap( 9 );
 
 //            generateCaves( 28 );
@@ -45,6 +47,8 @@ namespace dkmage {
         }
 
         void HeroFortressMode::generateCaves( const std::size_t cavesNum ) {
+            Level& level = map.level;
+
             const Rect mapRect = raw::RawLevel::mapRect();
             const Point mapCenter = mapRect.center();
             const Rect region( mapCenter + Point(0, 8), 70, 33 );
@@ -115,6 +119,8 @@ namespace dkmage {
                 const Point center = randRect.pointByIndex( randomPosIndex );
                 dungeon.move( center );
             }
+
+            Level& level = map.level;
 
             /// add gold vein
             generateGoldSlabs( 40, 1, 1, 77 );

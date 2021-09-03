@@ -41,6 +41,7 @@ namespace dkmage {
 
         /// reset/clear script
         map.script.clearData();
+        Level& level = map.level;
 
         if ( generate() == false ) {
             LOG_WARN() << "could not generate map";
@@ -70,6 +71,8 @@ namespace dkmage {
     }
 
     void BaseLevelGenerator::writeIniFile() const {
+        const Level& level = map.level;
+
         const std::string output = level.getRawLevel().outputFileName() + ".mage.ini";
 
         std::ofstream iniFile;
@@ -138,6 +141,8 @@ namespace dkmage {
     void BaseLevelGenerator::generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum,
                                                 const std::size_t gemRegionWidth, const std::size_t gemRegionHeight )
     {
+        Level& level = map.level;
+
         std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, defaultGoldNum );
         LOG() << "gold slabs number: " << goldSlabsNum;
 
@@ -246,6 +251,7 @@ namespace dkmage {
     }
 
     void BaseLevelGenerator::generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount ) {
+        Level& level = map.level;
         const Rect mapRect = raw::RawLevel::mapRect();
         const std::size_t veinDimm = (std::size_t) sqrt( goldAmount ) * 1.5;
         Rect randPosArea( 21, 13 );
@@ -258,6 +264,7 @@ namespace dkmage {
     }
 
     void BaseLevelGenerator::generateRightGoldVein( const std::size_t goldAmount, const std::size_t gemAmount ) {
+        Level& level = map.level;
         const Rect mapRect = raw::RawLevel::mapRect();
         const std::size_t veinDimm = (std::size_t) sqrt( goldAmount ) * 1.5;
         Rect randPosArea( 25, 17 );

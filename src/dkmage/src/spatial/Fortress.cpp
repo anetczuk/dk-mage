@@ -342,7 +342,7 @@ namespace dkmage {
         ///===================================================================================================
 
 
-        Fortress::Fortress( adiktedpp::GameMap& gameMap, ParametersMap& parameters ): gameMap(gameMap), level(gameMap.level), parameters(parameters), fortress( Player::P_GOOD ) {
+        Fortress::Fortress( adiktedpp::GameMap& gameMap, ParametersMap& parameters ): gameMap(gameMap), parameters(parameters), fortress( Player::P_GOOD ) {
 //                fortress.limitNorth = 3;
 //                fortress.limitSouth = 3;
             fortress.fortify( true );
@@ -818,6 +818,8 @@ namespace dkmage {
                 return false;
             }
 
+            Level& level = gameMap.level;
+
             LakeGenerator lavaLake;
             lavaLake.available = outline;
             const std::size_t lakeSize = outline.size() * 1.4;
@@ -915,6 +917,8 @@ namespace dkmage {
                 LOG() << "unable create required number of bridges";
                 return false;
             }
+
+            Level& level = gameMap.level;
 
             /// take random value
 //            const SizeTSet bridgesRange = entrancesAllowed.filter( 1, foundBridges );
@@ -1026,6 +1030,7 @@ namespace dkmage {
                 corridorItem.normalize();
             }
 
+            Level& level = gameMap.level;
             const Player dungeonOwner = fortress.owner();
 
             const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
@@ -1137,6 +1142,8 @@ namespace dkmage {
         }
 
         PointList Fortress::findBridge( const Point startPoint, const Point bridgeDirection ) {
+            Level& level = gameMap.level;
+
             PointList ret;
 
             std::set< Point > heighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
