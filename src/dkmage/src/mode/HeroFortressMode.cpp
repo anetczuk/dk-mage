@@ -233,12 +233,18 @@ namespace dkmage {
 //            script.addLineInit( "" );
 //            script.concealWholeMap( Player::P_P0 );
 
+            script.headerSection().addEmptyLine( 2 );
+            script.headerSection().REM( "- flags meaning -" );
+            script.headerSection().REM( "     FLAG7 -- modify stun chance after transformation prisoners to creatures (skeletons, ghosts or conversion)" );
+
             script.addLineInit( "" );
             script.setImpRotting( false );
             script.addLineInit( "" );
             script.setPrisonConvertLimits();
             script.addLineInit( "" );
             script.setTortureConvertLimits();
+            script.addLineInit( "" );
+            script.setStunChance();
             script.addLineInit( "" );
             script.setSacrificeLimits();
             script.addLineInit( "" );

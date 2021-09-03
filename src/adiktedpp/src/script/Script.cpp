@@ -201,6 +201,25 @@ namespace adiktedpp {
         }
 
 
+        std::string script_keyword( const Flag data ) {
+            switch( data ) {
+            case Flag::F_FLAG_0: { return "FLAG0"; }
+            case Flag::F_FLAG_1: { return "FLAG1"; }
+            case Flag::F_FLAG_2: { return "FLAG2"; }
+            case Flag::F_FLAG_3: { return "FLAG3"; }
+            case Flag::F_FLAG_4: { return "FLAG4"; }
+            case Flag::F_FLAG_5: { return "FLAG5"; }
+            case Flag::F_FLAG_6: { return "FLAG6"; }
+            case Flag::F_FLAG_7: { return "FLAG7"; }
+            }
+
+            LOG_ERR() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
         std::string script_keyword( const PartyObjective data ) {
             switch( data ) {
             case PartyObjective::PO_ATTACK_DUNGEON_HEART:   { return "ATTACK_DUNGEON_HEART"; }
@@ -224,29 +243,28 @@ namespace adiktedpp {
         /// =========================================================================
 
 
-        void ScriptContainer::addLine( const std::string& line ) {
-            if ( line.find( "ENDIF" ) != std::string::npos ) {
-                if (level > 0) {
-                    --level;
-                }
-                const std::string indent( level * 4, ' ' );
-                lines.push_back( indent + line );
-                return ;
+        void ScriptContainer::addEmptyLine( const std::size_t number ) {
+            for ( std::size_t i=0; i<number; ++i ) {
+                lines.push_back( "" );
             }
+        }
+
+        void ScriptContainer::addLine( const std::string& line ) {
+            countEndIf( line );
 
             const std::string indent( level * 4, ' ' );
             lines.push_back( indent + line );
 
-            if ( line.find( "IF(" ) != std::string::npos ) {
-                ++level;
-            } else if ( line.find( "IF_" ) != std::string::npos ) {
-                ++level;
-            }
+            countIf( line );
         }
 
         void ScriptContainer::addLineIndent( const std::string& line, const std::size_t forceIndent ) {
+            countEndIf( line );
+
             const std::string indent( forceIndent * 4, ' ' );
             lines.push_back( indent + line );
+
+            countIf( line );
         }
 
 //        void ScriptContainer::addLine( const std::string& line, const std::size_t position ) {
@@ -259,9 +277,31 @@ namespace adiktedpp {
 //            lines.insert( pos, line );
 //        }
 
+        void ScriptContainer::countIf( const std::string& line ) {
+            if ( line.find( "IF(" ) != std::string::npos ) {
+                ++level;
+            } else if ( line.find( "IF_" ) != std::string::npos ) {
+                ++level;
+            }
+        }
+
+        void ScriptContainer::countEndIf( const std::string& line ) {
+            if ( line.find( "ENDIF" ) != std::string::npos ) {
+                if (level > 0) {
+                    --level;
+                }
+            }
+        }
+
 
         /// =========================================================================
 
+
+        void ScriptCommand::ADD_TO_FLAG( const adiktedpp::Player player, const Flag flag, const int value ) {
+            std::stringstream stream;
+            stream << "ADD_TO_FLAG( " << script_keyword( player ) << ", " << script_keyword( flag ) << ", " << value << " )";
+            addLine( stream.str() );
+        }
 
         void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
             std::stringstream stream;
@@ -651,15 +691,19 @@ namespace adiktedpp {
             init.addLineIndent( "REM - prevent prison convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, SKELETON > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 80 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
             init.addLineIndent( "IF( PLAYER0,SKELETON > 5 )" );
             init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 60 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
             init.addLineIndent( "IF( PLAYER0,SKELETON > 8 )" );
             init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 40 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
             init.addLineIndent( "IF( PLAYER0,GHOST > 3 )" );
             init.addLineIndent( "    SET_GAME_RULE( GhostConvertChance, 30 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
         }
 
@@ -667,13 +711,33 @@ namespace adiktedpp {
             init.addLineIndent( "REM - prevent torture convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 33 )" );
-            init.addLineIndent( "    ADD_TO_FLAG( PLAYER0, FLAG7, 1 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
             init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 5 )" );
             init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 50 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
             init.addLineIndent( "ENDIF" );
             init.addLineIndent( "IF( PLAYER0,CREATURES_CONVERTED > 8 )" );
             init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 80 )" );
+            init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
+            init.addLineIndent( "ENDIF" );
+        }
+
+        void Script::setStunChance() {
+            init.addLineIndent( "REM - modify stun chance -" );
+            init.addLineIndent( "IF( PLAYER0,FLAG7 >= 1 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunEvilEnemyChance, 80 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunGoodEnemyChance, 80 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,FLAG7 >= 2 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunGoodEnemyChance, 60 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,FLAG7 >= 3 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunEvilEnemyChance, 60 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunGoodEnemyChance, 50 )" );
+            init.addLineIndent( "ENDIF" );
+            init.addLineIndent( "IF( PLAYER0,FLAG7 >= 4 )" );
+            init.addLineIndent( "    SET_GAME_RULE( StunGoodEnemyChance, 30 )" );
             init.addLineIndent( "ENDIF" );
         }
 

@@ -14,6 +14,18 @@
 namespace adiktedpp {
     namespace script {
 
+        enum class Flag {
+            F_FLAG_0,
+            F_FLAG_1,
+            F_FLAG_2,
+            F_FLAG_3,
+            F_FLAG_4,
+            F_FLAG_5,
+            F_FLAG_6,
+            F_FLAG_7
+        };
+
+
         enum class PartyObjective {
             PO_ATTACK_DUNGEON_HEART,            /// Attack the nearest Dungeon Heart.
             PO_ATTACK_ENEMIES,                  /// Attack any enemies.
@@ -68,11 +80,20 @@ namespace adiktedpp {
                 return lines.end();
             }
 
+            void addEmptyLine( const std::size_t number = 1 );
+
             void addLine( const std::string& line );
 
             void addLineIndent( const std::string& line, const std::size_t forceIndent = 0 );
 
 //            void addLine( const std::string& line, const std::size_t position );
+
+
+        protected:
+
+            void countIf( const std::string& line );
+
+            void countEndIf( const std::string& line );
 
         };
 
@@ -86,6 +107,9 @@ namespace adiktedpp {
             void REM( const std::string& comment ) {
                 return addLine( "REM " + comment );
             }
+
+            /// flag is in range [0..255]
+            void ADD_TO_FLAG( const adiktedpp::Player player, const Flag flag, const int value=1 );
 
             void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
 
@@ -203,6 +227,10 @@ namespace adiktedpp {
                 case ScriptSection::SS_REST:        return other;
                 }
                 return other;
+            }
+
+            BasicScript& headerSection() {
+                return header;
             }
 
             BasicScript& initSection() {
@@ -332,6 +360,8 @@ namespace adiktedpp {
             void setPrisonConvertLimits();
 
             void setTortureConvertLimits();
+
+            void setStunChance();
 
             void setSacrificeLimits();
 
