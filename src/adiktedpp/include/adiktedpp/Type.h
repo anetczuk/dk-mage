@@ -17,7 +17,7 @@ namespace adiktedpp {
      */
     enum class Slab {
         S_ROCK,
-        S_GOLD,
+        S_GOLD,                 /// contains 1024 of gold
         S_GEMS,
         S_EARTH,
         S_PATH,
@@ -44,9 +44,11 @@ namespace adiktedpp {
 
 
     /**
-     *
+     * It higher level incarnation of SubTypeItem enum.
      */
     enum class Item {
+        I_HEROGATE,
+
         I_GOLDCHEST,
         I_GOLD_HOARD1,              /// small bag (800)
         I_GOLD_HOARD2,              /// medium bag (1200)

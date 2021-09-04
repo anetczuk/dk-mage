@@ -292,3 +292,23 @@ TEST_CASE("RawLevel_setSlab_owner", "[classic]") {
 
     level.generateTestBmp();
 }
+
+TEST_CASE("RawLevel_getActionPointPosition", "[classic]") {
+    RawLevelMock level;
+    level.startNewMap();
+
+    const std::size_t acn = level.addActionPoint( 10, 20, 4, 0 );
+    CHECK( acn == 1 );
+
+    const Point acp = level.getActionPointPosition( acn );
+    CHECK( acp == Point( 10, 20 ) );
+}
+
+TEST_CASE("RawLevel_getHeroGatePosition", "[classic]") {
+    RawLevelMock level;
+    level.startNewMap();
+
+    level.setItem( 10, 20, 4, raw::SubTypeItem::STI_HEROGATE );
+    const Point acp = level.getHeroGatePosition( 1 );
+    CHECK( acp == Point( 10, 20 ) );
+}

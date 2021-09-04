@@ -714,6 +714,39 @@ namespace adiktedpp {
 
         /// ============================================================
 
+        unsigned char* RawLevel::getActionPointByNumber( const std::size_t actionPoint ) {
+            LEVEL* level = data->lvl;
+
+            const int arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
+            const int arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
+
+            for (int i=0; i < arr_entries_y; ++i) {
+                for (int j=0; j < arr_entries_x; ++j) {
+                    const int actnpt_count = get_actnpt_subnums( level, i, j );
+                    for ( int k=0; k<actnpt_count; ++k ) {
+                        unsigned char *actnpt = (unsigned char *) get_actnpt( level, i, j, k );
+                        unsigned short num = get_actnpt_number( actnpt );
+                        if ( num == actionPoint ) {
+                            return actnpt;
+                        }
+                    }
+                }
+            }
+
+            return nullptr;
+        }
+
+        utils::Point RawLevel::getActionPointPosition( const std::size_t actionPoint ) {
+            unsigned char *actnpt = getActionPointByNumber( actionPoint );
+            if ( actnpt == nullptr ) {
+                return Point( -1, -1 );
+            }
+
+            unsigned char x = get_actnpt_subtile_x( actnpt );
+            unsigned char y = get_actnpt_subtile_y( actnpt );
+            return utils::Point( x / MAP_SUBNUM_X, y / MAP_SUBNUM_Y );
+        }
+
         std::size_t RawLevel::addActionPoint( const std::size_t x, const std::size_t y, const std::size_t subIndex, const std::size_t radius ) {
             LEVEL* level = data->lvl;
             const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
@@ -722,6 +755,41 @@ namespace adiktedpp {
             set_actnpt_range_subtile( thing, 2 + radius * 3 );
             actnpt_add( level, thing );
             return get_actnpt_number( thing );
+        }
+
+        unsigned char* RawLevel::getHeroGateByNumber( const std::size_t heroGate ) {
+            LEVEL* level = data->lvl;
+            const int arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
+            const int arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
+
+            for (int i=0; i < arr_entries_y; ++i) {
+                for (int j=0; j < arr_entries_x; ++j) {
+                    const int things_count = get_thing_subnums( level, i, j );
+
+                    for (int k=0; k<things_count; ++k) {
+                        unsigned char* thing = (unsigned char*) get_thing( level, i, j, k );
+                        if ( is_herogate( thing ) == 0 ) {
+                            continue ;
+                        }
+                        const unsigned char gateNum = get_thing_level( thing );
+                        if ( gateNum == heroGate ) {
+                            return thing;
+                        }
+                    }
+                }
+            }
+
+            return nullptr;
+        }
+
+        utils::Point RawLevel::getHeroGatePosition( const std::size_t heroGate ) {
+            unsigned char *thing = getHeroGateByNumber( heroGate );
+            if ( thing == nullptr ) {
+                return Point( -1, -1 );
+            }
+            unsigned char x = get_thing_subtile_x( thing );
+            unsigned char y = get_thing_subtile_y( thing );
+            return utils::Point( x / MAP_SUBNUM_X, y / MAP_SUBNUM_Y );
         }
 
         /// ============================================================
@@ -848,11 +916,9 @@ namespace adiktedpp {
             const int arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
             const int arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;
 
-            std::size_t totalNum = 0;
             for (int i=0; i < arr_entries_y; ++i) {
                 for (int j=0; j < arr_entries_x; ++j) {
                     const int things_count = get_thing_subnums( level, i, j );
-                    totalNum += things_count;
 
                     for (int k=0; k<things_count; ++k) {
                         unsigned char* thing = (unsigned char*) get_thing( level, i, j, k );

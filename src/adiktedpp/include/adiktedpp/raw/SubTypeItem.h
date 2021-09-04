@@ -15,7 +15,9 @@
 namespace adiktedpp {
     namespace raw {
 
-        /// data taken from header 'obj_things.h'
+        /**
+         * It's enum representation of 'ITEM_SUBTYPE_*' defines in 'obj_things.h' header.
+         */
         //TODO: make auto converter of '#define' list to enum
         enum class SubTypeItem {
             /* sub-types for items */

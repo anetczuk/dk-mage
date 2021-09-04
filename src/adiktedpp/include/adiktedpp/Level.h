@@ -185,7 +185,11 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
+        utils::Point getActionPointPosition( const std::size_t accessPoint );
+
         std::size_t addActionPoint( const utils::Point& point, const std::size_t radius = 0 );
+
+        utils::Point getHeroGatePosition( const std::size_t gateNum );
 
         /// ==============================================================================
 

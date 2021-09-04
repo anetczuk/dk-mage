@@ -58,6 +58,8 @@ namespace adiktedpp {
 
     static raw::SubTypeItem convertToRaw( const Item item ) {
         switch( item ) {
+        case Item::I_HEROGATE:      return raw::SubTypeItem::STI_HEROGATE;
+
         case Item::I_GOLDCHEST:     return raw::SubTypeItem::STI_GOLDCHEST;
         case Item::I_GOLD_HOARD1:   return raw::SubTypeItem::STI_GLDHOARD1;
         case Item::I_GOLD_HOARD2:   return raw::SubTypeItem::STI_GLDHOARD2;
@@ -390,8 +392,16 @@ namespace adiktedpp {
 
     /// ==============================================================================
 
+    utils::Point Level::getActionPointPosition( const std::size_t accessPoint ) {
+        return rawLevel.getActionPointPosition( accessPoint );
+    }
+
     std::size_t Level::addActionPoint( const Point& point, const std::size_t radius ) {
         return rawLevel.addActionPoint( point.x, point.y, 4, radius );
+    }
+
+    utils::Point Level::getHeroGatePosition( const std::size_t gateNum ) {
+        return rawLevel.getHeroGatePosition( gateNum );
     }
 
     /// ==============================================================================

@@ -199,7 +199,15 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
+            unsigned char* getActionPointByNumber( const std::size_t actionPoint );
+
+            utils::Point getActionPointPosition( const std::size_t actionPoint );
+
             std::size_t addActionPoint( const std::size_t x, const std::size_t y, const std::size_t subIndex, const std::size_t radius = 0 );
+
+            unsigned char* getHeroGateByNumber( const std::size_t heroGate );
+
+            utils::Point getHeroGatePosition( const std::size_t heroGate );
 
             /// ===========================================================================
 
