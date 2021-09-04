@@ -628,6 +628,7 @@ namespace adiktedpp {
         void Script::clearData() {
             ///header.clear();      /// do not clear header information
             init.clear();
+            parties.clear();
             main.clear();
             action.clear();
             endConditions.clear();
@@ -884,6 +885,7 @@ namespace adiktedpp {
             switch( section ) {
             case ScriptSection::SS_HEADER:  return header;
             case ScriptSection::SS_INIT:    return init;
+            case ScriptSection::SS_PARTIES: return parties;
             case ScriptSection::SS_MAIN:    return main;
             case ScriptSection::SS_ACTION:  return action;
             case ScriptSection::SS_ENDCOND: return endConditions;
@@ -893,47 +895,29 @@ namespace adiktedpp {
             return other;
         }
 
+        static void addSection( std::vector< std::string >& merged, const BasicScript& section, const std::string& header ) {
+            if ( section.empty() ) {
+                return ;
+            }
+            if ( header.empty() == false ) {
+                merged.push_back( "" );
+                merged.push_back( "" );
+                merged.push_back( header );
+                merged.push_back( "" );
+            }
+            merged.insert( merged.end(), section.begin(), section.end() );
+        }
+
         std::vector< std::string > Script::build() {
             std::vector< std::string > merged;
 
-            if ( header.empty() == false ) {
-                merged.insert( merged.end(), header.begin(), header.end() );
-            }
-            if ( init.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- setup ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), init.begin(), init.end() );
-            }
-            if ( main.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- main ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), main.begin(), main.end() );
-            }
-            if ( action.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- action points ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), action.begin(), action.end() );
-            }
-            if ( other.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- other ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), other.begin(), other.end() );
-            }
-            if ( endConditions.empty() == false ) {
-                merged.push_back( "" );
-                merged.push_back( "" );
-                merged.push_back( "REM --- end conditions ---" );
-                merged.push_back( "" );
-                merged.insert( merged.end(), endConditions.begin(), endConditions.end() );
-            }
+            addSection( merged, header, "" );
+            addSection( merged, init, "REM --- setup ---" );
+            addSection( merged, parties, "REM --- parties setup ---" );
+            addSection( merged, main, "REM --- main ---" );
+            addSection( merged, action, "REM --- action points ---" );
+            addSection( merged, other, "REM --- other ---" );
+            addSection( merged, endConditions, "REM --- end conditions ---" );
 
             return merged;
         }

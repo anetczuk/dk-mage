@@ -207,22 +207,28 @@ namespace dkmage {
 
                 /// add lord of the land guards
                 const std::size_t heartAP = level.addActionPoint( heartCenter, 3 );
+                script.actionSection().addEmptyLine();
                 script.actionSection().REM( "dungeon heart guards" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
-                script.actionSection().IF_ACTION_POINT( heartAP, Player::P_P0 );
+
+                script::BasicScript& parties = script.partiesSection();
+                parties.addEmptyLine();
+                parties.REM( "- landlord team -" );
+                parties.CREATE_PARTY( "lord_of_the_land_1" );
+                parties.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_KNIGHT,  1, 10, 1000, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_SAMURAI, 3,  9,  800, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_FAIRY,   2,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.CREATE_PARTY( "lord_of_the_land_2" );
+                parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_GIANT,   1,  8,  600, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_FAIRY,   1,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
+
+                script::BasicScript& action = script.actionSection();
+                action.IF_ACTION_POINT( heartAP, Player::P_P0 );
                 {
-                    script::BasicScript& action = script.actionSection();
-                    action.CREATE_PARTY( "lord_of_the_land_1" );
-                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_KNIGHT,  1, 10, 1000, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_SAMURAI, 3,  9,  800, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_1", Creature::C_FAIRY,   2,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.CREATE_PARTY( "lord_of_the_land_2" );
-                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_GIANT,   1,  8,  600, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
-                    action.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_FAIRY,   1,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
                     action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_1", heartAP );
                     action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_2", heartAP, 4 );
 
@@ -233,7 +239,7 @@ namespace dkmage {
 //                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
 //                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
                 }
-                script.actionSection().ENDIF();
+                action.ENDIF();
 
                 /// entrance chamber
                 const Point entrancePoint = edgePoint( direction, 1 );
@@ -262,6 +268,7 @@ namespace dkmage {
 
                 const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 7, 10 );
 
+                script.actionSection().addEmptyLine();
                 script.actionSection().REM( "vestibule guards of dungeon heart" );
                 script.actionSection().REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
                 script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
@@ -442,24 +449,26 @@ namespace dkmage {
 
                     /// ambush party
                     const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
-                    script.actionSection().REM( "ambush party" );
-                    script.actionSection().REM( std::to_string( ambushAP ) + " -- ambush room center" );
-                    script.actionSection().IF_ACTION_POINT( ambushAP, Player::P_P0 );
-                    {
-                        const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
-                        const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
 
-                        script::BasicScript& action = script.actionSection();
-                        action.CREATE_PARTY( ambushName );
-                        action.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
-                        for ( std::size_t i=0; i<3; ++i ) {
-                            const Creature creature = rng_rand( ambushHeroes );
-                            action.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
-                            action.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
-                        }
-                        action.ADD_PARTY_TO_LEVEL( roomOwner, ambushName, ambushAP );
+                    script::BasicScript& parties = script.partiesSection();
+                    const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
+                    const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
+                    parties.addEmptyLine();
+                    parties.REM( "ambush party" );
+                    parties.CREATE_PARTY( ambushName );
+                    parties.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                    for ( std::size_t i=0; i<3; ++i ) {
+                        const Creature creature = rng_rand( ambushHeroes );
+                        parties.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                        parties.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
                     }
-                    script.actionSection().ENDIF();
+
+                    script::BasicScript& action = script.actionSection();
+                    action.addEmptyLine();
+                    action.REM( std::to_string( ambushAP ) + " -- ambush room center" );
+                    action.IF_ACTION_POINT( ambushAP, Player::P_P0 );
+                    action.ADD_PARTY_TO_LEVEL( roomOwner, ambushName, ambushAP );
+                    action.ENDIF();
 
                     break;
                 }
@@ -1187,6 +1196,7 @@ namespace dkmage {
                 level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 10 );           /// neutral
 
                 const std::size_t actionPoint = level.addActionPoint( roomCenter, 1 );
+                script.actionSection().addEmptyLine();
                 script.actionSection().REM( "graveyard guard" );
                 script.actionSection().REM( std::to_string( actionPoint ) + " -- graveyard center" );
                 script.actionSection().IF_ACTION_POINT( actionPoint, Player::P_P0 );

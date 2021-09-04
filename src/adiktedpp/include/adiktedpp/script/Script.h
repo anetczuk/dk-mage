@@ -247,6 +247,7 @@ namespace adiktedpp {
         enum class ScriptSection {
             SS_HEADER,
             SS_INIT,
+            SS_PARTIES,
             SS_MAIN,
             SS_ACTION,
             SS_ENDCOND,
@@ -261,6 +262,7 @@ namespace adiktedpp {
 
             BasicScript header;
             BasicScript init;
+            BasicScript parties;
             BasicScript main;
             BasicScript action;
             BasicScript other;
@@ -277,6 +279,7 @@ namespace adiktedpp {
                 switch( section ) {
                 case ScriptSection::SS_HEADER:      return header;
                 case ScriptSection::SS_INIT:        return init;
+                case ScriptSection::SS_PARTIES:     return parties;
                 case ScriptSection::SS_MAIN:        return main;
                 case ScriptSection::SS_ACTION:      return action;
                 case ScriptSection::SS_ENDCOND:     return endConditions;
@@ -288,19 +291,18 @@ namespace adiktedpp {
             BasicScript& headerSection() {
                 return header;
             }
-
             BasicScript& initSection() {
                 return init;
             }
-
+            BasicScript& partiesSection() {
+                return parties;
+            }
             BasicScript& mainSection() {
                 return main;
             }
-
             BasicScript& actionSection() {
                 return action;
             }
-
             BasicScript& otherSection() {
                 return other;
             }
