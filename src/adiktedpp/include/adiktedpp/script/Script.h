@@ -26,6 +26,52 @@ namespace adiktedpp {
         };
 
 
+        enum class IfOption {
+            IO_MONEY,
+            IO_GAME_TURN,
+            IO_HEART_HEALTH,
+            IO_TOTAL_DIGGERS,
+            IO_TOTAL_CREATURES,
+            IO_EVIL_CREATURES,
+            IO_GOOD_CREATURES,
+            IO_TOTAL_RESEARCH,
+            IO_TOTAL_DOORS,
+            IO_TOTAL_DOORS_MANUFACTURED,
+            IO_TOTAL_DOORS_USED,
+            IO_TOTAL_TRAPS_MANUFACTURED,
+            IO_TOTAL_TRAPS_USED,
+            IO_TOTAL_MANUFACTURED,
+            IO_TOTAL_AREA,
+            IO_TOTAL_CREATURES_LEFT,
+            IO_TOTAL_SALARY,
+            IO_CURRENT_SALARY,
+            IO_CREATURES_ANNOYED,
+            IO_TIMES_ANNOYED_CREATURE,
+            IO_TIMES_TORTURED_CREATURE,
+            IO_TIMES_LEVELUP_CREATURE,
+            IO_BATTLES_WON,
+            IO_BATTLES_LOST,
+            IO_ROOMS_DESTROYED,
+            IO_SPELLS_STOLEN,
+            IO_TIMES_BROKEN_INTO,
+            IO_DUNGEON_DESTROYED,
+            IO_CREATURES_SCAVENGED_LOST,
+            IO_CREATURES_SCAVENGED_GAINED,
+            IO_CREATURES_SACRIFICED,
+            IO_CREATURES_FROM_SACRIFICE,
+            IO_CREATURES_CONVERTED,
+            IO_ALL_DUNGEONS_DESTROYED,
+            IO_KEEPERS_DESTROYED,
+            IO_DOORS_DESTROYED,
+            IO_TOTAL_GOLD_MINED,
+            IO_GOLD_POTS_STOLEN,
+            IO_BREAK_IN,
+            IO_GHOSTS_RAISED,
+            IO_SKELETONS_RAISED,
+            IO_VAMPIRES_RAISED
+        };
+
+
         enum class PartyObjective {
             PO_ATTACK_DUNGEON_HEART,            /// Attack the nearest Dungeon Heart.
             PO_ATTACK_ENEMIES,                  /// Attack any enemies.
@@ -126,6 +172,10 @@ namespace adiktedpp {
 
             void CHANGE_SLAB_TYPE( const utils::Point position, const Slab slab );
 
+            void IF( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value );
+
+            void IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value );
+
             void IF_SLAB_TYPE( const utils::Point position, const Slab slab );
 
             void ENDIF();
@@ -142,6 +192,9 @@ namespace adiktedpp {
 
             /// 'copies' -- how many copies of party will be placed at given action point?
             void ADD_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t copies = 1 );
+
+            /// 'enemyNumber' in range [0..4]. 0 is for red player.
+            void ADD_TUNNELLER_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t enemyNumber, const std::size_t tunnelerExp, const std::size_t tunnelerGold );
 
         };
 
@@ -194,6 +247,7 @@ namespace adiktedpp {
         enum class ScriptSection {
             SS_HEADER,
             SS_INIT,
+            SS_MAIN,
             SS_ACTION,
             SS_ENDCOND,
             SS_REST
@@ -207,6 +261,7 @@ namespace adiktedpp {
 
             BasicScript header;
             BasicScript init;
+            BasicScript main;
             BasicScript action;
             BasicScript other;
             BasicScript endConditions;
@@ -222,6 +277,7 @@ namespace adiktedpp {
                 switch( section ) {
                 case ScriptSection::SS_HEADER:      return header;
                 case ScriptSection::SS_INIT:        return init;
+                case ScriptSection::SS_MAIN:        return main;
                 case ScriptSection::SS_ACTION:      return action;
                 case ScriptSection::SS_ENDCOND:     return endConditions;
                 case ScriptSection::SS_REST:        return other;
@@ -235,6 +291,10 @@ namespace adiktedpp {
 
             BasicScript& initSection() {
                 return init;
+            }
+
+            BasicScript& mainSection() {
+                return main;
             }
 
             BasicScript& actionSection() {

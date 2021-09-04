@@ -220,6 +220,59 @@ namespace adiktedpp {
         }
 
 
+        std::string script_keyword( const IfOption data ) {
+            switch( data ) {
+            case IfOption::IO_MONEY:                            return "MONEY";
+            case IfOption::IO_GAME_TURN:                        return "GAME_TURN";
+            case IfOption::IO_HEART_HEALTH:                     return "HEART_HEALTH";
+            case IfOption::IO_TOTAL_DIGGERS:                    return "TOTAL_DIGGERS";
+            case IfOption::IO_TOTAL_CREATURES:                  return "TOTAL_CREATURES";
+            case IfOption::IO_EVIL_CREATURES:                   return "EVIL_CREATURES";
+            case IfOption::IO_GOOD_CREATURES:                   return "GOOD_CREATURES";
+            case IfOption::IO_TOTAL_RESEARCH:                   return "TOTAL_RESEARCH";
+            case IfOption::IO_TOTAL_DOORS:                      return "TOTAL_DOORS";
+            case IfOption::IO_TOTAL_DOORS_MANUFACTURED:         return "TOTAL_DOORS_MANUFACTURED";
+            case IfOption::IO_TOTAL_DOORS_USED:                 return "TOTAL_DOORS_USED";
+            case IfOption::IO_TOTAL_TRAPS_MANUFACTURED:         return "TOTAL_TRAPS_MANUFACTURED";
+            case IfOption::IO_TOTAL_TRAPS_USED:                 return "TOTAL_TRAPS_USED";
+            case IfOption::IO_TOTAL_MANUFACTURED:               return "TOTAL_MANUFACTURED";
+            case IfOption::IO_TOTAL_AREA:                       return "TOTAL_AREA";
+            case IfOption::IO_TOTAL_CREATURES_LEFT:             return "TOTAL_CREATURES_LEFT";
+            case IfOption::IO_TOTAL_SALARY:                     return "TOTAL_SALARY";
+            case IfOption::IO_CURRENT_SALARY:                   return "CURRENT_SALARY";
+            case IfOption::IO_CREATURES_ANNOYED:                return "CREATURES_ANNOYED";
+            case IfOption::IO_TIMES_ANNOYED_CREATURE:           return "TIMES_ANNOYED_CREATURE";
+            case IfOption::IO_TIMES_TORTURED_CREATURE:          return "TIMES_TORTURED_CREATURE";
+            case IfOption::IO_TIMES_LEVELUP_CREATURE:           return "TIMES_LEVELUP_CREATURE";
+            case IfOption::IO_BATTLES_WON:                      return "BATTLES_WON";
+            case IfOption::IO_BATTLES_LOST:                     return "BATTLES_LOST";
+            case IfOption::IO_ROOMS_DESTROYED:                  return "ROOMS_DESTROYED";
+            case IfOption::IO_SPELLS_STOLEN:                    return "SPELLS_STOLEN";
+            case IfOption::IO_TIMES_BROKEN_INTO:                return "TIMES_BROKEN_INTO";
+            case IfOption::IO_DUNGEON_DESTROYED:                return "DUNGEON_DESTROYED";
+            case IfOption::IO_CREATURES_SCAVENGED_LOST:         return "CREATURES_SCAVENGED_LOST";
+            case IfOption::IO_CREATURES_SCAVENGED_GAINED:       return "CREATURES_SCAVENGED_GAINED";
+            case IfOption::IO_CREATURES_SACRIFICED:             return "CREATURES_SACRIFICED";
+            case IfOption::IO_CREATURES_FROM_SACRIFICE:         return "CREATURES_FROM_SACRIFICE";
+            case IfOption::IO_CREATURES_CONVERTED:              return "CREATURES_CONVERTED";
+            case IfOption::IO_ALL_DUNGEONS_DESTROYED:           return "ALL_DUNGEONS_DESTROYED";
+            case IfOption::IO_KEEPERS_DESTROYED:                return "KEEPERS_DESTROYED";
+            case IfOption::IO_DOORS_DESTROYED:                  return "DOORS_DESTROYED";
+            case IfOption::IO_TOTAL_GOLD_MINED:                 return "TOTAL_GOLD_MINED";
+            case IfOption::IO_GOLD_POTS_STOLEN:                 return "GOLD_POTS_STOLEN";
+            case IfOption::IO_BREAK_IN:                         return "BREAK_IN";
+            case IfOption::IO_GHOSTS_RAISED:                    return "GHOSTS_RAISED";
+            case IfOption::IO_SKELETONS_RAISED:                 return "SKELETONS_RAISED";
+            case IfOption::IO_VAMPIRES_RAISED:                  return "VAMPIRES_RAISED";
+            }
+
+            LOG_ERR() << "invalid argument: " << (int)data;
+            std::stringstream stream;
+            stream << FILE_NAME << ": invalid argument: " << (int)data;
+            throw std::invalid_argument( stream.str() );
+        }
+
+
         std::string script_keyword( const PartyObjective data ) {
             switch( data ) {
             case PartyObjective::PO_ATTACK_DUNGEON_HEART:   { return "ATTACK_DUNGEON_HEART"; }
@@ -374,6 +427,20 @@ namespace adiktedpp {
             addLine( line );
         }
 
+        void ScriptCommand::IF( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value ) {
+            std::stringstream stream;
+            stream << "IF( " << script_keyword( player ) << ", " << script_keyword( flag ) << " " << comparison << " " << value << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
+        void ScriptCommand::IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value ) {
+            std::stringstream stream;
+            stream << "IF( " << script_keyword( player ) << ", " << script_keyword( option ) << " " << comparison << " " << value << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
         void ScriptCommand::IF_SLAB_TYPE( const utils::Point position, const Slab slab ) {
             std::stringstream stream;
             stream << "IF_SLAB_TYPE( " << position.x << ", " << position.y << ", " << script_keyword( slab ) << " )";
@@ -427,6 +494,21 @@ namespace adiktedpp {
             stream << partyName << ", ";
             stream << actionPoint << ", ";
             stream << copies << " )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::ADD_TUNNELLER_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t enemyNumber,
+                                                          const std::size_t tunnelerExp, const std::size_t tunnelerGold )
+        {
+            std::stringstream stream;
+            stream << "ADD_TUNNELLER_PARTY_TO_LEVEL( ";
+            stream << script_keyword( player ) << ", ";
+            stream << partyName << ", ";
+            stream << actionPoint << ", ";
+            stream << "DUNGEON_HEART" << ", ";
+            stream << enemyNumber << ", ";
+            stream << tunnelerExp << ", ";
+            stream << tunnelerGold << " )";
             addLine( stream.str() );
         }
 
@@ -546,6 +628,7 @@ namespace adiktedpp {
         void Script::clearData() {
             ///header.clear();      /// do not clear header information
             init.clear();
+            main.clear();
             action.clear();
             endConditions.clear();
             other.clear();
@@ -801,6 +884,7 @@ namespace adiktedpp {
             switch( section ) {
             case ScriptSection::SS_HEADER:  return header;
             case ScriptSection::SS_INIT:    return init;
+            case ScriptSection::SS_MAIN:    return main;
             case ScriptSection::SS_ACTION:  return action;
             case ScriptSection::SS_ENDCOND: return endConditions;
             case ScriptSection::SS_REST:    return other;
@@ -821,6 +905,13 @@ namespace adiktedpp {
                 merged.push_back( "REM --- setup ---" );
                 merged.push_back( "" );
                 merged.insert( merged.end(), init.begin(), init.end() );
+            }
+            if ( main.empty() == false ) {
+                merged.push_back( "" );
+                merged.push_back( "" );
+                merged.push_back( "REM --- main ---" );
+                merged.push_back( "" );
+                merged.insert( merged.end(), main.begin(), main.end() );
             }
             if ( action.empty() == false ) {
                 merged.push_back( "" );
