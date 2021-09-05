@@ -7,6 +7,7 @@
 #define DKMAGE_INCLUDE_DKMAGE_DRAW_H_
 
 #include "adiktedpp/Level.h"
+#include "adiktedpp/script/Script.h"
 
 
 namespace dkmage {
@@ -44,6 +45,7 @@ namespace dkmage {
 
     /// 'creatureLevel' in range [1, 10] (10 is maximum level possible)
     void drawHeroTrap( adiktedpp::Level& level, const utils::Point& point, const std::size_t creatureLevel, const std::size_t creaturesNum = 5 );
+    void drawHeroTrap( adiktedpp::script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP, const std::size_t creatureLevel, const std::size_t creaturesNum = 5 );
 
 } /* namespace dkmage */
 

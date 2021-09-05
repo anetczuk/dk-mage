@@ -450,11 +450,11 @@ namespace dkmage {
                     /// ambush party
                     const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
 
-                    script::ScriptCommand& parties = script.partiesSection();
                     const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
                     const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
+                    script::ScriptCommand& parties = script.partiesSection();
                     parties.addEmptyLine();
-                    parties.REM( "- ambush party -" );
+                    parties.REM( "- corridor ambush party -" );
                     parties.CREATE_PARTY( ambushName );
                     parties.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
                     for ( std::size_t i=0; i<3; ++i ) {

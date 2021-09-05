@@ -142,6 +142,7 @@ namespace dkmage {
                                                 const std::size_t gemRegionWidth, const std::size_t gemRegionHeight )
     {
         Level& level = map.level;
+        script::Script& script = map.script;
 
         std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, defaultGoldNum );
         LOG() << "gold slabs number: " << goldSlabsNum;
@@ -241,7 +242,10 @@ namespace dkmage {
             level.setCave( caveRect, Slab::S_PATH );
             const std::size_t guardNum   = gemGuardsNum.randomized();
             const std::size_t guardLevel = gemGuardLevel.randomized();
-            drawHeroTrap( level, caveRect.center(), guardNum, guardLevel );
+//            drawHeroTrap( level, caveRect.center(), guardLevel, guardNum );
+
+            const std::size_t gemGuardAP = level.addActionPoint( caveRect.center(), 2 );
+            drawHeroTrap( script, Player::P_GOOD, gemGuardAP, guardLevel, guardNum );
 
             gemRect.grow( 2 );
             gemsField.remove( gemRect );

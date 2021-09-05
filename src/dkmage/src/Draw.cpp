@@ -211,4 +211,35 @@ namespace dkmage {
         level.setCreature( point, 5, creature2, num2, cLevel, Player::P_GOOD );
     }
 
+    void drawHeroTrap( script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP, const std::size_t creatureLevel, const std::size_t creaturesNum ) {
+        const int cLevel = std::min( std::max( creatureLevel, (std::size_t)2 ), (std::size_t)10 );
+
+        std::set< Creature > list = HeroCreatures();                /// yes, copy
+        list.erase( Creature::C_TUNNELLER );
+        list.erase( Creature::C_KNIGHT );
+        list.erase( Creature::C_AVATAR );
+        const std::size_t index1 = rng_randi( list.size() );
+        const Creature creature1 = get_item( list, index1 );
+        const std::size_t index2 = rng_randi( list.size() );
+        const Creature creature2 = get_item( list, index2 );
+
+        const std::size_t num1 = creaturesNum / 2 + creaturesNum % 2;
+        const std::size_t num2 = creaturesNum / 2;
+
+        const std::string ambushName =  "gem_ambush_" + std::to_string( ambushAP );
+        script::ScriptCommand& parties = script.partiesSection();
+        parties.addEmptyLine();
+        parties.REM( "- gem ambush party -" );
+        parties.CREATE_PARTY( ambushName );
+        parties.ADD_TO_PARTY( ambushName, creature1, num1, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+        parties.ADD_TO_PARTY( ambushName, creature2, num2, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+
+        script::ScriptCommand& action = script.actionSection();
+        action.addEmptyLine();
+        action.REM( std::to_string( ambushAP ) + " -- ambush room center" );
+        action.IF_ACTION_POINT( ambushAP, Player::P_P0 );
+        action.ADD_PARTY_TO_LEVEL( player, ambushName, ambushAP );
+        action.ENDIF();
+    }
+
 } /* namespace dkmage */
