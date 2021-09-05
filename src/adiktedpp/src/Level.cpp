@@ -60,6 +60,8 @@ namespace adiktedpp {
         switch( item ) {
         case Item::I_HEROGATE:      return raw::SubTypeItem::STI_HEROGATE;
 
+        case Item::I_GOLDL:         return raw::SubTypeItem::STI_GOLDL;
+        case Item::I_GOLD:          return raw::SubTypeItem::STI_GOLD;
         case Item::I_GOLDCHEST:     return raw::SubTypeItem::STI_GOLDCHEST;
         case Item::I_GOLD_HOARD1:   return raw::SubTypeItem::STI_GLDHOARD1;
         case Item::I_GOLD_HOARD2:   return raw::SubTypeItem::STI_GLDHOARD2;

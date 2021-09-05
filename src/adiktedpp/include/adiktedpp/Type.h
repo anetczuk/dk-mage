@@ -44,12 +44,16 @@ namespace adiktedpp {
 
 
     /**
-     * It higher level incarnation of SubTypeItem enum.
+     * It's higher level incarnation of SubTypeItem enum.
      */
     enum class Item {
         I_HEROGATE,
 
-        I_GOLDCHEST,
+        I_GOLDL,                    /// gold (200)
+        I_GOLD,                     /// gold bag (250)
+        I_GOLDCHEST,                /// gold bag (500)
+
+        /// treasure items
         I_GOLD_HOARD1,              /// small bag (800)
         I_GOLD_HOARD2,              /// medium bag (1200)
         I_GOLD_HOARD3,              /// big bag (1600)
@@ -165,9 +169,10 @@ namespace adiktedpp {
      *
      */
     enum class Spell {
-        S_POWER_HAND,
-        S_POWER_SLAP,
+        S_POWER_HAND,                   /// picking objects/creatures ability
+        S_POWER_SLAP,                   /// slapping ability
         S_POWER_POSSESS,
+
         S_POWER_IMP,
         S_POWER_OBEY,
         S_POWER_SIGHT,
@@ -245,7 +250,7 @@ namespace adiktedpp {
         P_P2,
         P_P3,
         P_GOOD,                        /// hero (white)
-        P_UNSET,                       /// neutral (multicolor)
+        P_UNSET,                       /// no owner (path) or neutral/multicolor (room)
         P_ALL                          /// used in scripts only
     };
 

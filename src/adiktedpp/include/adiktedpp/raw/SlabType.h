@@ -31,6 +31,7 @@ namespace adiktedpp {
             ST_CLAIMED      = 0x0b,             /// claimed passage
             ST_LAVA         = 0x0c,
             ST_WATER        = 0x0d,
+
             ST_PORTAL       = 0x0e,
             ST_TREASURE     = 0x10,             /// can store up to 2250 gold
             ST_LIBRARY      = 0x12,
@@ -45,6 +46,7 @@ namespace adiktedpp {
             ST_HATCHERY     = 0x24,
             ST_LAIR         = 0x26,
             ST_BARRACKS     = 0x28,
+
             ST_DOORWOOD1    = 0x2a,
             ST_DOORWOOD2    = 0x2b,
             ST_DOORBRACE1   = 0x2c,
@@ -53,6 +55,7 @@ namespace adiktedpp {
             ST_DOORIRON2    = 0x2f,
             ST_DOORMAGIC1   = 0x30,
             ST_DOORMAGIC2   = 0x31,
+
             ST_BRIDGE       = 0x33,
             ST_GEMS         = 0x34,
             ST_GUARDPOST    = 0x35
