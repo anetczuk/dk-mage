@@ -90,11 +90,11 @@ namespace dkmage {
         const std::size_t ifConds      = script.countIfConditions();
         const std::size_t partyDefs    = script.countPartyDefinitions();
 
-        const std::size_t tunnellersLimit = parameters.getSizeT( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT, 16 );
-        const std::size_t partiesLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTIES_LIMIT, 48 );
-        const std::size_t valuesLimit     = parameters.getSizeT( ParameterName::PN_SCRIPT_VALUES_LIMIT, 64 );
-        const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, 48 );
-        const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, 16 );
+        const std::size_t tunnellersLimit = parameters.getSizeT( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT, 256 );
+        const std::size_t partiesLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTIES_LIMIT, 256 );
+        const std::size_t valuesLimit     = parameters.getSizeT( ParameterName::PN_SCRIPT_VALUES_LIMIT, 256 );
+        const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, 256 );
+        const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, 256 );
 
         LOG() << "used script resources: "
               << tunnellers           << "/" << tunnellersLimit << " tunneller triggers"
