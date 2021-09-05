@@ -159,6 +159,8 @@ namespace adiktedpp {
                 return addLine( "rem " + comment );
             }
 
+            void LEVEL_VERSION( const int version = 1 );
+
             /// flag is in range [0..255]
             /// need to be reused explicit
             void SET_FLAG( const adiktedpp::Player player, const Flag flag, const int value=0 );
@@ -213,34 +215,7 @@ namespace adiktedpp {
         };
 
 
-        /**
-         *
-         */
-        class BasicScript: public ScriptCommand {
-        public:
-
-            void setFXLevel();
-
-            void addAvailable( const adiktedpp::Player player, const Room item );
-
-            void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
-
-            void addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
-
-            void addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
-
-            void addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
-
-            void addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
-
-            /// set creature pool
-            void setEvilCreaturesPool( const std::size_t number );
-
-            void setHeroCreaturesPool( const std::size_t number );
-
-            void setCreaturePool( const Creature creature, const std::size_t number );
-
-        };
+        using BasicScript = ScriptCommand;
 
 
         /// ================================================================================
@@ -338,7 +313,8 @@ namespace adiktedpp {
 
             void setFXLevel() {
                 isFX = true;
-                init.setFXLevel();
+                init.REM( "- set script compatibility with Keeper FX -" );
+                init.LEVEL_VERSION( 1 );
             }
 
             void concealWholeMap( const Player player );
