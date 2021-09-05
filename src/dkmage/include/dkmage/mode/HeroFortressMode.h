@@ -16,10 +16,10 @@ namespace dkmage {
          *
          */
         class HeroFortressMode: public BaseLevelGenerator {
-        public:
-
-
         protected:
+
+            utils::Point evilHeartPosition;
+
 
             bool generate() override;
 

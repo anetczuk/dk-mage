@@ -275,7 +275,20 @@ TEST_CASE("RawLevel_setSlab_rect", "[classic]") {
     level.generateTestBmp();
 }
 
-TEST_CASE("RawLevel_setSlab_owner", "[classic]") {
+TEST_CASE("RawLevel_setSlab_owner_path", "[classic]") {
+    RawLevelMock level;
+
+    level.startNewMap();
+
+    level.setSlab( 30, 30, raw::SlabType::ST_PATH );
+
+    const raw::PlayerType gotOwner = level.getOwner( 30, 30 );
+    CHECK( gotOwner == raw::PlayerType::PT_UNSET );
+
+//    level.generateTestBmp();
+}
+
+TEST_CASE("RawLevel_setSlab_owner_room", "[classic]") {
     RawLevelMock level;
 
     level.startNewMap();
@@ -284,13 +297,14 @@ TEST_CASE("RawLevel_setSlab_owner", "[classic]") {
     const raw::PlayerType newOwner = raw::PlayerType::PT_0;
     level.setSlab( 10, 10, 20, 20, newSlab, newOwner );
 
+    /// check training
     const raw::SlabType gotSlab = level.getSlab( 15, 15 );
     CHECK( gotSlab == newSlab );
 
     const raw::PlayerType gotOwner = level.getOwner( 15, 15 );
     CHECK( gotOwner == newOwner );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 }
 
 TEST_CASE("RawLevel_getActionPointPosition", "[classic]") {

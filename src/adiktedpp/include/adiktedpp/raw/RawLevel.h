@@ -159,7 +159,7 @@ namespace adiktedpp {
 
             void setSlabOutline( const utils::Rect& rect, const SlabType type );
 
-            PlayerType getOwner( const std::size_t x, const std::size_t y );
+            PlayerType getOwner( const std::size_t x, const std::size_t y ) const;
 
             void setOwner( const std::size_t x, const std::size_t y, const PlayerType owner );
 

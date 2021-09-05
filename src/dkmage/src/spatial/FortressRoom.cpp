@@ -454,7 +454,7 @@ namespace dkmage {
                     const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
                     const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
                     parties.addEmptyLine();
-                    parties.REM( "ambush party" );
+                    parties.REM( "- ambush party -" );
                     parties.CREATE_PARTY( ambushName );
                     parties.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
                     for ( std::size_t i=0; i<3; ++i ) {

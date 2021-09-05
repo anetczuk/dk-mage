@@ -966,6 +966,8 @@ namespace dkmage {
 
                     /// add bridge keepers
                     if ( i == 1 ) {
+                        /// add hero gate
+                        level.setItem( bridgePoint, 4, Item::I_HEROGATE );
                         level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 8, Player::P_GOOD );

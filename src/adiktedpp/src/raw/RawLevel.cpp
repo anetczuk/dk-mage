@@ -459,7 +459,7 @@ namespace adiktedpp {
             setSlab( rect.max.x, rect.min.y, rect.max.x, rect.max.y, type );
         }
 
-        PlayerType RawLevel::getOwner( const std::size_t x, const std::size_t y ) {
+        PlayerType RawLevel::getOwner( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";

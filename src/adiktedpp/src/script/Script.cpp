@@ -350,15 +350,27 @@ namespace adiktedpp {
         /// =========================================================================
 
 
+        void ScriptCommand::SET_FLAG( const adiktedpp::Player player, const Flag flag, const int value ) {
+            std::stringstream stream;
+            stream << "SET_FLAG( " << script_keyword( player ) << ", " << script_keyword( flag ) << ", " << value << " )";
+            addLine( stream.str() );
+        }
+
         void ScriptCommand::ADD_TO_FLAG( const adiktedpp::Player player, const Flag flag, const int value ) {
             std::stringstream stream;
             stream << "ADD_TO_FLAG( " << script_keyword( player ) << ", " << script_keyword( flag ) << ", " << value << " )";
             addLine( stream.str() );
         }
 
+        void ScriptCommand::QUICK_INFORMATION( const std::string& comment ) {
+            QUICK_INFORMATION( infoIndex, comment );
+            ++infoIndex;
+        }
+
         void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
             std::stringstream stream;
-            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", " << " )";
+            /// inactive zoom
+            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", ALL_PLAYERS )";
             addLine( stream.str() );
         }
 
@@ -448,6 +460,13 @@ namespace adiktedpp {
             addLine( line );
         }
 
+        void ScriptCommand::IF_SLAB_OWNER( const utils::Point position, const adiktedpp::Player player ) {
+            std::stringstream stream;
+            stream << "IF_SLAB_OWNER( " << position.x << ", " << position.y << ", " << script_keyword( player ) << " )";
+            const std::string& line = stream.str();
+            addLine( line );
+        }
+
         void ScriptCommand::ENDIF() {
             addLine( "ENDIF" );
         }
@@ -505,7 +524,8 @@ namespace adiktedpp {
             stream << script_keyword( player ) << ", ";
             stream << partyName << ", ";
             stream << actionPoint << ", ";
-            stream << "DUNGEON_HEART" << ", ";
+            stream << "DUNGEON" << ", ";
+//            stream << "DUNGEON_HEART" << ", ";
             stream << enemyNumber << ", ";
             stream << tunnelerExp << ", ";
             stream << tunnelerGold << " )";

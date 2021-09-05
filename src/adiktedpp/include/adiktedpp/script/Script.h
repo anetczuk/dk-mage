@@ -148,14 +148,26 @@ namespace adiktedpp {
          *
          */
         class ScriptCommand: public ScriptContainer {
+            std::size_t infoIndex;
+
         public:
+
+            ScriptCommand(): ScriptContainer(), infoIndex(1) {
+            }
 
             void REM( const std::string& comment ) {
                 return addLine( "REM " + comment );
             }
 
             /// flag is in range [0..255]
+            /// need to be reused explicit
+            void SET_FLAG( const adiktedpp::Player player, const Flag flag, const int value=0 );
+
+            /// flag is in range [0..255]
+            /// need to be reused explicit
             void ADD_TO_FLAG( const adiktedpp::Player player, const Flag flag, const int value=1 );
+
+            void QUICK_INFORMATION( const std::string& comment );
 
             void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
 
@@ -177,6 +189,8 @@ namespace adiktedpp {
             void IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value );
 
             void IF_SLAB_TYPE( const utils::Point position, const Slab slab );
+
+            void IF_SLAB_OWNER( const utils::Point position, const adiktedpp::Player player );
 
             void ENDIF();
 

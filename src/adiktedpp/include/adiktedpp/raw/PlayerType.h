@@ -22,7 +22,7 @@ namespace adiktedpp {
             PT_2                = 0x02,
             PT_3                = 0x03,
             PT_GOOD             = 0x04,     /// hero (white)
-            PT_UNSET            = 0x05,     /// neutral (multicolor)
+            PT_UNSET            = 0x05,     /// no owner (path) or neutral/multicolor (room)
             PT_ALL              = 0x06      /// used in scripts only
         };
 

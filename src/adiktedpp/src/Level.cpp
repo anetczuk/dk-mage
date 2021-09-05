@@ -244,6 +244,12 @@ namespace adiktedpp {
         return rawLevel.isFortified( point );
     }
 
+    bool Level::isOwner( const utils::Point& point, const Player owner ) const {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        const raw::PlayerType currOwner = rawLevel.getOwner( point.x, point.y );
+        return ( playerType == currOwner );
+    }
+
     void Level::setSlab( const std::size_t x, const std::size_t y, const Slab type ) {
         const raw::SlabType rawType = convertToSlab( type );
         rawLevel.setSlab( x, y, rawType );

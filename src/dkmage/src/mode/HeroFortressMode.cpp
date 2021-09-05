@@ -129,7 +129,7 @@ namespace dkmage {
             dungeon.draw( level );
 
             const spatial::EvilRoom* heart = dungeon.room( 0 );
-            const Point firstCenter = heart->position().center();
+            evilHeartPosition = heart->position().center();
 
             {
                 /// add neutral portal
@@ -157,7 +157,7 @@ namespace dkmage {
             }
 
             const adiktedpp::Player player = dungeon.owner();
-            level.setCreatureAuto( firstCenter.x, firstCenter.y-2, Creature::C_IMP, 8, 1, player );
+            level.setCreatureAuto( evilHeartPosition.x, evilHeartPosition.y-2, Creature::C_IMP, 8, 1, player );
 
 //                    /// fill treasure with gold
 //                    spatial::FortressRoom* treasure = dungeon.findRoomFirst( SlabType::ST_TREASURE );
@@ -167,9 +167,54 @@ namespace dkmage {
 //                    }
         }
 
+        struct GateDistance {
+            std::size_t id;
+            std::size_t distance;
+            Point position;
+
+            static bool sortbysec(const GateDistance& a, const GateDistance& b) {
+                return (a.distance < b.distance);
+            }
+        };
+
+        using GateDistanceData = std::vector< GateDistance >;
+
+
+        static GateDistanceData closestHeroGates( Level& level, const utils::Point referencePoint ) {
+            GateDistanceData distances;
+
+            std::size_t gateId = 1;
+            while (true) {
+                const utils::Point position = level.getHeroGatePosition( gateId );
+                if ( position.x < 0 || position.y < 0 ) {
+                    if ( gateId == 1 ) {
+                        /// no hero gates
+                        return GateDistanceData();
+                    }
+                    break;
+                }
+
+                const Point vector = position - referencePoint;
+                const std::size_t distance = vector.length();
+                distances.push_back( { gateId, distance, position } );
+
+                ++gateId;
+            }
+
+            std::sort( distances.begin(), distances.end(), GateDistance::sortbysec );
+            return distances;
+        }
+
         void HeroFortressMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
 
+            script::BasicScript& initSection = script.initSection();
+            initSection.addEmptyLine();
+            initSection.REM( "- flags meaning -" );
+            initSection.REM( "     FLAG6 -- scout_1 team" );
+            initSection.REM( "     FLAG7 -- modify stun chance after transformation prisoners to creatures (skeletons, ghosts or conversion)" );
+
+            initSection.addEmptyLine( 2 );
             script.setFXLevel();
 
             script.addLineInit( "" );
@@ -179,10 +224,10 @@ namespace dkmage {
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 initialGold += 200000;
             }
-            script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
+            initSection.START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
 
             const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 25 );
-            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
+            initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
 
             script.addLineInit( "" );
             script.setEvilCreaturesPool( 10 );
@@ -233,10 +278,7 @@ namespace dkmage {
 //            script.addLineInit( "" );
 //            script.concealWholeMap( Player::P_P0 );
 
-            script.headerSection().addEmptyLine( 2 );
-            script.headerSection().REM( "- flags meaning -" );
-            script.headerSection().REM( "     FLAG7 -- modify stun chance after transformation prisoners to creatures (skeletons, ghosts or conversion)" );
-
+            /// anti snow-balling
             script.addLineInit( "" );
             script.setImpRotting( false );
             script.addLineInit( "" );
@@ -249,6 +291,48 @@ namespace dkmage {
             script.setSacrificeLimits();
             script.addLineInit( "" );
             script.setGraveyardLimits();
+
+            /// main part
+            script::BasicScript& mainSection = script.mainSection();
+            const GateDistanceData closestHeroGate = closestHeroGates( map.level, evilHeartPosition );
+            const std::size_t gatesSize = closestHeroGate.size();
+            if ( gatesSize > 0 ) {
+                script::BasicScript& parties = script.partiesSection();
+                parties.addEmptyLine();
+                parties.REM( "- first recon team -" );
+                parties.CREATE_PARTY( "scout_1" );
+                parties.ADD_TO_PARTY( "scout_1", Creature::C_ARCHER, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
+                parties.ADD_TO_PARTY( "scout_1", Creature::C_THIEF, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
+
+                mainSection.IF( Player::P_P0, script::Flag::F_FLAG_6, "<", 255 );
+                mainSection.IF( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
+                {
+                    for ( std::size_t i=0; i<gatesSize; ++i ) {
+                        const GateDistance& item = closestHeroGate[ i ];
+                        mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, item.id );
+                        mainSection.IF_SLAB_OWNER( item.position, Player::P_P0 );
+                        mainSection.REM( "hero gate " + std::to_string( item.id ) + " captured" );
+                    }
+                    {
+                        /// deepest if-clause
+                        mainSection.REM( "no more hero gates" );
+                        mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, 255 );
+                    }
+                    for ( std::size_t i=gatesSize-1; i<gatesSize; --i ) {
+                        mainSection.ENDIF();
+                        const GateDistance& item = closestHeroGate[ i ];
+                        mainSection.IF( Player::P_P0, script::Flag::F_FLAG_6, "==", item.id );
+                        {
+                            mainSection.REM( "hero gate " + std::to_string( item.id ) + " not captured" );
+                            mainSection.ADD_TUNNELLER_PARTY_TO_LEVEL( Player::P_GOOD, "scout_1", (int)-item.id, 0, 5, 1000 );
+                            mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, 255 );
+                        }
+                        mainSection.ENDIF();
+                    }
+                }
+                mainSection.ENDIF();
+                mainSection.ENDIF();
+            }
 
             /// end game conditions
             script.setWinConditionKillGood();

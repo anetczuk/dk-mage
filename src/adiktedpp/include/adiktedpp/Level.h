@@ -123,6 +123,8 @@ namespace adiktedpp {
 
         bool isFortified( const utils::Point& point ) const;
 
+        bool isOwner( const utils::Point& point, const Player owner ) const;
+
         void setSlab( const std::size_t x, const std::size_t y, const Slab type );
 
         void setSlab( const utils::Point& point, const Slab type );
