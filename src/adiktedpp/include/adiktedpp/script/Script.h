@@ -156,7 +156,7 @@ namespace adiktedpp {
             }
 
             void REM( const std::string& comment ) {
-                return addLine( "REM " + comment );
+                return addLine( "rem " + comment );
             }
 
             /// flag is in range [0..255]
@@ -239,18 +239,6 @@ namespace adiktedpp {
             void setHeroCreaturesPool( const std::size_t number );
 
             void setCreaturePool( const Creature creature, const std::size_t number );
-
-            /// ================================================================================
-
-            /// disable or enable imps corpses be brought to graveyard
-            /// not supported by adikted
-            void setImpRotting( const bool rotting = true );
-
-            void setWinConditionStandard( const Player player );
-
-            void setWinConditionKillGood();
-
-            void setLoseConditionStandard( const Player player );
 
         };
 
@@ -342,11 +330,6 @@ namespace adiktedpp {
 
             void addLineAction( const std::string& line ) {
                 action.addLine( line );
-            }
-
-            void addREM( const ScriptSection section, const std::string& comment ) {
-                BasicScript& script = getSection( section );
-                script.addLine( "REM " + comment );
             }
 
             bool isFXLevel() const {

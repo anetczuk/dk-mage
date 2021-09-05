@@ -217,6 +217,7 @@ namespace dkmage {
 
                 script::BasicScript& otherSec = map.script.otherSection();
                 const Point gemSide = gemCenter + corridorDir;
+                otherSec.addEmptyLine();
                 otherSec.REM( "- reveal hidden gem -" );
                 otherSec.IF_SLAB_TYPE( gemSide, Slab::S_PATH );
                 otherSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );

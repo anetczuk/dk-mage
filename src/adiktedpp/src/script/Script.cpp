@@ -608,35 +608,6 @@ namespace adiktedpp {
             addLine( line );
         }
 
-        void BasicScript::setImpRotting( const bool rotting ) {
-            if ( rotting ) {
-                addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
-            } else {
-                addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 0 )" );
-            }
-        }
-
-        void BasicScript::setWinConditionStandard( const Player player ) {
-            addLine( std::string() + "IF( " + script_keyword( player ) + ", ALL_DUNGEONS_DESTROYED == 1 )" );
-            addLine( std::string() + "    WIN_GAME" );
-            addLine( std::string() + "ENDIF" );
-        }
-
-        void BasicScript::setWinConditionKillGood() {
-            REM( "require killing all heroes" );
-            addLine( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )" );
-            addLine( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )" );
-            addLine( "        WIN_GAME" );
-            addLine( "    ENDIF" );
-            addLine( "ENDIF" );
-        }
-
-        void BasicScript::setLoseConditionStandard( const Player player ) {
-            addLine( std::string() + "IF( " + script_keyword( player ) + ", DUNGEON_DESTROYED == 1 )" );
-            addLine( std::string() + "    LOSE_GAME" );
-            addLine( std::string() + "ENDIF" );
-        }
-
 
         /// =========================================================================
 
@@ -786,13 +757,13 @@ namespace adiktedpp {
             if ( rotting ) {
                 init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 0 )" );
             } else {
-                init.addLine( "REM - prevent imp bodies be taken to graveyard -" );
+                init.REM( "- prevent imp bodies be taken to graveyard -" );
                 init.addLine( "SET_CREATURE_PROPERTY( IMP, NO_CORPSE_ROTTING, 1 )" );
             }
         }
 
         void Script::setPrisonConvertLimits() {
-            init.addLineIndent( "REM - prevent prison convert snow-balling -" );
+            init.addLineIndent( "rem - prevent prison convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, SKELETON > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( PrisonSkeletonChance, 80 )" );
             init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
@@ -812,7 +783,7 @@ namespace adiktedpp {
         }
 
         void Script::setTortureConvertLimits() {
-            init.addLineIndent( "REM - prevent torture convert snow-balling -" );
+            init.addLineIndent( "rem - prevent torture convert snow-balling -" );
             init.addLineIndent( "IF( PLAYER0, CREATURES_CONVERTED > 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( TortureDeathChance, 33 )" );
             init.ADD_TO_FLAG( Player::P_P0, Flag::F_FLAG_7, 1 );
@@ -828,7 +799,7 @@ namespace adiktedpp {
         }
 
         void Script::setStunChance() {
-            init.addLineIndent( "REM - modify stun chance -" );
+            init.addLineIndent( "rem - modify stun chance -" );
             init.addLineIndent( "IF( PLAYER0,FLAG7 >= 1 )" );
             init.addLineIndent( "    SET_GAME_RULE( StunEvilEnemyChance, 80 )" );
             init.addLineIndent( "    SET_GAME_RULE( StunGoodEnemyChance, 80 )" );
@@ -846,7 +817,7 @@ namespace adiktedpp {
         }
 
         void Script::setSacrificeLimits() {
-            init.addLineIndent( "REM - set sacrifice limits -" );
+            init.addLineIndent( "rem - set sacrifice limits -" );
             init.addLineIndent( "IF( PLAYER0, SACRIFICED[IMP] >= 9 )" );
             init.addLineIndent( "    REMOVE_SACRIFICE_RECIPE( IMP )" );
             init.addLineIndent( "ENDIF" );
@@ -865,7 +836,7 @@ namespace adiktedpp {
         }
 
         void Script::setGraveyardLimits() {
-            init.addLineIndent( "REM - set graveyard limits -" );
+            init.addLineIndent( "rem - set graveyard limits -" );
             init.addLineIndent( "IF( PLAYER0, VAMPIRE >= 2 )" );
             init.addLineIndent( "    SET_GAME_RULE( BodiesForVampire, 15 )" );
             init.addLineIndent( "ENDIF" );
@@ -886,7 +857,7 @@ namespace adiktedpp {
 
         void Script::setWinConditionKillGood() {
             const std::size_t lvl = endConditions.indentLevel();
-            endConditions.REM( "- require killing all heroes -" );
+            endConditions.addLineIndent( "rem - require killing all heroes -", lvl );
             endConditions.addLineIndent( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )", lvl );
             endConditions.addLineIndent( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )", lvl );
             endConditions.addLineIndent( "        WIN_GAME", lvl );
@@ -923,7 +894,6 @@ namespace adiktedpp {
                 merged.push_back( "" );
                 merged.push_back( "" );
                 merged.push_back( header );
-                merged.push_back( "" );
             }
             merged.insert( merged.end(), section.begin(), section.end() );
         }
@@ -932,11 +902,11 @@ namespace adiktedpp {
             std::vector< std::string > merged;
 
             addSection( merged, header, "" );
-            addSection( merged, init, "REM --- setup ---" );
-            addSection( merged, parties, "REM --- parties setup ---" );
-            addSection( merged, main, "REM --- main ---" );
-            addSection( merged, action, "REM --- action points ---" );
-            addSection( merged, other, "REM --- other ---" );
+            addSection( merged, init,          "REM --- setup ---" );
+            addSection( merged, parties,       "REM --- parties setup ---" );
+            addSection( merged, main,          "REM --- main ---" );
+            addSection( merged, action,        "REM --- action points ---" );
+            addSection( merged, other,         "REM --- other ---" );
             addSection( merged, endConditions, "REM --- end conditions ---" );
 
             return merged;

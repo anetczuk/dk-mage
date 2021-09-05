@@ -304,6 +304,7 @@ namespace dkmage {
                 parties.ADD_TO_PARTY( "scout_1", Creature::C_ARCHER, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
                 parties.ADD_TO_PARTY( "scout_1", Creature::C_THIEF, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
 
+                mainSection.addEmptyLine();
                 mainSection.IF( Player::P_P0, script::Flag::F_FLAG_6, "<", 255 );
                 mainSection.IF( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
                 {
@@ -335,7 +336,9 @@ namespace dkmage {
             }
 
             /// end game conditions
+            script[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
             script.setWinConditionKillGood();
+            script[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
             script.setLoseConditionStandard( Player::P_P0 );
         }
 
