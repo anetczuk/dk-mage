@@ -208,7 +208,7 @@ namespace dkmage {
         void HeroFortressMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
 
-            script::BasicScript& initSection = script.initSection();
+            script::ScriptCommand& initSection = script.initSection();
             initSection.addEmptyLine();
             initSection.REM( "- flags meaning -" );
             initSection.REM( "     FLAG6 -- scout_1 team" );
@@ -293,11 +293,11 @@ namespace dkmage {
             script.setGraveyardLimits();
 
             /// main part
-            script::BasicScript& mainSection = script.mainSection();
+            script::ScriptCommand& mainSection = script.mainSection();
             const GateDistanceData closestHeroGate = closestHeroGates( map.level, evilHeartPosition );
             const std::size_t gatesSize = closestHeroGate.size();
             if ( gatesSize > 0 ) {
-                script::BasicScript& parties = script.partiesSection();
+                script::ScriptCommand& parties = script.partiesSection();
                 parties.addEmptyLine();
                 parties.REM( "- first recon team -" );
                 parties.CREATE_PARTY( "scout_1" );

@@ -802,7 +802,7 @@ namespace adiktedpp {
             endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
 
-        BasicScript& Script::getSection( const ScriptSection section ) {
+        ScriptCommand& Script::getSection( const ScriptSection section ) {
             switch( section ) {
             case ScriptSection::SS_HEADER:  return header;
             case ScriptSection::SS_INIT:    return init;
@@ -816,7 +816,7 @@ namespace adiktedpp {
             return other;
         }
 
-        static void addSection( std::vector< std::string >& merged, const BasicScript& section, const std::string& header ) {
+        static void addSection( std::vector< std::string >& merged, const ScriptCommand& section, const std::string& header ) {
             if ( section.empty() ) {
                 return ;
             }

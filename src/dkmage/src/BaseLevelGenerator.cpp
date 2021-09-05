@@ -208,14 +208,14 @@ namespace dkmage {
                 /// first add traps then actual gems
 
 //                const std::size_t gemAP = level.addActionPoint( gemCenter, 1 );
-//                script::BasicScript& actionSec = map.script.actionSection();
+//                script::ScriptCommand& actionSec = map.script.actionSection();
 //                actionSec.REM( "gem reveal" );
 //                actionSec.REM( std::to_string( gemAP ) + " -- gem position" );
 //                actionSec.IF_ACTION_POINT( gemAP, Player::P_P0 );
 //                actionSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
 //                actionSec.ENDIF();
 
-                script::BasicScript& otherSec = map.script.otherSection();
+                script::ScriptCommand& otherSec = map.script.otherSection();
                 const Point gemSide = gemCenter + corridorDir;
                 otherSec.addEmptyLine();
                 otherSec.REM( "- reveal hidden gem -" );

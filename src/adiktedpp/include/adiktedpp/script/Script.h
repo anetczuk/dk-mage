@@ -215,8 +215,6 @@ namespace adiktedpp {
         };
 
 
-        using BasicScript = ScriptCommand;
-
 
         /// ================================================================================
 
@@ -237,13 +235,13 @@ namespace adiktedpp {
          */
         class Script {
 
-            BasicScript header;
-            BasicScript init;
-            BasicScript parties;
-            BasicScript main;
-            BasicScript action;
-            BasicScript other;
-            BasicScript endConditions;
+            ScriptCommand header;
+            ScriptCommand init;
+            ScriptCommand parties;
+            ScriptCommand main;
+            ScriptCommand action;
+            ScriptCommand other;
+            ScriptCommand endConditions;
 
             bool isFX;
 
@@ -252,7 +250,7 @@ namespace adiktedpp {
 
             Script();
 
-            BasicScript& operator[]( const ScriptSection section ) {
+            ScriptCommand& operator[]( const ScriptSection section ) {
                 switch( section ) {
                 case ScriptSection::SS_HEADER:      return header;
                 case ScriptSection::SS_INIT:        return init;
@@ -265,22 +263,22 @@ namespace adiktedpp {
                 return other;
             }
 
-            BasicScript& headerSection() {
+            ScriptCommand& headerSection() {
                 return header;
             }
-            BasicScript& initSection() {
+            ScriptCommand& initSection() {
                 return init;
             }
-            BasicScript& partiesSection() {
+            ScriptCommand& partiesSection() {
                 return parties;
             }
-            BasicScript& mainSection() {
+            ScriptCommand& mainSection() {
                 return main;
             }
-            BasicScript& actionSection() {
+            ScriptCommand& actionSection() {
                 return action;
             }
-            BasicScript& otherSection() {
+            ScriptCommand& otherSection() {
                 return other;
             }
 
@@ -295,7 +293,7 @@ namespace adiktedpp {
             }
 
             void addLine( const ScriptSection section, const std::string& line ) {
-                BasicScript& script = getSection( section );
+                ScriptCommand& script = getSection( section );
                 script.addLine( line );
             }
 
@@ -411,7 +409,7 @@ namespace adiktedpp {
 
         private:
 
-            BasicScript& getSection( const ScriptSection section );
+            ScriptCommand& getSection( const ScriptSection section );
 
         };
 

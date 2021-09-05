@@ -211,7 +211,7 @@ namespace dkmage {
                 script.actionSection().REM( "dungeon heart guards" );
                 script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
 
-                script::BasicScript& parties = script.partiesSection();
+                script::ScriptCommand& parties = script.partiesSection();
                 parties.addEmptyLine();
                 parties.REM( "- landlord team -" );
                 parties.CREATE_PARTY( "lord_of_the_land_1" );
@@ -226,7 +226,7 @@ namespace dkmage {
                 parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
                 parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_FAIRY,   1,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
 
-                script::BasicScript& action = script.actionSection();
+                script::ScriptCommand& action = script.actionSection();
                 action.IF_ACTION_POINT( heartAP, Player::P_P0 );
                 {
                     action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_1", heartAP );
@@ -450,7 +450,7 @@ namespace dkmage {
                     /// ambush party
                     const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
 
-                    script::BasicScript& parties = script.partiesSection();
+                    script::ScriptCommand& parties = script.partiesSection();
                     const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
                     const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
                     parties.addEmptyLine();
@@ -463,7 +463,7 @@ namespace dkmage {
                         parties.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
                     }
 
-                    script::BasicScript& action = script.actionSection();
+                    script::ScriptCommand& action = script.actionSection();
                     action.addEmptyLine();
                     action.REM( std::to_string( ambushAP ) + " -- ambush room center" );
                     action.IF_ACTION_POINT( ambushAP, Player::P_P0 );
