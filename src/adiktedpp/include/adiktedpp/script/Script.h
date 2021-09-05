@@ -132,14 +132,21 @@ namespace adiktedpp {
 
             void addLineIndent( const std::string& line, const std::size_t forceIndent = 0 );
 
-//            void addLine( const std::string& line, const std::size_t position );
+            std::size_t countTunnellerTriggers() const;
+            std::size_t countPartyTriggers() const;
+            std::size_t countScriptValues() const;
+            std::size_t countIfConditions() const;
+            std::size_t countPartyDefinitions() const;
+
+
+            static std::size_t countScriptValues( const std::vector< std::string >& lines );
 
 
         protected:
 
-            void countIf( const std::string& line );
+            void updateLevelIf( const std::string& line );
 
-            void countEndIf( const std::string& line );
+            void updateLevelEndIf( const std::string& line );
 
         };
 
@@ -229,6 +236,8 @@ namespace adiktedpp {
             SS_REST
         };
 
+        const std::set< ScriptSection >& AllScriptSections();
+
 
         /**
          *
@@ -251,16 +260,7 @@ namespace adiktedpp {
             Script();
 
             ScriptCommand& operator[]( const ScriptSection section ) {
-                switch( section ) {
-                case ScriptSection::SS_HEADER:      return header;
-                case ScriptSection::SS_INIT:        return init;
-                case ScriptSection::SS_PARTIES:     return parties;
-                case ScriptSection::SS_MAIN:        return main;
-                case ScriptSection::SS_ACTION:      return action;
-                case ScriptSection::SS_ENDCOND:     return endConditions;
-                case ScriptSection::SS_REST:        return other;
-                }
-                return other;
+                return getSection( section );
             }
 
             ScriptCommand& headerSection() {
@@ -284,7 +284,23 @@ namespace adiktedpp {
 
             void clearData();
 
-            std::vector< std::string > build();
+            /// limit: 16
+            std::size_t countTunnellerTriggers() const;
+
+            /// limit: 48
+            std::size_t countPartyTriggers() const;
+
+            /// limit of script commands (almost every) inside IF body allowed by game
+            /// limit: 64
+            std::size_t countScriptValues() const;
+
+            /// limit: 48
+            std::size_t countIfConditions() const;
+
+            /// limit: 16
+            std::size_t countPartyDefinitions() const;
+
+            std::vector< std::string > build() const;
 
             void storeParameters( const std::string& mapType, const std::string& seed );
 
@@ -408,6 +424,8 @@ namespace adiktedpp {
 
 
         private:
+
+            const ScriptCommand& getSection( const ScriptSection section ) const;
 
             ScriptCommand& getSection( const ScriptSection section );
 

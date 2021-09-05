@@ -56,17 +56,69 @@ namespace dkmage {
         if ( extendedScript ) {
             LOG_WARN() << "detected FX script -- txt verification disabled";
         }
+
         if ( level.verifyMap( false, extendedScript ) == false ) {
+            /// verification performed by adikted (for example if there is Dungeon Heart)
             LOG_WARN() << "generated level is invalid";
             return false;
         }
-        if ( check() == false ) {
-            LOG_WARN() << "generated map is invalid";
+
+        if ( checkScriptLimits() == false ) {
+            /// custom checks depending on map mode
+            LOG_WARN() << "generated map is invalid -- script limits";
             return false;
         }
+
+        if ( check() == false ) {
+            /// custom checks depending on map mode
+            LOG_WARN() << "generated map is invalid -- custom checks";
+            return false;
+        }
+
         LOG() << "map generated successfully";
         LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
         LOG() << "access points number: " << level.getRawLevel().countAccessPoints();
+        return true;
+    }
+
+    bool BaseLevelGenerator::checkScriptLimits() const {
+        const script::Script& script = map.script;
+
+        const std::size_t tunnellers   = script.countTunnellerTriggers();
+        const std::size_t parties      = script.countPartyTriggers();
+        const std::size_t scriptValues = script.countScriptValues();
+        const std::size_t ifConds      = script.countIfConditions();
+        const std::size_t partyDefs    = script.countPartyDefinitions();
+
+        const std::size_t tunnellersLimit = parameters.getSizeT( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT, 16 );
+        const std::size_t partiesLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTIES_LIMIT, 48 );
+        const std::size_t valuesLimit     = parameters.getSizeT( ParameterName::PN_SCRIPT_VALUES_LIMIT, 64 );
+        const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, 48 );
+        const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, 16 );
+
+        LOG() << "used script resources: "
+              << tunnellers           << "/" << tunnellersLimit << " tunneller triggers"
+              << ", " << parties      << "/" << partiesLimit    << " party triggers"
+              << ", " << scriptValues << "/" << valuesLimit     << " script values"
+              << ", " << ifConds      << "/" << ifCondsLimit    << " IF conditions"
+              << ", " << partyDefs    << "/" << partyDefsLimit  << " party definitions";
+
+        if ( tunnellers > tunnellersLimit ) {
+            return false;
+        }
+        if ( parties > partiesLimit ) {
+            return false;
+        }
+        if ( scriptValues > valuesLimit ) {
+            return false;
+        }
+        if ( ifConds > ifCondsLimit ) {
+            return false;
+        }
+        if ( partyDefs > partyDefsLimit ) {
+            return false;
+        }
+
         return true;
     }
 

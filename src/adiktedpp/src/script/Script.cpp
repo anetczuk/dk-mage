@@ -10,6 +10,9 @@
 
 #include "utils/Log.h"
 
+#include <algorithm>
+
+
 extern "C" {
     #include "libadikted/lev_files.h"
     #include "libadikted/lev_script.h"
@@ -19,6 +22,26 @@ extern "C" {
 
 namespace adiktedpp {
     namespace script {
+
+        static const std::string WHITESPACE = " \n\r\t\f\v";
+
+        static std::string ltrim( const std::string &s ) {
+            std::size_t start = s.find_first_not_of(WHITESPACE);
+            return (start == std::string::npos) ? "" : s.substr(start);
+        }
+
+        std::string rtrim( const std::string &s ) {
+            std::size_t end = s.find_last_not_of(WHITESPACE);
+            return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+        }
+
+        std::string trim( const std::string &s ) {
+            return rtrim(ltrim(s));
+        }
+
+
+        /// =================================================================================
+
 
         std::string script_keyword( const Player data ) {
             switch( data ) {
@@ -303,47 +326,176 @@ namespace adiktedpp {
         }
 
         void ScriptContainer::addLine( const std::string& line ) {
-            countEndIf( line );
+            updateLevelEndIf( line );
 
             const std::string indent( level * 4, ' ' );
             lines.push_back( indent + line );
 
-            countIf( line );
+            updateLevelIf( line );
         }
 
         void ScriptContainer::addLineIndent( const std::string& line, const std::size_t forceIndent ) {
-            countEndIf( line );
+            updateLevelEndIf( line );
 
             const std::string indent( forceIndent * 4, ' ' );
             lines.push_back( indent + line );
 
-            countIf( line );
+            updateLevelIf( line );
         }
 
-//        void ScriptContainer::addLine( const std::string& line, const std::size_t position ) {
-//            if ( position >= lines.size() ) {
-//                lines.push_back( line );
-//                return ;
-//            }
-//            auto pos = lines.begin();
-//            std::advance( pos, position );
-//            lines.insert( pos, line );
-//        }
-
-        void ScriptContainer::countIf( const std::string& line ) {
+        static bool isIFCondition( const std::string& line ) {
             if ( line.find( "IF(" ) != std::string::npos ) {
-                ++level;
+                return true;
             } else if ( line.find( "IF_" ) != std::string::npos ) {
+                return true;
+            }
+            return false;
+        }
+
+        static bool isENDIF( const std::string& line ) {
+            if ( line.find( "ENDIF" ) != std::string::npos ) {
+                return true;
+            }
+            return false;
+        }
+
+        static bool isTunnellerTrigger( const std::string& line ) {
+            if ( line.find( "ADD_TUNNELLER_PARTY_TO_LEVEL(" ) != std::string::npos ) {
+                return true;
+            }
+            return false;
+        }
+
+        static bool isPartyTrigger( const std::string& line ) {
+            if ( line.find( "ADD_PARTY_TO_LEVEL(" ) != std::string::npos ) {
+                return true;
+            } else if ( line.find( "ADD_CREATURE_TO_LEVEL(" ) != std::string::npos ) {
+                return true;
+            }
+            return false;
+        }
+
+        static bool isPartyDef( const std::string& line ) {
+            if ( line.find( "CREATE_PARTY(" ) != std::string::npos ) {
+                return true;
+            }
+            return false;
+        }
+
+        std::size_t ScriptContainer::countTunnellerTriggers() const {
+            std::size_t counter = 0;
+            for ( const std::string& line: lines ) {
+                if ( isTunnellerTrigger( line ) ) {
+                    ++counter;
+                }
+            }
+            return counter;
+        }
+
+        std::size_t ScriptContainer::countPartyTriggers() const {
+            std::size_t counter = 0;
+            for ( const std::string& line: lines ) {
+                if ( isPartyTrigger( line ) ) {
+                    ++counter;
+                }
+            }
+            return counter;
+        }
+
+        std::size_t ScriptContainer::countScriptValues() const {
+            return countScriptValues( lines );
+        }
+
+        std::size_t ScriptContainer::countIfConditions() const {
+            std::size_t counter = 0;
+            for ( const std::string& line: lines ) {
+                if ( isIFCondition(line) ) {
+                    ++counter;
+                }
+            }
+            return counter;
+        }
+
+        std::size_t ScriptContainer::countPartyDefinitions() const {
+            std::size_t counter = 0;
+            for ( const std::string& line: lines ) {
+                if ( isPartyDef(line) ) {
+                    ++counter;
+                }
+            }
+            return counter;
+        }
+
+        void ScriptContainer::updateLevelIf( const std::string& line ) {
+            if ( isIFCondition(line) ) {
                 ++level;
             }
         }
 
-        void ScriptContainer::countEndIf( const std::string& line ) {
-            if ( line.find( "ENDIF" ) != std::string::npos ) {
+        void ScriptContainer::updateLevelEndIf( const std::string& line ) {
+            if ( isENDIF(line) ) {
                 if (level > 0) {
                     --level;
                 }
             }
+        }
+
+        std::size_t ScriptContainer::countScriptValues( const std::vector< std::string >& lines ) {
+            std::size_t nestLevel = 0;
+            std::size_t counter   = 0;
+            for ( const std::string& item: lines ) {
+                std::string line = trim( item );
+                if ( line.empty() ) {
+                    /// only white spaces
+                    continue;
+                }
+                const bool whiteSpacesOnly = std::all_of( line.begin(), line.end(), ::isspace );
+                if ( whiteSpacesOnly ) {
+                    continue ;
+                }
+
+                std::transform( line.begin(), line.end(), line.begin(), ::toupper );
+
+                if ( line.find( "REM " ) != std::string::npos ) {
+                    /// comment
+                    continue;
+                }
+
+                if ( isIFCondition(line) ) {
+                    ++nestLevel;
+                    continue ;
+                }
+                if ( isENDIF(line) ) {
+                    if (nestLevel > 0) {
+                        --nestLevel;
+                    }
+                    continue ;
+                }
+
+                if ( nestLevel < 1 ) {
+                    /// ignore commands outside IF
+                    continue ;
+                }
+
+                if ( isTunnellerTrigger(line) ) {
+                    continue;
+                }
+                if ( isPartyTrigger(line) ) {
+                    continue;
+                }
+                if ( isPartyDef(line) ) {
+                    continue;
+                }
+
+                if ( line.find( "WIN_GAME" ) != std::string::npos ) {
+                    continue;
+                } else if ( line.find( "LOSE_GAME" ) != std::string::npos ) {
+                    continue;
+                }
+
+                ++counter;
+            }
+            return counter;
         }
 
 
@@ -542,6 +694,24 @@ namespace adiktedpp {
         /// =========================================================================
 
 
+        const std::set< ScriptSection >& AllScriptSections() {
+            static std::set< ScriptSection > data;
+            if ( data.empty() ) {
+                data.insert( ScriptSection::SS_HEADER );
+                data.insert( ScriptSection::SS_INIT );
+                data.insert( ScriptSection::SS_PARTIES );
+                data.insert( ScriptSection::SS_MAIN );
+                data.insert( ScriptSection::SS_ACTION );
+                data.insert( ScriptSection::SS_ENDCOND );
+                data.insert( ScriptSection::SS_REST );
+            }
+            return data;
+        }
+
+
+        /// =========================================================================
+
+
         Script::Script(): isFX(false) {
             header.REM( "*** script generated by dk-mage ver. " + VERSION_FULL_STRING + " ***" );
         }
@@ -554,6 +724,51 @@ namespace adiktedpp {
             action.clear();
             endConditions.clear();
             other.clear();
+        }
+
+        std::size_t Script::countTunnellerTriggers() const {
+            std::size_t counter = 0;
+            const std::set< ScriptSection >& sectionList = AllScriptSections();
+            for ( const auto item: sectionList ) {
+                const ScriptCommand& currSection = getSection( item );
+                counter += currSection.countTunnellerTriggers();
+            }
+            return counter;
+        }
+
+        std::size_t Script::countPartyTriggers() const {
+            std::size_t counter = 0;
+            const std::set< ScriptSection >& sectionList = AllScriptSections();
+            for ( const auto item: sectionList ) {
+                const ScriptCommand& currSection = getSection( item );
+                counter += currSection.countPartyTriggers();
+            }
+            return counter;
+        }
+
+        std::size_t Script::countScriptValues() const {
+            const std::vector< std::string > scriptLines = build();
+            return ScriptContainer::countScriptValues( scriptLines );
+        }
+
+        std::size_t Script::countIfConditions() const {
+            std::size_t counter = 0;
+            const std::set< ScriptSection >& sectionList = AllScriptSections();
+            for ( const auto item: sectionList ) {
+                const ScriptCommand& currSection = getSection( item );
+                counter += currSection.countIfConditions();
+            }
+            return counter;
+        }
+
+        std::size_t Script::countPartyDefinitions() const {
+            std::size_t counter = 0;
+            const std::set< ScriptSection >& sectionList = AllScriptSections();
+            for ( const auto item: sectionList ) {
+                const ScriptCommand& currSection = getSection( item );
+                counter += currSection.countPartyDefinitions();
+            }
+            return counter;
         }
 
         void Script::storeParameters( const std::string& mapType, const std::string& seed ) {
@@ -802,6 +1017,20 @@ namespace adiktedpp {
             endConditions.addLineIndent( std::string() + "ENDIF", lvl );
         }
 
+        const ScriptCommand& Script::getSection( const ScriptSection section ) const {
+            switch( section ) {
+            case ScriptSection::SS_HEADER:  return header;
+            case ScriptSection::SS_INIT:    return init;
+            case ScriptSection::SS_PARTIES: return parties;
+            case ScriptSection::SS_MAIN:    return main;
+            case ScriptSection::SS_ACTION:  return action;
+            case ScriptSection::SS_ENDCOND: return endConditions;
+            case ScriptSection::SS_REST:    return other;
+            }
+            LOG() << "unhandled value: " << (int)section;
+            return other;
+        }
+
         ScriptCommand& Script::getSection( const ScriptSection section ) {
             switch( section ) {
             case ScriptSection::SS_HEADER:  return header;
@@ -828,7 +1057,7 @@ namespace adiktedpp {
             merged.insert( merged.end(), section.begin(), section.end() );
         }
 
-        std::vector< std::string > Script::build() {
+        std::vector< std::string > Script::build() const {
             std::vector< std::string > merged;
 
             addSection( merged, header, "" );

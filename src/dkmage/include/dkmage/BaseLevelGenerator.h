@@ -83,6 +83,8 @@ namespace dkmage {
         /// return 'true' if generation succeeded, otherwise 'false'
         bool generateAttempt();
 
+        bool checkScriptLimits() const;
+
         /// return 'true' if generation succeeded, otherwise 'false'
         virtual bool generate() = 0;
 

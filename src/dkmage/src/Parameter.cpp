@@ -31,6 +31,12 @@ namespace dkmage {
             data.insert( ParameterName::PN_SEED );
             data.insert( ParameterName::PN_TYPE );
 
+            data.insert( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT );
+            data.insert( ParameterName::PN_SCRIPT_PARTIES_LIMIT );
+            data.insert( ParameterName::PN_SCRIPT_VALUES_LIMIT );
+            data.insert( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT );
+            data.insert( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT );
+
             data.insert( ParameterName::PN_GOLD_SLABS_NUMBER );
             data.insert( ParameterName::PN_GEM_SLABS_NUMBER );
             data.insert( ParameterName::PN_GEM_FACES_NUMBER );
@@ -89,6 +95,12 @@ namespace dkmage {
 
         case ParameterName::PN_SEED:                return "seed";
         case ParameterName::PN_TYPE:                return "type";
+
+        case ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT:   return "script_tunnellers_limit";
+        case ParameterName::PN_SCRIPT_PARTIES_LIMIT:      return "script_parties_limit";
+        case ParameterName::PN_SCRIPT_VALUES_LIMIT:       return "script_values_limit";
+        case ParameterName::PN_SCRIPT_IF_CONDS_LIMIT:     return "script_if_conds_limit";
+        case ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT:   return "script_party_defs_limit";
 
         case ParameterName::PN_GOLD_SLABS_NUMBER:   return "gold_slabs_number";
         case ParameterName::PN_GEM_SLABS_NUMBER:    return "gem_slabs_number";

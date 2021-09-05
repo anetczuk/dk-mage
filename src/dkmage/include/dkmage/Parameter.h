@@ -32,6 +32,12 @@ namespace dkmage {
         PN_SEED,
         PN_TYPE,
 
+        PN_SCRIPT_TUNNELLERS_LIMIT,
+        PN_SCRIPT_PARTIES_LIMIT,
+        PN_SCRIPT_VALUES_LIMIT,
+        PN_SCRIPT_IF_CONDS_LIMIT,
+        PN_SCRIPT_PARTY_DEFS_LIMIT,
+
         PN_GOLD_SLABS_NUMBER,
         PN_GEM_SLABS_NUMBER,
         PN_GEM_FACES_NUMBER,
@@ -300,6 +306,9 @@ namespace dkmage {
 
         Optional< std::size_t > getSizeT( const ParameterName parameter ) const;
 
+        /// handles list of values and ranges
+        std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
+
         Optional< SizeTSet > getSizeTSet( const std::string& parameter ) const;
 
         Optional< SizeTSet > getSizeTSet( const ParameterName parameter ) const {
@@ -317,9 +326,6 @@ namespace dkmage {
             defaultSet.add( defaultMinValue, defaultMaxValue );
             return defaultSet;
         }
-
-        /// handles list of values and ranges
-        std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 
         std::string print() const;
 

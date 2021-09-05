@@ -60,6 +60,27 @@ levels_path =
 #type =
 
 
+## Limit of tunnellers trigger commands (ADD_TUNNELLER_PARTY_TO_LEVEL) allowed by game.
+## Type: VALUE of unsigned integer
+script_tunnellers_limit = 16
+
+## Limit of parties and creature trigger commands (ADD_*_TO_LEVEL) allowed by game.
+## Type: VALUE of unsigned integer
+script_parties_limit    = 48
+
+## Limit of script commands (almost every) inside IF body allowed by game.
+## Type: VALUE of unsigned integer
+script_values_limit     = 64
+
+## Limit of IF conditions (IF, IF_*) allowed by game.
+## Type: VALUE of unsigned integer
+script_if_conds_limit   = 48
+
+## Limit of party definitions conditions (CREATE_PARTY) allowed by game.
+## Type: VALUE of unsigned integer
+script_party_defs_limit = 16
+
+
 ## Number of gold slabs initailly available for human player.
 ## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example: 60:80,90,100
