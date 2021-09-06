@@ -955,18 +955,18 @@ namespace dkmage {
                 std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
                 neighbourDirections.erase( -bridgeDirection );
 
-//                adiktedpp::script::Script& script = gameMap.script;
-//                script::ScriptCommand& parties = script.partiesSection();
-//                parties.addEmptyLine();
-//                parties.REM( "- bridge turret parties -" );
-//
-//                const Point bridgeCenter = bridgePoints[ bridgeSize / 2 ];
-//                const std::size_t bridgeAP  = level.addActionPoint( bridgeCenter, bridgeSize / 2 + 3 );
-//                script::ScriptCommand& action = script.actionSection();
-//                action.addEmptyLine();
-//                action.REM( "- bridge turrets -" );
-//                action.REM( std::to_string( bridgeAP ) + " -- bridge center" );
-//                action.IF_ACTION_POINT( bridgeAP, Player::P_P0 );
+                adiktedpp::script::Script& script = gameMap.script;
+                script::ScriptCommand& parties = script.partiesSection();
+                parties.addEmptyLine();
+                parties.REM( "- bridge turret parties -" );
+
+                const Point bridgeCenter = bridgePoints[ bridgeSize / 2 ];
+                const std::size_t bridgeAP  = level.addActionPoint( bridgeCenter, bridgeSize / 2 + 3 );
+                script::ScriptCommand& action = script.actionSection();
+                action.addEmptyLine();
+                action.REM( "- bridge turrets -" );
+                action.REM( std::to_string( bridgeAP ) + " -- bridge center" );
+                action.IF_ACTION_POINT( bridgeAP, Player::P_P0 );
 
                 std::size_t i = 0;
                 for ( const Point bridgePoint: bridgePoints ) {
@@ -986,31 +986,32 @@ namespace dkmage {
                         level.setItem( bridgePoint, 4, Item::I_HEROGATE );
                         level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
-                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, 8, Player::P_GOOD );
+                        const std::size_t knightLevel = std::min( (std::size_t)10, guardLevel.maxValue() + 1 );
+                        level.setCreature( bridgePoint, 1, Creature::C_KNIGHT, 1, knightLevel, Player::P_GOOD );
                     }
 
                     /// add turrets
                     if ( i % 2 == 1 ) {
                         bool added = false;
-                        const int turretLevel = guardLevel.randomized();
+                        const std::size_t turretLevel = guardLevel.randomized();
                         const Point rightGuardPosition = bridgePoint + bridgeOrtho * 2;
                         if ( level.isSlab( rightGuardPosition, Slab::S_LAVA ) ) {
     //                            const Rect guardPost( rightGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( rightGuardPosition, Slab::S_PATH );
 
-//                            const std::size_t turrentAP = level.addActionPoint( rightGuardPosition );
-//                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
-//                            parties.CREATE_PARTY( turretPartyName );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//
-//                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+                            const std::size_t turrentAP = level.addActionPoint( rightGuardPosition );
+                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
+                            parties.CREATE_PARTY( turretPartyName );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
 
-                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
-                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
+                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+
+//                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
+//                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
+//                            level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
                             added = true;
                         }
                         const Point leftGuardPosition = bridgePoint - bridgeOrtho * 2;
@@ -1019,18 +1020,18 @@ namespace dkmage {
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( leftGuardPosition, Slab::S_PATH );
 
-//                            const std::size_t turrentAP = level.addActionPoint( leftGuardPosition );
-//                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
-//                            parties.CREATE_PARTY( turretPartyName );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
-//
-//                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+                            const std::size_t turrentAP = level.addActionPoint( leftGuardPosition );
+                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
+                            parties.CREATE_PARTY( turretPartyName );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
 
-                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
-                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
+                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+
+//                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
+//                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
+//                            level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
                             added = true;
                         }
                         if ( added == false ) {
@@ -1039,7 +1040,7 @@ namespace dkmage {
                     }
                 }
 
-//                action.ENDIF();
+                action.ENDIF();
             }
 
             return true;

@@ -161,6 +161,10 @@ namespace dkmage {
             return lowerBound + index;
         }
 
+        TNumber maxValue() const {
+            return upperBound;
+        }
+
         bool contains( const TNumber value ) const {
             if ( value < lowerBound )
                 return false;
@@ -210,6 +214,8 @@ namespace dkmage {
 
         NumberSet<TNumber> filter( const TNumber lower, const TNumber upper ) const;
 
+        TNumber maxValue() const;
+
         TNumber randomized() const;
 
         Optional<TNumber> getRandom() const;
@@ -226,6 +232,9 @@ namespace dkmage {
 
     template<>
     std::size_t NumberSet<std::size_t>::valueByFactor( const double factor ) const;
+
+    template<>
+    std::size_t NumberSet<std::size_t>::maxValue() const;
 
     template<>
     std::size_t NumberSet<std::size_t>::randomized() const;

@@ -217,6 +217,24 @@ namespace dkmage {
     }
 
     template<>
+    std::size_t NumberSet<std::size_t>::maxValue() const {
+        const std::size_t setSize = size();
+        if ( setSize < 1 ) {
+            return std::size_t();
+        }
+        const NumberRange<std::size_t>& item = data[0];
+        std::size_t ret = item.item(0);
+        if ( setSize == 1 ) {
+            return ret;
+        }
+        for ( const NumberRange<std::size_t>& item: data ) {
+            const std::size_t itemMax = item.maxValue();
+            ret = std::max( ret, itemMax );
+        }
+        return ret;
+    }
+
+    template<>
     std::size_t NumberSet<std::size_t>::randomized() const {
         const std::size_t setSize = size();
         if ( setSize < 1 ) {
