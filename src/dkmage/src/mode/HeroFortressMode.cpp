@@ -212,7 +212,7 @@ namespace dkmage {
             initSection.addEmptyLine();
             initSection.REM( "- flags meaning -" );
             initSection.REM( "     FLAG6 -- scout_1 team" );
-            initSection.REM( "     FLAG7 -- modify stun chance after transformation prisoners to creatures (skeletons, ghosts or conversion)" );
+            initSection.REM( "     FLAG7 -- modify stun chance after transformation of prisoners to creatures (skeletons, ghosts or conversion)" );
 
             initSection.addEmptyLine( 2 );
             script.setFXLevel();

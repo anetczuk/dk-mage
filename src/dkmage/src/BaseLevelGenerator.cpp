@@ -63,6 +63,16 @@ namespace dkmage {
             return false;
         }
 
+        LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
+
+        const std::size_t actionPointNum = level.getRawLevel().countActionPoints();
+        const std::size_t actionPointsLimit = parameters.getSizeT( ParameterName::PN_ACTION_POINTS_LIMIT, 31 );
+        LOG() << "action points number: " << actionPointNum << "/" << actionPointsLimit;
+        if ( actionPointNum > actionPointsLimit ) {
+            LOG_WARN() << "generated map is invalid -- too much action points";
+            return false;
+        }
+
         if ( checkScriptLimits() == false ) {
             /// custom checks depending on map mode
             LOG_WARN() << "generated map is invalid -- script limits";
@@ -76,8 +86,6 @@ namespace dkmage {
         }
 
         LOG() << "map generated successfully";
-        LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
-        LOG() << "access points number: " << level.getRawLevel().countAccessPoints();
         return true;
     }
 
@@ -268,13 +276,13 @@ namespace dkmage {
 //                actionSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
 //                actionSec.ENDIF();
 
-                script::ScriptCommand& otherSec = map.script.otherSection();
+                script::ScriptCommand& mainSec = map.script.mainSection();
                 const Point gemSide = gemCenter + corridorDir;
-                otherSec.addEmptyLine();
-                otherSec.REM( "- reveal hidden gem -" );
-                otherSec.IF_SLAB_TYPE( gemSide, Slab::S_PATH );
-                otherSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
-                otherSec.ENDIF();
+                mainSec.addEmptyLine();
+                mainSec.REM( "- reveal hidden gem -" );
+                mainSec.IF_SLAB_TYPE( gemSide, Slab::S_PATH );
+                mainSec.CHANGE_SLAB_TYPE( gemCenter, Slab::S_GEMS );
+                mainSec.ENDIF();
 
                 std::size_t faces = slabFaces;
                 if ( i <= gemFacesNum % gemSlabsNum ) {

@@ -10,6 +10,7 @@
 #include "dkmage/Draw.h"
 
 #include "adiktedpp/GameMap.h"
+#include "adiktedpp/script/Creator.h"
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Log.h"
@@ -268,30 +269,30 @@ namespace dkmage {
 
                 const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 7, 10 );
 
-                script.actionSection().addEmptyLine();
-                script.actionSection().REM( "vestibule guards of dungeon heart" );
-                script.actionSection().REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
-                script.actionSection().REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
-                script.actionSection().REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
-                script.actionSection().IF_ACTION_POINT( chamberEntranceAP, Player::P_P0 );
+                action.addEmptyLine();
+                action.REM( "vestibule guards of dungeon heart" );
+                action.REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
+                action.REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
+                action.REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
+                action.IF_ACTION_POINT( chamberEntranceAP, Player::P_P0 );
                 for ( std::size_t i=0; i<vestibuleLength; ++i) {
                     const Point offset = heartEntrancePoint + corridorDirr * (i + gapSize);
                     level.setSlab( offset - wallDir, Slab::S_LAVA );
                     level.setSlab( offset + wallDir, Slab::S_LAVA );
 
                     if ( i % 2 == 0 ) {
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
 //                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
 //                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
                     } else {
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-                        script.actionSection().ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
 //                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
 //                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
                     }
                 }
-                script.actionSection().ENDIF();
+                action.ENDIF();
             }
 
         };
@@ -448,28 +449,24 @@ namespace dkmage {
                     }
 
                     /// ambush party
-                    const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
-
                     const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
-                    const std::string ambushName =  "ambush_" + std::to_string( ambushAP );
-                    script::ScriptCommand& parties = script.partiesSection();
-                    parties.addEmptyLine();
-                    parties.REM( "- corridor ambush party -" );
-                    parties.CREATE_PARTY( ambushName );
-                    parties.ADD_TO_PARTY( ambushName, Creature::C_SAMURAI, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+
+                    const std::size_t ambushAP = level.addActionPoint( roomCenter, radius );
+                    const std::string ambushName =  "room_ambush_" + std::to_string( ambushAP );
+
+                    script::AmbushCreator ambush( script );
+                    ambush.partyId = ambushName;
+                    ambush.description = "- room ambush party -";
+                    ambush.actionPoint = ambushAP;
+                    ambush.partyCopies = 2;
+                    ambush.owner = roomOwner;
+                    ambush.prepare();
+                    ambush.addToParty( Creature::C_SAMURAI, 1,  guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION );
                     for ( std::size_t i=0; i<3; ++i ) {
                         const Creature creature = rng_rand( ambushHeroes );
-                        parties.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
-                        parties.ADD_TO_PARTY( ambushName, creature, 1, guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+                        ambush.addToParty( creature, 1,  guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION );
+                        ambush.addToParty( creature, 1,  guardLevel.randomized(), 500, script::PartyObjective::PO_DEFEND_LOCATION );
                     }
-
-                    script::ScriptCommand& action = script.actionSection();
-                    action.addEmptyLine();
-                    action.REM( std::to_string( ambushAP ) + " -- ambush room center" );
-                    action.IF_ACTION_POINT( ambushAP, Player::P_P0 );
-                    action.ADD_PARTY_TO_LEVEL( roomOwner, ambushName, ambushAP );
-                    action.ENDIF();
-
                     break;
                 }
                 default: {
@@ -1217,6 +1214,8 @@ namespace dkmage {
 
             Axis orientation = Axis::A_HORIZONTAL;
 
+            std::size_t roomLength;
+
 
             using FortressRoom::FortressRoom;
 
@@ -1241,7 +1240,7 @@ namespace dkmage {
                     }
                 }
 
-                const std::size_t roomLength     = rng_randi( 3 ) * 2 + 5;
+                roomLength = rng_randi( 3 ) * 2 + 5;
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
@@ -1274,6 +1273,7 @@ namespace dkmage {
             void draw( FortressData& data ) const override {
                 adiktedpp::GameMap& gameMap = data.gameMap;
                 adiktedpp::Level& level = gameMap.level;
+
                 const Rect& roomRect = bbox();
                 level.setRoom( roomRect, Room::R_CLAIMED, roomOwner, true );
 
@@ -1298,6 +1298,20 @@ namespace dkmage {
                 }
                 }
 
+//                adiktedpp::script::Script& script = gameMap.script;
+//                const std::size_t roomAPRadius = roomLength / 2 + 1;
+//                const std::size_t lavaPostAP  = level.addActionPoint( roomRect.center(), roomAPRadius );
+//                script::ScriptCommand& actions = script.actionSection();
+//                actions.addEmptyLine();
+//                actions.REM( "- lava post guards -" );
+//                actions.REM( std::to_string( lavaPostAP ) + " -- lava post room center" );
+//                actions.REM( "other APs -- lava post positions" );
+//                actions.IF_ACTION_POINT( lavaPostAP, Player::P_P0 );
+//
+//                script::ScriptCommand& parties = script.partiesSection();
+//                parties.addEmptyLine();
+//                parties.REM( "- lava post guards -" );
+
                 const Point ortho = along.swapped();
                 const Point orthoDir = ortho.dir();
                 for ( int coord=0; coord<length; ++coord ) {
@@ -1316,13 +1330,30 @@ namespace dkmage {
                     level.setDoor( center + orthoDir * 2, Door::D_WOOD );
 
                     static std::set< Creature > CreatureSet = { Creature::C_ARCHER, Creature::C_MONK, Creature::C_WIZARD };
-                    const Creature cOwner1 = rng_rand( CreatureSet );
                     const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
+                    const Creature creature1 = rng_rand( CreatureSet );
+                    const Creature creature2 = rng_rand( CreatureSet );
 
-                    level.setCreature( center - orthoDir * 3, 1, cOwner1, 1, guardLevel.randomized(), roomOwner );
-                    const Creature cOwner2 = rng_rand( CreatureSet );
-                    level.setCreature( center + orthoDir * 3, 1, cOwner2, 1, guardLevel.randomized(), roomOwner );
+//                    const std::size_t leftAP  = level.addActionPoint( center - orthoDir * 3 );
+//                    const std::size_t rightAP = level.addActionPoint( center + orthoDir * 3 );
+//
+//                    const std::string leftGuardName  = "lava_guard_" + std::to_string( leftAP );
+//                    const std::string rightGuardName = "lava_guard_" + std::to_string( rightAP );
+//
+//                    parties.CREATE_PARTY( leftGuardName );
+//                    parties.ADD_TO_PARTY( leftGuardName, creature1, 1, guardLevel.randomized(), 0, script::PartyObjective::PO_DEFEND_LOCATION );
+//
+//                    parties.CREATE_PARTY( rightGuardName );
+//                    parties.ADD_TO_PARTY( rightGuardName, creature2, 1, guardLevel.randomized(), 0, script::PartyObjective::PO_DEFEND_LOCATION );
+//
+//                    actions.ADD_PARTY_TO_LEVEL( roomOwner, leftGuardName, leftAP );
+//                    actions.ADD_PARTY_TO_LEVEL( roomOwner, rightGuardName, rightAP );
+
+                    level.setCreature( center - orthoDir * 3, 1, creature1, 1, guardLevel.randomized(), roomOwner );
+                    level.setCreature( center + orthoDir * 3, 1, creature2, 1, guardLevel.randomized(), roomOwner );
                 }
+
+//                actions.ENDIF();
             }
         };
 

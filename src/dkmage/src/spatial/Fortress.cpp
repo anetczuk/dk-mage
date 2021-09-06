@@ -12,6 +12,7 @@
 #include "adiktedpp/GameMap.h"
 #include "adiktedpp/LakeGenerator.h"
 #include "adiktedpp/AreaDetector.h"
+#include "adiktedpp/script/Creator.h"
 
 
 using namespace utils;
@@ -480,7 +481,8 @@ namespace dkmage {
         bool Fortress::generateTest() {
             spatial::FortressData fortressData = { gameMap, parameters };
             const spatial::FortressRoom* heart  = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART );
-            const spatial::FortressRoom* prison = fortress.addRandomRoom( spatial::FortressRoomType::FR_PRISON, *heart );
+            const spatial::FortressRoom* post   = fortress.addRandomRoom( spatial::FortressRoomType::FR_LAVA_POST, *heart );
+            const spatial::FortressRoom* prison = fortress.addRandomRoom( spatial::FortressRoomType::FR_PRISON, *post );
             fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *prison );
             fortress.moveToTopEdge( 8 );
             fortress.draw( fortressData );
@@ -944,6 +946,7 @@ namespace dkmage {
                 const Bridge& bridge = bridges[ bridgeIndex ];
                 const PointList& bridgePoints = bridge.bridge;
 
+                const std::size_t bridgeSize = bridgePoints.size();
                 Point bridgeDirection( 0, 0 );
                 if ( bridgePoints.size() > 1 ) {
                     bridgeDirection = bridgePoints[1] - bridgePoints[0];
@@ -951,6 +954,19 @@ namespace dkmage {
                 const Point bridgeOrtho = bridgeDirection.swapped();
                 std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
                 neighbourDirections.erase( -bridgeDirection );
+
+//                adiktedpp::script::Script& script = gameMap.script;
+//                script::ScriptCommand& parties = script.partiesSection();
+//                parties.addEmptyLine();
+//                parties.REM( "- bridge turret parties -" );
+//
+//                const Point bridgeCenter = bridgePoints[ bridgeSize / 2 ];
+//                const std::size_t bridgeAP  = level.addActionPoint( bridgeCenter, bridgeSize / 2 + 3 );
+//                script::ScriptCommand& action = script.actionSection();
+//                action.addEmptyLine();
+//                action.REM( "- bridge turrets -" );
+//                action.REM( std::to_string( bridgeAP ) + " -- bridge center" );
+//                action.IF_ACTION_POINT( bridgeAP, Player::P_P0 );
 
                 std::size_t i = 0;
                 for ( const Point bridgePoint: bridgePoints ) {
@@ -982,6 +998,16 @@ namespace dkmage {
     //                            const Rect guardPost( rightGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( rightGuardPosition, Slab::S_PATH );
+
+//                            const std::size_t turrentAP = level.addActionPoint( rightGuardPosition );
+//                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
+//                            parties.CREATE_PARTY( turretPartyName );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//
+//                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+
                             level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
                             level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
                             level.setCreature( rightGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
@@ -992,6 +1018,16 @@ namespace dkmage {
     //                            const Rect guardPost( leftGuardPosition, 3, 3 );
     //                            level.setSlab( guardPost, Slab::S_LAVA );
                             level.setSlab( leftGuardPosition, Slab::S_PATH );
+
+//                            const std::size_t turrentAP = level.addActionPoint( leftGuardPosition );
+//                            const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
+//                            parties.CREATE_PARTY( turretPartyName );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//
+//                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+
                             level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
                             level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
                             level.setCreature( leftGuardPosition, 2, Creature::C_ARCHER, 1, turretLevel, Player::P_GOOD );
@@ -1002,6 +1038,8 @@ namespace dkmage {
                         }
                     }
                 }
+
+//                action.ENDIF();
             }
 
             return true;
@@ -1033,6 +1071,7 @@ namespace dkmage {
             }
 
             Level& level = gameMap.level;
+//            adiktedpp::script::Script& script = gameMap.script;
             const Player dungeonOwner = fortress.owner();
 
             const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
@@ -1102,11 +1141,37 @@ namespace dkmage {
                         break ;
                     }
                     case CorridorFurniture::CF_HERO1: {
+//                        const std::size_t corridorAP = level.addActionPoint( pt, 0 );
+//                        const std::string corridorPartyName  = "corridor_guard_" + std::to_string( corridorAP );
+//
+//                        script::AmbushCreator ambush( script );
+//                        ambush.partyId = corridorPartyName;
+//                        ambush.description = "- corridor ambush -";
+//                        ambush.actionPoint = corridorAP;
+//                        ambush.partyCopies = 2;
+//                        ambush.owner = dungeonOwner;
+//                        ambush.prepare();
+//                        ambush.addToParty( Creature::C_ARCHER, 1, creatureLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
+//                        ambush.addToParty( Creature::C_DWARF,  1, creatureLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
+
                         level.setCreature( pt, 1, Creature::C_ARCHER, 2, creatureLevel, dungeonOwner );
                         level.setCreature( pt, 1, Creature::C_DWARF,  2, creatureLevel, dungeonOwner );
                         break ;
                     }
                     case CorridorFurniture::CF_HERO2: {
+//                        const std::size_t corridorAP = level.addActionPoint( pt, 0 );
+//                        const std::string corridorPartyName  = "corridor_guard_" + std::to_string( corridorAP );
+//
+//                        script::AmbushCreator ambush( script );
+//                        ambush.partyId = corridorPartyName;
+//                        ambush.description = "- corridor ambush -";
+//                        ambush.actionPoint = corridorAP;
+//                        ambush.partyCopies = 2;
+//                        ambush.owner = dungeonOwner;
+//                        ambush.prepare();
+//                        ambush.addToParty( Creature::C_SAMURAI, 1, creatureLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
+//                        ambush.addToParty( Creature::C_WIZARD,  1, creatureLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
+
                         level.setCreature( pt, 1, Creature::C_SAMURAI, 2, creatureLevel, dungeonOwner );
                         level.setCreature( pt, 1, Creature::C_WIZARD,  2, creatureLevel, dungeonOwner );
                         break ;

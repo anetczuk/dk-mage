@@ -109,7 +109,7 @@ namespace adiktedpp {
 
             std::size_t countAllCreatures();
 
-            std::size_t countAccessPoints();
+            std::size_t countActionPoints();
 
             /// count separated chambers by impassable rocks and gems
             std::size_t countSeparatedAreas();

@@ -1061,12 +1061,12 @@ namespace adiktedpp {
             std::vector< std::string > merged;
 
             addSection( merged, header, "" );
-            addSection( merged, init,          "REM --- setup ---" );
-            addSection( merged, parties,       "REM --- parties setup ---" );
-            addSection( merged, main,          "REM --- main ---" );
-            addSection( merged, action,        "REM --- action points ---" );
-            addSection( merged, other,         "REM --- other ---" );
-            addSection( merged, endConditions, "REM --- end conditions ---" );
+            addSection( merged, init,          "REM ===============  SETUP  ===============" );
+            addSection( merged, parties,       "REM ===========  PARTIES SETUP  ===========" );
+            addSection( merged, main,          "REM ===============  MAIN  ================" );
+            addSection( merged, action,        "REM ===========  ACTION POINTS  ===========" );
+            addSection( merged, other,         "REM ===============  OTHER  ===============" );
+            addSection( merged, endConditions, "REM ===========  END CONDITIONS  ==========" );
 
             return merged;
         }

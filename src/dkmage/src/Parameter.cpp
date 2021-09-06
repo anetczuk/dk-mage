@@ -31,6 +31,8 @@ namespace dkmage {
             data.insert( ParameterName::PN_SEED );
             data.insert( ParameterName::PN_TYPE );
 
+            data.insert( ParameterName::PN_ACTION_POINTS_LIMIT );
+
             data.insert( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT );
             data.insert( ParameterName::PN_SCRIPT_PARTIES_LIMIT );
             data.insert( ParameterName::PN_SCRIPT_VALUES_LIMIT );
@@ -95,6 +97,8 @@ namespace dkmage {
 
         case ParameterName::PN_SEED:                return "seed";
         case ParameterName::PN_TYPE:                return "type";
+
+        case ParameterName::PN_ACTION_POINTS_LIMIT:   return "action_points_limit";
 
         case ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT:   return "script_tunnellers_limit";
         case ParameterName::PN_SCRIPT_PARTIES_LIMIT:      return "script_parties_limit";

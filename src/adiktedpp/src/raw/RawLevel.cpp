@@ -932,7 +932,7 @@ namespace adiktedpp {
             return creaturesCount;
         }
 
-        std::size_t RawLevel::countAccessPoints() {
+        std::size_t RawLevel::countActionPoints() {
             const LEVEL* level = data->lvl;
             const std::size_t arr_entries_x = level->tlsize.x * MAP_SUBNUM_X;
             const std::size_t arr_entries_y = level->tlsize.y * MAP_SUBNUM_Y;

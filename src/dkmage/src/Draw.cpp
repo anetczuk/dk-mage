@@ -7,6 +7,8 @@
 
 #include "dkmage/spatial/Maze.h"
 
+#include "adiktedpp/script/Creator.h"
+
 #include "utils/Container.h"
 #include "utils/Rand.h"
 
@@ -226,20 +228,17 @@ namespace dkmage {
         const std::size_t num1 = creaturesNum / 2 + creaturesNum % 2;
         const std::size_t num2 = creaturesNum / 2;
 
-        const std::string ambushName =  "gem_ambush_" + std::to_string( ambushAP );
-        script::ScriptCommand& parties = script.partiesSection();
-        parties.addEmptyLine();
-        parties.REM( "- gem ambush party -" );
-        parties.CREATE_PARTY( ambushName );
-        parties.ADD_TO_PARTY( ambushName, creature1, num1, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION  );
-        parties.ADD_TO_PARTY( ambushName, creature2, num2, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION  );
+        const std::string ambushName =  "hero_trap_" + std::to_string( ambushAP );
 
-        script::ScriptCommand& action = script.actionSection();
-        action.addEmptyLine();
-        action.REM( std::to_string( ambushAP ) + " -- ambush room center" );
-        action.IF_ACTION_POINT( ambushAP, Player::P_P0 );
-        action.ADD_PARTY_TO_LEVEL( player, ambushName, ambushAP );
-        action.ENDIF();
+        script::AmbushCreator ambush( script );
+        ambush.partyId = ambushName;
+        ambush.description = "- hero trap party -";
+        ambush.actionPoint = ambushAP;
+        ambush.partyCopies = 2;
+        ambush.owner = player;
+        ambush.prepare();
+        ambush.addToParty( creature1, num1, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
+        ambush.addToParty( creature2, num2, cLevel, 500, script::PartyObjective::PO_DEFEND_LOCATION );
     }
 
 } /* namespace dkmage */

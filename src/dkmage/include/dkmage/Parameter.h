@@ -32,6 +32,8 @@ namespace dkmage {
         PN_SEED,
         PN_TYPE,
 
+        PN_ACTION_POINTS_LIMIT,
+
         PN_SCRIPT_TUNNELLERS_LIMIT,
         PN_SCRIPT_PARTIES_LIMIT,
         PN_SCRIPT_VALUES_LIMIT,
