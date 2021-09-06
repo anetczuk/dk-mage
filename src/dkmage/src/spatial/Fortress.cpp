@@ -948,7 +948,7 @@ namespace dkmage {
 
                 const std::size_t bridgeSize = bridgePoints.size();
                 Point bridgeDirection( 0, 0 );
-                if ( bridgePoints.size() > 1 ) {
+                if ( bridgeSize > 1 ) {
                     bridgeDirection = bridgePoints[1] - bridgePoints[0];
                 }
                 const Point bridgeOrtho = bridgeDirection.swapped();

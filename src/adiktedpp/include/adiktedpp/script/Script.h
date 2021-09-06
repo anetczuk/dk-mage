@@ -333,15 +333,21 @@ namespace adiktedpp {
 
             void concealWholeMap( const Player player );
 
-            void addAvailable( const adiktedpp::Player player, const Room item, const int accessible, const int available );
+            /// accessible -- always set to 1
+            /// available -- 0 or 1 -- if 1 then creatures appear from the portal
+            void addAvailable( const adiktedpp::Player player, const Creature item, const int /*accessible*/, const int available );
 
-            void addAvailable( const adiktedpp::Player player, const Creature item, const int accessible, const int available );
+            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researched' set)
+            void addAvailable( const adiktedpp::Player player, const Room item, const int researched, const int available );
 
-            void addAvailable( const adiktedpp::Player player, const Door item, const int accessible, const int available );
+            /// constructed -- 0 or 1 -- if 1 then door can be constructed
+            void addAvailable( const adiktedpp::Player player, const Door item, const int constructed, const int numberAvailable );
 
-            void addAvailable( const adiktedpp::Player player, const Trap item, const int accessible, const int available );
+            /// constructed -- 0 or 1 -- if 1 then door can be constructed
+            void addAvailable( const adiktedpp::Player player, const Trap item, const int constructed, const int numberAvailable );
 
-            void addAvailable( const adiktedpp::Player player, const Spell item, const int accessible, const int available );
+            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researched' set)
+            void addAvailable( const adiktedpp::Player player, const Spell item, const int researched, const int available );
 
             template <typename TValue>
             void set( const AvailableCommandStateMap<TValue>& stateMap ) {
@@ -352,7 +358,7 @@ namespace adiktedpp {
 
                     auto iter2 = submap.begin();
                     for ( ; iter2 != submap.end(); ++iter2 ) {
-                        const auto item = iter2->first;
+                        const auto item   = iter2->first;
                         const auto& state = iter2->second;
                         addAvailable( player, item, state.accessible, state.available );
                     }
