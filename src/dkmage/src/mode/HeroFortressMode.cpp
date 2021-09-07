@@ -247,15 +247,15 @@ namespace dkmage {
             script.addLineInit( "" );
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::RoomAvailableMode::RAM_DISABLED );
 
-            availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::AvailableRoomMode::ARM_DISABLED );
-            availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::AvailableRoomMode::ARM_DISABLED );
-            availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_PRISON, script::RoomAvailableMode::RAM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_TORTURE, script::RoomAvailableMode::RAM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_GRAVEYARD, script::RoomAvailableMode::RAM_DISABLED );
 
-            availableRooms.setStateMode( Player::P_P0, Room::R_PRISON, script::AvailableRoomMode::ARM_ENABLED_FOUND );
-            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableRoomMode::ARM_ENABLED_FOUND );
-            availableRooms.setStateMode( Player::P_P0, Room::R_GRAVEYARD, script::AvailableRoomMode::ARM_ENABLED_FOUND );
+            availableRooms.setStateMode( Player::P_P0, Room::R_PRISON, script::RoomAvailableMode::RAM_AVAILABLE_FOUND );
+            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::RoomAvailableMode::RAM_AVAILABLE_FOUND );
+            availableRooms.setStateMode( Player::P_P0, Room::R_GRAVEYARD, script::RoomAvailableMode::RAM_AVAILABLE_FOUND );
 
             script.set( availableRooms );
 

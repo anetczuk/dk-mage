@@ -343,11 +343,11 @@ namespace dkmage {
 
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
-            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::RoomAvailableMode::RAM_DISABLED );
 
             /// necromancer mode
             availableCreatures.setEvilAvailable( Player::P_P0, false );
-            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::AvailableRoomMode::ARM_DISABLED );
+            availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::RoomAvailableMode::RAM_DISABLED );
 
             script::TrapAvailableState availableTraps( availablePlayers );
             availableTraps.setAllAvailable( Player::P_ALL, true );

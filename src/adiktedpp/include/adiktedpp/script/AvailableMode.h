@@ -27,12 +27,12 @@ namespace adiktedpp {
         /**
          *
          */
-        enum class AvailableRoomMode {
-            ARM_DISABLED,
-            ARM_POSSIBLE_FOUND,      /// available to research when claimed/found
-            ARM_ENABLED_FOUND,       /// enable when claimed/found
-            ARM_POSSIBLE,            /// available after meet certain criteria (e.g. research or build proper room)
-            ARM_ENABLED
+        enum class RoomAvailableMode {
+            RAM_DISABLED,
+            RAM_RESEARCHABLE_FOUND,         /// researchable when claimed/found
+            RAM_RESEARCHABLE,               /// available after research
+            RAM_AVAILABLE_FOUND,            /// enable when claimed/found
+            RAM_AVAILABLE
         };
 
 

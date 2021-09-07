@@ -781,7 +781,7 @@ namespace adiktedpp {
             init.CONCEAL_MAP_RECT( player, map, true );
         }
 
-        void Script::addCreatureAvailable( const Player player, const Creature item, const bool available, const int numberForced ) {
+        void Script::setCreatureAvailable( const Player player, const Creature item, const bool available, const int numberForced ) {
             /**
              * old interface:
              *      [can be available] should be always 1
@@ -798,28 +798,7 @@ namespace adiktedpp {
             init.addLine( line );
         }
 
-        void Script::addRoomAvailable( const Player player, const Room item, const int researchable, const bool available ) {
-            std::stringstream stream;
-            stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << researchable << ", " << (int)available << " )";
-            const std::string& line = stream.str();
-            init.addLine( line );
-        }
-
-        void Script::addCreatureAvailable( const Player player, const Door item, const bool constructable, const int numberAvailable ) {
-            std::stringstream stream;
-            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
-            const std::string& line = stream.str();
-            init.addLine( line );
-        }
-
-        void Script::addDoorAvailable( const Player player, const Trap item, const bool constructable, const int numberAvailable ) {
-            std::stringstream stream;
-            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
-            const std::string& line = stream.str();
-            init.addLine( line );
-        }
-
-        void Script::addTrapAvailable( const Player player, const Trap item, const bool constructable, const int numberAvailable ) {
+        void Script::setTrapAvailable( const Player player, const Trap item, const bool constructable, const int numberAvailable ) {
             std::stringstream stream;
             stream << AvailableCommand::AC_TRAP_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
             const std::string& line = stream.str();
@@ -862,7 +841,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addRoomAvailable( player, item, state.researchable, state.available );
+                    setRoomAvailable( player, item, state );
                 }
             }
         }
@@ -877,7 +856,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addCreatureAvailable( player, item, state.available, state.numberForced );
+                    setCreatureAvailable( player, item, state.available, state.numberForced );
                 }
             }
         }
@@ -892,7 +871,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addDoorAvailable( player, item, state.constructable, state.numberAvailable );
+                    setDoorAvailable( player, item, state.constructable, state.numberAvailable );
                 }
             }
         }
@@ -907,7 +886,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addTrapAvailable( player, item, state.constructable, state.numberAvailable );
+                    setTrapAvailable( player, item, state.constructable, state.numberAvailable );
                 }
             }
         }
@@ -967,16 +946,50 @@ namespace adiktedpp {
             set( availableState );
         }
 
-        void Script::setRoomsAvailable( const Player player, const AvailableRoomMode mode ) {
+        void Script::setRoomsAvailable( const Player player, const RoomAvailableMode mode ) {
             RoomsAvailableState availableState;
             availableState.setAllAvailable( player, mode );
             set( availableState );
         }
 
-        void Script::setRoomAvailable( const Player player, const Room room, const AvailableRoomMode mode ) {
-            RoomsAvailableState availableState;
-            availableState.setStateMode( player, room, mode );
-            set( availableState );
+        void Script::setRoomAvailable( const Player player, const Room room, const RoomAvailableMode mode ) {
+            switch( mode ) {
+            case RoomAvailableMode::RAM_DISABLED: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( room ) << ", 0, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break ;
+            }
+            case RoomAvailableMode::RAM_RESEARCHABLE_FOUND: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( room ) << ", 4, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break ;
+            }
+            case RoomAvailableMode::RAM_RESEARCHABLE: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( room ) << ", 1, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break ;
+            }
+            case RoomAvailableMode::RAM_AVAILABLE_FOUND: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( room ) << ", 3, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break ;
+            }
+            case RoomAvailableMode::RAM_AVAILABLE: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( room ) << ", 1, 1 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break ;
+            }
+            }
         }
 
         void Script::setRoomsStandard() {
@@ -985,22 +998,22 @@ namespace adiktedpp {
             set( availableState );
         }
 
-        void Script::addDoorAvailable( const Player player, const Door item, const bool constructable, const int numberAvailable ) {
+        void Script::setDoorAvailable( const Player player, const Door item, const bool constructable, const int numberAvailable ) {
             std::stringstream stream;
             stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
-        void Script::setDoorsAvailable( const Player player, const int available ) {
+        void Script::setDoorsAvailable( const Player player, const int numberAvailable ) {
             DoorAvailableState availableState;
-            availableState.setAllAvailableAmount( player, available );
+            availableState.setAllAvailableAmount( player, numberAvailable );
             set( availableState );
         }
 
-        void Script::setTrapsAvailable( const Player player, const int available ) {
+        void Script::setTrapsAvailable( const Player player, const int numberAvailable ) {
             TrapAvailableState availableState;
-            availableState.setAllAvailableAmount( player, available );
+            availableState.setAllAvailableAmount( player, numberAvailable );
             set( availableState );
         }
 

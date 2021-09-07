@@ -228,17 +228,7 @@ namespace adiktedpp {
         class RoomsAvailableState {
         public:
 
-            struct State {
-                int researchable;
-                bool available;
-
-                State(): researchable(false), available(false) {
-                }
-                State( const int res, const bool av ): researchable(res), available(av) {
-                }
-            };
-
-            using Data = AvailableCommandStateMap< Room, State >;
+            using Data = AvailableCommandStateMap< Room, RoomAvailableMode >;
             using DataMap = Data::DataMap;
 
 
@@ -267,41 +257,15 @@ namespace adiktedpp {
                 return data.size();
             }
 
-            const State* getState( const adiktedpp::Player player, const Room item ) const {
+            const RoomAvailableMode* getState( const adiktedpp::Player player, const Room item ) const {
                 return data.getState( player, item );
             }
 
-            void setStateMode( const adiktedpp::Player player, const Room item, const AvailableRoomMode mode ) {
-                switch( mode ) {
-                case AvailableRoomMode::ARM_DISABLED: {
-                    const State newState( 0, false );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableRoomMode::ARM_POSSIBLE_FOUND: {
-                    const State newState( 4, false );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableRoomMode::ARM_ENABLED_FOUND: {
-                    const State newState( 3, false );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableRoomMode::ARM_POSSIBLE: {
-                    const State newState( 1, false );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableRoomMode::ARM_ENABLED: {
-                    const State newState( 1, true );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                }
+            void setStateMode( const adiktedpp::Player player, const Room item, const RoomAvailableMode mode ) {
+                data.setState( player, item, mode );
             }
 
-            void setAllAvailable( const Player player, const AvailableRoomMode mode );
+            void setAllAvailable( const Player player, const RoomAvailableMode mode );
 
             void setStandard();
 
@@ -488,14 +452,6 @@ namespace adiktedpp {
                     data.setState( player, item, newState );
                 }
             }
-
-
-        protected:
-
-//            const std::set< TValue >& itemsSet() {
-//                static const std::set< TValue > aSet;
-//                return aSet;
-//            }
 
         };
 

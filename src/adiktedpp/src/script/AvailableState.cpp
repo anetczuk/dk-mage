@@ -24,7 +24,7 @@ namespace adiktedpp {
 
         /// =======================================================
 
-        void RoomsAvailableState::setAllAvailable( const Player player, const AvailableRoomMode mode ) {
+        void RoomsAvailableState::setAllAvailable( const Player player, const RoomAvailableMode mode ) {
             const std::set< Room >& list = RoomsRegular();
             for ( const Room item: list ) {
                 setStateMode( player, item, mode );
@@ -32,11 +32,11 @@ namespace adiktedpp {
         }
 
         void RoomsAvailableState::setStandard() {
-            setAllAvailable( Player::P_ALL,                AvailableRoomMode::ARM_POSSIBLE );
-            setStateMode( Player::P_ALL, Room::R_TREASURE, AvailableRoomMode::ARM_ENABLED );
-            setStateMode( Player::P_ALL, Room::R_LAIR,     AvailableRoomMode::ARM_ENABLED );
-            setStateMode( Player::P_ALL, Room::R_HATCHERY, AvailableRoomMode::ARM_ENABLED );
-            setStateMode( Player::P_ALL, Room::R_LIBRARY,  AvailableRoomMode::ARM_ENABLED );
+            setAllAvailable( Player::P_ALL,                RoomAvailableMode::RAM_RESEARCHABLE );
+            setStateMode( Player::P_ALL, Room::R_TREASURE, RoomAvailableMode::RAM_AVAILABLE );
+            setStateMode( Player::P_ALL, Room::R_LAIR,     RoomAvailableMode::RAM_AVAILABLE );
+            setStateMode( Player::P_ALL, Room::R_HATCHERY, RoomAvailableMode::RAM_AVAILABLE );
+            setStateMode( Player::P_ALL, Room::R_LIBRARY,  RoomAvailableMode::RAM_AVAILABLE );
         }
 
         void CreatureAvailableState::setEvilAvailable( const Player player, const bool available ) {
