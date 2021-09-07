@@ -241,7 +241,7 @@ namespace dkmage {
             /// add other
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
                 const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
-                level.setItem( revPos, 4, Item::I_SPECIAL_REVMAP );
+                level.setItem( revPos, Item::I_SPECIAL_REVMAP );
 
                 const adiktedpp::Player player = dungeon.owner();
                 level.setFortified( revPos + Point(0, 1), player );

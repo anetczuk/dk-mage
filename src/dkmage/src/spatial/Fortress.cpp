@@ -656,7 +656,7 @@ namespace dkmage {
             }
             /// restricted room -- add unrestricted one
             const FortressRoomType lastType = room.type();
-            const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_TRAP, room );
+            const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_HERO_GATE, room );
             if ( next != nullptr ) {
                 return next;
             }
@@ -670,7 +670,7 @@ namespace dkmage {
                 return nullptr;
             }
             const spatial::FortressRoom* prev = neighbours[0];
-            next = fortress.addRandomRoom( spatial::FortressRoomType::FR_TRAP, *prev );
+            next = fortress.addRandomRoom( spatial::FortressRoomType::FR_HERO_GATE, *prev );
             if ( next == nullptr ) {
                 LOG_WARN() << "unable to add main junction room";
                 return nullptr;
@@ -983,7 +983,7 @@ namespace dkmage {
                     /// add bridge keepers
                     if ( i == 1 ) {
                         /// add hero gate
-                        level.setItem( bridgePoint, 4, Item::I_HEROGATE );
+                        level.setItem( bridgePoint, Item::I_HEROGATE );
                         level.setCreature( bridgePoint, 0, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         level.setCreature( bridgePoint, 2, Creature::C_FAIRY, 1, guardLevel.randomized(), Player::P_GOOD );
                         const std::size_t knightLevel = std::min( (std::size_t)10, guardLevel.maxValue() + 1 );
@@ -1062,7 +1062,7 @@ namespace dkmage {
             if ( corridorItem.empty() ) {
                 corridorItem.set( CorridorFurniture::CF_EMPTY, 0.6 );
                 corridorItem.set( CorridorFurniture::CF_DOOR_OPEN, 0.06 );
-                corridorItem.set( CorridorFurniture::CF_DOOR_LOCKED, 0.14 );
+//                corridorItem.set( CorridorFurniture::CF_DOOR_LOCKED, 0.14 );      /// no locked doors, because there is hero gate inside fortress
                 corridorItem.set( CorridorFurniture::CF_GAS, 0.1 );
                 corridorItem.set( CorridorFurniture::CF_LIGHTNING, 0.1 );
                 corridorItem.set( CorridorFurniture::CF_BOULDER, 0.1 );

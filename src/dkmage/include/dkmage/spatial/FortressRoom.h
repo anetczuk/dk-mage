@@ -30,6 +30,9 @@ namespace dkmage {
 
     namespace spatial {
 
+        static const std::size_t MAIN_HERO_GATE = 255;
+
+
         struct FortressData {
             adiktedpp::GameMap& gameMap;
             ParametersMap& parameters;
@@ -49,7 +52,8 @@ namespace dkmage {
         enum class FortressRoomType {
             FR_DUNGEON_HEART,
             FR_EMPTY,
-            FR_TRAP,
+            FR_TRAP,                    /// square room with traps
+            FR_HERO_GATE,               /// square room with hero gate in center
             FR_TREASURE,
             FR_CORRIDOR,
             FR_BRANCH,

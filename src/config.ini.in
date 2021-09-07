@@ -210,7 +210,7 @@ entrances_number = 2:5
 ## Experience level of bridge guards. Level of each guardian will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
 ## Example: 2,3:5
-bridge_guard_level = 2:5
+bridge_guard_level = 1:3
 
 ## Experience level of guards wandering through corridors. The closer to dungeon heart, higher the level.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]

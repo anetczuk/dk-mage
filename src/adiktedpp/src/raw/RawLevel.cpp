@@ -543,11 +543,11 @@ namespace adiktedpp {
         }
 
         /// prevents setting two items inside the same subtile
-        void RawLevel::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
+        unsigned char* RawLevel::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
                 LOG() << "given point is outside map: [" << x << " " << y << "]";
-                return ;
+                return nullptr;
             }
             LEVEL* level = data->lvl;
             const std::size_t sx = x * MAP_SUBNUM_X + subIndex % MAP_SUBNUM_X;
@@ -562,13 +562,18 @@ namespace adiktedpp {
             /// create new item
             unsigned char * thing = create_item_adv( level, sx, sy, (unsigned char) item );
             if ( thing == nullptr ) {
-                return ;
+                return nullptr;
             }
             thing_add( level, thing );
+            return thing;
         }
 
-        void RawLevel::setItem( const Point& point, const std::size_t subIndex, const SubTypeItem item ) {
-            setItem( point.x, point.y, subIndex, item );
+        unsigned char* RawLevel::setItem( const Point& point, const SubTypeItem item ) {
+            return setItem( point.x, point.y, 4, item );
+        }
+
+        unsigned char* RawLevel::setItem( const Point& point, const std::size_t subIndex, const SubTypeItem item ) {
+            return setItem( point.x, point.y, subIndex, item );
         }
 
         void RawLevel::setItem( const Rect& rect, const std::size_t subIndex, const SubTypeItem item ) {
@@ -790,6 +795,10 @@ namespace adiktedpp {
             unsigned char x = get_thing_subtile_x( thing );
             unsigned char y = get_thing_subtile_y( thing );
             return utils::Point( x / MAP_SUBNUM_X, y / MAP_SUBNUM_Y );
+        }
+
+        void RawLevel::setHeroGateNumber( unsigned char* heroGate, const std::size_t number ) {
+            set_thing_level( heroGate, number );
         }
 
         /// ============================================================

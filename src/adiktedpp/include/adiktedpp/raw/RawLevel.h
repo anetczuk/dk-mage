@@ -169,9 +169,11 @@ namespace adiktedpp {
 
             std::size_t countItems( const std::size_t x, const std::size_t y ) const;
 
-            void setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item );
+            unsigned char* setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item );
 
-            void setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );
+            unsigned char* setItem( const utils::Point& point, const SubTypeItem item );
+
+            unsigned char* setItem( const utils::Point& point, const std::size_t subIndex, const SubTypeItem item );
 
             void setItem( const utils::Rect& rect, const std::size_t subIndex, const SubTypeItem item );
 
@@ -208,6 +210,8 @@ namespace adiktedpp {
             unsigned char* getHeroGateByNumber( const std::size_t heroGate );
 
             utils::Point getHeroGatePosition( const std::size_t heroGate );
+
+            void setHeroGateNumber( unsigned char* heroGate, const std::size_t number );
 
             /// ===========================================================================
 

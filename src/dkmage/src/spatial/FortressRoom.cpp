@@ -43,6 +43,7 @@ namespace dkmage {
             ENUM_STREAM_CASE( FortressRoomType, FR_DUNGEON_HEART, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_EMPTY, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_TRAP, os );
+            ENUM_STREAM_CASE( FortressRoomType, FR_HERO_GATE, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_TREASURE, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_CORRIDOR, os );
             ENUM_STREAM_CASE( FortressRoomType, FR_BRANCH, os );
@@ -538,6 +539,37 @@ namespace dkmage {
                     const Point point = roomRect.leftCenter();
                     level.setTrap( point, trap );
                 }
+            }
+
+        };
+
+
+        /**
+         *
+         */
+        class FortressRoomHeroGate: public FortressRoomTrap {
+        public:
+
+            using FortressRoomTrap::FortressRoomTrap;
+
+            FortressRoomType type() const override {
+                return FortressRoomType::FR_HERO_GATE;
+            }
+
+            void draw( FortressData& data ) const override {
+                FortressRoomTrap::draw( data );
+
+                /// add hero gate
+                const Rect& roomRect = bbox();
+                const Point center = roomRect.center();
+                adiktedpp::Level& level = data.level();
+                raw::RawLevel& rawLewel = level.getRawLevel();
+                unsigned char* gate = rawLewel.setItem( center, raw::SubTypeItem::STI_HEROGATE );
+                if ( gate == nullptr ) {
+                    return ;
+                }
+                rawLewel.setHeroGateNumber( gate, MAIN_HERO_GATE );
+//                rawLewel.setItem( center, Item::I_HEROGATE );
             }
 
         };
@@ -1485,7 +1517,7 @@ namespace dkmage {
             virtual void drawSpecial( adiktedpp::Level& level, const Rect& room ) const override {
                 const Point center = room.center();
                 level.setSlab( center, Slab::S_PATH );
-                level.setItem( center, 4, Item::I_SPECIAL_INCLEV );
+                level.setItem( center, Item::I_SPECIAL_INCLEV );
             }
         };
 
@@ -1502,7 +1534,7 @@ namespace dkmage {
             virtual void drawSpecial( adiktedpp::Level& level, const Rect& room ) const override {
                 const Point center = room.center();
                 level.setSlab( center, Slab::S_PATH );
-                level.setItem( center, 4, Item::I_SPECIAL_RESURCT );
+                level.setItem( center, Item::I_SPECIAL_RESURCT );
             }
         };
 
@@ -1577,6 +1609,7 @@ namespace dkmage {
             case FortressRoomType::FR_DUNGEON_HEART:        return std::make_unique< FortressRoomDungeonHeart >( dungeon );
             case FortressRoomType::FR_EMPTY:                return std::make_unique< FortressRoomEmpty >( dungeon );
             case FortressRoomType::FR_TRAP:                 return std::make_unique< FortressRoomTrap >( dungeon );
+            case FortressRoomType::FR_HERO_GATE:            return std::make_unique< FortressRoomHeroGate >( dungeon );
             case FortressRoomType::FR_TREASURE:             return std::make_unique< FortressRoomTreasure >( dungeon );
             case FortressRoomType::FR_CORRIDOR:             return std::make_unique< FortressRoomCorridor >( dungeon );
             case FortressRoomType::FR_BRANCH:               return std::make_unique< FortressRoomBranch >( dungeon );

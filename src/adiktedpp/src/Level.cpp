@@ -388,6 +388,11 @@ namespace adiktedpp {
         setCreatureAuto( point.x, point.y, creature, number, expLevel, owner );
     }
 
+    void Level::setItem( const Point& point, const Item item ) {
+        const raw::SubTypeItem rawItem = convertToRaw( item );
+        rawLevel.setItem( point, rawItem );
+    }
+
     void Level::setItem( const Point& point, const std::size_t subIndex, const Item item ) {
         const raw::SubTypeItem rawItem = convertToRaw( item );
         rawLevel.setItem( point, subIndex, rawItem );

@@ -181,6 +181,8 @@ namespace adiktedpp {
         void setCreatureAuto( const utils::Point& point, const Creature creature,
                               const std::size_t number=1, const std::size_t expLevel=1, const Player owner = Player::P_UNSET );
 
+        void setItem( const utils::Point& point, const Item item );
+
         void setItem( const utils::Point& point, const std::size_t subIndex, const Item item );
 
         void setItem( const utils::Rect& rect, const std::size_t subIndex, const Item item );

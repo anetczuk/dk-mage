@@ -187,7 +187,7 @@ namespace dkmage {
         }
         level.setSlab( chamber, Slab::S_PATH );
         const Point specialCenter = chamber.center();
-        level.setItem( specialCenter, 4, specialItem );
+        level.setItem( specialCenter, specialItem );
         if ( chamber.width() == 3 && chamber.height() == 3 ) {
             drawTrap3x3Diamond( level, specialCenter, Trap::T_BOULDER );
             return ;
