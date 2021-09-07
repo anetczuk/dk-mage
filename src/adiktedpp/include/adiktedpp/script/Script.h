@@ -333,27 +333,6 @@ namespace adiktedpp {
 
             void concealWholeMap( const Player player );
 
-            /// available -- 0 or 1 -- if 1 then creatures appear from the portal
-            void addAvailable( const adiktedpp::Player player, const Creature item, const int available, const int numberForced );
-
-            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
-            void addAvailable( const adiktedpp::Player player, const Room item, const int researchable, const int available );
-
-            /// constructable -- 0 or 1 -- if 1 then door can be constructed
-            void addAvailable( const adiktedpp::Player player, const Door item, const int constructable, const int numberAvailable );
-
-            /// constructable -- 0 or 1 -- if 1 then door can be constructed
-            void addAvailable( const adiktedpp::Player player, const Trap item, const int constructable, const int numberAvailable );
-
-            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
-            void addAvailable( const adiktedpp::Player player, const Spell item, const int researchable, const int available );
-
-            void set( const RoomsAvailableState& stateMap );
-            void set( const CreatureAvailableState& stateMap );
-            void set( const DoorAvailableState& stateMap );
-            void set( const TrapAvailableState& stateMap );
-            void set( const MagicAvailableState& stateMap );
-
             /// set creature pool
             void setEvilCreaturesPool( const std::size_t number );
 
@@ -363,17 +342,35 @@ namespace adiktedpp {
 
             /// ================================================================================
 
+            void set( const RoomsAvailableState& stateMap );
+            void set( const CreatureAvailableState& stateMap );
+            void set( const DoorAvailableState& stateMap );
+            void set( const TrapAvailableState& stateMap );
+            void set( const MagicAvailableState& stateMap );
+
+            /// available -- 0 or 1 -- if 1 then creatures appear from the portal
+            void addCreatureAvailable( const adiktedpp::Player player, const Creature item, const bool available, const int numberForced );
+
             /// set available creatures from pool
             void setEvilCreaturesAvailable( const Player player, const bool available = true );
 
             /// set available creatures from pool
             void setHeroCreaturesAvailable( const Player player, const bool available = true );
 
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addCreatureAvailable( const adiktedpp::Player player, const Door item, const bool constructable, const int numberAvailable );
+
             void setRoomsAvailable( const Player player, const AvailableRoomMode mode = AvailableRoomMode::ARM_DISABLED );
 
             void setRoomAvailable( const Player player, const Room room, const AvailableRoomMode mode = AvailableRoomMode::ARM_DISABLED );
 
+            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
+            void addRoomAvailable( const adiktedpp::Player player, const Room item, const int researchable, const bool available );
+
             void setRoomsStandard();
+
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addDoorAvailable( const adiktedpp::Player player, const Door item, const bool constructable, const int numberAvailable );
 
             /**
              * "available" parameter meaning:
@@ -383,6 +380,12 @@ namespace adiktedpp {
              */
             void setDoorsAvailable( const Player player, const int available = -1 );
 
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addDoorAvailable( const adiktedpp::Player player, const Trap item, const bool constructable, const int numberAvailable );
+
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addTrapAvailable( const adiktedpp::Player player, const Trap item, const bool constructable, const int numberAvailable );
+
             /**
              * "available" parameter meaning:
              *      - negative -- disabled
@@ -391,7 +394,9 @@ namespace adiktedpp {
              */
             void setTrapsAvailable( const Player player, const int available = -1 );
 
-            void setMagicAvailable( const Player player, const AvailableMode mode = AvailableMode::AM_DISABLED );
+            void setMagicAvailable( const adiktedpp::Player player, const Spell item, const MagicAvailableMode mode );
+
+            void setMagicAvailable( const Player player, const MagicAvailableMode mode = MagicAvailableMode::AM_DISABLED );
 
             void setMagicStandard( const Player player );
 

@@ -369,10 +369,10 @@ namespace dkmage {
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
             availableMagic.setStandard( Player::P_ALL );
-            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::AvailableMode::AM_DISABLED );
-            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::AvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::MagicAvailableMode::AM_DISABLED );
+            availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::MagicAvailableMode::AM_DISABLED );
             if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
-                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::AvailableMode::AM_ENABLED );
+                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::MagicAvailableMode::AM_AVAILABLE );
 //                magicAvailableState.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
             }
             script.set( availableMagic );

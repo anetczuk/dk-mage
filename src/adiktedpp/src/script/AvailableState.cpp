@@ -61,7 +61,7 @@ namespace adiktedpp {
 
         /// =========================================================================================
 
-        void MagicAvailableState::setAllAvailable( const Player player, const AvailableMode mode ) {
+        void MagicAvailableState::setAllAvailable( const Player player, const MagicAvailableMode mode ) {
             const std::set< Spell >& list = Spells();
             for ( const Spell item: list ) {
                 setStateMode( player, item, mode );
@@ -69,12 +69,12 @@ namespace adiktedpp {
         }
 
         void MagicAvailableState::setStandard( const Player player ) {
-            setAllAvailable( player, AvailableMode::AM_POSSIBLE );
-            setStateMode( player, Spell::S_POWER_HAND, AvailableMode::AM_ENABLED );
-            setStateMode( player, Spell::S_POWER_POSSESS, AvailableMode::AM_ENABLED );
-            setStateMode( player, Spell::S_POWER_SLAP, AvailableMode::AM_ENABLED );
-            setStateMode( player, Spell::S_POWER_IMP, AvailableMode::AM_ENABLED );
-            setStateMode( player, Spell::S_POWER_SIGHT, AvailableMode::AM_DISABLED );
+            setAllAvailable( player, MagicAvailableMode::AM_RESEARCHABLE );
+            setStateMode( player, Spell::S_POWER_HAND,    MagicAvailableMode::AM_AVAILABLE );
+            setStateMode( player, Spell::S_POWER_POSSESS, MagicAvailableMode::AM_AVAILABLE );
+            setStateMode( player, Spell::S_POWER_SLAP,    MagicAvailableMode::AM_AVAILABLE );
+            setStateMode( player, Spell::S_POWER_IMP,     MagicAvailableMode::AM_AVAILABLE );
+            setStateMode( player, Spell::S_POWER_SIGHT,   MagicAvailableMode::AM_DISABLED );
         }
 
     } /* namespace script */

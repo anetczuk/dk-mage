@@ -109,17 +109,6 @@ namespace adiktedpp {
         };
 
 
-        struct AvailableState {
-            int accessible;
-            int available;
-
-            AvailableState(): accessible(0), available(0) {
-            }
-            AvailableState( const int acc, const int av ): accessible(acc), available(av) {
-            }
-        };
-
-
         const std::set< adiktedpp::Player >& Players();
 
 
@@ -239,7 +228,17 @@ namespace adiktedpp {
         class RoomsAvailableState {
         public:
 
-            using Data = AvailableCommandStateMap< Room, AvailableState >;
+            struct State {
+                int researchable;
+                bool available;
+
+                State(): researchable(false), available(false) {
+                }
+                State( const int res, const bool av ): researchable(res), available(av) {
+                }
+            };
+
+            using Data = AvailableCommandStateMap< Room, State >;
             using DataMap = Data::DataMap;
 
 
@@ -268,34 +267,34 @@ namespace adiktedpp {
                 return data.size();
             }
 
-            const AvailableState* getState( const adiktedpp::Player player, const Room item ) const {
+            const State* getState( const adiktedpp::Player player, const Room item ) const {
                 return data.getState( player, item );
             }
 
             void setStateMode( const adiktedpp::Player player, const Room item, const AvailableRoomMode mode ) {
                 switch( mode ) {
                 case AvailableRoomMode::ARM_DISABLED: {
-                    const AvailableState newState( 0, 0 );
+                    const State newState( 0, false );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableRoomMode::ARM_POSSIBLE_FOUND: {
-                    const AvailableState newState( 4, 0 );
+                    const State newState( 4, false );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableRoomMode::ARM_ENABLED_FOUND: {
-                    const AvailableState newState( 3, 0 );
+                    const State newState( 3, false );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableRoomMode::ARM_POSSIBLE: {
-                    const AvailableState newState( 1, 0 );
+                    const State newState( 1, false );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableRoomMode::ARM_ENABLED: {
-                    const AvailableState newState( 1, 1 );
+                    const State newState( 1, true );
                     data.setState( player, item, newState );
                     break ;
                 }
@@ -315,7 +314,17 @@ namespace adiktedpp {
         class CreatureAvailableState {
         public:
 
-            using Data = AvailableCommandStateMap< Creature, AvailableState >;
+            struct State {
+                bool available;
+                int numberForced;
+
+                State(): available(false), numberForced(0) {
+                }
+                State( const bool av, const int num ): available(av), numberForced(num) {
+                }
+            };
+
+            using Data = AvailableCommandStateMap< Creature, State >;
             using DataMap = Data::DataMap;
 
 
@@ -344,24 +353,24 @@ namespace adiktedpp {
                 return data.size();
             }
 
-            const AvailableState* getState( const adiktedpp::Player player, const Creature item ) const {
+            const State* getState( const adiktedpp::Player player, const Creature item ) const {
                 return data.getState( player, item );
             }
 
             void setStateMode( const adiktedpp::Player player, const Creature item, const AvailableMode mode ) {
                 switch( mode ) {
                 case AvailableMode::AM_DISABLED: {
-                    const AvailableState newState( 0, 0 );
+                    const State newState( false, 0 );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableMode::AM_POSSIBLE: {
-                    const AvailableState newState( 1, 0 );
+                    const State newState( true, 0 );
                     data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableMode::AM_ENABLED: {
-                    const AvailableState newState( 1, 1 );
+                    const State newState( true, 0 );
                     data.setState( player, item, newState );
                     break ;
                 }
@@ -387,10 +396,20 @@ namespace adiktedpp {
 
 
         template <typename TValue>
-        class WorkshopAvailableState: public AvailableCommandStateMap< TValue, AvailableState > {
+        class WorkshopAvailableState {
         public:
 
-            using Data = AvailableCommandStateMap< TValue, AvailableState >;
+            struct State {
+                bool constructable;
+                int numberAvailable;
+
+                State(): constructable(0), numberAvailable(0) {
+                }
+                State( const int con, const int num ): constructable(con), numberAvailable(num) {
+                }
+            };
+
+            using Data = AvailableCommandStateMap< TValue, State >;
             using DataMap = typename Data::DataMap;
 
 
@@ -419,25 +438,25 @@ namespace adiktedpp {
                 return data.size();
             }
 
-            const AvailableState* getState( const adiktedpp::Player player, const TValue item ) const {
+            const State* getState( const adiktedpp::Player player, const TValue item ) const {
                 return data.getState( player, item );
             }
 
             void setStateMode( const adiktedpp::Player player, const TValue item, const AvailableMode mode ) {
                 switch( mode ) {
                 case AvailableMode::AM_DISABLED: {
-                    const AvailableState newState( 0, 0 );
-                    this->setState( player, item, newState );
+                    const State newState( false, 0 );
+                    data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableMode::AM_POSSIBLE: {
-                    const AvailableState newState( 1, 0 );
-                    this->setState( player, item, newState );
+                    const State newState( true, 0 );
+                    data.setState( player, item, newState );
                     break ;
                 }
                 case AvailableMode::AM_ENABLED: {
-                    const AvailableState newState( 1, 1 );
-                    this->setState( player, item, newState );
+                    const State newState( true, 1 );
+                    data.setState( player, item, newState );
                     break ;
                 }
                 }
@@ -477,14 +496,14 @@ namespace adiktedpp {
              */
             void setStateAmount( const adiktedpp::Player player, const TValue item, const int amount ) {
                 if ( amount < 0 ) {
-                    const AvailableState newState( 0, 0 );
-                    this->setState( player, item, newState );
+                    const State newState( false, 0 );
+                    data.setState( player, item, newState );
                 } else if ( amount == 0 ) {
-                    const AvailableState newState( 1, 0 );
-                    this->setState( player, item, newState );
+                    const State newState( true, 0 );
+                    data.setState( player, item, newState );
                 } else {
-                    const AvailableState newState( 0, amount );
-                    this->setState( player, item, newState );
+                    const State newState( true, amount );
+                    data.setState( player, item, newState );
                 }
             }
 
@@ -537,7 +556,7 @@ namespace adiktedpp {
         class MagicAvailableState {
         public:
 
-            using Data = AvailableCommandStateMap< Spell, AvailableState >;
+            using Data = AvailableCommandStateMap< Spell, MagicAvailableMode >;
             using DataMap = Data::DataMap;
 
 
@@ -566,31 +585,15 @@ namespace adiktedpp {
                 return data.size();
             }
 
-            const AvailableState* getState( const adiktedpp::Player player, const Spell item ) const {
+            const MagicAvailableMode* getState( const adiktedpp::Player player, const Spell item ) const {
                 return data.getState( player, item );
             }
 
-            void setStateMode( const adiktedpp::Player player, const Spell item, const AvailableMode mode ) {
-                switch( mode ) {
-                case AvailableMode::AM_DISABLED: {
-                    const AvailableState newState( 0, 0 );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableMode::AM_POSSIBLE: {
-                    const AvailableState newState( 1, 0 );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                case AvailableMode::AM_ENABLED: {
-                    const AvailableState newState( 1, 1 );
-                    data.setState( player, item, newState );
-                    break ;
-                }
-                }
+            void setStateMode( const adiktedpp::Player player, const Spell item, const MagicAvailableMode mode ) {
+                data.setState( player, item, mode );
             }
 
-            void setAllAvailable( const Player player, const AvailableMode mode );
+            void setAllAvailable( const Player player, const MagicAvailableMode mode );
 
             void setStandard( const Player player );
 

@@ -24,6 +24,9 @@ namespace adiktedpp {
         };
 
 
+        /**
+         *
+         */
         enum class AvailableRoomMode {
             ARM_DISABLED,
             ARM_POSSIBLE_FOUND,      /// available to research when claimed/found
@@ -31,6 +34,22 @@ namespace adiktedpp {
             ARM_POSSIBLE,            /// available after meet certain criteria (e.g. research or build proper room)
             ARM_ENABLED
         };
+
+
+        /**
+         *
+         */
+        enum class ResearchableMode {
+            AM_DISABLED,
+            AM_RESEARCHABLE,          /// available after research
+            AM_AVAILABLE
+        };
+
+
+        using MagicAvailableMode = ResearchableMode;
+
+
+        /// ==========================================================================
 
 
         /**

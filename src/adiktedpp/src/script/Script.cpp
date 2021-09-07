@@ -781,7 +781,7 @@ namespace adiktedpp {
             init.CONCEAL_MAP_RECT( player, map, true );
         }
 
-        void Script::addAvailable( const Player player, const Creature item, const int available, const int numberForced ) {
+        void Script::addCreatureAvailable( const Player player, const Creature item, const bool available, const int numberForced ) {
             /**
              * old interface:
              *      [can be available] should be always 1
@@ -793,37 +793,63 @@ namespace adiktedpp {
              *      CREATURE_AVAILABLE(​ [player], ​[creature], ​[can be attracted], ​[amount forced] )
              */
             std::stringstream stream;
-            stream << AvailableCommand::AC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << available << ", " << numberForced << " )";
+            stream << AvailableCommand::AC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)available << ", " << numberForced << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
-        void Script::addAvailable( const Player player, const Room item, const int researchable, const int available ) {
+        void Script::addRoomAvailable( const Player player, const Room item, const int researchable, const bool available ) {
             std::stringstream stream;
-            stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << researchable << ", " << available << " )";
+            stream << AvailableCommand::AC_ROOM_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << researchable << ", " << (int)available << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
-        void Script::addAvailable( const Player player, const Door item, const int constructable, const int numberAvailable ) {
+        void Script::addCreatureAvailable( const Player player, const Door item, const bool constructable, const int numberAvailable ) {
             std::stringstream stream;
-            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << constructable << ", " << numberAvailable << " )";
+            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
-        void Script::addAvailable( const Player player, const Trap item, const int constructable, const int numberAvailable ) {
+        void Script::addDoorAvailable( const Player player, const Trap item, const bool constructable, const int numberAvailable ) {
             std::stringstream stream;
-            stream << AvailableCommand::AC_TRAP_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << constructable << ", " << numberAvailable << " )";
+            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
 
-        void Script::addAvailable( const Player player, const Spell item, const int researchable, const int available ) {
+        void Script::addTrapAvailable( const Player player, const Trap item, const bool constructable, const int numberAvailable ) {
             std::stringstream stream;
-            stream << AvailableCommand::AC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << researchable << ", " << available << " )";
+            stream << AvailableCommand::AC_TRAP_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
             const std::string& line = stream.str();
             init.addLine( line );
+        }
+
+        void Script::setMagicAvailable( const Player player, const Spell item, const MagicAvailableMode mode ) {
+            switch( mode ) {
+            case MagicAvailableMode::AM_DISABLED: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", 0, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break;
+            }
+            case MagicAvailableMode::AM_RESEARCHABLE: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", 1, 0 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break;
+            }
+            case MagicAvailableMode::AM_AVAILABLE: {
+                std::stringstream stream;
+                stream << AvailableCommand::AC_MAGIC_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", 1, 1 )";
+                const std::string& line = stream.str();
+                init.addLine( line );
+                break;
+            }
+            }
         }
 
         void Script::set( const RoomsAvailableState& stateMap ) {
@@ -836,7 +862,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addAvailable( player, item, state.accessible, state.available );
+                    addRoomAvailable( player, item, state.researchable, state.available );
                 }
             }
         }
@@ -851,7 +877,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addAvailable( player, item, state.available, state.accessible );
+                    addCreatureAvailable( player, item, state.available, state.numberForced );
                 }
             }
         }
@@ -866,7 +892,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addAvailable( player, item, state.accessible, state.available );
+                    addDoorAvailable( player, item, state.constructable, state.numberAvailable );
                 }
             }
         }
@@ -881,7 +907,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addAvailable( player, item, state.accessible, state.available );
+                    addTrapAvailable( player, item, state.constructable, state.numberAvailable );
                 }
             }
         }
@@ -896,7 +922,7 @@ namespace adiktedpp {
                 for ( ; iter2 != submap.end(); ++iter2 ) {
                     const auto item   = iter2->first;
                     const auto& state = iter2->second;
-                    addAvailable( player, item, state.accessible, state.available );
+                    setMagicAvailable( player, item, state );
                 }
             }
         }
@@ -959,6 +985,13 @@ namespace adiktedpp {
             set( availableState );
         }
 
+        void Script::addDoorAvailable( const Player player, const Door item, const bool constructable, const int numberAvailable ) {
+            std::stringstream stream;
+            stream << AvailableCommand::AC_DOOR_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << (int)constructable << ", " << numberAvailable << " )";
+            const std::string& line = stream.str();
+            init.addLine( line );
+        }
+
         void Script::setDoorsAvailable( const Player player, const int available ) {
             DoorAvailableState availableState;
             availableState.setAllAvailableAmount( player, available );
@@ -971,7 +1004,7 @@ namespace adiktedpp {
             set( availableState );
         }
 
-        void Script::setMagicAvailable( const Player player, const AvailableMode mode ) {
+        void Script::setMagicAvailable( const Player player, const MagicAvailableMode mode ) {
             MagicAvailableState availableState;
             availableState.setAllAvailable( player, mode );
             set( availableState );
