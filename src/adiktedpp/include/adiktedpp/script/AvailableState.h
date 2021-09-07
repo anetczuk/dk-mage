@@ -470,24 +470,6 @@ namespace adiktedpp {
                 }
             }
 
-            void setAllAvailable( const Player player, const bool available ) {
-                const std::set< TValue >& list = itemsSet();
-                for ( const TValue item: list ) {
-                    if ( available ) {
-                        this->setStateMode( player, item, AvailableMode::AM_POSSIBLE );
-                    } else {
-                        this->setStateMode( player, item, AvailableMode::AM_DISABLED );
-                    }
-                }
-            }
-
-            void setAllAvailableAmount( const Player player, const int amount ) {
-                const std::set< TValue >& list = itemsSet();
-                for ( const TValue item: list ) {
-                    setStateAmount( player, item, amount );
-                }
-            }
-
             /**
              * "available" parameter meaning:
              *      - negative -- disabled
@@ -510,10 +492,10 @@ namespace adiktedpp {
 
         protected:
 
-            const std::set< TValue >& itemsSet() {
-                static const std::set< TValue > aSet;
-                return aSet;
-            }
+//            const std::set< TValue >& itemsSet() {
+//                static const std::set< TValue > aSet;
+//                return aSet;
+//            }
 
         };
 
@@ -527,8 +509,22 @@ namespace adiktedpp {
             DoorAvailableState( const std::set< adiktedpp::Player >& players ): WorkshopAvailableState< Door >( players ) {
             }
 
-            const std::set< Door >& itemsSet() const {
-                return Doors();
+            void setAllAvailable( const Player player, const bool available ) {
+                const std::set< Door >& list = Doors();
+                for ( const Door item: list ) {
+                    if ( available ) {
+                        this->setStateMode( player, item, AvailableMode::AM_POSSIBLE );
+                    } else {
+                        this->setStateMode( player, item, AvailableMode::AM_DISABLED );
+                    }
+                }
+            }
+
+            void setAllAvailableAmount( const Player player, const int amount ) {
+                const std::set< Door >& list = Doors();
+                for ( const Door item: list ) {
+                    setStateAmount( player, item, amount );
+                }
             }
 
         };
@@ -543,8 +539,22 @@ namespace adiktedpp {
             TrapAvailableState( const std::set< adiktedpp::Player >& players ): WorkshopAvailableState< Trap >( players ) {
             }
 
-            const std::set< Trap >& itemsSet() const {
-                return Traps();
+            void setAllAvailable( const Player player, const bool available ) {
+                const std::set< Trap >& list = Traps();
+                for ( const Trap item: list ) {
+                    if ( available ) {
+                        this->setStateMode( player, item, AvailableMode::AM_POSSIBLE );
+                    } else {
+                        this->setStateMode( player, item, AvailableMode::AM_DISABLED );
+                    }
+                }
+            }
+
+            void setAllAvailableAmount( const Player player, const int amount ) {
+                const std::set< Trap >& list = Traps();
+                for ( const Trap item: list ) {
+                    setStateAmount( player, item, amount );
+                }
             }
 
         };

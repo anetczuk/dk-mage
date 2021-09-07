@@ -65,6 +65,7 @@ namespace dkmage {
         PN_DUNGEON_HEADER_GUARD_LEVEL,
 
         PN_TEST_MODE,
+        PN_TEST_ADDONS,
         PN_STOP_ON_FAIL                         /// do not retry generation if attempt failed
     };
 

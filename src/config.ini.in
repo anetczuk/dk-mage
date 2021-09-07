@@ -136,10 +136,15 @@ gem_guard_level = 6:9
 #enemy_keeper_creatures_limit = 50
 
 
-## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
+## Enable testing map for given map type. 
 ## To disable comment-out parameter.
 ## Type: any string
 #test_mode = on
+
+## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
+## To disable comment-out parameter.
+## Type: any string
+#test_addons = on
 
 ## Do not re-attempt to generate map on failure. 
 ## To disable comment-out parameter.

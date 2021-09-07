@@ -131,6 +131,7 @@ namespace dkmage {
         case ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL:  return "dungeon_header_guard_level";
 
         case ParameterName::PN_TEST_MODE:       return "test_mode";
+        case ParameterName::PN_TEST_ADDONS:     return "test_addons";
         case ParameterName::PN_STOP_ON_FAIL:    return "stop_on_fail";
         }
 

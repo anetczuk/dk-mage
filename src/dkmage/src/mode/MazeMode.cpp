@@ -195,7 +195,7 @@ namespace dkmage {
             dungeon.limitSouth = 0;
             dungeon.fortify( true );
 
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 dungeon.limitNorth = 0;
                 dungeon.limitSouth = 0;
                 dungeon.generate( 4, 5 );
@@ -239,7 +239,7 @@ namespace dkmage {
             }
 
             /// add other
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 const Point revPos = heart->edgePoint( spatial::Direction::D_SOUTH );
                 level.setItem( revPos, Item::I_SPECIAL_REVMAP );
 
@@ -322,7 +322,7 @@ namespace dkmage {
             script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 initialGold += 200000;
             }
             script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
@@ -371,7 +371,7 @@ namespace dkmage {
             availableMagic.setStandard( Player::P_ALL );
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_DESTROY_WALLS, script::MagicAvailableMode::AM_DISABLED );
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::MagicAvailableMode::AM_DISABLED );
-            if ( parameters.isSet( ParameterName::PN_TEST_MODE ) ) {
+            if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::MagicAvailableMode::AM_AVAILABLE );
 //                magicAvailableState.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
             }

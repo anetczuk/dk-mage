@@ -124,7 +124,10 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     TCLAP::SwitchArg stopOnFailArg( "", "stop_on_fail", "Do not re-attempt to generate map on failure", cmd, false );
 
     const std::string testModeName = getParameterName( ParameterName::PN_TEST_MODE );
-    TCLAP::SwitchArg testingModeArg( "", testModeName, "Additional items on map, e.g. reveal map or neutral monsters next to player's dungeon heart", cmd );
+    TCLAP::SwitchArg testingModeArg( "", testModeName, "Enable testing map for given map type.", cmd );
+
+    const std::string testAddonsName = getParameterName( ParameterName::PN_TEST_ADDONS );
+    TCLAP::SwitchArg testingAddonsArg( "", testAddonsName, "Additional items on map, e.g. reveal map or neutral monsters next to player's dungeon heart", cmd );
 
     TCLAP::ValueArg<std::string> outputPathArg( "", "output_path", "Path to map's output file (absolute or relative to work dir)", false, "", "path string" );
     TCLAP::ValueArg<std::string> outputSubPathArg( "", "output_subpath", "Path to map's output file relative to 'level_path' config field", false, "", "path string" );
@@ -203,7 +206,8 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     /// 'type' field already set
     retParameters.add( seedArg.getName(), mapSeed );                                      /// override section field
 
-    if ( testingModeArg.isSet() )   retParameters.add( testingModeArg.getName(), testingModeArg.getValue() );
+    if ( testingModeArg.isSet() )     retParameters.add( testingModeArg.getName(),   testingModeArg.getValue() );
+    if ( testingAddonsArg.isSet() )   retParameters.add( testingAddonsArg.getName(), testingAddonsArg.getValue() );
 
     if ( outputPathArg.isSet() )    retParameters.add( outputPathArg.getName(), outputPathArg.getValue() );
     if ( outputSubPathArg.isSet() ) retParameters.add( outputSubPathArg.getName(), outputSubPathArg.getValue() );
