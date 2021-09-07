@@ -334,7 +334,7 @@ namespace adiktedpp {
             void concealWholeMap( const Player player );
 
             /// available -- 0 or 1 -- if 1 then creatures appear from the portal
-            void addAvailable( const adiktedpp::Player player, const Creature item, const int available, const int /*accessible*/ );
+            void addAvailable( const adiktedpp::Player player, const Creature item, const int available, const int numberForced );
 
             /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
             void addAvailable( const adiktedpp::Player player, const Room item, const int researchable, const int available );

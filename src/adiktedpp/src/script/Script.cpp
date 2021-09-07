@@ -781,7 +781,7 @@ namespace adiktedpp {
             init.CONCEAL_MAP_RECT( player, map, true );
         }
 
-        void Script::addAvailable( const Player player, const Creature item, const int available, const int /*accessible*/ ) {
+        void Script::addAvailable( const Player player, const Creature item, const int available, const int numberForced ) {
             /**
              * old interface:
              *      [can be available] should be always 1
@@ -793,7 +793,7 @@ namespace adiktedpp {
              *      CREATURE_AVAILABLE(​ [player], ​[creature], ​[can be attracted], ​[amount forced] )
              */
             std::stringstream stream;
-            stream << AvailableCommand::AC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << available << ", 0 )";
+            stream << AvailableCommand::AC_CREATURE_AVAILABLE << "( " << script_keyword( player ) << ", " << script_keyword( item ) << ", " << available << ", " << numberForced << " )";
             const std::string& line = stream.str();
             init.addLine( line );
         }
