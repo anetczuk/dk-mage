@@ -333,37 +333,26 @@ namespace adiktedpp {
 
             void concealWholeMap( const Player player );
 
-            /// accessible -- always set to 1
             /// available -- 0 or 1 -- if 1 then creatures appear from the portal
-            void addAvailable( const adiktedpp::Player player, const Creature item, const int /*accessible*/, const int available );
+            void addAvailable( const adiktedpp::Player player, const Creature item, const int available, const int /*accessible*/ );
 
-            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researched' set)
-            void addAvailable( const adiktedpp::Player player, const Room item, const int researched, const int available );
+            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
+            void addAvailable( const adiktedpp::Player player, const Room item, const int researchable, const int available );
 
-            /// constructed -- 0 or 1 -- if 1 then door can be constructed
-            void addAvailable( const adiktedpp::Player player, const Door item, const int constructed, const int numberAvailable );
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addAvailable( const adiktedpp::Player player, const Door item, const int constructable, const int numberAvailable );
 
-            /// constructed -- 0 or 1 -- if 1 then door can be constructed
-            void addAvailable( const adiktedpp::Player player, const Trap item, const int constructed, const int numberAvailable );
+            /// constructable -- 0 or 1 -- if 1 then door can be constructed
+            void addAvailable( const adiktedpp::Player player, const Trap item, const int constructable, const int numberAvailable );
 
-            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researched' set)
-            void addAvailable( const adiktedpp::Player player, const Spell item, const int researched, const int available );
+            /// available -- 0 or 1 -- if 1 then available straight away, otherwise need to be researched (if 'researchable' set)
+            void addAvailable( const adiktedpp::Player player, const Spell item, const int researchable, const int available );
 
-            template <typename TValue>
-            void set( const AvailableCommandStateMap<TValue>& stateMap ) {
-                auto iter1 = stateMap.begin();
-                for ( ; iter1 != stateMap.end(); ++iter1 ) {
-                    const adiktedpp::Player player = iter1->first;
-                    const auto& submap = iter1->second;
-
-                    auto iter2 = submap.begin();
-                    for ( ; iter2 != submap.end(); ++iter2 ) {
-                        const auto item   = iter2->first;
-                        const auto& state = iter2->second;
-                        addAvailable( player, item, state.accessible, state.available );
-                    }
-                }
-            }
+            void set( const RoomsAvailableState& stateMap );
+            void set( const CreatureAvailableState& stateMap );
+            void set( const DoorAvailableState& stateMap );
+            void set( const TrapAvailableState& stateMap );
+            void set( const MagicAvailableState& stateMap );
 
             /// set creature pool
             void setEvilCreaturesPool( const std::size_t number );

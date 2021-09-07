@@ -59,30 +59,7 @@ namespace adiktedpp {
             }
         }
 
-        void DoorAvailableState::setAllAvailable( const Player player, const int amount ) {
-            const std::set< Door >& list = Doors();
-            for ( const Door item: list ) {
-                setStateAmount( player, item, amount );
-            }
-        }
-
-        void TrapAvailableState::setAllAvailable( const Player player, const bool available ) {
-            const std::set< Trap >& list = Traps();
-            for ( const Trap item: list ) {
-                if ( available ) {
-                    setStateMode( player, item, AvailableMode::AM_POSSIBLE );
-                } else {
-                    setStateMode( player, item, AvailableMode::AM_DISABLED );
-                }
-            }
-        }
-
-        void TrapAvailableState::setAllAvailable( const Player player, const int amount ) {
-            const std::set< Trap >& list = Traps();
-            for ( const Trap item: list ) {
-                setStateAmount( player, item, amount );
-            }
-        }
+        /// =========================================================================================
 
         void MagicAvailableState::setAllAvailable( const Player player, const AvailableMode mode ) {
             const std::set< Spell >& list = Spells();

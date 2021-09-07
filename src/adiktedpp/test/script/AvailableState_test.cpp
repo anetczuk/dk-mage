@@ -22,6 +22,33 @@ using namespace script;
 //}
 
 
+TEST_CASE("CreatureAvailableState_setStateMode", "[classic]") {
+    CreatureAvailableState commandState;
+
+    commandState.setStateMode( Player::P_P0, Creature::C_SKELETON, AvailableMode::AM_ENABLED );
+    {
+        const AvailableState* state = commandState.getState( Player::P_P0, Creature::C_SKELETON );
+        REQUIRE( state != nullptr );
+        CHECK( state->accessible == 1 );
+        CHECK( state->available  == 1 );
+    }
+
+    {
+        /// configured
+        const AvailableState* state = commandState.getState( Player::P_P0, Creature::C_SKELETON );
+        REQUIRE( state != nullptr );
+        CHECK( state->accessible == 1 );
+        CHECK( state->available  == 1 );
+    }
+    {
+        /// default
+        const AvailableState* state = commandState.getState( Player::P_P0, Creature::C_DRAGON );
+        REQUIRE( state == nullptr );
+    }
+}
+
+/// ===============================================================================================
+
 TEST_CASE("RoomsAvailableState_enabled_disabled", "[classic]") {
     RoomsAvailableState commandState;
 
