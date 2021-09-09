@@ -29,6 +29,7 @@ namespace dkmage {
 
 
         BaseLevelGenerator(): messages( "adikted.log.txt" ), map() {
+            map.script.setHeaderInfo();
         }
 
         const ParametersMap& getParameters() const override {

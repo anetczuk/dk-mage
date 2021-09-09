@@ -26,6 +26,18 @@ namespace adiktedpp {
         };
 
 
+        enum class Timer {
+            T_TIMER_0,
+            T_TIMER_1,
+            T_TIMER_2,
+            T_TIMER_3,
+            T_TIMER_4,
+            T_TIMER_5,
+            T_TIMER_6,
+            T_TIMER_7
+        };
+
+
         enum class IfOption {
             IO_MONEY,
             IO_GAME_TURN,
@@ -88,6 +100,22 @@ namespace adiktedpp {
         /// ==================================================================
 
 
+        std::string script_keyword( const Player data );
+        std::string script_keyword( const Slab data );
+        std::string script_keyword( const Room data );
+        std::string script_keyword( const Creature data );
+        std::string script_keyword( const Door data );
+        std::string script_keyword( const Trap data );
+        std::string script_keyword( const Spell data );
+        std::string script_keyword( const Flag data );
+        std::string script_keyword( const Timer data );
+        std::string script_keyword( const IfOption data );
+        std::string script_keyword( const PartyObjective data );
+
+
+        /// ==================================================================
+
+
         /**
          *
          */
@@ -124,6 +152,10 @@ namespace adiktedpp {
 
             std::vector< std::string >::const_iterator end() const {
                 return lines.end();
+            }
+
+            void pushFront( const ScriptContainer& script ) {
+                lines.insert( lines.begin(), script.begin(), script.end() );
             }
 
             void addEmptyLine( const std::size_t number = 1 );
@@ -176,6 +208,11 @@ namespace adiktedpp {
             /// need to be reused explicit
             void ADD_TO_FLAG( const adiktedpp::Player player, const Flag flag, const int value=1 );
 
+            /// randomizes flag value in range [1..maxValue]
+            void RANDOMISE_FLAG( const adiktedpp::Player player, const Flag flag, const int maxValue );
+
+            void SET_TIMER( const adiktedpp::Player player, const Timer timer );
+
             void QUICK_INFORMATION( const std::string& comment );
 
             void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
@@ -194,6 +231,8 @@ namespace adiktedpp {
             void CHANGE_SLAB_TYPE( const utils::Point position, const Slab slab );
 
             void IF( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value );
+
+            void IF( const adiktedpp::Player player, const Timer timer, const std::string& comparison, const int value );
 
             void IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value );
 
@@ -219,6 +258,7 @@ namespace adiktedpp {
             /// 'enemyNumber' in range [0..4]. 0 is for red player.
             void ADD_TUNNELLER_PARTY_TO_LEVEL( const Player player, const std::string& partyName, const int actionPoint, const std::size_t enemyNumber, const std::size_t tunnelerExp, const std::size_t tunnelerGold );
 
+            void NEXT_COMMAND_REUSABLE();
         };
 
 
@@ -229,6 +269,7 @@ namespace adiktedpp {
         enum class ScriptSection {
             SS_HEADER,
             SS_INIT,
+            SS_FLAGS,
             SS_PARTIES,
             SS_MAIN,
             SS_ACTION,
@@ -246,6 +287,7 @@ namespace adiktedpp {
 
             ScriptCommand header;
             ScriptCommand init;
+            ScriptCommand flags;
             ScriptCommand parties;
             ScriptCommand main;
             ScriptCommand action;
@@ -269,6 +311,9 @@ namespace adiktedpp {
             ScriptCommand& initSection() {
                 return init;
             }
+            ScriptCommand& flagsSection() {
+                return flags;
+            }
             ScriptCommand& partiesSection() {
                 return parties;
             }
@@ -283,6 +328,14 @@ namespace adiktedpp {
             }
 
             void clearData();
+
+            void pushFrontBySections( const Script& script );
+
+            std::vector< std::string > build() const;
+
+            void setHeaderInfo();
+
+            void storeParameters( const std::string& mapType, const std::string& seed );
 
             /// limit: 16
             std::size_t countTunnellerTriggers() const;
@@ -299,10 +352,6 @@ namespace adiktedpp {
 
             /// limit: 16
             std::size_t countPartyDefinitions() const;
-
-            std::vector< std::string > build() const;
-
-            void storeParameters( const std::string& mapType, const std::string& seed );
 
             void addLine( const std::string& line ) {
                 other.addLine( line );

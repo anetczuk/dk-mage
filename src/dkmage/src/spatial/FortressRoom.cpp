@@ -343,6 +343,7 @@ namespace dkmage {
 
                 std::size_t radius = 0;
                 switch( roomSize ) {
+//                case 3: radius = 0;
                 case 5: {
                     radius = 1;
                     break;
@@ -559,10 +560,16 @@ namespace dkmage {
             void draw( FortressData& data ) const override {
                 FortressRoomTrap::draw( data );
 
-                /// add hero gate
+                adiktedpp::Level& level = data.level();
                 const Rect& roomRect = bbox();
                 const Point center = roomRect.center();
-                adiktedpp::Level& level = data.level();
+
+                if ( roomSize == 3 ) {
+                    /// prevent trapping thing in solid column
+                    level.setRoom( center, Room::R_CLAIMED );
+                }
+
+                /// add hero gate
                 raw::RawLevel& rawLewel = level.getRawLevel();
                 unsigned char* gate = rawLewel.setItem( center, raw::SubTypeItem::STI_HEROGATE );
                 if ( gate == nullptr ) {
@@ -570,6 +577,71 @@ namespace dkmage {
                 }
                 rawLewel.setHeroGateNumber( gate, MAIN_HERO_GATE );
 //                rawLewel.setItem( center, Item::I_HEROGATE );
+
+                script::Script& script = data.script();
+
+                {
+                    /// counter strike parties
+                    script::ScriptCommand& parties = script.partiesSection();
+                    parties.addEmptyLine();
+                    parties.REM( "- counter strike teams -" );
+                    parties.CREATE_PARTY( "main_counter_strike_1" );
+                    parties.ADD_TO_PARTY( "main_counter_strike_1", Creature::C_SAMURAI, 1,  6,  800, script::PartyObjective::PO_STEAL_SPELLS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_1", Creature::C_MONK,    2,  6,  400, script::PartyObjective::PO_STEAL_SPELLS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_1", Creature::C_WIZARD,  2,  6,  300, script::PartyObjective::PO_STEAL_SPELLS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_1", Creature::C_FAIRY,   2,  6,  200, script::PartyObjective::PO_STEAL_SPELLS );
+
+                    parties.CREATE_PARTY( "main_counter_strike_2" );
+                    parties.ADD_TO_PARTY( "main_counter_strike_2", Creature::C_BARBARIAN, 1,  6,  600, script::PartyObjective::PO_STEAL_GOLD );
+                    parties.ADD_TO_PARTY( "main_counter_strike_2", Creature::C_THIEF,     2,  6,  400, script::PartyObjective::PO_STEAL_GOLD );
+                    parties.ADD_TO_PARTY( "main_counter_strike_2", Creature::C_DWARF,     2,  6,  300, script::PartyObjective::PO_STEAL_GOLD );
+                    parties.ADD_TO_PARTY( "main_counter_strike_2", Creature::C_ARCHER,    2,  6,  200, script::PartyObjective::PO_STEAL_GOLD );
+
+                    parties.CREATE_PARTY( "main_counter_strike_3" );
+                    parties.ADD_TO_PARTY( "main_counter_strike_3", Creature::C_GIANT,   2,  6,  600, script::PartyObjective::PO_ATTACK_ROOMS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_3", Creature::C_SAMURAI, 2,  6,  400, script::PartyObjective::PO_ATTACK_ROOMS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_3", Creature::C_MONK,    2,  6,  300, script::PartyObjective::PO_ATTACK_ROOMS );
+                    parties.ADD_TO_PARTY( "main_counter_strike_3", Creature::C_WIZARD,  1,  6,  200, script::PartyObjective::PO_ATTACK_ROOMS );
+                }
+
+                script::ScriptCommand& flags = script.flagsSection();
+                flags.addEmptyLine();
+                flags.REM( "- start counter attacks after releasing scout team -" );
+                flags.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "==", 100 );
+                {
+                    flags.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
+                    flags.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6 );
+                }
+                flags.ENDIF();
+
+                script::ScriptCommand& main = script.mainSection();
+                main.addEmptyLine();
+                main.REM( "- main counter attacks triggered each approx. 10 min -" );
+                main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 104 );
+                main.IF( Player::P_GOOD, script::Timer::T_TIMER_7, ">", 10 * 60 * 20 );
+                {
+                    main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 104 );
+                    {
+                        script::RandomSelectCreator selector( Player::P_GOOD, script::Flag::F_FLAG_7, true, main );
+                        const std::vector< std::string > data = { "main_counter_strike_1", "main_counter_strike_2", "main_counter_strike_3" };
+                        selector.addParties( data, - (int)MAIN_HERO_GATE );
+                    }
+                    main.ENDIF();
+
+//                    main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 110 );
+//                    {
+//                        main.NEXT_COMMAND_REUSABLE();
+//                        main.ADD_CREATURE_TO_LEVEL( Player::P_GOOD, Creature::C_BARBARIAN, - (int)MAIN_HERO_GATE, 1, 6, 500 );
+//                    }
+//                    main.ENDIF();
+
+                    main.NEXT_COMMAND_REUSABLE();
+                    main.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6 );
+                    main.NEXT_COMMAND_REUSABLE();
+                    main.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
+                }
+                main.ENDIF();
+                main.ENDIF();
             }
 
         };

@@ -212,19 +212,15 @@ namespace dkmage {
         }
 
         void HeroFortressMode::prepareScript() {
-            adiktedpp::script::Script& script = map.script;
+            adiktedpp::script::Script mainScript;
 
-            script::ScriptCommand& initSection = script.initSection();
+            script::ScriptCommand& initSection = mainScript.initSection();
+
             initSection.addEmptyLine();
-            initSection.REM( "- flags meaning -" );
-            initSection.REM( "     FLAG6 -- scout_1 team" );
-            initSection.REM( "     FLAG7 -- modify stun chance after transformation of prisoners to creatures (skeletons, ghosts or conversion)" );
+            mainScript.setFXLevel();
 
-            initSection.addEmptyLine( 2 );
-            script.setFXLevel();
-
-            script.addLineInit( "" );
-            script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            mainScript.addLineInit( "" );
+            mainScript.addLineInit( "SET_GENERATE_SPEED( 500 )" );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
@@ -235,16 +231,16 @@ namespace dkmage {
             const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 25 );
             initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
 
-            script.addLineInit( "" );
-            script.setEvilCreaturesPool( 10 );
+            mainScript.addLineInit( "" );
+            mainScript.setEvilCreaturesPool( 10 );
 
-            script.addLineInit( "" );
+            mainScript.addLineInit( "" );
             const std::set< Player > availablePlayers = { Player::P_P0 };
             script::CreatureAvailableState availableCreatures( availablePlayers );
             availableCreatures.setEvilAvailable( Player::P_P0 );
-            script.set( availableCreatures );
+            mainScript.set( availableCreatures );
 
-            script.addLineInit( "" );
+            mainScript.addLineInit( "" );
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
             availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::RoomAvailableMode::RAM_DISABLED );
@@ -257,19 +253,19 @@ namespace dkmage {
             availableRooms.setStateMode( Player::P_P0, Room::R_TORTURE, script::RoomAvailableMode::RAM_AVAILABLE_FOUND );
             availableRooms.setStateMode( Player::P_P0, Room::R_GRAVEYARD, script::RoomAvailableMode::RAM_AVAILABLE_FOUND );
 
-            script.set( availableRooms );
+            mainScript.set( availableRooms );
 
-            script.addLineInit( "" );
-            script.setDoorsAvailable( Player::P_ALL, 0 );
+            mainScript.addLineInit( "" );
+            mainScript.setDoorsAvailable( Player::P_ALL, 0 );
 
-            script.addLineInit( "" );
+            mainScript.addLineInit( "" );
 //            script.setTrapsAvailable( Player::P_ALL, 0 );
             script::TrapAvailableState availableTraps( availablePlayers );
             availableTraps.setAllAvailable( Player::P_ALL, true );
             availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
-            script.set( availableTraps );
+            mainScript.set( availableTraps );
 
-            script.addLineInit( "" );
+            mainScript.addLineInit( "" );
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
             availableMagic.setStandard( Player::P_ALL );
@@ -279,31 +275,42 @@ namespace dkmage {
                 availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::MagicAvailableMode::AM_AVAILABLE );
 //                magicAvailableState.setAllAvailable( Player::P_P0, script::AvailableMagicMode::AM_ENABLED );
             }
-            script.set( availableMagic );
+            mainScript.set( availableMagic );
+
+            initSection.addEmptyLine();
+            mainScript.setImpRotting( false );
 
 //            script.addLineInit( "" );
 //            script.concealWholeMap( Player::P_P0 );
 
+            /// flags part
+            script::ScriptCommand& flagsSection = mainScript.flagsSection();
+            flagsSection.addEmptyLine();
+            flagsSection.REM( "- meaning of flags and timers -" );
+            flagsSection.REM( "     P0 FLAG7  -- modify stun chance after transformation of prisoners to creatures (skeletons, ghosts or conversion)" );
+            flagsSection.REM( "     PGOOD FLAG6  -- scout_1 and counter strike teams" );
+            flagsSection.REM( "     PGOOD FLAG7  -- random counter strike team selector" );
+            flagsSection.REM( "     PGOOD TIMER7 -- counting time to next main counter attack" );
+
             /// anti snow-balling
-            script.addLineInit( "" );
-            script.setImpRotting( false );
-            script.addLineInit( "" );
-            script.setPrisonConvertLimits();
-            script.addLineInit( "" );
-            script.setTortureConvertLimits();
-            script.addLineInit( "" );
-            script.setStunChance();
-            script.addLineInit( "" );
-            script.setSacrificeLimits();
-            script.addLineInit( "" );
-            script.setGraveyardLimits();
+            script::ScriptCommand& mainSection = mainScript.mainSection();
+            mainSection.addEmptyLine();
+            mainScript.setPrisonConvertLimits();
+            mainSection.addEmptyLine();
+            mainScript.setTortureConvertLimits();
+            mainSection.addEmptyLine();
+            mainScript.setStunChance();
+            mainSection.addEmptyLine();
+            mainScript.setSacrificeLimits();
+            mainSection.addEmptyLine();
+            mainScript.setGraveyardLimits();
+            mainSection.addEmptyLine();
 
             /// main part
-            script::ScriptCommand& mainSection = script.mainSection();
             const GateDistanceData closestHeroGate = closestHeroGates( map.level, evilHeartPosition );
             const std::size_t gatesSize = closestHeroGate.size();
             if ( gatesSize > 0 ) {
-                script::ScriptCommand& parties = script.partiesSection();
+                script::ScriptCommand& parties = mainScript.partiesSection();
                 parties.addEmptyLine();
                 parties.REM( "- first recon team -" );
                 parties.CREATE_PARTY( "scout_1" );
@@ -312,28 +319,28 @@ namespace dkmage {
 
                 mainSection.addEmptyLine();
                 mainSection.REM( "- send scout team -" );
-                mainSection.IF( Player::P_P0, script::Flag::F_FLAG_6, "<", 255 );
-                mainSection.IF( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
+                mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 100 );
+                mainSection.IF( Player::P_GOOD, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
                 {
                     for ( std::size_t i=0; i<gatesSize; ++i ) {
                         const GateDistance& item = closestHeroGate[ i ];
-                        mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, item.id );
+                        mainSection.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6, item.id );
                         mainSection.IF_SLAB_OWNER( item.position, Player::P_P0 );
                         mainSection.REM( "hero gate " + std::to_string( item.id ) + " captured" );
                     }
                     {
                         /// deepest if-clause
                         mainSection.REM( "no more hero gates" );
-                        mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, 255 );
+                        mainSection.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6, 100 );
                     }
                     for ( std::size_t i=gatesSize-1; i<gatesSize; --i ) {
                         mainSection.ENDIF();
                         const GateDistance& item = closestHeroGate[ i ];
-                        mainSection.IF( Player::P_P0, script::Flag::F_FLAG_6, "==", item.id );
+                        mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "==", item.id );
                         {
                             mainSection.REM( "hero gate " + std::to_string( item.id ) + " not captured" );
                             mainSection.ADD_TUNNELLER_PARTY_TO_LEVEL( Player::P_GOOD, "scout_1", (int)-item.id, 0, 5, 1000 );
-                            mainSection.SET_FLAG( Player::P_P0, script::Flag::F_FLAG_6, 255 );
+                            mainSection.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6, 100 );
                         }
                         mainSection.ENDIF();
                     }
@@ -343,10 +350,14 @@ namespace dkmage {
             }
 
             /// end game conditions
-            script[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
-            script.setWinConditionKillGood();
-            script[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
-            script.setLoseConditionStandard( Player::P_P0 );
+            mainScript[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
+            mainScript.setWinConditionKillGood();
+            mainScript[ script::ScriptSection::SS_ENDCOND ].addEmptyLine();
+            mainScript.setLoseConditionStandard( Player::P_P0 );
+
+            /// merge scripts
+            adiktedpp::script::Script& script = map.script;
+            script.pushFrontBySections( mainScript );
         }
 
     } /* namespace mode */
