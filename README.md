@@ -92,6 +92,18 @@ Unit tests can be executed from within proper `build` subdirectory by executing 
 To build one have to `cmake` directly in order to configure project and then execute `cmake --build .` from within configured build directory.
 
 
+## Release
+
+To release binaries proceed with following state:
+1. ensure or update version number of project (`project()` command in *src/CMakeLists.txt*)
+2. build source code
+3. ensure all tests pass (execute `ctest` from build directory)
+3. generate documentation (usage info, samples, previews etc.) by running `generate_doc.sh` script from build directory (script will use prepared executable to generate required artifacts)
+4. commit and push changes
+5. run `deploy_zip.sh` from build directory
+6. upload binaries (_build/bin/dkmage*.zip_ file) 
+
+
 ## Examples of various used techniques:
 
 - *CMake*'s `FetchContent` and proper configuration for `add_directory` (`target_include_directories`)
