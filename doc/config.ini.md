@@ -63,6 +63,27 @@ levels_path =
 #type =
 
 
+## Limit of tunnellers trigger commands (ADD_TUNNELLER_PARTY_TO_LEVEL) allowed by game.
+## Type: VALUE of unsigned integer
+script_tunnellers_limit = 256
+
+## Limit of parties and creature trigger commands (ADD_*_TO_LEVEL) allowed by game.
+## Type: VALUE of unsigned integer
+script_parties_limit    = 256
+
+## Limit of script commands (almost every) inside IF body allowed by game.
+## Type: VALUE of unsigned integer
+script_values_limit     = 256
+
+## Limit of IF conditions (IF, IF_*) allowed by game.
+## Type: VALUE of unsigned integer
+script_if_conds_limit   = 256
+
+## Limit of party definitions conditions (CREATE_PARTY) allowed by game.
+## Type: VALUE of unsigned integer
+script_party_defs_limit = 256
+
+
 ## Number of gold slabs initailly available for human player.
 ## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example: 60:80,90,100
@@ -71,7 +92,7 @@ levels_path =
 ## Number of gem slabs available for human player. Slabs number is upper limited by 'gem_faces_number'.
 ## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
 ## Example: 2,3
-#gem_slabs_number =
+#gem_slabs_number = 
 
 ## Number of gem faces available for human player. Faces number is upper limited by 'gem_slabs_number' * 4.
 ## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
@@ -84,11 +105,11 @@ levels_path =
 
 ## Number of creatures guarding each gem slab. Number will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers
-gem_guard_number = 5
+gem_guard_number = 3:5
 
 ## Experience of gem guards. Number will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
-gem_guard_level = 6:9
+gem_guard_level = 4:7
 
 ## Initial gold amount for human player.
 ## Type: NUMERIC_SET of unsigned integers. Number will be random from given set.
@@ -118,10 +139,15 @@ gem_guard_level = 6:9
 #enemy_keeper_creatures_limit = 50
 
 
-## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
+## Enable testing map for given map type. 
 ## To disable comment-out parameter.
 ## Type: any string
 #test_mode = on
+
+## Additional goodies for human player: reveal map special item, additional 20 mistresses and +200 000 to initial gold. 
+## To disable comment-out parameter.
+## Type: any string
+#test_addons = on
 
 ## Do not re-attempt to generate map on failure. 
 ## To disable comment-out parameter.
@@ -175,7 +201,7 @@ gem_guard_level = 6:9
 ##
 [HEROFORTRESS]
 
-#gold_slabs_number = 40
+#gold_slabs_number = 52
 
 ## Max allowed value: 4
 #gem_faces_number = 2
@@ -192,12 +218,12 @@ entrances_number = 2:5
 ## Experience level of bridge guards. Level of each guardian will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
 ## Example: 2,3:5
-bridge_guard_level = 2:5
+bridge_guard_level = 1:3
 
 ## Experience level of guards wandering through corridors. The closer to dungeon heart, higher the level.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
 ## Example: 2,3:5
-corridor_guard_level = 4:7
+corridor_guard_level = 3:6
 
 ## Experience level of torture chamber guards. Level of each guardian will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
@@ -212,5 +238,5 @@ graveyard_guard_level = 7:10
 ## Experience level of dungeon heart guards. Level of each guardian will be random from given set.
 ## Type: NUMERIC_SET of unsigned integers in range [1..10]
 ## Example: 2,3:5
-dungeon_header_guard_level = 7:10
+dungeon_header_guard_level = 8:10
 ```
