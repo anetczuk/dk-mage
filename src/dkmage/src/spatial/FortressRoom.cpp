@@ -1087,7 +1087,7 @@ namespace dkmage {
 
                 const Rect chamber( roomRect.center(), 3, 3 );
 
-                static std::vector< Player > PlayerSet = { Player::P_UNSET, Player::P_GOOD, Player::P_GOOD, Player::P_GOOD };
+                std::vector< Player > PlayerSet = { Player::P_UNSET, roomOwner, roomOwner, roomOwner };
                 Player cOwner = Player::P_UNSET;
                 const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_TORTURE_GUARD_LEVEL, 5, 8 );
 
