@@ -94,8 +94,8 @@ To build one have to `cmake` directly in order to configure project and then exe
 
 ## Release
 
-To release binaries proceed with following state:
-1. ensure or update version number of project (`project()` command in *src/CMakeLists.txt*)
+To release binaries proceed with following steps:
+1. update version number of project (`project()` command in *src/CMakeLists.txt*)
 2. build source code
 3. ensure all tests pass (execute `ctest` from build directory)
 3. generate documentation (usage info, samples, previews etc.) by running `generate_doc.sh` script from build directory (script will use prepared executable to generate required artifacts)
