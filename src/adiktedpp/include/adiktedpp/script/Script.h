@@ -120,6 +120,7 @@ namespace adiktedpp {
          *
          */
         class ScriptContainer {
+        protected:
 
             std::vector< std::string > lines;
             std::size_t level;                      /// indent level
@@ -146,6 +147,10 @@ namespace adiktedpp {
                 return level;
             }
 
+            void indentLevel( const std::size_t newIndent ) {
+                level = newIndent;
+            }
+
             std::vector< std::string >::const_iterator begin() const {
                 return lines.begin();
             }
@@ -156,6 +161,10 @@ namespace adiktedpp {
 
             void pushFront( const ScriptContainer& script ) {
                 lines.insert( lines.begin(), script.begin(), script.end() );
+            }
+
+            void pushBack( const ScriptContainer& script ) {
+                lines.insert( lines.end(), script.begin(), script.end() );
             }
 
             void addEmptyLine( const std::size_t number = 1 );
@@ -187,12 +196,10 @@ namespace adiktedpp {
          *
          */
         class ScriptCommand: public ScriptContainer {
-            std::size_t infoIndex;
-
         public:
 
-            ScriptCommand(): ScriptContainer(), infoIndex(1) {
-            }
+//            ScriptCommand(): ScriptContainer() {
+//            }
 
             void REM( const std::string& comment ) {
                 return addLine( "rem " + comment );
@@ -213,9 +220,11 @@ namespace adiktedpp {
 
             void SET_TIMER( const adiktedpp::Player player, const Timer timer );
 
-            void QUICK_INFORMATION( const std::string& comment );
+            void QUICK_OBJECTIVE( const std::size_t infoIndex, const std::string& message );
 
-            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment );
+            void QUICK_INFORMATION( const std::size_t infoIndex, const std::string& message );
+
+            void PLAY_MESSAGE( const adiktedpp::Player player, const std::size_t speechId );
 
             void START_MONEY( const adiktedpp::Player player, const std::size_t amount );
 
@@ -295,6 +304,8 @@ namespace adiktedpp {
             ScriptCommand endConditions;
 
             bool isFX;
+            std::size_t objectiveIndex;
+            std::size_t infoIndex;
 
 
         public:
@@ -328,6 +339,16 @@ namespace adiktedpp {
             }
 
             void clearData();
+
+            std::size_t nextObjectiveIndex() {
+                return ++objectiveIndex;
+            }
+
+            std::size_t nextInfoIndex() {
+                return ++infoIndex;
+            }
+
+//            void copyIndexes( const Script& script );
 
             void pushFrontBySections( const Script& script );
 

@@ -129,7 +129,7 @@ namespace dkmage {
             Level& level = map.level;
 
             /// add gold vein
-            generateGoldSlabs( 40, 1, 1, 77 );
+            generateGoldSlabs( 52, 1, 1, 77 );
 
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );
@@ -213,7 +213,6 @@ namespace dkmage {
 
         void HeroFortressMode::prepareScript() {
             adiktedpp::script::Script mainScript;
-
             script::ScriptCommand& initSection = mainScript.initSection();
 
             initSection.addEmptyLine();
@@ -273,6 +272,7 @@ namespace dkmage {
             availableMagic.setStateMode( Player::P_ALL, Spell::S_POWER_ARMAGEDDON, script::MagicAvailableMode::AM_DISABLED );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::MagicAvailableMode::AM_AVAILABLE );
+                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_DESTROY_WALLS, script::MagicAvailableMode::AM_AVAILABLE );
 //                magicAvailableState.setAllAvailable( Player::P_P0, script::AvailableMagicMode::AM_ENABLED );
             }
             mainScript.set( availableMagic );
@@ -283,12 +283,17 @@ namespace dkmage {
 //            script.addLineInit( "" );
 //            script.concealWholeMap( Player::P_P0 );
 
+            initSection.addEmptyLine();
+            const std::size_t infoIndex = mainScript.nextObjectiveIndex();
+            initSection.QUICK_OBJECTIVE( infoIndex, "Coward landlord hid in fortress. Plunder surroundings and burn his pitty cottage." );
+
             /// flags part
             script::ScriptCommand& flagsSection = mainScript.flagsSection();
             flagsSection.addEmptyLine();
             flagsSection.REM( "- meaning of flags and timers -" );
             flagsSection.REM( "     P0 FLAG7  -- modify stun chance after transformation of prisoners to creatures (skeletons, ghosts or conversion)" );
-            flagsSection.REM( "     PGOOD FLAG6  -- scout_1 and counter strike teams" );
+            flagsSection.REM( "     PGOOD FLAG5  -- activate counter strike teams timer" );
+            flagsSection.REM( "     PGOOD FLAG6  -- scout team" );
             flagsSection.REM( "     PGOOD FLAG7  -- random counter strike team selector" );
             flagsSection.REM( "     PGOOD TIMER7 -- counting time to next main counter attack" );
 
@@ -312,7 +317,7 @@ namespace dkmage {
             if ( gatesSize > 0 ) {
                 script::ScriptCommand& parties = mainScript.partiesSection();
                 parties.addEmptyLine();
-                parties.REM( "- first recon team -" );
+                parties.REM( "- scout team -" );
                 parties.CREATE_PARTY( "scout_1" );
                 parties.ADD_TO_PARTY( "scout_1", Creature::C_ARCHER, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
                 parties.ADD_TO_PARTY( "scout_1", Creature::C_THIEF, 2, 5, 500, script::PartyObjective::PO_DEFEND_PARTY );
@@ -320,7 +325,7 @@ namespace dkmage {
                 mainSection.addEmptyLine();
                 mainSection.REM( "- send scout team -" );
                 mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 100 );
-                mainSection.IF( Player::P_GOOD, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
+                mainSection.IF( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
                 {
                     for ( std::size_t i=0; i<gatesSize; ++i ) {
                         const GateDistance& item = closestHeroGate[ i ];
@@ -339,6 +344,8 @@ namespace dkmage {
                         mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "==", item.id );
                         {
                             mainSection.REM( "hero gate " + std::to_string( item.id ) + " not captured" );
+                            const std::size_t infoIndex = mainScript.nextInfoIndex();
+                            mainSection.QUICK_INFORMATION( infoIndex, "Your activity was noticed by defenders. Prepare for incoming confrontation." );
                             mainSection.ADD_TUNNELLER_PARTY_TO_LEVEL( Player::P_GOOD, "scout_1", (int)-item.id, 0, 5, 1000 );
                             mainSection.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6, 100 );
                         }

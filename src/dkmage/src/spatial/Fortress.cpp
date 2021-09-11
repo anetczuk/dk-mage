@@ -481,7 +481,8 @@ namespace dkmage {
         bool Fortress::generateTest() {
             spatial::FortressData fortressData = { gameMap, parameters };
             const spatial::FortressRoom* heart  = fortress.setFirstRoom( spatial::FortressRoomType::FR_DUNGEON_HEART );
-            const spatial::FortressRoom* post   = fortress.addRandomRoom( spatial::FortressRoomType::FR_LAVA_POST, *heart );
+            const spatial::FortressRoom* gate   = fortress.addRandomRoom( spatial::FortressRoomType::FR_HERO_GATE, *heart );
+            const spatial::FortressRoom* post   = fortress.addRandomRoom( spatial::FortressRoomType::FR_LAVA_POST, *gate );
             const spatial::FortressRoom* prison = fortress.addRandomRoom( spatial::FortressRoomType::FR_PRISON, *post );
             fortress.addRandomRoom( spatial::FortressRoomType::FR_EXIT, *prison );
             fortress.moveToTopEdge( 8 );
@@ -651,9 +652,9 @@ namespace dkmage {
         }
 
         const spatial::FortressRoom* Fortress::addMainJunction( const spatial::FortressRoom& room ) {
-            if ( room.restrictedDirections().empty() ) {
-                return &room;
-            }
+//            if ( room.restrictedDirections().empty() ) {
+//                return &room;
+//            }
             /// restricted room -- add unrestricted one
             const FortressRoomType lastType = room.type();
             const spatial::FortressRoom* next = fortress.addRandomRoom( spatial::FortressRoomType::FR_HERO_GATE, room );
@@ -937,7 +938,7 @@ namespace dkmage {
                 indexSet.insert( bIndex );
             }
 
-            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_BRIDGE_GUARD_LEVEL, 2, 5 );
+            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_BRIDGE_GUARD_LEVEL, 1, 3 );
 
             for ( std::size_t bIndex=0; bIndex<bSize; ++bIndex ) {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
@@ -955,20 +956,20 @@ namespace dkmage {
                 std::set< Point > neighbourDirections = { Point(1, 0), Point(-1, 0), Point(0, 1), Point(0, -1) };
                 neighbourDirections.erase( -bridgeDirection );
 
-                adiktedpp::script::Script& script = gameMap.script;
-                script::ScriptCommand& parties = script.partiesSection();
+                script::ScriptCommand parties;
                 parties.addEmptyLine();
                 parties.REM( "- bridge turret parties -" );
 
                 const Point bridgeCenter = bridgePoints[ bridgeSize / 2 ];
                 const std::size_t bridgeAP  = level.addActionPoint( bridgeCenter, bridgeSize / 2 + 3 );
-                script::ScriptCommand& action = script.actionSection();
-                action.addEmptyLine();
-                action.REM( "- bridge turrets -" );
-                action.REM( std::to_string( bridgeAP ) + " -- bridge center" );
-                action.IF_ACTION_POINT( bridgeAP, Player::P_P0 );
+                script::ScriptCommand actions;
+                actions.addEmptyLine();
+                actions.REM( "- bridge turrets -" );
+                actions.REM( std::to_string( bridgeAP ) + " -- bridge center" );
+                actions.IF_ACTION_POINT( bridgeAP, Player::P_P0 );
 
                 std::size_t i = 0;
+                bool partyAdded = false;
                 for ( const Point bridgePoint: bridgePoints ) {
                     ++i;
 
@@ -1003,11 +1004,11 @@ namespace dkmage {
                             const std::size_t turrentAP = level.addActionPoint( rightGuardPosition );
                             const std::string turretPartyName =  "bridge_turret_" + std::to_string( turrentAP );
                             parties.CREATE_PARTY( turretPartyName );
-                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
+//                            parties.ADD_TO_PARTY( turretPartyName, Creature::C_MONK, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
                             parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
                             parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
 
-                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+                            actions.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
 
 //                            level.setCreature( rightGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
 //                            level.setCreature( rightGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
@@ -1027,7 +1028,7 @@ namespace dkmage {
                             parties.ADD_TO_PARTY( turretPartyName, Creature::C_WIZARD, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
                             parties.ADD_TO_PARTY( turretPartyName, Creature::C_ARCHER, 1, turretLevel, 0, script::PartyObjective::PO_DEFEND_LOCATION  );
 
-                            action.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
+                            actions.ADD_PARTY_TO_LEVEL( Player::P_GOOD, turretPartyName, turrentAP );
 
 //                            level.setCreature( leftGuardPosition, 0, Creature::C_MONK, 1, turretLevel, Player::P_GOOD );
 //                            level.setCreature( leftGuardPosition, 1, Creature::C_WIZARD, 1, turretLevel, Player::P_GOOD );
@@ -1036,11 +1037,22 @@ namespace dkmage {
                         }
                         if ( added == false ) {
                             ++i;
+                        } else {
+                            partyAdded = true;
                         }
                     }
                 }
 
-                action.ENDIF();
+                actions.ENDIF();
+
+                if ( partyAdded ) {
+                    /// add to game's script
+                    adiktedpp::script::Script& script = gameMap.script;
+                    script::ScriptCommand& gameParties = script.partiesSection();
+                    gameParties.pushBack( parties );
+                    script::ScriptCommand& gameActions = script.actionSection();
+                    gameActions.pushBack( actions );
+                }
             }
 
             return true;

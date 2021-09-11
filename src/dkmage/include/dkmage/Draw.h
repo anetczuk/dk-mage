@@ -45,7 +45,8 @@ namespace dkmage {
 
     /// 'creatureLevel' in range [1, 10] (10 is maximum level possible)
     void drawHeroTrap( adiktedpp::Level& level, const utils::Point& point, const std::size_t creatureLevel, const std::size_t creaturesNum = 5 );
-    void drawHeroTrap( adiktedpp::script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP, const std::size_t creatureLevel, const std::size_t creaturesNum = 5 );
+    void drawHeroTrap( adiktedpp::script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP,
+                       const std::size_t creatureLevel, const std::size_t creaturesNum = 5, const std::string& partyDescription = "hero trap party" );
 
 } /* namespace dkmage */
 

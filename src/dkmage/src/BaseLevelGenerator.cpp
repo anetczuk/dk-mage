@@ -223,8 +223,8 @@ namespace dkmage {
         LOG() << "gems faces number: " << gemFacesNum;
         LOG() << "gems traps number: " << gemTrapsNum;
 
-        const SizeTSet gemGuardsNum  = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_NUMBER, 3, 7 );
-        const SizeTSet gemGuardLevel = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_LEVEL, 6, 9 );
+        const SizeTSet gemGuardsNum  = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_NUMBER, 3, 5 );
+        const SizeTSet gemGuardLevel = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_LEVEL, 4, 7 );
 
         const Rect mapRect = raw::RawLevel::mapRect();
         const Point mapCenter = mapRect.center();
@@ -305,7 +305,7 @@ namespace dkmage {
 //            drawHeroTrap( level, caveRect.center(), guardLevel, guardNum );
 
             const std::size_t gemGuardAP = level.addActionPoint( caveRect.center(), 2 );
-            drawHeroTrap( script, Player::P_GOOD, gemGuardAP, guardLevel, guardNum );
+            drawHeroTrap( script, Player::P_GOOD, gemGuardAP, guardLevel, guardNum, "gem guard party" );
 
             gemRect.grow( 2 );
             gemsField.remove( gemRect );

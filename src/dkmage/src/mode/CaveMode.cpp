@@ -256,6 +256,7 @@ namespace dkmage {
             availableMagic.setStandard( Player::P_ALL );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_CALL_TO_ARMS, script::MagicAvailableMode::AM_AVAILABLE );
+                availableMagic.setStateMode( Player::P_P0, Spell::S_POWER_DESTROY_WALLS, script::MagicAvailableMode::AM_AVAILABLE );
 //                availableMagic.setAllAvailable( Player::P_P0, script::AvailableMode::AM_ENABLED );
             }
             script.set( availableMagic );

@@ -56,6 +56,19 @@ namespace utils {
     }
 
     template< typename T>
+    T rng_rand( std::set<T>& data, const bool popItem ) {
+        const std::size_t dSize = data.size();
+        if ( dSize < 1 ) {
+            return T();
+        }
+        if ( dSize < 2 ) {
+            return get_item( data, 0, popItem );
+        }
+        const std::size_t index = rng_randi( data.size() );
+        return get_item( data, index, popItem );
+    }
+
+    template< typename T>
     T rng_rand( const std::vector<T>& data ) {
         const std::size_t dSize = data.size();
         if ( dSize < 1 ) {
@@ -66,6 +79,29 @@ namespace utils {
         }
         const std::size_t index = rng_randi( data.size() );
         return data[ index ];
+    }
+
+    template< typename T>
+    T rng_rand( std::vector<T>& data, const bool popItem ) {
+        const std::size_t dSize = data.size();
+        if ( dSize < 1 ) {
+            return T();
+        }
+        if ( dSize < 2 ) {
+            if ( popItem == false ) {
+                return data[ 0 ];
+            }
+            const T ret = data[ 0 ];
+            data.clear();
+            return ret;
+        }
+        const std::size_t index = rng_randi( data.size() );
+        if ( popItem == false ) {
+            return data[ index ];
+        }
+        const T ret = data[ index ];
+        remove_at( data, index );
+        return ret;
     }
 
 }

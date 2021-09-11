@@ -551,15 +551,23 @@ namespace adiktedpp {
             addLine( stream.str() );
         }
 
-        void ScriptCommand::QUICK_INFORMATION( const std::string& comment ) {
-            QUICK_INFORMATION( infoIndex, comment );
-            ++infoIndex;
-        }
-
-        void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& comment ) {
+        void ScriptCommand::QUICK_OBJECTIVE( const std::size_t infoIndex, const std::string& message ) {
             std::stringstream stream;
             /// ALL_PLAYERS -- zoom inactive
-            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << comment << "\", ALL_PLAYERS )";
+            stream << "QUICK_OBJECTIVE( " << infoIndex << ", \"" << message << "\", ALL_PLAYERS )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::QUICK_INFORMATION( const std::size_t infoIndex, const std::string& message ) {
+            std::stringstream stream;
+            /// ALL_PLAYERS -- zoom inactive
+            stream << "QUICK_INFORMATION( " << infoIndex << ", \"" << message << "\", ALL_PLAYERS )";
+            addLine( stream.str() );
+        }
+
+        void ScriptCommand::PLAY_MESSAGE( const adiktedpp::Player player, const std::size_t speechId ) {
+            std::stringstream stream;
+            stream << "PLAY_MESSAGE( " << script_keyword( player ) << ", SPEECH, " << speechId << " )";
             addLine( stream.str() );
         }
 
@@ -755,7 +763,7 @@ namespace adiktedpp {
         /// =========================================================================
 
 
-        Script::Script(): isFX(false) {
+        Script::Script(): isFX(false), objectiveIndex(0), infoIndex(0) {
         }
 
         void Script::clearData() {
@@ -768,6 +776,15 @@ namespace adiktedpp {
             other.clear();
         }
 
+//        void Script::copyIndexes( const Script& script ) {
+//            const std::set< ScriptSection >& sectionList = AllScriptSections();
+//            for ( const auto item: sectionList ) {
+//                const ScriptCommand& fromSection = script.getSection( item );
+//                ScriptCommand& currSection = getSection( item );
+//                currSection.copyIndexes( fromSection );
+//            }
+//        }
+
         void Script::pushFrontBySections( const Script& script ) {
             if ( script.isFX ) {
                 isFX = script.isFX;
@@ -777,6 +794,7 @@ namespace adiktedpp {
                 const ScriptCommand& fromSection = script.getSection( item );
                 ScriptCommand& currSection = getSection( item );
                 currSection.pushFront( fromSection );
+//                currSection.copyIndexes( fromSection );
             }
         }
 
@@ -1193,6 +1211,10 @@ namespace adiktedpp {
             const std::size_t lvl = endConditions.indentLevel();
             endConditions.addLineIndent( "rem - require killing all heroes -", lvl );
             endConditions.addLineIndent( "IF( PLAYER_GOOD, DUNGEON_DESTROYED == 1 )", lvl );
+            endConditions.addLineIndent( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES > 0 )", lvl );
+            const std::size_t objIndex = nextObjectiveIndex();
+            endConditions.QUICK_OBJECTIVE( objIndex, "Well done keeper! Find and get rid of rest of fortress defenders!" );
+            endConditions.addLineIndent( "    ENDIF", lvl );
             endConditions.addLineIndent( "    IF_CONTROLS( PLAYER_GOOD, GOOD_CREATURES == 0 )", lvl );
             endConditions.addLineIndent( "        WIN_GAME", lvl );
             endConditions.addLineIndent( "    ENDIF", lvl );

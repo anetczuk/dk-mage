@@ -208,11 +208,6 @@ namespace dkmage {
                 level.setTrap( heartRect.rightTop(), Trap::T_LIGHTNING );
 
                 /// add lord of the land guards
-                const std::size_t heartAP = level.addActionPoint( heartCenter, 3 );
-                script.actionSection().addEmptyLine();
-                script.actionSection().REM( "dungeon heart guards" );
-                script.actionSection().REM( std::to_string( heartAP ) + " -- dungeon heart center" );
-
                 script::ScriptCommand& parties = script.partiesSection();
                 parties.addEmptyLine();
                 parties.REM( "- landlord team -" );
@@ -227,21 +222,6 @@ namespace dkmage {
                 parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_MONK,    1,  7,  400, script::PartyObjective::PO_DEFEND_PARTY );
                 parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_WIZARD,  1,  6,  300, script::PartyObjective::PO_DEFEND_PARTY );
                 parties.ADD_TO_PARTY( "lord_of_the_land_2", Creature::C_FAIRY,   1,  5,  200, script::PartyObjective::PO_DEFEND_PARTY );
-
-                script::ScriptCommand& action = script.actionSection();
-                action.IF_ACTION_POINT( heartAP, Player::P_P0 );
-                {
-                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_1", heartAP );
-                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_2", heartAP, 4 );
-
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_KNIGHT,  heartAP, 1, 10, 1000 );
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, heartAP, 3,  9,  800 );
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_GIANT,   heartAP, 4,  8,  600 );
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK,    heartAP, 5,  7,  400 );
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_WIZARD,  heartAP, 5,  6,  300 );
-//                    action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_FAIRY,   heartAP, 6,  5,  200 );
-                }
-                action.ENDIF();
 
                 /// entrance chamber
                 const Point entrancePoint = edgePoint( direction, 1 );
@@ -264,34 +244,52 @@ namespace dkmage {
                 moveRect( entranceRect, heartRect, direction, gapSize );
                 level.setRoom( entranceRect, Room::R_CLAIMED, roomOwner, true );
 
+                /// set vestibule lava
+                for ( std::size_t i=0; i<vestibuleLength; ++i) {
+                    const Point offset = heartEntrancePoint + corridorDirr * (i + gapSize);
+                    level.setSlab( offset - wallDir, Slab::S_LAVA );
+                    level.setSlab( offset + wallDir, Slab::S_LAVA );
+                }
+
                 const std::size_t chamberEntranceAP = level.addActionPoint( entrancePoint, 0 );
                 const std::size_t leftSideAP  = level.addActionPoint( heartEntrancePoint + corridorDirr + wallDir * 2, 0 );
                 const std::size_t rightSideAP = level.addActionPoint( heartEntrancePoint + corridorDirr - wallDir * 2, 0 );
 
-                const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 7, 10 );
+                const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 8, 10 );
+                script::ScriptCommand vestibuleGuards;
+                vestibuleGuards.indentLevel( 1 );
+                for ( std::size_t i=0; i<vestibuleLength; ++i) {
+                    if ( i % 2 == 0 ) {
+                        vestibuleGuards.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        vestibuleGuards.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                    } else {
+                        vestibuleGuards.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                        vestibuleGuards.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
+                    }
+                }
 
+                /// add vestibule guards
+                script::ScriptCommand& action = script.actionSection();
                 action.addEmptyLine();
                 action.REM( "vestibule guards of dungeon heart" );
                 action.REM( std::to_string( chamberEntranceAP ) + " -- vestibule entrance" );
                 action.REM( std::to_string( leftSideAP ) + " -- vestibule left side" );
                 action.REM( std::to_string( rightSideAP ) + " -- vestibule right side" );
                 action.IF_ACTION_POINT( chamberEntranceAP, Player::P_P0 );
-                for ( std::size_t i=0; i<vestibuleLength; ++i) {
-                    const Point offset = heartEntrancePoint + corridorDirr * (i + gapSize);
-                    level.setSlab( offset - wallDir, Slab::S_LAVA );
-                    level.setSlab( offset + wallDir, Slab::S_LAVA );
+                action.pushBack( vestibuleGuards );
+                action.ENDIF();
 
-                    if ( i % 2 == 0 ) {
-                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_SAMURAI, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-//                        level.setCreature( offset + wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
-//                        level.setCreature( offset - wallDir * 2, 1, Creature::C_SAMURAI, 1, 9, roomOwner );
-                    } else {
-                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, leftSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-                        action.ADD_CREATURE_TO_LEVEL( roomOwner, Creature::C_MONK, rightSideAP, 1, vestibuleGuardLevel.randomized(), 0 );
-//                        level.setCreature( offset + wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
-//                        level.setCreature( offset - wallDir * 2, 1, Creature::C_MONK, 1, 9, roomOwner );
-                    }
+                /// add heart guards
+                const std::size_t heartAP = level.addActionPoint( heartCenter, 3 );
+                action.addEmptyLine();
+                action.REM( "dungeon heart guards" );
+                action.REM( std::to_string( heartAP ) + " -- dungeon heart center" );
+                action.IF_ACTION_POINT( heartAP, Player::P_P0 );
+                {
+                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_1", heartAP );
+                    action.ADD_PARTY_TO_LEVEL( roomOwner, "lord_of_the_land_2", heartAP, 4 );
+                    action.REM( "vestibule guards repeated" );
+                    action.pushBack( vestibuleGuards );
                 }
                 action.ENDIF();
             }
@@ -604,39 +602,35 @@ namespace dkmage {
                     parties.ADD_TO_PARTY( "main_counter_strike_3", Creature::C_WIZARD,  1,  6,  200, script::PartyObjective::PO_ATTACK_ROOMS );
                 }
 
-                script::ScriptCommand& flags = script.flagsSection();
-                flags.addEmptyLine();
-                flags.REM( "- start counter attacks after releasing scout team -" );
-                flags.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "==", 100 );
-                {
-                    flags.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
-                    flags.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6 );
-                }
-                flags.ENDIF();
-
                 script::ScriptCommand& main = script.mainSection();
                 main.addEmptyLine();
-                main.REM( "- main counter attacks triggered each approx. 10 min -" );
-                main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 104 );
-                main.IF( Player::P_GOOD, script::Timer::T_TIMER_7, ">", 10 * 60 * 20 );
+                main.REM( "- start counter attacks after releasing scout team -" );
+                main.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "==", 1 );
                 {
-                    main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 104 );
-                    {
-                        script::RandomSelectCreator selector( Player::P_GOOD, script::Flag::F_FLAG_7, true, main );
-                        const std::vector< std::string > data = { "main_counter_strike_1", "main_counter_strike_2", "main_counter_strike_3" };
-                        selector.addParties( data, - (int)MAIN_HERO_GATE );
-                    }
-                    main.ENDIF();
+                    main.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
+                    main.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_5 );
+                }
+                main.ENDIF();
 
-//                    main.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 110 );
-//                    {
-//                        main.NEXT_COMMAND_REUSABLE();
-//                        main.ADD_CREATURE_TO_LEVEL( Player::P_GOOD, Creature::C_BARBARIAN, - (int)MAIN_HERO_GATE, 1, 6, 500 );
-//                    }
-//                    main.ENDIF();
+                main.addEmptyLine();
+                main.REM( "- main counter attacks triggered each approx. 5 min -" );
+                main.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 5 );
+                main.IF( Player::P_GOOD, script::Timer::T_TIMER_7, ">", 5 * 60 * 20 );
+                {
+                    script::RandomSelectCreator selector( Player::P_GOOD, script::Flag::F_FLAG_7, true, main );
+                    const std::vector< std::string > data = { "main_counter_strike_1", "main_counter_strike_2", "main_counter_strike_3" };
+                    const std::size_t dSize = data.size();
+                    selector.start( dSize );
+                    for ( std::size_t i=0; i<dSize; ++i ) {
+                        const script::RandomSelectCreator::Item item = selector.next( i );
+                        const std::string& party = data[i];
+                        selector.section->ADD_PARTY_TO_LEVEL( selector.player, party, - (int)MAIN_HERO_GATE, 1 );
+                        selector.section->PLAY_MESSAGE( Player::P_P0, 112 );
+                    }
+//                    selector.addParties( data, - (int)MAIN_HERO_GATE );
 
                     main.NEXT_COMMAND_REUSABLE();
-                    main.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_6 );
+                    main.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_5 );
                     main.NEXT_COMMAND_REUSABLE();
                     main.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
                 }
@@ -1093,7 +1087,7 @@ namespace dkmage {
 
                 const Rect chamber( roomRect.center(), 3, 3 );
 
-                static std::set< Player > PlayerSet = { Player::P_UNSET, Player::P_GOOD };
+                static std::vector< Player > PlayerSet = { Player::P_UNSET, Player::P_GOOD, Player::P_GOOD, Player::P_GOOD };
                 Player cOwner = Player::P_UNSET;
                 const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_TORTURE_GUARD_LEVEL, 5, 8 );
 
@@ -1101,28 +1095,28 @@ namespace dkmage {
                 const Rect r1 = chamber.moved( -3, -3 );
                 level.setRoom( r1, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r1, roomOwner );
-                cOwner = rng_rand( PlayerSet );
+                cOwner = rng_rand( PlayerSet, true );
                 level.setCreature( r1.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r2 = chamber.moved(  3, -3 );
                 level.setRoom( r2, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r2, roomOwner );
-                cOwner = rng_rand( PlayerSet );
+                cOwner = rng_rand( PlayerSet, true );
                 level.setCreature( r2.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r3 = chamber.moved(  3,  3 );
                 level.setRoom( r3, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r3, roomOwner );
-                cOwner = rng_rand( PlayerSet );
+                cOwner = rng_rand( PlayerSet, true );
                 level.setCreature( r3.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// chamber
                 const Rect r4 = chamber.moved( -3,  3 );
                 level.setRoom( r4, Room::R_TORTURE, roomOwner, true );
                 level.setFortified( r4, roomOwner );
-                cOwner = rng_rand( PlayerSet );
+                cOwner = rng_rand( PlayerSet, true );
                 level.setCreature( r4.center(), 1, Creature::C_MISTRESS, 2, guardLevel.randomized(), cOwner );
 
                 /// add doors
@@ -1668,6 +1662,18 @@ namespace dkmage {
                 const Direction bridgeDir = opposite( exitDirection );
                 Point exitDoorPoint = edgePoint( bridgeDir, 1 );
                 level.setDoor( exitDoorPoint, Door::D_IRON, true );
+
+                /// set flag
+                const std::size_t centerAP = level.addActionPoint( roomCenter, 2 );
+                script::ScriptCommand& actions = gameMap.script.actionSection();
+                actions.addEmptyLine();
+                actions.REM( "- start counter strike timers -" );
+                actions.REM( std::to_string( centerAP ) + " -- entrance center" );
+                actions.IF_ACTION_POINT( centerAP, Player::P_P0 );
+                actions.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 1 );
+                actions.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_5, 1 );
+                actions.ENDIF();
+                actions.ENDIF();
             }
 
         };

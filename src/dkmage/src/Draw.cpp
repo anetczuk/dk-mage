@@ -213,7 +213,9 @@ namespace dkmage {
         level.setCreature( point, 5, creature2, num2, cLevel, Player::P_GOOD );
     }
 
-    void drawHeroTrap( script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP, const std::size_t creatureLevel, const std::size_t creaturesNum ) {
+    void drawHeroTrap( script::Script& script, const adiktedpp::Player player, const std::size_t ambushAP,
+                       const std::size_t creatureLevel, const std::size_t creaturesNum, const std::string& partyDescription )
+    {
         const int cLevel = std::min( std::max( creatureLevel, (std::size_t)2 ), (std::size_t)10 );
 
         std::set< Creature > list = HeroCreatures();                /// yes, copy
@@ -232,7 +234,8 @@ namespace dkmage {
 
         script::AmbushCreator ambush( script );
         ambush.partyId = ambushName;
-        ambush.description = "- hero trap party -";
+        if ( partyDescription.empty() == false )
+            ambush.description = "- " + partyDescription + " -";
         ambush.actionPoint = ambushAP;
         ambush.partyCopies = 2;
         ambush.owner = player;
