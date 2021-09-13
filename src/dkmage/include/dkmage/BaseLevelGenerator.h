@@ -97,7 +97,9 @@ namespace dkmage {
 
         void writeIniFile() const;
 
-        void generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum, const std::size_t gemRegionWidth, const std::size_t gemRegionHeight );
+        void generateGoldSlabs( const std::string& defaultGoldNum,
+                                const std::string& defaultGemSlabsNum, const std::string& defaultGemFacesNum, const std::string& defaultGemTrapsNum,
+                                const std::size_t gemRegionWidth, const std::size_t gemRegionHeight );
 
         void generateLeftGoldVein( const std::size_t goldAmount, const std::size_t gemAmount );
 

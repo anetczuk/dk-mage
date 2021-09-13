@@ -7,6 +7,7 @@
 
 #include "dkmage/spatial/Fortress.h"
 #include "dkmage/Parameter.h"
+#include "dkmage/ParameterDefaults.h"
 #include "dkmage/Draw.h"
 
 #include "adiktedpp/GameMap.h"
@@ -255,7 +256,7 @@ namespace dkmage {
                 const std::size_t leftSideAP  = level.addActionPoint( heartEntrancePoint + corridorDirr + wallDir * 2, 0 );
                 const std::size_t rightSideAP = level.addActionPoint( heartEntrancePoint + corridorDirr - wallDir * 2, 0 );
 
-                const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, 8, 10 );
+                const SizeTSet vestibuleGuardLevel = data.parameters.getSizeTSet( ParameterName::PN_DUNGEON_HEADER_GUARD_LEVEL, PN_DEFAULT_DUNGEON_HEADER_GUARD_LEVEL_HEROFORTRESS );
                 script::ScriptCommand vestibuleGuards;
                 vestibuleGuards.indentLevel( 1 );
                 for ( std::size_t i=0; i<vestibuleLength; ++i) {
@@ -1089,7 +1090,7 @@ namespace dkmage {
 
                 std::vector< Player > PlayerSet = { Player::P_UNSET, roomOwner, roomOwner, roomOwner };
                 Player cOwner = Player::P_UNSET;
-                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_TORTURE_GUARD_LEVEL, 5, 8 );
+                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_TORTURE_GUARD_LEVEL, PN_DEFAULT_TORTURE_GUARD_LEVEL_HEROFORTRESS );
 
                 /// chamber
                 const Rect r1 = chamber.moved( -3, -3 );
@@ -1285,7 +1286,7 @@ namespace dkmage {
                 }
                 }
 
-                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_GRAVEYARD_GUARD_LEVEL, 7, 10 );
+                const SizeTSet guardLevel = data.parameters.getSizeTSet( ParameterName::PN_GRAVEYARD_GUARD_LEVEL, PN_DEFAULT_GRAVEYARD_GUARD_LEVEL_HEROFORTRESS );
                 level.setRoom( room, Room::R_GRAVEYARD, roomOwner, true );
                 const Point roomCenter = room.center();
                 level.setCreature( roomCenter, 1, Creature::C_HELL_HOUND, 1, 10 );           /// neutral

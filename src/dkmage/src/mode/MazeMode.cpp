@@ -8,6 +8,7 @@
 #include "dkmage/Draw.h"
 #include "dkmage/spatial/Maze.h"
 #include "dkmage/spatial/Dungeon.h"
+#include "dkmage/ParameterDefaults.h"
 
 #include "utils/ProbabilityMass.h"
 #include "utils/Container.h"
@@ -216,7 +217,7 @@ namespace dkmage {
             }
 
             /// add gold vein
-            generateGoldSlabs( 40, 2, 4, 25 );
+            generateGoldSlabs( PN_DEFAULT_GOLD_SLABS_NUMBER_MAZE, PN_DEFAULT_GEM_SLABS_NUMBER_MAZE, PN_DEFAULT_GEM_FACES_NUMBER_MAZE, PN_DEFAULT_GEM_TRAPS_NUMBER_MAZE, 4, 25 );
 
             Level& level = map.level;
 
@@ -270,7 +271,7 @@ namespace dkmage {
             enemyDungeon.limitSouth = 2;
             enemyDungeon.fortify( true );
 
-            const std::size_t roomsNum = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER, 11 ) + 1;
+            const std::size_t roomsNum = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ROOMS_NUMBER, PN_DEFAULT_ENEMY_KEEPER_ROOMS_NUMBER_MAZE ) + 1;
             enemyDungeon.generate( roomsNum, 5 );
 
             enemyDungeon.moveToTopEdge( 4 );
@@ -318,18 +319,18 @@ namespace dkmage {
             script.addLineInit( "" );
             script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
 
-            const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, 0 );
+            const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, PN_DEFAULT_ENEMY_KEEPER_ATTITUDE_MAZE );
             script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
-            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
+            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, PN_DEFAULT_INIT_GOLD_AMOUNT );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 initialGold += 200000;
             }
             script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
             script.initSection().START_MONEY( Player::P_P1, 250000 );                     /// does not show in treasure
 
-            const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 10 );
-            const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, 50 );
+            const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, PN_DEFAULT_CREATURES_LIMIT_MAZE );
+            const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, PN_DEFAULT_ENEMY_KEEPER_CREATURES_LIMIT_MAZE );
             script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
             script.initSection().MAX_CREATURES( Player::P_P1, aiMaxCreatures );
 

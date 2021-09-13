@@ -7,6 +7,7 @@
 
 #include "dkmage/spatial/Fortress.h"
 #include "dkmage/Draw.h"
+#include "dkmage/ParameterDefaults.h"
 
 
 using namespace utils;
@@ -129,7 +130,7 @@ namespace dkmage {
             Level& level = map.level;
 
             /// add gold vein
-            generateGoldSlabs( 52, 1, 1, 77 );
+            generateGoldSlabs( PN_DEFAULT_GOLD_SLABS_NUMBER_HEROFORTRESS, PN_DEFAULT_GEM_SLABS_NUMBER_HEROFORTRESS, PN_DEFAULT_GEM_FACES_NUMBER_HEROFORTRESS, PN_DEFAULT_GEM_TRAPS_NUMBER_HEROFORTRESS, 1, 77 );
 
             /// dungeon have to be drawn before placing items inside it's rooms
             dungeon.draw( level );
@@ -221,13 +222,13 @@ namespace dkmage {
             mainScript.addLineInit( "" );
             mainScript.addLineInit( "SET_GENERATE_SPEED( 500 )" );
 
-            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, 20000 );
+            std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, PN_DEFAULT_INIT_GOLD_AMOUNT );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 initialGold += 200000;
             }
             initSection.START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
 
-            const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, 25 );
+            const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, PN_DEFAULT_CREATURES_LIMIT_HEROFORTRESS );
             initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
 
             mainScript.addLineInit( "" );

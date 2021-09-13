@@ -6,6 +6,7 @@
 #include "dkmage/spatial/Fortress.h"
 
 #include "dkmage/Draw.h"
+#include "dkmage/ParameterDefaults.h"
 #include "dkmage/spatial/DungeonGraph.h"
 #include "dkmage/spatial/FortressRoom.h"
 
@@ -854,7 +855,7 @@ namespace dkmage {
         }
 
         bool Fortress::prepareBridges( const std::vector< spatial::FortressRoom* >& exitRooms ) {
-            const SizeTSet entrancesAllowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER, 2, 5 );
+            const SizeTSet entrancesAllowed = parameters.getSizeTSet( ParameterName::PN_ENTRANCES_NUMBER, PN_DEFAULT_ENTRANCES_NUMBER_HEROFORTRESS );
 
             const std::size_t qSize = exitRooms.size();
             LOG() << "found exit rooms: " << qSize;
@@ -938,7 +939,7 @@ namespace dkmage {
                 indexSet.insert( bIndex );
             }
 
-            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_BRIDGE_GUARD_LEVEL, 1, 3 );
+            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_BRIDGE_GUARD_LEVEL, PN_DEFAULT_BRIDGE_GUARD_LEVEL_HEROFORTRESS );
 
             for ( std::size_t bIndex=0; bIndex<bSize; ++bIndex ) {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
@@ -1087,7 +1088,7 @@ namespace dkmage {
 //            adiktedpp::script::Script& script = gameMap.script;
             const Player dungeonOwner = fortress.owner();
 
-            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, 4, 7 );
+            const SizeTSet guardLevel = parameters.getSizeTSet( ParameterName::PN_CORRIDOR_GUARD_LEVEL, PN_DEFAULT_CORRIDOR_GUARD_LEVEL_HEROFORTRESS );
             const int maxDistance = fortress.maxDistance();
             double distanceMinFactor = 1.0;
             double distanceMaxFactor = 0.0;

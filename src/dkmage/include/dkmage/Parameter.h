@@ -258,6 +258,8 @@ namespace dkmage {
         /// handles list of values and ranges
         std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
 
+        std::size_t getSizeT( const ParameterName parameter, const std::string& defaultValue ) const;
+
         Optional< SizeTSet > getSizeTSet( const std::string& parameter ) const;
 
         Optional< SizeTSet > getSizeTSet( const ParameterName parameter ) const {
@@ -275,6 +277,8 @@ namespace dkmage {
             defaultSet.add( defaultMinValue, defaultMaxValue );
             return defaultSet;
         }
+
+        SizeTSet getSizeTSet( const ParameterName parameter, const std::string& defaultValue ) const;
 
         std::string print() const;
 

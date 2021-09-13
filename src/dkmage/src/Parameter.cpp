@@ -404,12 +404,7 @@ namespace dkmage {
         return getSizeT( parameterName );
     }
 
-    Optional< SizeTSet > ParametersMap::getSizeTSet( const std::string& parameter ) const {
-        Optional< std::string > rawData = getRawString( parameter );
-        if ( rawData.has_value() == false ) {
-            return {};
-        }
-        const std::string& value = rawData.value();
+    SizeTSet convert_SizeTSet( const std::string& value ) {
         const std::vector< std::string > stringList = parseList( value, "," );
 
         SizeTSet ret;
@@ -429,11 +424,42 @@ namespace dkmage {
         return { ret };
     }
 
+    Optional< SizeTSet > ParametersMap::getSizeTSet( const std::string& parameter ) const {
+        Optional< std::string > rawData = getRawString( parameter );
+        if ( rawData.has_value() == false ) {
+            return {};
+        }
+        const std::string& value = rawData.value();
+        return convert_SizeTSet( value );
+    }
+
+    SizeTSet ParametersMap::getSizeTSet( const ParameterName parameter, const std::string& defaultValue ) const {
+        const std::string parameterName = getParameterName( parameter );
+        Optional< SizeTSet > retSet = getSizeTSet( parameterName );
+        if ( retSet.has_value() ) {
+            return retSet.value();
+        }
+        return convert_SizeTSet( defaultValue );
+    }
+
     std::size_t ParametersMap::getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const {
         const std::string parameterName = getParameterName( parameter );
         Optional< std::string > rawData = getString( parameterName );
         if ( rawData.has_value() == false ) {
             return defaultValue;
+        }
+
+        const std::string& value = rawData.value();
+        const int num = parseUnsigned( parameterName, value );
+        return (std::size_t) num;
+    }
+
+    std::size_t ParametersMap::getSizeT( const ParameterName parameter, const std::string& defaultValue ) const {
+        const std::string parameterName = getParameterName( parameter );
+        Optional< std::string > rawData = getString( parameterName );
+        if ( rawData.has_value() == false ) {
+            const int num = parseUnsigned( parameterName, defaultValue );
+            return (std::size_t) num;
         }
 
         const std::string& value = rawData.value();

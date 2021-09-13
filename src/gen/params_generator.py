@@ -34,9 +34,11 @@ def generate():
     sourceDir = os.path.join( SCRIPT_DIR, "..", "dkmage", "src" )
     generate_enum_source( configDict, dataMatrix, sourceDir )
 
+    generate_defaults_header( configDict, dataMatrix, includeDir )
+
 
 def generate_enum_header( configDict, dataMatrix, outputDir ):
-    _LOGGER.info( "generating header file" )
+    _LOGGER.info( "generating enum header file" )
     
     h_output_content = ""
 
@@ -149,7 +151,7 @@ namespace dkmage {
 
 
 def generate_enum_source( configDict, dataMatrix, outputDir ):
-    _LOGGER.info( "generating source file" )
+    _LOGGER.info( "generating enum source file" )
 
     cpp_output_content = ""
 
@@ -304,6 +306,125 @@ namespace dkmage {
     outputFile = os.path.join( outputDir, output_name )
     with open( outputFile, "w" ) as enumFile:
         enumFile.write( cpp_output_content )
+
+
+def generate_defaults_header( configDict, dataMatrix, outputDir ):
+    _LOGGER.info( "generating defaults header file" )
+    
+    h_output_content = ""
+
+    ### === file header ===
+    input_file           = configDict[ "input_file" ]
+    header_guard_prefix  = configDict[ "header_guard_prefix" ]
+    header_name          = "ParameterDefaults"
+    output_name          = header_name + ".h"
+    header_guard         = header_guard_prefix + header_name.upper() + "_H_"
+
+    h_output_content += \
+"""/*
+ * %(file_name)s
+ *
+ */
+
+%(file_preamble_info)s
+
+#ifndef %(header_guard)s
+#define %(header_guard)s
+
+/// inclusion: #include "dkmage/ParameterDefaults.h"
+
+
+""" % {
+        "file_name": output_name,
+        "file_preamble_info": cpp_header_info( input_file ),
+        "header_guard": header_guard
+    }
+
+
+    ### === file content ===
+    
+    defaults_prefix = configDict[ "defaults_prefix" ]
+
+    lastIndex = dataMatrix.shape[0] - 1
+    empty_added = False
+
+    for index, row in dataMatrix.iterrows():
+        enum_value = row['enum_value']
+        if len( enum_value ) < 1:
+            raise Exception( "Missing 'enum_value'" )
+    
+        if enum_value.startswith( "#" ):
+            if empty_added is True:
+                continue
+            empty_added = True
+            h_output_content += """\n"""
+            continue
+        empty_added = False
+        if enum_value.startswith( "//" ):
+            h_output_content += """    %s\n""" % enum_value
+            continue
+
+        new_empty = True        
+        ret = handle_default_value( row, enum_value, defaults_prefix, "" )
+        if len(ret) > 0:
+            h_output_content += ret
+            new_empty = False
+        
+        ret = handle_default_value( row, enum_value, defaults_prefix, "cave" )
+        if len(ret) > 0:
+            h_output_content += ret
+            new_empty = False
+        
+        ret = handle_default_value( row, enum_value, defaults_prefix, "maze" )
+        if len(ret) > 0:
+            h_output_content += ret
+            new_empty = False
+        
+        ret = handle_default_value( row, enum_value, defaults_prefix, "herofortress" )
+        if len(ret) > 0:
+            h_output_content += ret
+            new_empty = False
+
+        if new_empty is True:
+            empty_added = True
+
+
+    ### === file footer ===
+
+    h_output_content += \
+"""
+
+#endif /* %(header_guard)s */
+""" % {
+        "header_guard": header_guard
+    }
+
+    # _LOGGER.debug( "generated file:\n%s" + h_output_content )
+
+    ### === writing to file ===
+    os.makedirs( outputDir, exist_ok=True )
+    outputFile = os.path.join( outputDir, output_name )
+    with open( outputFile, "w" ) as enumFile:
+        enumFile.write( h_output_content )
+
+
+def handle_default_value( row, enum_value, defaults_prefix, mode ):
+    def_value = ""
+    item_suffix = ""
+    if len(mode) < 1:
+        def_value = row[ 'default_value' ]
+    else:
+        def_value = row[ 'default_value_' + mode ]
+        item_suffix = "_" + mode
+    if len( def_value ) < 1:
+        return ""
+
+    item_value = defaults_prefix + enum_value.upper() + item_suffix.upper()
+    entry_line = """#define %s""" % item_value
+    # entry_line = """    constexpr std::string %s""" % item_value
+    indent = max( 70 - len( entry_line ), 5 )
+    return """%s%s "%s"\n""" % (entry_line, " " * indent, def_value)
+    # return """%s%s = "%s";\n""" % (entry_line, " " * indent, def_value)
 
 
 def cpp_header_info( input_file ):

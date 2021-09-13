@@ -8,6 +8,7 @@
 #include "adiktedpp/Version.h"
 
 #include "dkmage/Draw.h"
+#include "dkmage/ParameterDefaults.h"
 
 #include "utils/Rect.h"
 #include "utils/Rand.h"
@@ -66,7 +67,7 @@ namespace dkmage {
         LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
 
         const std::size_t actionPointNum = level.getRawLevel().countActionPoints();
-        const std::size_t actionPointsLimit = parameters.getSizeT( ParameterName::PN_ACTION_POINTS_LIMIT, 31 );
+        const std::size_t actionPointsLimit = parameters.getSizeT( ParameterName::PN_ACTION_POINTS_LIMIT, PN_DEFAULT_ACTION_POINTS_LIMIT );
         LOG() << "action points number: " << actionPointNum << "/" << actionPointsLimit;
         if ( actionPointNum > actionPointsLimit ) {
             LOG_WARN() << "generated map is invalid -- too much action points";
@@ -98,11 +99,11 @@ namespace dkmage {
         const std::size_t ifConds      = script.countIfConditions();
         const std::size_t partyDefs    = script.countPartyDefinitions();
 
-        const std::size_t tunnellersLimit = parameters.getSizeT( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT, 256 );
-        const std::size_t partiesLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTIES_LIMIT, 256 );
-        const std::size_t valuesLimit     = parameters.getSizeT( ParameterName::PN_SCRIPT_VALUES_LIMIT, 256 );
-        const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, 256 );
-        const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, 256 );
+        const std::size_t tunnellersLimit = parameters.getSizeT( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT, PN_DEFAULT_SCRIPT_TUNNELLERS_LIMIT );
+        const std::size_t partiesLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTIES_LIMIT, PN_DEFAULT_SCRIPT_PARTIES_LIMIT );
+        const std::size_t valuesLimit     = parameters.getSizeT( ParameterName::PN_SCRIPT_VALUES_LIMIT, PN_DEFAULT_SCRIPT_VALUES_LIMIT );
+        const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, PN_DEFAULT_SCRIPT_IF_CONDS_LIMIT );
+        const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, PN_DEFAULT_SCRIPT_PARTY_DEFS_LIMIT );
 
         LOG() << "used script resources: "
               << tunnellers           << "/" << tunnellersLimit << " tunneller triggers"
@@ -198,7 +199,8 @@ namespace dkmage {
         return ret;
     }
 
-    void BaseLevelGenerator::generateGoldSlabs( const std::size_t defaultGoldNum, const std::size_t defaultGemNum,
+    void BaseLevelGenerator::generateGoldSlabs( const std::string& defaultGoldNum,
+                                                const std::string& defaultGemSlabsNum, const std::string& defaultGemFacesNum, const std::string& defaultGemTrapsNum,
                                                 const std::size_t gemRegionWidth, const std::size_t gemRegionHeight )
     {
         Level& level = map.level;
@@ -213,9 +215,9 @@ namespace dkmage {
         const std::size_t rightVeinGold = goldSlabsNum - leftVeinGold;
         generateRightGoldVein( rightVeinGold, 0 );
 
-        std::size_t gemSlabsNum = parameters.getSizeT( ParameterName::PN_GEM_SLABS_NUMBER, defaultGemNum );
-        std::size_t gemFacesNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, defaultGemNum );
-        std::size_t gemTrapsNum = parameters.getSizeT( ParameterName::PN_GEM_TRAPS_NUMBER, defaultGemNum * 2 );
+        std::size_t gemSlabsNum = parameters.getSizeT( ParameterName::PN_GEM_SLABS_NUMBER, defaultGemSlabsNum );
+        std::size_t gemFacesNum = parameters.getSizeT( ParameterName::PN_GEM_FACES_NUMBER, defaultGemFacesNum );
+        std::size_t gemTrapsNum = parameters.getSizeT( ParameterName::PN_GEM_TRAPS_NUMBER, defaultGemTrapsNum );
         gemSlabsNum = std::min( gemSlabsNum, gemFacesNum );
         gemFacesNum = std::min( gemFacesNum, gemSlabsNum * 4 );
 
@@ -223,8 +225,8 @@ namespace dkmage {
         LOG() << "gems faces number: " << gemFacesNum;
         LOG() << "gems traps number: " << gemTrapsNum;
 
-        const SizeTSet gemGuardsNum  = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_NUMBER, 3, 5 );
-        const SizeTSet gemGuardLevel = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_LEVEL, 4, 7 );
+        const SizeTSet gemGuardsNum  = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_NUMBER, PN_DEFAULT_GEM_GUARD_NUMBER );
+        const SizeTSet gemGuardLevel = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_LEVEL, PN_DEFAULT_GEM_GUARD_LEVEL );
 
         const Rect mapRect = raw::RawLevel::mapRect();
         const Point mapCenter = mapRect.center();
