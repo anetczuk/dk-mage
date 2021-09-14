@@ -100,11 +100,12 @@ add_subdirectory( cli )
 
 
 set( CUSTOM_CONFIG_PATH "" CACHE FILEPATH "Path to custom config.ini" )
+include( ParameterDefaults.cmake )
+configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config-fresh.ini @ONLY )
 if( EXISTS "${CUSTOM_CONFIG_PATH}" )
     ## custom config -- copy
     configure_file( ${CUSTOM_CONFIG_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini COPYONLY )
 else()
-    include( ParameterDefaults.cmake )
     if( NOT EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini" )
         configure_file( config.ini.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.ini @ONLY )
     endif()

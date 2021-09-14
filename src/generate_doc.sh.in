@@ -38,7 +38,7 @@ cat > @DOC_DIR@/config.ini.md <<EOF
 Sample \`config.ini\`:
 
 \`\`\`
-$(cat @PROJECT_SOURCE_DIR@/config.ini.in)
+$(cat @CMAKE_RUNTIME_OUTPUT_DIRECTORY@/config-fresh.ini)
 \`\`\`
 EOF
 
