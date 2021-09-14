@@ -19,7 +19,7 @@ Linked samples and following previews were generated with *Sample* seed.
 [![herofortress type](doc/samples/herofortress-small.png "herofortress type")](doc/samples/herofortress/map04446.bmp)
 
 
-## Running generator
+## Running the generator
 
 Before first run edit `config.ini` placed along main executable. Inside the file fill required variables (paths to game directories). Example of configuration file is described [here](doc/config.ini.md).
 
@@ -99,7 +99,7 @@ Adding new config parameters consists of several steps:
 2. run parameters generator `src/gen/params_generator.py`
 3. use new `ParameterName::PN_*` enum value (defined in *ParameterName.h*)
 4. use one of generated default value constants `PN_DEFAULT_*` (defined in *ParameterDefaults.h*)
-5. extend *config.ini.in* with proper description of new parameter. Defuult values can be referenced using cmake constants `PN_DEFAULT_*` (defined in *ParameterDefaults.cmake*) 
+5. extend *config.ini.in* with proper description of new parameter. Default values can be referenced using cmake constants `PN_DEFAULT_*` (defined in *ParameterDefaults.cmake*) 
 
 
 ## Releasing
@@ -117,12 +117,14 @@ To release binaries proceed with following steps:
 ## Examples of various used techniques:
 
 - *CMake*'s `FetchContent` and proper configuration for `add_directory` (`target_include_directories`)
+- generating sourcecode (_*.h_, _*.cpp_ and _*.cmake_) based on content of _*.csv_ files using Python
+
 
 ### Source of randomness
 
 - random number generator (```stdlib.h```)
 - uninitialized variables
-- order of objects stored as pointers, especially pointers in ```std::set``` -- e.g.
+- order of objects stored as pointers containers having order, especially pointers in ```std::set``` -- e.g.
 ```
 std::set< int* > data;
 data.insert( new int(1) );
@@ -143,7 +145,7 @@ data.insert( new int(3) );
 - Dungeon Keeper 2 mapper (https://www.killerbeesoftware.com/dk2/)
 - Diablo map generator explained (https://www.boristhebrave.com/2019/07/14/dungeon-generation-in-diablo-1/)
 
-### external libraries
+### External libraries
 - ADiKtEd: handling DK's file formats (https://github.com/dkfans/ADiKtEd)
 - filesystem: pre C++17 `std::filesystem` compatible implementation (https://github.com/gulrak/filesystem)
 - LEMON: graphs implementation (https://lemon.cs.elte.hu)
