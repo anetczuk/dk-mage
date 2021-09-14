@@ -89,10 +89,20 @@ Unit tests can be executed from within proper `build` subdirectory by executing 
 
 ## Building under other platforms
 
-To build one have to `cmake` directly in order to configure project and then execute `cmake --build .` from within configured build directory.
+To build one have to execute `cmake` directly in order to configure project and then execute `cmake --build .` from within configured build directory.
 
 
-## Release
+## Config parameters
+
+Adding new config parameters consists of several steps:
+1. add or edit entry in *src/gen/parameter_name.csv*
+2. run parameters generator `src/gen/params_generator.py`
+3. use new `ParameterName::PN_*` enum value (defined in *ParameterName.h*)
+4. use one of generated default value constants `PN_DEFAULT_*` (defined in *ParameterDefaults.h*)
+5. extend *config.ini.in* with proper description of new parameter. Defuult values can be referenced using cmake constants `PN_DEFAULT_*` (defined in *ParameterDefaults.cmake*) 
+
+
+## Releasing
 
 To release binaries proceed with following steps:
 1. update version number of project (`project()` command in *src/CMakeLists.txt*)
