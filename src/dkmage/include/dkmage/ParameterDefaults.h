@@ -16,6 +16,8 @@
 /// inclusion: #include "dkmage/ParameterDefaults.h"
 
 
+#define PN_DEFAULT_TYPE                                              "random"
+
 #define PN_DEFAULT_ACTION_POINTS_LIMIT                               "31"
 
 #define PN_DEFAULT_SCRIPT_TUNNELLERS_LIMIT                           "256"

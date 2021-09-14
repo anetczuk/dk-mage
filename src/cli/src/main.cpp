@@ -7,6 +7,7 @@
 
 #include "dkmage/Generator.h"
 #include "dkmage/Parameter.h"
+#include "dkmage/ParameterDefaults.h"
 
 #include "adiktedpp/Level.h"
 #include "adiktedpp/Version.h"
@@ -181,7 +182,7 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
 
     /// try to load map type section based on value 'general::type' from config
     {
-        std::string configMapType = retParameters.getString( ParameterName::PN_TYPE, "random" );
+        std::string configMapType = retParameters.getString( ParameterName::PN_TYPE, PN_DEFAULT_TYPE );
         configMapType = getProperType( configMapType );
         if ( configMapType.empty() == false ) {
             const cli::Config::RawData mapData = config.readSection( configMapType );

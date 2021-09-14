@@ -57,7 +57,7 @@ levels_path =
 ## Type: VALUES_LIST containing one of above values. In case of multiple values one will be randomized.
 ## Example 1: cave
 ## Example 2: cave,maze
-# type =
+# type = @PN_DEFAULT_TYPE@
 
 
 ## Limit of action points on map allowed by game.
