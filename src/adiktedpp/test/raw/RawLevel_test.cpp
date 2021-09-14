@@ -9,6 +9,7 @@
 
 #include "adiktedpp/Messages.h"
 #include "Path.h"
+#include "utils/Rand.h"
 #include "utils/Log.h"
 #include "utils/Separator.h"
 
@@ -91,6 +92,22 @@ TEST_CASE("RawLevel_startNewMap_succeed", "[classic]") {
 
     const std::string levelPath = level.levelsPath();
     CHECK( levelPath == "" );
+}
+
+TEST_CASE("RawLevel_setSlab_rng", "[classic]") {
+    /**
+     * Ensure that placing items on map does not consume random numbers.
+     */
+
+    utils::rng_srand( 1 );
+
+    REQUIRE( utils::rng_randi() == 3796174982 );
+
+    RawLevelMock level;
+    level.startNewMap();
+    level.setSlab( 10, 10, raw::SlabType::ST_PATH );
+
+    REQUIRE( utils::rng_randi() == 4182529786 );
 }
 
 TEST_CASE("RawLevel_generateRandomMap", "[classic]") {
