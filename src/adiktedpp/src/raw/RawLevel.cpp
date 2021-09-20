@@ -858,13 +858,15 @@ namespace adiktedpp {
         void RawLevel::generateBmp() {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_WARN() << "unable to generate bmp -- uninitialized level";
                 return ;
             }
             const char* dataPath = data->getDataPath();
             if ( dataPath == nullptr ) {
                 /// data path is not set -- initialize with empty string
-                setDataPath( "" );
+                /// setDataPath( "" );
+                LOG_WARN() << "unable to generate bmp -- data path not set";
+                return ;
             }
             generate_map_bitmap_mapfname( level );
         }
@@ -872,13 +874,15 @@ namespace adiktedpp {
         bool RawLevel::generateBmp( const std::string& path ) {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_WARN() << "unable to generate bmp -- uninitialized level";
                 return false;
             }
             const char* dataPath = data->getDataPath();
             if ( dataPath == nullptr ) {
                 /// data path is not set -- initialize with empty string
-                setDataPath( "" );
+                /// setDataPath( "" );
+                LOG_WARN() << "unable to generate bmp -- data path not set";
+                return false;
             }
 
             level->optns.picture.data_path = level->optns.data_path;
@@ -887,6 +891,7 @@ namespace adiktedpp {
     //        level->optns.picture.rescale = 2;
             const short result = generate_map_bitmap( bmpfname, level, &(level->optns.picture));
             if ( result != ERR_NONE ) {
+                LOG_WARN() << "unable to generate bmp";
                 return false;
             }
             message_info("Bitmap \"%s\" created.",bmpfname);

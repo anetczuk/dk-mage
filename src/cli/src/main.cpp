@@ -282,6 +282,7 @@ int main( int argc, char** argv ) {
                 outputLevelFile = outputSubPath;
             }
         } else if ( outputIdParam.isSet() ) {
+            /// store by id
             const std::string levelsPath  = levelsPathParam.value_or( "" );                     /// yes, copy
             const std::size_t levelNumber = outputIdParam.getValue();
             const std::string mapName     = raw::RawLevel::prepareMapName( levelNumber );

@@ -401,6 +401,7 @@ namespace adiktedpp {
                 init.LEVEL_VERSION( 1 );
             }
 
+            /// hide whole map under fog of war (rocks, gems and other visible objects included)
             void concealWholeMap( const Player player );
 
             /// set creature pool

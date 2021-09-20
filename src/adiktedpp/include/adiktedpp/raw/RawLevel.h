@@ -79,11 +79,12 @@ namespace adiktedpp {
 
             std::string dataPath() const;
 
+            /// set path to game's 'data' directory containing required assets
             void setDataPath( const std::string& path );
 
             /// ===========================================================================
 
-            /// map ide template to load: "levels/MAP{mapId}"
+            /// map id template to load: "levels/MAP{mapId}"
             bool loadMapById( const std::size_t mapId );
 
             /// if relative path is given, then it refers to current working directory or
@@ -107,10 +108,6 @@ namespace adiktedpp {
 
             bool verifyMap( const bool silent = false, const bool skipScriptVerification = false );
 
-            std::size_t countAllCreatures();
-
-            std::size_t countActionPoints();
-
             /// count separated chambers by impassable rocks and gems
             std::size_t countSeparatedAreas();
 
@@ -121,6 +118,7 @@ namespace adiktedpp {
 
             /// ===========================================================================
 
+            /// count walls, earth and impassable slabs
             std::size_t countSolid( const utils::Rect& area ) const;
 
             SlabType getSlab( const std::size_t x, const std::size_t y ) const;
@@ -163,6 +161,8 @@ namespace adiktedpp {
 
             void setOwner( const std::size_t x, const std::size_t y, const PlayerType owner );
 
+            /// ======================================================================================
+
             std::string printItems() const;
 
             std::size_t countItems( const utils::Point& point ) const;
@@ -191,6 +191,8 @@ namespace adiktedpp {
 
             void setDoor( const utils::Point& point, const SubTypeDoor door, const bool locked = false );
 
+            std::size_t countAllCreatures();
+
             /// 'expLevel' counts from 1
             void setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature,
                               const std::size_t number=1, const std::size_t expLevel=1, const PlayerType owner = PlayerType::PT_UNSET );
@@ -200,6 +202,8 @@ namespace adiktedpp {
                               const std::size_t number=1, const std::size_t expLevel=1, const PlayerType owner = PlayerType::PT_UNSET );
 
             /// ===========================================================================
+
+            std::size_t countActionPoints();
 
             unsigned char* getActionPointByNumber( const std::size_t actionPoint );
 

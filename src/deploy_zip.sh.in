@@ -10,6 +10,21 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
+## $1 -- zip output
+## $2 -- directory to zip
+zip_directory() {
+    local OUT_NAME="$1"
+    local DIR="$2"
+    
+    ## -FS -- replaces existing archive
+    zip -FSr "$OUT_NAME" $DIR
+    
+    echo -e "\nfile generatet: $OUT_NAME\n\n"
+}
+
+
+### ===================== zip binaries =====================
+
 BIN_DIR=$SCRIPT_DIR/bin
 DEPLOY_DIR=$SCRIPT_DIR/deploy/dkmage
 
@@ -20,12 +35,53 @@ cp $BIN_DIR/dkmagecli* $DEPLOY_DIR
 cp $BIN_DIR/config.ini $DEPLOY_DIR
 
 cd $DEPLOY_DIR/..
-
 OUT_NAME="dkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip"
+zip_directory "$OUT_NAME" dkmage
 
-## -FS -- replaces existing archive
-zip -FSr "$OUT_NAME" dkmage
 
-echo -e "\nfile generatet: $OUT_NAME"
+### ===================== zip python bindings =====================
+
+
+## $1 -- pattern (with wildcard)
+## $2 -- output directory
+copy_files() {
+    local PATTERN="$1"
+    local OUT_DIR="$2"
+    
+    if ls $PATTERN 1> /dev/null 2>&1; then
+        cp ${PATTERN} $OUT_DIR
+    fi
+}
+
+
+## $1 -- module (with py prefix)
+## $2 -- lib
+python_copy() {
+    local DIR="$1"
+    local MODULE="$2"
+    
+    local BIN_DIR=$SCRIPT_DIR/$DIR
+    local DEPLOY_DIR=$SCRIPT_DIR/deploy/pydkmage/$MODULE
+    
+    mkdir -p $DEPLOY_DIR
+    
+    ## copy products
+    copy_files "$BIN_DIR/$MODULE/*.py" $DEPLOY_DIR
+    copy_files "$BIN_DIR/$MODULE/*.so" $DEPLOY_DIR
+}
+
+
+python_copy "pyutils" "utils"
+python_copy "pyutils" "testutils"
+python_copy "pyadiktedpp" "adiktedpp"
+python_copy "pyadiktedpp" "testadiktedpp"
+
+## copy example
+copy_files "$SCRIPT_DIR/pyadiktedpp/*.py" $SCRIPT_DIR/deploy/pydkmage
+
+cd $SCRIPT_DIR/deploy
+OUT_NAME="pydkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip"
+zip_directory "$OUT_NAME" pydkmage
+
 
 echo -e "deployment done"

@@ -63,15 +63,11 @@ namespace adiktedpp {
             AC_MAGIC_AVAILABLE
         };
 
+        /// translate enum value to script command
+        std::string AvailableCommandName( const AvailableCommand data );
+
         inline std::ostream& operator<<( std::ostream& os, const AvailableCommand data ) {
-            switch( data ) {
-            case AvailableCommand::AC_ROOM_AVAILABLE:        { os << "ROOM_AVAILABLE"; return os; }
-            case AvailableCommand::AC_CREATURE_AVAILABLE:    { os << "CREATURE_AVAILABLE"; return os; }
-            case AvailableCommand::AC_DOOR_AVAILABLE:        { os << "DOOR_AVAILABLE"; return os; }
-            case AvailableCommand::AC_TRAP_AVAILABLE:        { os << "TRAP_AVAILABLE"; return os; }
-            case AvailableCommand::AC_MAGIC_AVAILABLE:       { os << "MAGIC_AVAILABLE"; return os; }
-            }
-            os << "UNKNOWN_COMMAND[" << (int) data << "]";
+            os << AvailableCommandName( data );
             return os;
         }
 

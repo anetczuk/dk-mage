@@ -5,8 +5,53 @@
 
 #include "adiktedpp/Type.h"
 
+#include "utils/Log.h"
+
 
 namespace adiktedpp {
+
+    std::string SlabName( const Slab data ) {
+        switch( data ) {
+        case Slab::S_ROCK:    { return "S_ROCK"; }
+        case Slab::S_GOLD:    { return "S_GOLD"; }
+        case Slab::S_GEMS:    { return "S_GEMS"; }
+        case Slab::S_EARTH:   { return "S_EARTH"; }
+        case Slab::S_PATH:    { return "S_PATH"; }
+        case Slab::S_LAVA:    { return "S_LAVA"; }
+        case Slab::S_WATER:   { return "S_WATER"; }
+        }
+        std::stringstream stream;
+        stream << FILE_NAME << ": invalid argument -- unknown value: " << (int)data;
+        throw std::invalid_argument( stream.str() );
+    }
+
+    /// ===============================================================
+
+    std::string RoomName( const Room data ) {
+        switch( data ) {
+        case Room::R_CLAIMED:           { return "R_CLAIMED"; }
+        case Room::R_DUNGEON_HEART:     { return "R_DUNGEON_HEART"; }
+        case Room::R_PORTAL:            { return "R_PORTAL"; }
+
+        case Room::R_TREASURE:          { return "R_TREASURE"; }
+        case Room::R_LAIR:              { return "R_LAIR"; }
+        case Room::R_HATCHERY:          { return "R_HATCHERY"; }
+        case Room::R_TRAINING:          { return "R_TRAINING"; }
+        case Room::R_LIBRARY:           { return "R_LIBRARY"; }
+        case Room::R_BRIDGE:            { return "R_BRIDGE"; }
+        case Room::R_WORKSHOP:          { return "R_WORKSHOP"; }
+        case Room::R_GUARD_POST:        { return "R_GUARD_POST"; }
+        case Room::R_PRISON:            { return "R_PRISON"; }
+        case Room::R_TORTURE:           { return "R_TORTURE"; }
+        case Room::R_BARRACKS:          { return "R_BARRACKS"; }
+        case Room::R_TEMPLE:            { return "R_TEMPLE"; }
+        case Room::R_GRAVEYARD:         { return "R_GRAVEYARD"; }
+        case Room::R_SCAVENGER:         { return "R_SCAVENGER"; }
+        }
+        std::stringstream stream;
+        stream << FILE_NAME << ": invalid argument -- unknown value: " << (int)data;
+        throw std::invalid_argument( stream.str() );
+    }
 
     const std::set< Room >& RoomsAll() {
         static std::set< Room > container;

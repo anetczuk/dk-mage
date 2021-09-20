@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/raw/ThingType.h"
 
+#include <ostream>
+
 
 namespace adiktedpp {
     namespace raw {
@@ -29,21 +31,10 @@ namespace adiktedpp {
             TT_CAVEIN      = 0x0d
         };
 
+        std::string ThingTypeName( const ThingType data );
+
         inline std::ostream& operator<<( std::ostream& os, const ThingType data ) {
-            switch( data ) {
-            case ThingType::TT_NONE:      { os << "TT_NONE"; return os; }
-            case ThingType::TT_ITEM:      { os << "TT_ITEM"; return os; }
-            case ThingType::TT_SHOT:      { os << "TT_SHOT"; return os; }
-            case ThingType::TT_EFFCTELEM: { os << "TT_EFFCTELEM"; return os; }
-            case ThingType::TT_DEADCRTR:  { os << "TT_DEADCRTR"; return os; }
-            case ThingType::TT_CREATURE:  { os << "TT_CREATURE"; return os; }
-            case ThingType::TT_EFFECTGEN: { os << "TT_EFFECTGEN"; return os; }
-            case ThingType::TT_TRAP:      { os << "TT_TRAP"; return os; }
-            case ThingType::TT_DOOR:      { os << "TT_DOOR"; return os; }
-            case ThingType::TT_AMBNITSND: { os << "TT_AMBNITSND"; return os; }
-            case ThingType::TT_CAVEIN:    { os << "TT_CAVEIN"; return os; }
-            }
-            os << "UNKNOWN[" << (int) data << "]";
+            os << ThingTypeName( data );
             return os;
         }
 

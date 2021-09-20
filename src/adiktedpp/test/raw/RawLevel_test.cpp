@@ -43,11 +43,11 @@ public:
     RawLevelMock(): raw::RawLevel(), scoped( initialize_messages() ) {
     }
 
-    void generateTestBmp( const std::size_t rescale = 3 ) {
-        setRescale( rescale );
-        const std::string outputPath = Catch::getResultCapture().getCurrentTestName() + ".bmp";
-        generateBmp( outputPath );
-    }
+//    void generateTestBmp( const std::size_t rescale = 3 ) {
+//        setRescale( rescale );
+//        const std::string outputPath = Catch::getResultCapture().getCurrentTestName() + ".bmp";
+//        generateBmp( outputPath );
+//    }
 
 };
 
@@ -110,14 +110,14 @@ TEST_CASE("RawLevel_setSlab_rng", "[classic]") {
     REQUIRE( utils::rng_randi() == 4182529786 );
 }
 
-TEST_CASE("RawLevel_generateRandomMap", "[classic]") {
-    RawLevelMock level;
-
-//    srand_ng( 0 );
-    level.generateRandomMap();
-
-    level.generateTestBmp();
-}
+//TEST_CASE("RawLevel_generateRandomMap", "[classic]") {
+//    RawLevelMock level;
+//
+////    srand_ng( 0 );
+//    level.generateRandomMap();
+//
+//    level.generateTestBmp();
+//}
 
 TEST_CASE("RawLevel_verifyMap_empty", "[classic]") {
     RawLevelMock level;
@@ -152,7 +152,7 @@ TEST_CASE("RawLevel_countSeparatedAreas_new", "[classic]") {
     RawLevelMock level;
     level.startNewMap();
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -164,7 +164,7 @@ TEST_CASE("RawLevel_countSeparatedAreas_rock", "[classic]") {
 
     level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_ROCK );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -176,7 +176,7 @@ TEST_CASE("RawLevel_countSeparatedAreas_earth", "[classic]") {
 
     level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_EARTH );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -190,7 +190,7 @@ TEST_CASE("RawLevel_countSeparatedAreas_1", "[classic]") {
     level.setSlab( Rect( Point(50, 50), 11, 11 ), raw::SlabType::ST_ROCK );
     level.setSlab( Rect( Point(50, 50), 9, 9 ), raw::SlabType::ST_EARTH );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 1 );
@@ -204,7 +204,7 @@ TEST_CASE("RawLevel_fillSeparatedAreas", "[classic]") {
     level.setSlab( Rect( Point(50, 50), 5, 5 ), raw::SlabType::ST_ROCK );
     level.setSlab( Rect( Point(50, 50), 3, 3 ), raw::SlabType::ST_EARTH );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 
     REQUIRE( level.countSeparatedAreas() == 1 );
 
@@ -289,7 +289,7 @@ TEST_CASE("RawLevel_setSlab_rect", "[classic]") {
     const raw::SlabType gotSlab = level.getSlab( 15, 15 );
     CHECK( gotSlab == newSlab );
 
-    level.generateTestBmp();
+//    level.generateTestBmp();
 }
 
 TEST_CASE("RawLevel_setSlab_owner_path", "[classic]") {

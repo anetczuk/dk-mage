@@ -98,6 +98,12 @@ add_subdirectory( adiktedpp )
 add_subdirectory( dkmage )
 add_subdirectory( cli )
 
+option( BUILD_PYTHON_BINDINGS "Generate Python bindings (SWIG)" OFF )
+if( BUILD_PYTHON_BINDINGS )
+    add_subdirectory( pyutils )
+    add_subdirectory( pyadiktedpp )
+endif()
+
 
 set( CUSTOM_CONFIG_PATH "" CACHE FILEPATH "Path to custom config.ini" )
 include( ParameterDefaults.cmake )
