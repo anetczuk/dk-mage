@@ -92,6 +92,17 @@ Unit tests can be executed from within proper `build` subdirectory by executing 
 To build one have to execute `cmake` directly in order to configure project and then execute `cmake --build .` from within configured build directory.
 
 
+## Building Python bindongs
+
+Generation of Python bindings requires two elements:
+1. *Python*
+2. *swig* generator
+
+To generate bindings one has to check `BUILD_PYTHON_BINDINGS` in *cmake* configuration (e.g. by executing `cmake-gui`). Next step is to build the source code and preferably execute tests (`make` and `ctest` respectively). Final step is to execute `./deploy_zip.sh`. Script will package all bindings and required libraries into `deploy/pydkmage_{version}_{platform}.zip` archive.
+
+Archive contains numerous unit tests and simple example how to use the bindings under Python.
+
+
 ## Config parameters
 
 Adding new config parameters consists of several steps:
