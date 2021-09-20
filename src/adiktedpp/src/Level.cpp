@@ -29,9 +29,9 @@ namespace adiktedpp {
         case Slab::S_LAVA:   return raw::SlabType::ST_LAVA;
         case Slab::S_WATER:  return raw::SlabType::ST_WATER;
         }
-        LOG() << "invalid argument: " << (int)slab;
+        LOG() << "invalid slab: " << (int)slab;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << (int)slab;
+        stream << FILE_NAME << ": invalid slab: " << (int)slab;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -45,10 +45,27 @@ namespace adiktedpp {
         case raw::SlabType::ST_WATER: return Slab::S_WATER;
         case raw::SlabType::ST_GEMS:  return Slab::S_GEMS;
 
+        case raw::SlabType::ST_PORTAL:      return Slab::S_PATH;
+        case raw::SlabType::ST_TREASURE:    return Slab::S_PATH;
+        case raw::SlabType::ST_LIBRARY:     return Slab::S_PATH;
+        case raw::SlabType::ST_PRISONCASE:  return Slab::S_PATH;
+        case raw::SlabType::ST_TORTURE:     return Slab::S_PATH;
+        case raw::SlabType::ST_TRAINING:    return Slab::S_PATH;
+        case raw::SlabType::ST_DUNGHEART:   return Slab::S_PATH;
+        case raw::SlabType::ST_WORKSHOP:    return Slab::S_PATH;
+        case raw::SlabType::ST_SCAVENGER:   return Slab::S_PATH;
+        case raw::SlabType::ST_TEMPLE:      return Slab::S_PATH;
+        case raw::SlabType::ST_GRAVEYARD:   return Slab::S_PATH;
+        case raw::SlabType::ST_HATCHERY:    return Slab::S_PATH;
+        case raw::SlabType::ST_LAIR:        return Slab::S_PATH;
+        case raw::SlabType::ST_BARRACKS:    return Slab::S_PATH;
+        case raw::SlabType::ST_BRIDGE:      return Slab::S_PATH;
+        case raw::SlabType::ST_GUARDPOST:   return Slab::S_PATH;
+
         default: {
-            LOG() << "invalid argument: " << slab;
+            LOG() << "invalid slab type: " << slab;
             std::stringstream stream;
-            stream << FILE_NAME << ": invalid argument: " << slab;
+            stream << FILE_NAME << ": invalid slab type: " << slab;
             throw std::invalid_argument( stream.str() );
         }
         }
@@ -79,9 +96,9 @@ namespace adiktedpp {
         case Item::I_SPECIAL_HIDNWRL:   return raw::SubTypeItem::STI_SPHIDNWRL;
 
         default: {
-            LOG() << "invalid argument: " << (int)item;
+            LOG() << "invalid item: " << (int)item;
             std::stringstream stream;
-            stream << FILE_NAME << ": invalid argument: " << (int)item;
+            stream << FILE_NAME << ": invalid item: " << (int)item;
             throw std::invalid_argument( stream.str() );
         }
         }
@@ -109,9 +126,9 @@ namespace adiktedpp {
         case Room::R_GRAVEYARD:     return raw::SlabType::ST_GRAVEYARD;
         case Room::R_SCAVENGER:     return raw::SlabType::ST_SCAVENGER;
         }
-        LOG() << "invalid argument: " << room;
+        LOG() << "invalid room: " << room;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << room;
+        stream << FILE_NAME << ": invalid room: " << room;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -124,9 +141,9 @@ namespace adiktedpp {
         case Trap::T_WORD_OF_POWER:  return raw::SubTypeTrap::STT_WORDPWR;
         case Trap::T_LAVA:           return raw::SubTypeTrap::STT_LAVA;
         }
-        LOG() << "invalid argument: " << (int)trap;
+        LOG() << "invalid trap: " << (int)trap;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << (int)trap;
+        stream << FILE_NAME << ": invalid trap: " << (int)trap;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -137,9 +154,9 @@ namespace adiktedpp {
         case Door::D_IRON:   return raw::SubTypeDoor::STD_IRON;
         case Door::D_MAGIC:  return raw::SubTypeDoor::STD_MAGIC;
         }
-        LOG() << "invalid argument: " << (int)door;
+        LOG() << "invalid door: " << (int)door;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << (int)door;
+        stream << FILE_NAME << ": invalid door: " << (int)door;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -178,9 +195,9 @@ namespace adiktedpp {
         case Creature::C_HORNY:          return raw::SubTypeCreature::STC_HORNY;
         }
 
-        LOG() << "invalid argument: " << (int)creature;
+        LOG() << "invalid creature: " << (int)creature;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << (int)creature;
+        stream << FILE_NAME << ": invalid creature: " << (int)creature;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -196,9 +213,9 @@ namespace adiktedpp {
         case Player::P_UNSET: return raw::PlayerType::PT_UNSET;
         case Player::P_ALL:   return raw::PlayerType::PT_ALL;
         }
-        LOG() << "invalid argument: " << (int)player;
+        LOG() << "invalid player: " << (int)player;
         std::stringstream stream;
-        stream << FILE_NAME << ": invalid argument: " << (int)player;
+        stream << FILE_NAME << ": invalid player: " << (int)player;
         throw std::invalid_argument( stream.str() );
     }
 
@@ -244,6 +261,12 @@ namespace adiktedpp {
 
     bool Level::isFortified( const utils::Point& point ) const {
         return rawLevel.isFortified( point );
+    }
+
+    bool Level::isOwner( const std::size_t x, const std::size_t y, const Player owner ) const {
+        const raw::PlayerType playerType = convertToRaw( owner );
+        const raw::PlayerType currOwner = rawLevel.getOwner( x, y );
+        return ( playerType == currOwner );
     }
 
     bool Level::isOwner( const utils::Point& point, const Player owner ) const {

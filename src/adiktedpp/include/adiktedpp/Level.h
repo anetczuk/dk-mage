@@ -62,6 +62,7 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
+        /// set rescale factor for bmp preview
         void setRescale( const std::size_t rescale ) {
             rawLevel.setRescale( rescale );
         }
@@ -122,6 +123,8 @@ namespace adiktedpp {
         bool isSlab( const utils::Point& point, const Slab type ) const;
 
         bool isFortified( const utils::Point& point ) const;
+
+        bool isOwner( const std::size_t x, const std::size_t y, const Player owner ) const;
 
         bool isOwner( const utils::Point& point, const Player owner ) const;
 
