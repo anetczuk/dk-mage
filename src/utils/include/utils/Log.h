@@ -34,6 +34,10 @@ namespace utils {
             return buffer;
         }
 
+        void printMessage( const std::string& message ) {
+            buffer << message;
+        }
+
         static void setLogFile( const std::string& logFile );
 
         static std::string extractFileName( const char* filePath );

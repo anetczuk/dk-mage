@@ -10,8 +10,10 @@ import os.path
 import argparse
 
 import adiktedpp.level as level
+import adiktedpp.messages as messages
 
 import utils.rand as rand
+import utils.log as log
 
 
 def main():
@@ -28,14 +30,26 @@ def main():
         rand.rng_srand( args.seed )
     else:
         rand.rng_srand()
+
+    ## initialize ADiKtEd internal logger
+    adiktedLogger = messages.ScopeMessages( "adikted.log" )
+
+    ## initialize dkmage logger
+    log.Logger.setLogFile( "dkmage.log" )
+    
+    log.log_info( "logger initialized" )
     
     mapLevel = level.Level()
+    
+    log.log_info( "starting generation" )
     
     ## generate random content
     mapLevel.generateRandomMap()
     
     ## set game's 'data' path
     mapLevel.setDataPath( args.data_path )
+    
+    log.log_info( "storing data to files" )
     
     mapPath = os.path.join( args.output_dir, "map06666" ) 
     mapLevel.saveMapByPath( mapPath )
@@ -47,8 +61,8 @@ def main():
     if valid is False:
         print( "Unable to generate preview" )
         sys.exit(1)
-        
-    print( "Done" )
+    
+    log.log_info( "done" )    
     sys.exit(0)
     
 

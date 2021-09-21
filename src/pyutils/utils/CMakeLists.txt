@@ -6,8 +6,10 @@
 include_directories( ../../utils/include )
 
 
-build_swig_module( Rect.swg utils )
-build_swig_module( Rand.swg utils )
+file(GLOB swg_files *.swg )
+foreach( item IN ITEMS ${swg_files} )
+    build_swig_module( ${item} utils )
+endforeach()
 
 
 configure_file( __init__.py ${CMAKE_CURRENT_BINARY_DIR} @ONLY )
