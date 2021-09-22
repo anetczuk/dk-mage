@@ -644,21 +644,24 @@ namespace adiktedpp {
             addLine( line );
         }
 
-        void ScriptCommand::IF( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value ) {
+        /// method is renamed from "IF" to "IF_flag" to fix swig warning
+        void ScriptCommand::IF_flag( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value ) {
             std::stringstream stream;
             stream << "IF( " << script_keyword( player ) << ", " << script_keyword( flag ) << " " << comparison << " " << value << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
-        void ScriptCommand::IF( const adiktedpp::Player player, const Timer timer, const std::string& comparison, const int value ) {
+        /// method is renamed from "IF" to "IF_timer" to fix swig warning
+        void ScriptCommand::IF_timer( const adiktedpp::Player player, const Timer timer, const std::string& comparison, const int value ) {
             std::stringstream stream;
             stream << "IF( " << script_keyword( player ) << ", " << script_keyword( timer ) << " " << comparison << " " << value << " )";
             const std::string& line = stream.str();
             addLine( line );
         }
 
-        void ScriptCommand::IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value ) {
+        /// method is renamed from "IF" to "IF_option" to fix swig warning
+        void ScriptCommand::IF_option( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value ) {
             std::stringstream stream;
             stream << "IF( " << script_keyword( player ) << ", " << script_keyword( option ) << " " << comparison << " " << value << " )";
             const std::string& line = stream.str();

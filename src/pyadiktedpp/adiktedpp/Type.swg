@@ -29,6 +29,10 @@
 %enddef
 
 
+## prevent Warning 509
+%ignore adiktedpp::operator<<;
+
+
 ENUM_TYPES( Slab )
 ENUM_DEFS( Item )
 ENUM_TYPES( Room )

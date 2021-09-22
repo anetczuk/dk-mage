@@ -29,6 +29,10 @@ macro( init_swig )
     
     # message("CMAKE_SWIG_FLAGS: ${CMAKE_SWIG_FLAGS}")
     
+    ## disable some warnings
+    add_compile_options( -Wno-cast-function-type )
+    add_compile_options( -Wno-class-memaccess )
+    
     include_directories( ${Python3_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} )
 endmacro()
 

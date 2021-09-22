@@ -400,10 +400,7 @@ namespace utils {
         /// ================================================
 
         static Rect empty() {
-            Rect rect;
-            rect.max.x = -1;
-            rect.max.y = -1;
-            return rect;
+            return Rect( 0, 0 );
         }
 
 

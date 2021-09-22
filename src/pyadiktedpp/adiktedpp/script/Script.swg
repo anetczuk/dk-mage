@@ -15,6 +15,11 @@
 %template( StringVector ) std::vector< std::string >;
 
 
+## prevent Warning 509
+%ignore adiktedpp::script::script_keyword;
+%ignore adiktedpp::script::Script::operator[];
+
+
 %import "adiktedpp/Type.h"
 %import "adiktedpp/Level.h"
 

@@ -239,11 +239,11 @@ namespace adiktedpp {
 
             void CHANGE_SLAB_TYPE( const utils::Point position, const Slab slab );
 
-            void IF( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value );
+            void IF_flag( const adiktedpp::Player player, const Flag flag, const std::string& comparison, const int value );
 
-            void IF( const adiktedpp::Player player, const Timer timer, const std::string& comparison, const int value );
+            void IF_timer( const adiktedpp::Player player, const Timer timer, const std::string& comparison, const int value );
 
-            void IF( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value );
+            void IF_option( const adiktedpp::Player player, const IfOption option, const std::string& comparison, const int value );
 
             void IF_SLAB_TYPE( const utils::Point position, const Slab slab );
 

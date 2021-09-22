@@ -325,8 +325,8 @@ namespace dkmage {
 
                 mainSection.addEmptyLine();
                 mainSection.REM( "- send scout team -" );
-                mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 100 );
-                mainSection.IF( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
+                mainSection.IF_flag( Player::P_GOOD, script::Flag::F_FLAG_6, "<", 100 );
+                mainSection.IF_option( Player::P_P0, script::IfOption::IO_TOTAL_GOLD_MINED, ">", 16000 );
                 {
                     for ( std::size_t i=0; i<gatesSize; ++i ) {
                         const GateDistance& item = closestHeroGate[ i ];
@@ -342,7 +342,7 @@ namespace dkmage {
                     for ( std::size_t i=gatesSize-1; i<gatesSize; --i ) {
                         mainSection.ENDIF();
                         const GateDistance& item = closestHeroGate[ i ];
-                        mainSection.IF( Player::P_GOOD, script::Flag::F_FLAG_6, "==", item.id );
+                        mainSection.IF_flag( Player::P_GOOD, script::Flag::F_FLAG_6, "==", item.id );
                         {
                             mainSection.REM( "hero gate " + std::to_string( item.id ) + " not captured" );
                             const std::size_t infoIndex = mainScript.nextInfoIndex();

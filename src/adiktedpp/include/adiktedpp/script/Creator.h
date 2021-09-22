@@ -99,7 +99,7 @@ namespace adiktedpp {
             }
 
             void addIf( const std::size_t number ) {
-                section->IF( player, flag, "==", number );
+                section->IF_flag( player, flag, "==", number );
                 if ( reusable ) {
                     section->NEXT_COMMAND_REUSABLE();
                 }

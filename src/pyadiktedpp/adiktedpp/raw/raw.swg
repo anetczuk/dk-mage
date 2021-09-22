@@ -4,6 +4,10 @@
 %pythoncode %{####################################################%}
 
 
+## prevent Warning 509
+%ignore adiktedpp::raw::operator<<;
+
+
 %include "PlayerType.swg"
 %include "SlabType.swg"
 %include "SubTypeCreature.swg"

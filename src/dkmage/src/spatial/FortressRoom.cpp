@@ -606,7 +606,7 @@ namespace dkmage {
                 script::ScriptCommand& main = script.mainSection();
                 main.addEmptyLine();
                 main.REM( "- start counter attacks after releasing scout team -" );
-                main.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "==", 1 );
+                main.IF_flag( Player::P_GOOD, script::Flag::F_FLAG_5, "==", 1 );
                 {
                     main.SET_TIMER( Player::P_GOOD, script::Timer::T_TIMER_7 );
                     main.ADD_TO_FLAG( Player::P_GOOD, script::Flag::F_FLAG_5 );
@@ -615,8 +615,8 @@ namespace dkmage {
 
                 main.addEmptyLine();
                 main.REM( "- main counter attacks triggered each approx. 5 min -" );
-                main.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 5 );
-                main.IF( Player::P_GOOD, script::Timer::T_TIMER_7, ">", 5 * 60 * 20 );
+                main.IF_flag( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 5 );
+                main.IF_timer( Player::P_GOOD, script::Timer::T_TIMER_7, ">", 5 * 60 * 20 );
                 {
                     script::RandomSelectCreator selector( Player::P_GOOD, script::Flag::F_FLAG_7, true, main );
                     const std::vector< std::string > data = { "main_counter_strike_1", "main_counter_strike_2", "main_counter_strike_3" };
@@ -1671,7 +1671,7 @@ namespace dkmage {
                 actions.REM( "- start counter strike timers -" );
                 actions.REM( std::to_string( centerAP ) + " -- entrance center" );
                 actions.IF_ACTION_POINT( centerAP, Player::P_P0 );
-                actions.IF( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 1 );
+                actions.IF_flag( Player::P_GOOD, script::Flag::F_FLAG_5, "<", 1 );
                 actions.SET_FLAG( Player::P_GOOD, script::Flag::F_FLAG_5, 1 );
                 actions.ENDIF();
                 actions.ENDIF();
