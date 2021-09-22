@@ -519,6 +519,16 @@ namespace adiktedpp {
             return countItems( point.x, point.y );
         }
 
+        std::size_t RawLevel::countItems( const utils::Rect& rect ) const {
+            std::size_t sum = 0;
+            const std::size_t rectSize = rect.area();
+            for ( std::size_t i=0; i<rectSize; ++i ) {
+                const Point point = rect.pointByIndex( i );
+                sum += countItems( point );
+            }
+            return sum;
+        }
+
         std::size_t RawLevel::countItems( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map

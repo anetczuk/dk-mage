@@ -506,6 +506,8 @@ namespace adiktedpp {
 
             LevelScript( Level& level );
 
+            void rebuild( const script::Script& scriptData );
+
             void rebuild( std::vector< std::string >& content );
 
             bool recompose();

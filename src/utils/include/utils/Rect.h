@@ -25,6 +25,10 @@ namespace utils {
 
         Point(): x(0), y(0) {
         }
+
+        Point( const Point& point ): x(point.x), y(point.y) {
+        }
+
         Point( const int ax, const int ay ): x(ax), y(ay) {
         }
 
@@ -147,6 +151,9 @@ namespace utils {
 
         /// empty rect
         Rect(): min(0,0), max(-1,-1) {
+        }
+
+        Rect( const Rect& rect ): min(rect.min), max(rect.max) {
         }
 
         Rect( const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {

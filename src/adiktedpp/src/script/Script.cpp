@@ -1292,6 +1292,11 @@ namespace adiktedpp {
         LevelScript::LevelScript( Level& level ): levelPtr(&level) {
         }
 
+        void LevelScript::rebuild( const script::Script& scriptData ) {
+            std::vector< std::string > content = scriptData.build();
+            rebuild( content );
+        }
+
         void LevelScript::rebuild( std::vector< std::string >& content ) {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {

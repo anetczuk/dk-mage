@@ -3,7 +3,6 @@
 /// %extern "adiktedpp/Type.h"
 
 %{
-#include "adiktedpp/raw/RawLevel.h"
 #include "adiktedpp/Level.h"
 
 using namespace adiktedpp;
@@ -13,7 +12,7 @@ using namespace adiktedpp;
 %pythoncode %{####################################################%}
 
 
-%include "std_string.i"
+%import(module="utils.rect") "utils/Rect.swg"
 
 
 %import "adiktedpp/Type.h"

@@ -345,6 +345,10 @@ namespace adiktedpp {
         return rawLevel.countItems( point );
     }
 
+    std::size_t Level::countItems( const utils::Rect& rect ) const {
+        return rawLevel.countItems( rect );
+    }
+
     void Level::setTrap( const std::size_t x, const std::size_t y, const Trap trap ) {
         const raw::SubTypeTrap rawTrap = convertToRaw( trap );
         rawLevel.setTrap( x, y, 4, rawTrap );
@@ -487,7 +491,7 @@ namespace adiktedpp {
 
     void Level::digLine( const Point& from, const Point& to, const Player owner, const bool fortify ) {
         const PointList points = line( from, to );
-        digCorridor( points, owner, fortify );
+        digClaimed( points, owner, fortify );
     }
 
     void Level::digCorridor( const utils::PointList& corridor, const Slab type ) {
@@ -504,7 +508,7 @@ namespace adiktedpp {
         }
     }
 
-    void Level::digCorridor( const utils::PointList& corridor, const Player owner, const bool fortify ) {
+    void Level::digClaimed( const utils::PointList& corridor, const Player owner, const bool fortify ) {
         const raw::PlayerType playerType = convertToRaw( owner );
         for ( const Point& item: corridor ) {
             const raw::SlabType currSlab = rawLevel.getSlab( item );

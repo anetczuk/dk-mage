@@ -49,9 +49,8 @@ namespace dkmage {
             return false;
         }
 
-        std::vector< std::string > content = map.script.build();
         script::LevelScript dataLevel( level );
-        dataLevel.rebuild( content );
+        dataLevel.rebuild( map.script );
 
         const bool extendedScript = map.script.isFXLevel();
         if ( extendedScript ) {

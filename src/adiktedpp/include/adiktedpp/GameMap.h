@@ -18,6 +18,10 @@ namespace adiktedpp {
         Level level;
         script::Script script;
 
+
+        /// apply script to level
+        void applyScript();
+
     };
 
 } /* namespace adiktedpp */

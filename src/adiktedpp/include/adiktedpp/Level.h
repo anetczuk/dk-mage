@@ -22,6 +22,9 @@ namespace adiktedpp {
 
     public:
 
+        Level() {
+        }
+
         const raw::RawLevel& getRawLevel() const {
             return rawLevel;
         }
@@ -112,8 +115,10 @@ namespace adiktedpp {
 
         /// ==============================================================================
 
+        /// count walls, earth and impassable slabs
         std::size_t countSolid( const utils::Point& point, const std::size_t radius ) const;
 
+        /// count walls, earth and impassable slabs
         std::size_t countSolid( const utils::Rect& rect ) const;
 
         Slab getSlab( const std::size_t x, const std::size_t y );
@@ -155,6 +160,8 @@ namespace adiktedpp {
         void setRoom( const utils::Point& position, const Room room, const Player owner, const bool fortify );
 
         std::size_t countItems( const utils::Point& point ) const;
+
+        std::size_t countItems( const utils::Rect& rect ) const;
 
         void setTrap( const std::size_t x, const std::size_t y, const Trap trap );
 
@@ -214,7 +221,7 @@ namespace adiktedpp {
 
         void digCorridor( const utils::PointList& corridor, const Slab type );
 
-        void digCorridor( const utils::PointList& corridor, const Player owner, const bool fortify );
+        void digClaimed( const utils::PointList& corridor, const Player owner, const bool fortify );
 
     };
 

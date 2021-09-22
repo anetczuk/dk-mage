@@ -36,7 +36,7 @@ namespace dkmage {
                 const FortressRoom* connected = pair.second;
 
                 const PointList corridor = getCorridor( *room, *connected );
-                level.digCorridor( corridor, owner, fortify );
+                level.digClaimed( corridor, owner, fortify );
             }
 
             /// draw room content

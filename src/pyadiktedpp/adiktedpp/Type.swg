@@ -12,7 +12,6 @@
 %pythoncode %{####################################################%}
 
 
-
 %define ENUM_DEFS( enumName )
 %template( enumName ## Vector ) std::vector< enum adiktedpp:: ## enumName >;
 %template( enumName ## Set ) std::set< enum adiktedpp:: ## enumName >;             /// REQUIRES instantiation of std::vector !!!
