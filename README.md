@@ -151,7 +151,7 @@ To release binaries proceed with following steps:
 
 - *CMake*'s `FetchContent` and proper configuration for `add_directory` (`target_include_directories`)
 - generating sourcecode (_*.h_, _*.cpp_ and _*.cmake_) based on content of _*.csv_ files using Python
-- generation of Python bindings using *swig* generator
+- generation of Python bindings using *swig* generator on non-trivial codebase
 
 
 ### <a name="sources_randomness"></a>Source of randomness
