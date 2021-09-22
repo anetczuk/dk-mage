@@ -19,6 +19,7 @@ namespace adiktedpp {
         case Slab::S_PATH:    { return "S_PATH"; }
         case Slab::S_LAVA:    { return "S_LAVA"; }
         case Slab::S_WATER:   { return "S_WATER"; }
+        case Slab::S_HOLY:    { return "S_HOLY"; }
         }
         std::stringstream stream;
         stream << FILE_NAME << ": invalid argument -- unknown value: " << (int)data;

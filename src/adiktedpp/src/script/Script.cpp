@@ -70,6 +70,14 @@ namespace adiktedpp {
             case Slab::S_PATH:      return "PATH";
             case Slab::S_LAVA:      return "LAVA";
             case Slab::S_WATER:     return "WATER";
+
+            case Slab::S_HOLY: {
+                const std::string message = "invalid argument: holy slab is not supported in script";
+                LOG_ERR() << message;
+                std::stringstream stream;
+                stream << FILE_NAME << ": " << message;
+                throw std::invalid_argument( stream.str() );
+            }
             }
 
             LOG_ERR() << "invalid argument: " << (int)data;

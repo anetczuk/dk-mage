@@ -57,6 +57,10 @@ namespace adiktedpp {
             ST_DOORMAGIC1   = 0x30,
             ST_DOORMAGIC2   = 0x31,
 
+            /// slab 50: https://keeperklan.com/threads/5074-Advanced-mapmaking-AdIkTeD-Column-mode-and-Slab50
+            /// path slab that cannot be claimed and dropping creatures on it is forbidden
+            ST_HOLYGROUND   = 0x32,
+
             ST_BRIDGE       = 0x33,
             ST_GEMS         = 0x34,
             ST_GUARDPOST    = 0x35
@@ -92,8 +96,9 @@ namespace adiktedpp {
 
         inline bool isPassage( const SlabType type ) {
             switch( type ) {
-            case SlabType::ST_PATH:     return true;
-            case SlabType::ST_CLAIMED:  return true;
+            case SlabType::ST_PATH:        return true;
+            case SlabType::ST_CLAIMED:     return true;
+            case SlabType::ST_HOLYGROUND:  return true;
             default: return false;
             }
         }

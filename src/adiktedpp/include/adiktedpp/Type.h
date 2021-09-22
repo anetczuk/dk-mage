@@ -22,7 +22,8 @@ namespace adiktedpp {
         S_EARTH,
         S_PATH,
         S_LAVA,
-        S_WATER
+        S_WATER,
+        S_HOLY                  /// slab50: holy ground
     };
 
     std::string SlabName( const Slab data );

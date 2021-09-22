@@ -29,7 +29,7 @@ namespace adiktedpp {
         struct LevelData;
 
         /**
-         *
+         * By default new level is filled with rock slabs.
          */
         class RawLevel {
         public:
@@ -106,7 +106,7 @@ namespace adiktedpp {
 
             void generateRandomMap( const std::size_t areaLimit );
 
-            bool verifyMap( const bool silent = false, const bool skipScriptVerification = false );
+            bool verifyMap( const bool silent = false, const bool skipScriptVerification = false, const bool skipSlabsVerification = false );
 
             /// count separated chambers by impassable rocks and gems
             std::size_t countSeparatedAreas();
@@ -120,6 +120,10 @@ namespace adiktedpp {
 
             /// count walls, earth and impassable slabs
             std::size_t countSolid( const utils::Rect& area ) const;
+
+            std::size_t countSlabs( const SlabType slab ) const;
+
+            std::size_t countSlabs( const utils::Rect& area, const SlabType slab ) const;
 
             SlabType getSlab( const std::size_t x, const std::size_t y ) const;
 

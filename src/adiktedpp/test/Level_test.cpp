@@ -54,6 +54,14 @@ public:
 TEST_CASE("Level_constructor", "[classic]") {
     LevelMock level;
     REQUIRE( true );
+
+    raw::RawLevel& rawLevel = level.getRawLevel();
+
+    const std::size_t earthSlabs = rawLevel.countSlabs( raw::SlabType::ST_EARTH );
+    REQUIRE( earthSlabs == 0 );
+
+    const std::size_t rockSlabs = rawLevel.countSlabs( raw::SlabType::ST_ROCK );
+    REQUIRE( rockSlabs == 7225 );
 }
 
 //TEST_CASE("Level_generateRandomMap", "[classic]") {
@@ -81,11 +89,51 @@ TEST_CASE("Level_verifyMap_random", "[classic]") {
     REQUIRE( ok == false );
 }
 
+TEST_CASE("Level_verifyMap_ok", "[classic]") {
+    LevelMock level;
+
+    const Rect room( 20, 20, 30, 30 );
+    level.setRoom( room, Room::R_DUNGEON_HEART, Player::P_P0, true );
+
+    const bool ok = level.verifyMap( true );
+    REQUIRE( ok == true );
+}
+
+TEST_CASE("Level_verifyMap_slab50_fail", "[classic]") {
+    LevelMock level;
+
+    const Rect room( 20, 20, 30, 30 );
+    level.setRoom( room, Room::R_DUNGEON_HEART, Player::P_P0, true );
+
+    const Rect corner = room.leftBottom();
+    level.setSlab( corner, Slab::S_HOLY );
+
+    const std::size_t holySlabs = level.getRawLevel().countSlabs( raw::SlabType::ST_HOLYGROUND );
+    REQUIRE( holySlabs == 1 );
+
+    const bool ok = level.verifyMap( true );
+    REQUIRE( ok == false );
+}
+
+TEST_CASE("Level_verifyMap_slab50_skip", "[classic]") {
+    LevelMock level;
+
+    const Rect room( 20, 20, 30, 30 );
+    level.setRoom( room, Room::R_DUNGEON_HEART, Player::P_P0, true );
+
+    const Rect corner = room.leftBottom();
+    level.setSlab( corner, Slab::S_HOLY );
+
+    const std::size_t holySlabs = level.getRawLevel().countSlabs( raw::SlabType::ST_HOLYGROUND );
+    REQUIRE( holySlabs == 1 );
+
+    const bool ok = level.verifyMap( true, false, true );
+    REQUIRE( ok == true );
+}
+
 TEST_CASE("Level_countSeparatedAreas_new", "[classic]") {
     LevelMock level;
     level.startNewMap();
-
-//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -93,11 +141,11 @@ TEST_CASE("Level_countSeparatedAreas_new", "[classic]") {
 
 TEST_CASE("Level_countSeparatedAreas_rock", "[classic]") {
     LevelMock level;
-    level.startNewMap();
 
-    level.setSlab( Rect( 0, 0, 84, 84 ), Slab::S_ROCK );
+    raw::RawLevel& rawLevel = level.getRawLevel();
 
-//    level.generateTestBmp();
+    const std::size_t rockSlabs = rawLevel.countSlabs( raw::SlabType::ST_ROCK );
+    REQUIRE( rockSlabs == 7225 );
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -105,11 +153,8 @@ TEST_CASE("Level_countSeparatedAreas_rock", "[classic]") {
 
 TEST_CASE("Level_countSeparatedAreas_earth", "[classic]") {
     LevelMock level;
-    level.startNewMap();
 
     level.setSlab( Rect( 0, 0, 84, 84 ), Slab::S_EARTH );
-
-//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
@@ -117,13 +162,9 @@ TEST_CASE("Level_countSeparatedAreas_earth", "[classic]") {
 
 TEST_CASE("Level_countSeparatedAreas_1", "[classic]") {
     LevelMock level;
-    level.startNewMap();
 
-    level.setSlab( Rect( 0, 0, 84, 84 ), Slab::S_EARTH );
-    level.setSlab( Rect( Point(50, 50), 11, 11 ), Slab::S_ROCK );
+    level.setSlab( Rect( Point(20, 20), 9, 9 ), Slab::S_EARTH );
     level.setSlab( Rect( Point(50, 50), 9, 9 ), Slab::S_EARTH );
-
-//    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 1 );
@@ -131,13 +172,9 @@ TEST_CASE("Level_countSeparatedAreas_1", "[classic]") {
 
 TEST_CASE("Level_fillSeparatedAreas", "[classic]") {
     LevelMock level;
-    level.startNewMap();
 
-    level.setSlab( Rect( 0, 0, 84, 84 ), Slab::S_EARTH );
-    level.setSlab( Rect( Point(50, 50), 5, 5 ), Slab::S_ROCK );
+    level.setSlab( Rect( Point(20, 20), 5, 5 ), Slab::S_EARTH );
     level.setSlab( Rect( Point(50, 50), 3, 3 ), Slab::S_EARTH );
-
-//    level.generateTestBmp();
 
     REQUIRE( level.countSeparatedAreas() == 1 );
 
@@ -164,22 +201,16 @@ TEST_CASE("Level_loadMapByPath_string_subdir_loaded", "[classic]") {
 TEST_CASE("Level_setSlab_rect", "[classic]") {
     LevelMock level;
 
-    level.startNewMap();
-
     const Rect lavaPool( 10, 10, 20, 20 );
     const Slab newSlab = Slab::S_LAVA;
     level.setSlab( lavaPool, newSlab );
 
     const Slab gotSlab = level.getSlab( 15, 15 );
     CHECK( gotSlab == newSlab );
-
-//    level.generateTestBmp();
 }
 
 TEST_CASE("Level_setRoom", "[classic]") {
     LevelMock level;
-
-    level.startNewMap();
 
     const Rect room( 10, 10, 20, 20 );
     const Room newRoom    = Room::R_TRAINING;
@@ -194,6 +225,4 @@ TEST_CASE("Level_setRoom", "[classic]") {
 
     const raw::SlabType rawSlab = level.getRawLevel().getSlab( 15, 15 );
     CHECK( rawSlab == raw::SlabType::ST_TRAINING );
-
-//    level.generateTestBmp();
 }

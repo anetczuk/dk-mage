@@ -57,7 +57,14 @@ namespace dkmage {
             LOG_WARN() << "detected FX script -- txt verification disabled";
         }
 
-        if ( level.verifyMap( false, extendedScript ) == false ) {
+        /// currently adikted does not support "holy ground" slab -- treats it as unknown slab and fails verification
+        const std::size_t holySlabs = level.getRawLevel().countSlabs( raw::SlabType::ST_HOLYGROUND );
+        const bool unknownSlabs = ( holySlabs > 0 );
+        if ( unknownSlabs ) {
+            LOG_WARN() << "detected unsupported slabs -- slab verification disabled";
+        }
+
+        if ( level.verifyMap( false, extendedScript, unknownSlabs ) == false ) {
             /// verification performed by adikted (for example if there is Dungeon Heart)
             LOG_WARN() << "generated level is invalid";
             return false;

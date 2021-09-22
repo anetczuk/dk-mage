@@ -48,6 +48,7 @@ namespace adiktedpp {
             case SlabType::ST_DOORIRON2:  { return "ST_DOORIRON2"; }
             case SlabType::ST_DOORMAGIC1: { return "ST_DOORMAGIC1"; }
             case SlabType::ST_DOORMAGIC2: { return "ST_DOORMAGIC2"; }
+            case SlabType::ST_HOLYGROUND: { return "ST_HOLYGROUND"; }
             case SlabType::ST_BRIDGE:     { return "ST_BRIDGE"; }
             case SlabType::ST_GEMS:       { return "ST_GEMS"; }
             case SlabType::ST_GUARDPOST:  { return "ST_GUARDPOST"; }

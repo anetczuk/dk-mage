@@ -28,6 +28,7 @@ namespace adiktedpp {
         case Slab::S_PATH:   return raw::SlabType::ST_PATH;
         case Slab::S_LAVA:   return raw::SlabType::ST_LAVA;
         case Slab::S_WATER:  return raw::SlabType::ST_WATER;
+        case Slab::S_HOLY:   return raw::SlabType::ST_HOLYGROUND;
         }
         LOG() << "invalid slab: " << (int)slab;
         std::stringstream stream;
@@ -61,6 +62,8 @@ namespace adiktedpp {
         case raw::SlabType::ST_BARRACKS:    return Slab::S_PATH;
         case raw::SlabType::ST_BRIDGE:      return Slab::S_PATH;
         case raw::SlabType::ST_GUARDPOST:   return Slab::S_PATH;
+
+        case raw::SlabType::ST_HOLYGROUND:  return Slab::S_HOLY;
 
         default: {
             LOG() << "invalid slab type: " << slab;
@@ -223,8 +226,8 @@ namespace adiktedpp {
     /// =============================================================================================================
 
 
-    bool Level::verifyMap( const bool silent, const bool skipScriptVerification ) {
-        if ( rawLevel.verifyMap( silent, skipScriptVerification ) == false ) {
+    bool Level::verifyMap( const bool silent, const bool skipScriptVerification, const bool skipSlabsVerification ) {
+        if ( rawLevel.verifyMap( silent, skipScriptVerification, skipSlabsVerification ) == false ) {
             return false;
         }
         const std::size_t creaturesNum = rawLevel.countAllCreatures();

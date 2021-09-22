@@ -13,7 +13,7 @@
 namespace adiktedpp {
 
     /**
-     *
+     * By default new level is filled with rock slabs.
      */
     class Level {
 
@@ -97,7 +97,7 @@ namespace adiktedpp {
             return rawLevel.generateRandomMap( areaLimit );
         }
 
-        bool verifyMap( const bool silent = false, const bool skipScriptVerification = false );
+        bool verifyMap( const bool silent = false, const bool skipScriptVerification = false, const bool skipSlabsVerification = false );
 
         /// count separated chambers by impassable rocks and gems
         std::size_t countSeparatedAreas() {

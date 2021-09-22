@@ -241,17 +241,19 @@ namespace adiktedpp {
             }
         }
 
-        bool RawLevel::verifyMap( const bool silent, const bool skipScriptVerification ) {
+        bool RawLevel::verifyMap( const bool silent, const bool skipScriptVerification, const bool skipSlabsVerification ) {
             LEVEL* level = data->lvl;
             struct IPOINT_2D errpt = {-1,-1};
-            short result = VERIF_OK;
+
+            unsigned long skip_steps = 0;
             if ( skipScriptVerification ) {
-                static const unsigned long SKIP_STEPS = VSF_TXT;
-                result = level_verify_control( level, (char*) "check", SKIP_STEPS, &errpt );
-            } else {
-                ///
-                result = level_verify( level, (char*) "check", &errpt );
+                skip_steps |= VSF_TXT;
             }
+            if ( skipSlabsVerification ) {
+                skip_steps |= VSF_SLABS;
+            }
+
+            short result = level_verify_control( level, (char*) "check", skip_steps, &errpt );
             if ( result != VERIF_OK ) {
                 if ( silent == false ) {
                     const char* recentError = Messages::get().getRecent();
@@ -323,6 +325,24 @@ namespace adiktedpp {
                 for ( int y = area.min.y; y<= area.max.y; ++y ) {
                     const raw::SlabType currSlab = getSlab( x, y );
                     if ( raw::isSolid( currSlab ) ) {
+                        ++ret;
+                    }
+                }
+            }
+            return ret;
+        }
+
+        std::size_t RawLevel::countSlabs( const SlabType slab ) const {
+            const Rect mapRect = mapSize();
+            return countSlabs( mapRect, slab );
+        }
+
+        std::size_t RawLevel::countSlabs( const utils::Rect& area, const SlabType slab ) const {
+            std::size_t ret = 0;
+            for ( int x = area.min.x; x<= area.max.x; ++x ) {
+                for ( int y = area.min.y; y<= area.max.y; ++y ) {
+                    const raw::SlabType currSlab = getSlab( x, y );
+                    if ( currSlab == slab ) {
                         ++ret;
                     }
                 }
