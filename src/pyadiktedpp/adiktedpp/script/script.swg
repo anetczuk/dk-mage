@@ -6,4 +6,6 @@
 
 %include "AvailableMode.swg"
 
+%include "AvailableState.swg"
+
 %include "Script.swg"

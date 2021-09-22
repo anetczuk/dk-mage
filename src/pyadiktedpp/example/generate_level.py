@@ -9,6 +9,7 @@ import sys
 import os.path
 import argparse
 
+import adiktedpp.script as script
 import adiktedpp.level as level
 import adiktedpp.type as type
 import adiktedpp.raw as raw
@@ -83,7 +84,22 @@ def main():
     lakeRect.grow( 2 )
     mapLevel.setCave( lakeRect, type.Slab_S_WATER )
     mapLevel.setCave( goldRect, type.Slab_S_GOLD )
-
+    
+    ## script
+    mapScript = script.Script()
+    mapScript.setHeaderInfo()
+    scriptInit = mapScript.initSection()
+    mapScript.setFXLevel()
+    scriptInit.START_MONEY( owner, 10000 )
+    ###
+    roomsAvailable = script.RoomsAvailableState()
+    roomsAvailable.setStandard()
+    mapScript.set( roomsAvailable )
+    ###
+    mapScript.setWinConditionKillGood()
+    mapScript.setLoseConditionStandard( owner )
+    script.applyScript( mapLevel, mapScript )
+    
     ## map stats
     log.log_info( "map stats:" )
     log.log_info( "separated areas: " + str( mapLevel.countSeparatedAreas() ) )
@@ -96,9 +112,9 @@ def main():
     log.log_info( "\nitems list:\n" + rawLevel.printItems() )
     
     
-    valid = mapLevel.verifyMap()
+    valid = mapLevel.verifyMap( False, True )
     if valid is False:
-        pass
+        log.log_warn( "map warnings detected" )
     
     
     log.log_info( "storing data to files" )

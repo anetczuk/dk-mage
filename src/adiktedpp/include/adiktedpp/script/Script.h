@@ -531,6 +531,12 @@ namespace adiktedpp {
 
         };
 
+
+        inline void applyScript( Level& level, const Script& script ) {
+            script::LevelScript dataLevel( level );
+            dataLevel.rebuild( script );
+        }
+
     }
 } /* namespace adiktedpp */
 
