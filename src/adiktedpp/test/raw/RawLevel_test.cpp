@@ -82,8 +82,6 @@ TEST_CASE("RawLevel_dataPath_unload", "[classic]") {
 TEST_CASE("RawLevel_startNewMap_succeed", "[classic]") {
     RawLevelMock level;
 
-    level.startNewMap();
-
     const std::string fName = level.inputFileName();
     CHECK( fName == "" );
 
@@ -104,7 +102,6 @@ TEST_CASE("RawLevel_setSlab_rng", "[classic]") {
     REQUIRE( utils::rng_randi() == 3796174982 );
 
     RawLevelMock level;
-    level.startNewMap();
     level.setSlab( 10, 10, raw::SlabType::ST_PATH );
 
     REQUIRE( utils::rng_randi() == 4182529786 );
@@ -137,7 +134,6 @@ TEST_CASE("RawLevel_verifyMap_random", "[classic]") {
 
 TEST_CASE("RawLevel_countAllCreatures", "[classic]") {
     RawLevelMock level;
-    level.startNewMap();
 
 //    level.generateTestBmp();
 
@@ -150,67 +146,11 @@ TEST_CASE("RawLevel_countAllCreatures", "[classic]") {
 
 TEST_CASE("RawLevel_countSeparatedAreas_new", "[classic]") {
     RawLevelMock level;
-    level.startNewMap();
 
 //    level.generateTestBmp();
 
     const std::size_t areas = level.countSeparatedAreas();
     REQUIRE( areas == 0 );
-}
-
-TEST_CASE("RawLevel_countSeparatedAreas_rock", "[classic]") {
-    RawLevelMock level;
-    level.startNewMap();
-
-    level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_ROCK );
-
-//    level.generateTestBmp();
-
-    const std::size_t areas = level.countSeparatedAreas();
-    REQUIRE( areas == 0 );
-}
-
-TEST_CASE("RawLevel_countSeparatedAreas_earth", "[classic]") {
-    RawLevelMock level;
-    level.startNewMap();
-
-    level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_EARTH );
-
-//    level.generateTestBmp();
-
-    const std::size_t areas = level.countSeparatedAreas();
-    REQUIRE( areas == 0 );
-}
-
-TEST_CASE("RawLevel_countSeparatedAreas_1", "[classic]") {
-    RawLevelMock level;
-    level.startNewMap();
-
-    level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_EARTH );
-    level.setSlab( Rect( Point(50, 50), 11, 11 ), raw::SlabType::ST_ROCK );
-    level.setSlab( Rect( Point(50, 50), 9, 9 ), raw::SlabType::ST_EARTH );
-
-//    level.generateTestBmp();
-
-    const std::size_t areas = level.countSeparatedAreas();
-    REQUIRE( areas == 1 );
-}
-
-TEST_CASE("RawLevel_fillSeparatedAreas", "[classic]") {
-    RawLevelMock level;
-    level.startNewMap();
-
-    level.setSlab( Rect( 0, 0, 84, 84 ), raw::SlabType::ST_EARTH );
-    level.setSlab( Rect( Point(50, 50), 5, 5 ), raw::SlabType::ST_ROCK );
-    level.setSlab( Rect( Point(50, 50), 3, 3 ), raw::SlabType::ST_EARTH );
-
-//    level.generateTestBmp();
-
-    REQUIRE( level.countSeparatedAreas() == 1 );
-
-    level.fillSeparatedAreas( 10 );
-
-    REQUIRE( level.countSeparatedAreas() == 0 );
 }
 
 TEST_CASE("RawLevel_loadMapByPath_string_name_failed", "[classic]") {
@@ -281,8 +221,6 @@ TEST_CASE("RawLevel_loadMapByPath_string_subdir_loaded", "[classic]") {
 TEST_CASE("RawLevel_setSlab_rect", "[classic]") {
     RawLevelMock level;
 
-    level.startNewMap();
-
     const raw::SlabType newSlab = raw::SlabType::ST_LAVA;
     level.setSlab( 10, 10, 20, 20, newSlab );
 
@@ -295,8 +233,6 @@ TEST_CASE("RawLevel_setSlab_rect", "[classic]") {
 TEST_CASE("RawLevel_setSlab_owner_path", "[classic]") {
     RawLevelMock level;
 
-    level.startNewMap();
-
     level.setSlab( 30, 30, raw::SlabType::ST_PATH );
 
     const raw::PlayerType gotOwner = level.getOwner( 30, 30 );
@@ -307,8 +243,6 @@ TEST_CASE("RawLevel_setSlab_owner_path", "[classic]") {
 
 TEST_CASE("RawLevel_setSlab_owner_room", "[classic]") {
     RawLevelMock level;
-
-    level.startNewMap();
 
     const raw::SlabType newSlab    = raw::SlabType::ST_TRAINING;
     const raw::PlayerType newOwner = raw::PlayerType::PT_0;
@@ -326,7 +260,6 @@ TEST_CASE("RawLevel_setSlab_owner_room", "[classic]") {
 
 TEST_CASE("RawLevel_getActionPointPosition", "[classic]") {
     RawLevelMock level;
-    level.startNewMap();
 
     const std::size_t acn = level.addActionPoint( 10, 20, 4, 0 );
     CHECK( acn == 1 );
@@ -337,7 +270,6 @@ TEST_CASE("RawLevel_getActionPointPosition", "[classic]") {
 
 TEST_CASE("RawLevel_getHeroGatePosition", "[classic]") {
     RawLevelMock level;
-    level.startNewMap();
 
     level.setItem( 10, 20, 4, raw::SubTypeItem::STI_HEROGATE );
     const Point acp = level.getHeroGatePosition( 1 );

@@ -64,6 +64,19 @@ TEST_CASE("Level_constructor", "[classic]") {
     REQUIRE( rockSlabs == 7225 );
 }
 
+TEST_CASE("Level_startNewMap", "[classic]") {
+    LevelMock level;
+    level.startNewMap();
+
+    raw::RawLevel& rawLevel = level.getRawLevel();
+
+    const std::size_t rockSlabs = rawLevel.countSlabs( raw::SlabType::ST_ROCK );
+    REQUIRE( rockSlabs == 336 );
+
+    const std::size_t earthSlabs = rawLevel.countSlabs( raw::SlabType::ST_EARTH );
+    REQUIRE( earthSlabs == 6889 );
+}
+
 //TEST_CASE("Level_generateRandomMap", "[classic]") {
 //    LevelMock level;
 //
