@@ -3,11 +3,6 @@
 ##
 
 
-include( SwigTools )
-
-init_swig()
-
-
 add_subdirectory( adiktedpp )
 
 add_subdirectory( testadiktedpp )

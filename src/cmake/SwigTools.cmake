@@ -4,13 +4,16 @@
 
 
 macro( init_swig )
-    find_package(Python3 COMPONENTS Interpreter Development )       ## Development required for Python3_INCLUDE_DIRS
+    find_package( Python3 COMPONENTS Interpreter Development REQUIRED )       ## Development required for Python3_INCLUDE_DIRS
+    
+    # set( Python3_LIBRARY ${Python3_LIBRARIES} )
     
     # message("Python3_VERSION: ${Python3_VERSION}")
     # message("Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
     # message("Python3_LIBRARIES: ${Python3_LIBRARIES}")
+    # message("Python3_LIBRARY: ${Python3_LIBRARY}")
     # message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
-    
+
     find_package( SWIG REQUIRED )
     #include( ${SWIG_USE_FILE} )
     include( UseSWIG )

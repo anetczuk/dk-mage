@@ -100,6 +100,9 @@ add_subdirectory( cli )
 
 option( BUILD_PYTHON_BINDINGS "Generate Python bindings (SWIG)" OFF )
 if( BUILD_PYTHON_BINDINGS )
+    include( SwigTools )
+    init_swig()
+
     add_subdirectory( pyutils )
     add_subdirectory( pyadiktedpp )
 endif()
