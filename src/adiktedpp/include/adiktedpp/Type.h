@@ -230,6 +230,9 @@ namespace adiktedpp {
         P_ALL                          /// used in scripts only
     };
 
+    /// list of Player values allowed in "*_AVAILABLE" script commands
+    const std::set< adiktedpp::Player >& AvailablePlayers();
+
 } /* namespace adiktedpp */
 
 #endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_SCRIPT_TYPE_H_ */

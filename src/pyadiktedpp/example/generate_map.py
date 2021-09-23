@@ -92,9 +92,30 @@ def main():
     mapScript.setFXLevel()
     scriptInit.START_MONEY( owner, 10000 )
     ###
+    scriptInit.addEmptyLine()
     roomsAvailable = script.RoomsAvailableState()
     roomsAvailable.setStandard()
     mapScript.set( roomsAvailable )
+    ###
+    scriptInit.addEmptyLine()
+    createAvailable = script.CreatureAvailableState()
+    createAvailable.setEvilAvailable( owner, True )
+    mapScript.set( createAvailable )
+    ###
+    scriptInit.addEmptyLine()
+    doorAvailable = script.DoorAvailableState()
+    doorAvailable.setStateAmount( owner, type.Door_D_WOOD, 2 )
+    mapScript.set( doorAvailable )
+    ###
+    scriptInit.addEmptyLine()
+    trapAvailable = script.TrapAvailableState()
+    trapAvailable.setStateFlag( owner, type.Trap_T_BOULDER, False )
+    mapScript.set( trapAvailable )
+    ###
+    scriptInit.addEmptyLine()
+    magicAvailable = script.MagicAvailableState()
+    magicAvailable.setAllAvailable( owner, script.MagicAvailableMode_AM_AVAILABLE )
+    mapScript.set( magicAvailable )
     ###
     mapScript.setWinConditionKillGood()
     mapScript.setLoseConditionStandard( owner )

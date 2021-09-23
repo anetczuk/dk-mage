@@ -22,7 +22,7 @@ using namespace adiktedpp::script;
 
 ENUM_DEFS( AvailableMode )
 ENUM_DEFS( RoomAvailableMode )
-ENUM_DEFS( ResearchableMode )
+ENUM_DEFS( MagicAvailableMode )
 ENUM_DEFS( AvailableCommand )
 
 

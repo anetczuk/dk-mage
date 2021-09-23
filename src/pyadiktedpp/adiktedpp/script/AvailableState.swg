@@ -2,40 +2,26 @@
 
 %{
 #include "adiktedpp/script/AvailableState.h"
-
-//using namespace adiktedpp::script;
 %}
 
 %include "std_string.i"
-%include "std_vector.i"
-%include "std_set.i"
 
 
 %pythoncode %{####################################################%}
 
-/*
-%define ENUM_DEFS( enumName )
-%template( enumName ## Vector ) std::vector< enum adiktedpp::script:: ## enumName >;
-%template( enumName ## Set ) std::set< enum adiktedpp::script:: ## enumName >;             /// REQUIRES instantiation of std::vector !!!
-%enddef
 
-
-ENUM_DEFS( AvailableMode )
-ENUM_DEFS( RoomAvailableMode )
-ENUM_DEFS( ResearchableMode )
-ENUM_DEFS( AvailableCommand )
-
-
-%pythoncode %{
-    def AvailableCommand_name( enumVal ):
-        return AvailableCommandName( enumVal )
-%}
-*/
-
+/// prevent unsupported nested class warning
+#pragma SWIG nowarn=325
 
 %ignore adiktedpp::Map2;
 
 
 %import "adiktedpp/Type.h"
+%include "adiktedpp/script/AvailableStateBase.h"
+
+
+%template( WorkshopAvailableDoor ) adiktedpp::script::WorkshopAvailableState< enum adiktedpp::Door >;
+%template( WorkshopAvailableTrap ) adiktedpp::script::WorkshopAvailableState< enum adiktedpp::Trap >;
+
 
 %include "adiktedpp/script/AvailableState.h"

@@ -39,14 +39,11 @@ namespace adiktedpp {
         /**
          *
          */
-        enum class ResearchableMode {
+        enum class MagicAvailableMode {
             AM_DISABLED,
             AM_RESEARCHABLE,          /// available after research
             AM_AVAILABLE
         };
-
-
-        using MagicAvailableMode = ResearchableMode;
 
 
         /// ==========================================================================

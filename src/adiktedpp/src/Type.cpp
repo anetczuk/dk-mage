@@ -209,4 +209,21 @@ namespace adiktedpp {
         return container;
     }
 
+
+    /// =======================================================
+
+
+    const std::set< Player >& AvailablePlayers() {
+        static std::set< Player > container;
+        if ( container.empty() ) {
+            container.insert( Player::P_P0 );
+            container.insert( Player::P_P1 );
+            container.insert( Player::P_P2 );
+            container.insert( Player::P_P3 );
+            container.insert( Player::P_GOOD );
+            container.insert( Player::P_ALL );
+        }
+        return container;
+    }
+
 } /* namespace adiktedpp */

@@ -9,21 +9,6 @@
 namespace adiktedpp {
     namespace script {
 
-        const std::set< Player >& Players() {
-            static std::set< Player > container;
-            if ( container.empty() ) {
-                container.insert( Player::P_P0 );
-                container.insert( Player::P_P1 );
-                container.insert( Player::P_P2 );
-                container.insert( Player::P_P3 );
-                container.insert( Player::P_GOOD );
-                container.insert( Player::P_ALL );
-            }
-            return container;
-        }
-
-        /// =======================================================
-
         void RoomsAvailableState::setAllAvailable( const Player player, const RoomAvailableMode mode ) {
             const std::set< Room >& list = RoomsRegular();
             for ( const Room item: list ) {
