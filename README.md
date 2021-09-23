@@ -143,8 +143,10 @@ To release binaries proceed with following steps:
 3. generate documentation (usage info, samples, previews etc.) by running `generate_doc.sh` script from build directory (script will use prepared executable to generate required artifacts)
 4. commit and push changes
 5. run `deploy_zip.sh` from build directory
-6. upload binaries (_build/bin/dkmage*.zip_ file) 
-7. upload bindings (_build/bin/pydkmage*.zip_ file) 
+6. upload binaries (_build/bin/dkmage*.zip_ file)
+7. upload bindings (_build/bin/pydkmage*.zip_ file)
+
+Note that `deploy_zip.sh` prepares deploymnet package for platform configured in build directory. It might be desirable to execute the script on multiple build directories to collect proper artifacts. 
 
 
 ## <a name="techniques"></a>Examples of various used techniques:
