@@ -140,6 +140,9 @@ def main():
     
     log.log_info( "storing data to files" )
     
+    ## create output directories if needed
+    os.makedirs( args.output_dir )
+    
     mapPath = os.path.join( args.output_dir, "map06666" ) 
     mapLevel.saveMapByPath( mapPath )
     
