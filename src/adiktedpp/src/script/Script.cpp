@@ -579,6 +579,12 @@ namespace adiktedpp {
             addLine( stream.str() );
         }
 
+        void ScriptCommand::SET_GENERATE_SPEED( const std::size_t turns ) {
+            std::stringstream stream;
+            stream << "SET_GENERATE_SPEED( " << turns << " )";
+            addLine( stream.str() );
+        }
+
         void ScriptCommand::START_MONEY( const adiktedpp::Player player, const std::size_t amount ) {
             std::stringstream stream;
             stream << "START_MONEY( " << script_keyword( player ) << ", " << amount << " )";
@@ -786,15 +792,6 @@ namespace adiktedpp {
             endConditions.clear();
             other.clear();
         }
-
-//        void Script::copyIndexes( const Script& script ) {
-//            const std::set< ScriptSection >& sectionList = AllScriptSections();
-//            for ( const auto item: sectionList ) {
-//                const ScriptCommand& fromSection = script.getSection( item );
-//                ScriptCommand& currSection = getSection( item );
-//                currSection.copyIndexes( fromSection );
-//            }
-//        }
 
         void Script::pushFrontBySections( const Script& script ) {
             if ( script.isFX ) {

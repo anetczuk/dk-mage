@@ -215,43 +215,44 @@ namespace dkmage {
 
         void CaveMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
+            script::ScriptCommand& initSection = script.initSection();
 
             script.setFXLevel();
 
-            script.addLineInit( "" );
-            script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            initSection.addEmptyLine();
+            initSection.SET_GENERATE_SPEED( 500 );
 
             const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, PN_DEFAULT_ENEMY_KEEPER_ATTITUDE_CAVE );
-            script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
+            initSection.COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, PN_DEFAULT_INIT_GOLD_AMOUNT );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 initialGold += 200000;
             }
-            script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
-            script.initSection().START_MONEY( Player::P_P1, 200000 );                     /// does not show in treasure
+            initSection.START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
+            initSection.START_MONEY( Player::P_P1, 200000 );                     /// does not show in treasure
 
             const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, PN_DEFAULT_CREATURES_LIMIT_CAVE );
             const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, PN_DEFAULT_ENEMY_KEEPER_CREATURES_LIMIT_CAVE );
-            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
-            script.initSection().MAX_CREATURES( Player::P_P1, aiMaxCreatures );
+            initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
+            initSection.MAX_CREATURES( Player::P_P1, aiMaxCreatures );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setEvilCreaturesPool( 30 );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setEvilCreaturesAvailable( Player::P_ALL );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setRoomsStandard();
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setDoorsAvailable( Player::P_ALL, 0 );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setTrapsAvailable( Player::P_ALL, 0 );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic;
             availableMagic.setStandard( Player::P_ALL );

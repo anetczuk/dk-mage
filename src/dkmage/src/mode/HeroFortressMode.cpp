@@ -219,8 +219,8 @@ namespace dkmage {
             initSection.addEmptyLine();
             mainScript.setFXLevel();
 
-            mainScript.addLineInit( "" );
-            mainScript.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            initSection.addEmptyLine();
+            initSection.SET_GENERATE_SPEED( 500 );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, PN_DEFAULT_INIT_GOLD_AMOUNT );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
@@ -231,16 +231,16 @@ namespace dkmage {
             const std::size_t maxCreatures = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, PN_DEFAULT_CREATURES_LIMIT_HEROFORTRESS );
             initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
             mainScript.setEvilCreaturesPool( 10 );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
             const std::set< Player > availablePlayers = { Player::P_P0 };
             script::CreatureAvailableState availableCreatures( availablePlayers );
             availableCreatures.setEvilAvailable( Player::P_P0 );
             mainScript.set( availableCreatures );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
             script::RoomsAvailableState availableRooms( availablePlayers );
             availableRooms.setStandard();
             availableRooms.setStateMode( Player::P_ALL, Room::R_BRIDGE, script::RoomAvailableMode::RAM_DISABLED );
@@ -255,17 +255,17 @@ namespace dkmage {
 
             mainScript.set( availableRooms );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
             mainScript.setDoorsAvailable( Player::P_ALL, 0 );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
 //            script.setTrapsAvailable( Player::P_ALL, 0 );
             script::TrapAvailableState availableTraps( availablePlayers );
             availableTraps.setAllAvailable( Player::P_ALL, true );
             availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
             mainScript.set( availableTraps );
 
-            mainScript.addLineInit( "" );
+            initSection.addEmptyLine();
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
             availableMagic.setStandard( Player::P_ALL );

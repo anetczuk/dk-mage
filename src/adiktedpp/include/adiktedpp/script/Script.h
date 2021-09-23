@@ -226,6 +226,8 @@ namespace adiktedpp {
 
             void PLAY_MESSAGE( const adiktedpp::Player player, const std::size_t speechId );
 
+            void SET_GENERATE_SPEED( const std::size_t turns );
+
             void START_MONEY( const adiktedpp::Player player, const std::size_t amount );
 
             /// value in range [0..10]
@@ -269,7 +271,6 @@ namespace adiktedpp {
 
             void NEXT_COMMAND_REUSABLE();
         };
-
 
 
         /// ================================================================================
@@ -340,6 +341,14 @@ namespace adiktedpp {
 
             void clearData();
 
+            void pushFrontBySections( const Script& script );
+
+            std::vector< std::string > build() const;
+
+            void setHeaderInfo();
+
+            void storeParameters( const std::string& mapType, const std::string& seed );
+
             std::size_t nextObjectiveIndex() {
                 return ++objectiveIndex;
             }
@@ -348,15 +357,17 @@ namespace adiktedpp {
                 return ++infoIndex;
             }
 
-//            void copyIndexes( const Script& script );
+            bool isFXLevel() const {
+                return isFX;
+            }
 
-            void pushFrontBySections( const Script& script );
+            void setFXLevel() {
+                isFX = true;
+                init.REM( "- set script compatibility with Keeper FX -" );
+                init.LEVEL_VERSION( 1 );
+            }
 
-            std::vector< std::string > build() const;
-
-            void setHeaderInfo();
-
-            void storeParameters( const std::string& mapType, const std::string& seed );
+            /// ================================================================================
 
             /// limit: 16
             std::size_t countTunnellerTriggers() const;
@@ -374,32 +385,7 @@ namespace adiktedpp {
             /// limit: 16
             std::size_t countPartyDefinitions() const;
 
-            void addLine( const std::string& line ) {
-                other.addLine( line );
-            }
-
-            void addLine( const ScriptSection section, const std::string& line ) {
-                ScriptCommand& script = getSection( section );
-                script.addLine( line );
-            }
-
-            void addLineInit( const std::string& line ) {
-                init.addLine( line );
-            }
-
-            void addLineAction( const std::string& line ) {
-                action.addLine( line );
-            }
-
-            bool isFXLevel() const {
-                return isFX;
-            }
-
-            void setFXLevel() {
-                isFX = true;
-                init.REM( "- set script compatibility with Keeper FX -" );
-                init.LEVEL_VERSION( 1 );
-            }
+            /// ================================================================================
 
             /// hide whole map under fog of war (rocks, gems and other visible objects included)
             void concealWholeMap( const Player player );

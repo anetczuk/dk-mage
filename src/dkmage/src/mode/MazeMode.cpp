@@ -313,28 +313,29 @@ namespace dkmage {
 
         void MazeMode::prepareScript() {
             adiktedpp::script::Script& script = map.script;
+            script::ScriptCommand& initSection = script.initSection();
 
             script.setFXLevel();
 
-            script.addLineInit( "" );
-            script.addLineInit( "SET_GENERATE_SPEED( 500 )" );
+            initSection.addEmptyLine();
+            initSection.SET_GENERATE_SPEED( 500 );
 
             const std::size_t aiAttitude = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_ATTITUDE, PN_DEFAULT_ENEMY_KEEPER_ATTITUDE_MAZE );
-            script.initSection().COMPUTER_PLAYER( Player::P_P1, aiAttitude );
+            initSection.COMPUTER_PLAYER( Player::P_P1, aiAttitude );
 
             std::size_t initialGold = parameters.getSizeT( ParameterName::PN_INIT_GOLD_AMOUNT, PN_DEFAULT_INIT_GOLD_AMOUNT );
             if ( parameters.isSet( ParameterName::PN_TEST_ADDONS ) ) {
                 initialGold += 200000;
             }
-            script.initSection().START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
-            script.initSection().START_MONEY( Player::P_P1, 250000 );                     /// does not show in treasure
+            initSection.START_MONEY( Player::P_P0, initialGold );                /// does not show in treasure
+            initSection.START_MONEY( Player::P_P1, 250000 );                     /// does not show in treasure
 
             const std::size_t maxCreatures   = parameters.getSizeT( ParameterName::PN_CREATURES_LIMIT, PN_DEFAULT_CREATURES_LIMIT_MAZE );
             const std::size_t aiMaxCreatures = parameters.getSizeT( ParameterName::PN_ENEMY_KEEPER_CREATURES_LIMIT, PN_DEFAULT_ENEMY_KEEPER_CREATURES_LIMIT_MAZE );
-            script.initSection().MAX_CREATURES( Player::P_P0, maxCreatures );
-            script.initSection().MAX_CREATURES( Player::P_P1, aiMaxCreatures );
+            initSection.MAX_CREATURES( Player::P_P0, maxCreatures );
+            initSection.MAX_CREATURES( Player::P_P1, aiMaxCreatures );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setHeroCreaturesPool( 20 );
 
             const std::set< Player > availablePlayers = { Player::P_P0, Player::P_P0 };
@@ -354,19 +355,19 @@ namespace dkmage {
             availableTraps.setAllAvailable( Player::P_ALL, true );
             availableTraps.setStateFlag( Player::P_ALL, Trap::T_LAVA, false );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.set( availableCreatures );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.set( availableRooms );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.setDoorsAvailable( Player::P_ALL, 0 );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
             script.set( availableTraps );
 
-            script.addLineInit( "" );
+            initSection.addEmptyLine();
 //            script.setMagicStandard( Player::P_ALL );
             script::MagicAvailableState availableMagic( availablePlayers );
             availableMagic.setStandard( Player::P_ALL );
