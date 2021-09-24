@@ -5,27 +5,13 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 
+source $SCRIPT_DIR/env.sh
+
+
 BUILD_TYPE=Debug
+BUILD_DIR_NAME=lin_$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
 
 
-SRC_DIR=$SCRIPT_DIR/../src
+parse_args $@
 
-BUILD_DIR_NAME=
-if [ "$#" -ge 1 ]; then
-    BUILD_DIR_NAME="$1"
-else
-    BUILD_DIR_NAME=lin_$(echo $BUILD_TYPE"_gcc" | tr '[:upper:]' '[:lower:]')
-fi
-BUILD_DIR=$SCRIPT_DIR/../build/$BUILD_DIR_NAME
-
-
-## remove old configuration
-rm -rf $BUILD_DIR 
-
-mkdir -p $BUILD_DIR
-cd $BUILD_DIR
-
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
-
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $SRC_DIR
+configure_cmake
