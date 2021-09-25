@@ -31,7 +31,7 @@ namespace dkmage {
 
             prepareEnemyDungeon();
 
-            LOG() << "preparing script";
+            LOG_INFO() << "preparing script";
             prepareScript();
 
             return true;
@@ -46,7 +46,7 @@ namespace dkmage {
 
             const int regionArea = region.area();
             if ( regionArea < 0 ) {
-                LOG() << "invalid region area: " << regionArea;
+                LOG_INFO() << "invalid region area: " << regionArea;
                 return ;
             }
 
@@ -176,7 +176,7 @@ namespace dkmage {
 
             enemyDungeon.moveToTopEdge( 4 );
 
-        //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
+        //    LOG_INFO() << "enemy dungeon:\n" << enemyDungeon.print();
 
             Level& level = map.level;
 
@@ -210,7 +210,7 @@ namespace dkmage {
                 level.setItem( roomRect, 4, Item::I_GOLD_HOARD3 );
             }
 
-//                    LOG() << "items: " << level.printItems();
+//                    LOG_INFO() << "items: " << level.printItems();
         }
 
         void CaveMode::prepareScript() {

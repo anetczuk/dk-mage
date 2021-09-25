@@ -58,18 +58,18 @@ namespace dkmage {
         }
 
         void storeLevel( const std::string& levelPath ) override {
-            LOG() << "storing level in: " << levelPath;
+            LOG_INFO() << "storing level in: " << levelPath;
             const bool saved = map.level.saveMapByPath( levelPath );
         //    const bool saved = level.saveMapById( 333 );
             if ( saved == false ) {
-                LOG() << "unable to save map: " << saved;
+                LOG_INFO() << "unable to save map: " << saved;
                 return ;
             }
             writeIniFile();
         }
 
         void storePreview( const std::string& filePath ) override {
-            LOG() << "storing bmp in: " << filePath;
+            LOG_INFO() << "storing bmp in: " << filePath;
             map.level.setRescale( 3 );
             if ( map.level.generateBmp( filePath ) == false ) {
                 messages.readRecent();

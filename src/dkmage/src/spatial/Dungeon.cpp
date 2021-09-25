@@ -37,7 +37,7 @@ namespace dkmage {
             }
             }
 
-            LOG() << "unhandled case: " << direction;
+            LOG_INFO() << "unhandled case: " << direction;
             return base;
         }
 
@@ -85,7 +85,7 @@ namespace dkmage {
             case Direction::D_WEST:  return roomPosition.leftCenter( delta );
             case Direction::D_EAST:  return roomPosition.rightCenter( delta );
             }
-            LOG() << "invalid case";
+            LOG_INFO() << "invalid case";
             return roomPosition.center();
         }
 

@@ -137,7 +137,7 @@ namespace dkmage {
 
         std::stringstream stream;
         stream << FILE_NAME << ": invalid argument -- unknown parameter: " << (int)parameter;
-        LOG() << stream.str();
+        LOG_INFO() << stream.str();
         throw std::invalid_argument( stream.str() );
     }
 

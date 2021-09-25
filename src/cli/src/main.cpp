@@ -37,7 +37,7 @@ using ghc::filesystem::create_directories;
 
 
 GLOBAL_SCOPE() {
-    Logger::setLogFile( "dkmage.log.txt" );
+    LogConfig::setCerrFileSink( "dkmage.log.txt" );
 }
 
 std::string getProperSeed( const std::string& seed ) {
@@ -48,7 +48,7 @@ std::string getProperSeed( const std::string& seed ) {
     rng_srand();
     const std::string newSeed = genSeed();
     if ( newSeed.empty() ) {
-        LOG() << "unable to generate seed";
+        LOG_INFO() << "unable to generate seed";
         return "";
     }
     return newSeed;
@@ -68,8 +68,8 @@ std::uint32_t hashCode( const std::string& text ) {
 
 void initializeRand( const std::string& seed ) {
     const std::uint32_t seedValue = hashCode( seed );
-    LOG() << "using seed '" << seed << "'";
-//    LOG() << "using seed '" << seed << "' " << seedValue;
+    LOG_INFO() << "using seed '" << seed << "'";
+//    LOG_INFO() << "using seed '" << seed << "' " << seedValue;
     rng_srand( seedValue );
 }
 
@@ -79,13 +79,13 @@ std::string getProperType( const std::string& mapType ) {
     }
 
     /// random
-    LOG() << "getting random map generator";
+    LOG_INFO() << "getting random map generator";
     const Generator& generator = Generator::instance();
     const std::vector<std::string> typeAllowed = generator.generatorsList();
     std::set<std::string> typeSet( typeAllowed.begin(), typeAllowed.end() );
     typeSet.erase( "random" );
     if ( typeSet.empty() ) {
-        LOG() << "could not get proper map type: no generators found";
+        LOG_INFO() << "could not get proper map type: no generators found";
         return "";
     }
     const std::size_t rIndex = rng_randi( typeSet.size() );
@@ -154,10 +154,10 @@ int readParameters( int argc, char** argv, ParametersMap& retParameters ) {
     }
     cli::Config config( configPath );
     if ( config.isValid() == false ) {
-        LOG() << "unable to parse config file '" << configPath << "'";
+        LOG_INFO() << "unable to parse config file '" << configPath << "'";
         return 1;
     }
-    LOG() << "loaded config file: " << configPath;
+    LOG_INFO() << "loaded config file: " << configPath;
 
     /**
      * Parameters needed before construction of parameters map (because already in use):
@@ -232,16 +232,16 @@ int main( int argc, char** argv ) {
             return invalid;
         }
 
-        LOG() << "entered parameters:" << parameters.print();
+        LOG_INFO() << "entered parameters:" << parameters.print();
 
         const Optional<std::string> mapTypeParam = parameters.getString( "type" );
         const std::string mapType = mapTypeParam.value();
 
-        LOG() << "using map generator: '" << mapType << "'";
+        LOG_INFO() << "using map generator: '" << mapType << "'";
         Generator& generator = Generator::instance();
         LevelGenerator* typeGenerator = generator.get( mapType );
         if ( typeGenerator == nullptr ) {
-            LOG() << "unable to handle generator '" << mapType << "'";
+            LOG_INFO() << "unable to handle generator '" << mapType << "'";
             return 1;
         }
 
@@ -320,7 +320,7 @@ int main( int argc, char** argv ) {
             const std::string outputBmp = output + ".bmp";
             typeGenerator->storePreview( outputBmp );
         } else {
-            LOG() << "unable to store level: empty path";
+            LOG_INFO() << "unable to store level: empty path";
         }
 
         /// store preview image
@@ -333,11 +333,11 @@ int main( int argc, char** argv ) {
         }
 
     } catch ( TCLAP::ArgException& e ) {
-        LOG() << "error: " << e.error() << " for arg " << e.argId();
+        LOG_INFO() << "error: " << e.error() << " for arg " << e.argId();
         return 1;
 
     } catch ( std::exception& e ) {
-        LOG() << "error: " << e.what();
+        LOG_INFO() << "error: " << e.what();
         return 1;
     }
 

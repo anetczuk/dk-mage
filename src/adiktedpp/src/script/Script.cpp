@@ -1247,7 +1247,7 @@ namespace adiktedpp {
             case ScriptSection::SS_ENDCOND: return endConditions;
             case ScriptSection::SS_REST:    return other;
             }
-            LOG() << "unhandled value: " << (int)section;
+            LOG_INFO() << "unhandled value: " << (int)section;
             return other;
         }
 
@@ -1262,7 +1262,7 @@ namespace adiktedpp {
             case ScriptSection::SS_ENDCOND: return endConditions;
             case ScriptSection::SS_REST:    return other;
             }
-            LOG() << "unhandled value: " << (int)section;
+            LOG_INFO() << "unhandled value: " << (int)section;
             return other;
         }
 
@@ -1308,7 +1308,7 @@ namespace adiktedpp {
         void LevelScript::rebuild( std::vector< std::string >& content ) {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
 
@@ -1322,23 +1322,23 @@ namespace adiktedpp {
         bool LevelScript::recompose() {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return false;
             }
             struct DK_SCRIPT *scrpt = get_lvl_script( level );
             recompute_script_levels( scrpt );
             const bool retcode = recompose_script( scrpt, &(level->optns.script) );
             if (retcode)
-                LOG() << "Script recomposed successfully";
+                LOG_INFO() << "Script recomposed successfully";
             else
-                LOG() << "Error occured during the update";
+                LOG_INFO() << "Error occured during the update";
             return retcode;
         }
 
         void LevelScript::execScriptADI( const std::string& path ) {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
             char msg[ LINEMSG_SIZE ];
@@ -1346,13 +1346,13 @@ namespace adiktedpp {
             memset( msgPtr, 0, sizeof(msg) );
             char* fname = (char*) path.c_str();
             script_load_and_execute_file( level, fname, msgPtr );
-            LOG() << "message: " << msg;
+            LOG_INFO() << "message: " << msg;
         }
 
         bool LevelScript::executeLine( const std::string& line ) {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return false;
             }
             const char* linePtr = line.c_str();
@@ -1361,7 +1361,7 @@ namespace adiktedpp {
             memset( msgPtr, 0, sizeof(msg) );
             const bool valid = execute_script_line( level, (char*)linePtr, msgPtr );
             if ( valid == false ) {
-                LOG() << "message: " << msg;
+                LOG_INFO() << "message: " << msg;
             }
             return valid;
         }
@@ -1369,7 +1369,7 @@ namespace adiktedpp {
         void LevelScript::convertToTextArray( const std::vector< std::string >& content ) {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
 
@@ -1393,7 +1393,7 @@ namespace adiktedpp {
         void LevelScript::freeTxt() {
             LEVEL* level = levelPtr->rawData();
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
 

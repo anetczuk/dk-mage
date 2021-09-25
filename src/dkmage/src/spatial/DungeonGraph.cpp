@@ -30,7 +30,7 @@ namespace dkmage {
             case Direction::D_WEST:  return rect.leftCenter( delta );
             case Direction::D_EAST:  return rect.rightCenter( delta );
             }
-            LOG() << "invalid case";
+            LOG_INFO() << "invalid case";
             return rect.center();
         }
 

@@ -211,7 +211,7 @@ namespace dkmage {
 
             auto it = std::find( nodes.begin(), nodes.end(), furthestNode );
             if ( it == nodes.end() ) {
-                LOG() << "invalid state";
+                LOG_INFO() << "invalid state";
                 return -1;
             }
 

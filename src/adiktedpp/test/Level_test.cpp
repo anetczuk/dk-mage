@@ -17,7 +17,7 @@ using namespace utils;
 using namespace adiktedpp;
 
 
-inline std::string get_test_log() {
+inline std::string get_test_LOG_INFO() {
     path outputPath = getTestOutputPath();
     const std::string testName = Catch::getResultCapture().getCurrentTestName();
     outputPath /= testName;
@@ -26,7 +26,7 @@ inline std::string get_test_log() {
 }
 
 inline ScopeMessages initialize_messages() {
-    const std::string outputFile = get_test_log();
+    const std::string outputFile = get_test_LOG_INFO();
     return ScopeMessages( outputFile );
 }
 

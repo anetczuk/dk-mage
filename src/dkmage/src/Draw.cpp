@@ -123,7 +123,7 @@ namespace dkmage {
             break;
         }
         default: {
-            LOG() << "unhandled gem faces size: " << gemFaces;
+            LOG_INFO() << "unhandled gem faces size: " << gemFaces;
         }
         }
     }
@@ -182,7 +182,7 @@ namespace dkmage {
 
     void drawSpecial( Level& level, const Rect& chamber, const Item specialItem ) {
         if ( chamber.valid() == false ) {
-            LOG() << "invalid rect";
+            LOG_INFO() << "invalid rect";
             return ;
         }
         level.setSlab( chamber, Slab::S_PATH );
@@ -192,7 +192,7 @@ namespace dkmage {
             drawTrap3x3Diamond( level, specialCenter, Trap::T_BOULDER );
             return ;
         }
-        LOG() << "unsupported rect dimensions";
+        LOG_INFO() << "unsupported rect dimensions";
     }
 
     void drawHeroTrap( Level& level, const Point& point, const std::size_t creatureLevel, const std::size_t creaturesNum ) {

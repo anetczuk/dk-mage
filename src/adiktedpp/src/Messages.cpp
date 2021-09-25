@@ -87,7 +87,7 @@ namespace adiktedpp {
     }
 
     void Messages::readRecent() {
-        LOG() << message_get() << "\n";
+        LOG_INFO() << message_get() << "\n";
     }
 
 

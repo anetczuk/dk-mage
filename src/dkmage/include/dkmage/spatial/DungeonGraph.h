@@ -450,7 +450,7 @@ namespace dkmage {
             TNodeData* addItem( const TNodeData& from, const Direction direction, const bool addLink = true ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return nullptr;
                 }
                 lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
@@ -461,7 +461,7 @@ namespace dkmage {
             bool removeItem( const TNodeData& item ) {
                 const lemon::ListDigraph::Node itemNode = findNode( item );
                 if ( graph.valid( itemNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return false;
                 }
 
@@ -473,7 +473,7 @@ namespace dkmage {
             bool setItem( TNodeData& item, const TNodeData& from, const Direction direction, const bool addLink = true ) {
                 const lemon::ListDigraph::Node itemNode = findNode( from );
                 if ( graph.valid( itemNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return false;
                 }
                 lemon::ListDigraph::Node targetNode = createNode( itemNode, direction, addLink );
@@ -484,18 +484,18 @@ namespace dkmage {
             TEdgeData* getEdge( const TNodeData& from, const TNodeData& to ) {
                 const lemon::ListDigraph::Node fromNode = findNode( from );
                 if ( graph.valid( fromNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return nullptr;
                 }
                 const lemon::ListDigraph::Node toNode = findNode( to );
                 if ( graph.valid( fromNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return nullptr;
                 }
 
                 lemon::ListDigraph::Arc edge = findEdge( fromNode, toNode );
                 if ( edge == lemon::INVALID ) {
-                    LOG() << "unable to find edge";
+                    LOG_INFO() << "unable to find edge";
                     return nullptr;
                 }
                 GraphEdge& graphEdge = edgesMap[ edge ];
@@ -505,12 +505,12 @@ namespace dkmage {
             TEdgeData* getEdge( const TNodeData& from, const Direction dir ) {
                 const lemon::ListDigraph::Node fromNode = findNode( from );
                 if ( graph.valid( fromNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return nullptr;
                 }
                 lemon::ListDigraph::Arc edge = findEdge( fromNode, dir );
                 if ( edge == lemon::INVALID ) {
-                    LOG() << "unable to find edge";
+                    LOG_INFO() << "unable to find edge";
                     return nullptr;
                 }
                 GraphEdge& graphEdge = edgesMap[ edge ];
@@ -520,12 +520,12 @@ namespace dkmage {
             void addEdge( const TNodeData& from, const TNodeData& to, const Direction direction ) {
                 const lemon::ListDigraph::Node fromNode = findNode( from );
                 if ( graph.valid( fromNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return ;
                 }
                 const lemon::ListDigraph::Node toNode = findNode( to );
                 if ( graph.valid( toNode ) == false ) {
-                    LOG() << "unable to find node for given item";
+                    LOG_INFO() << "unable to find node for given item";
                     return ;
                 }
                 createEdge( fromNode, toNode, direction );

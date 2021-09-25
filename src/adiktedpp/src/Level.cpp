@@ -30,7 +30,7 @@ namespace adiktedpp {
         case Slab::S_WATER:  return raw::SlabType::ST_WATER;
         case Slab::S_HOLY:   return raw::SlabType::ST_HOLYGROUND;
         }
-        LOG() << "invalid slab: " << (int)slab;
+        LOG_INFO() << "invalid slab: " << (int)slab;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid slab: " << (int)slab;
         throw std::invalid_argument( stream.str() );
@@ -66,7 +66,7 @@ namespace adiktedpp {
         case raw::SlabType::ST_HOLYGROUND:  return Slab::S_HOLY;
 
         default: {
-            LOG() << "invalid slab type: " << slab;
+            LOG_INFO() << "invalid slab type: " << slab;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid slab type: " << slab;
             throw std::invalid_argument( stream.str() );
@@ -99,7 +99,7 @@ namespace adiktedpp {
         case Item::I_SPECIAL_HIDNWRL:   return raw::SubTypeItem::STI_SPHIDNWRL;
 
         default: {
-            LOG() << "invalid item: " << (int)item;
+            LOG_INFO() << "invalid item: " << (int)item;
             std::stringstream stream;
             stream << FILE_NAME << ": invalid item: " << (int)item;
             throw std::invalid_argument( stream.str() );
@@ -129,7 +129,7 @@ namespace adiktedpp {
         case Room::R_GRAVEYARD:     return raw::SlabType::ST_GRAVEYARD;
         case Room::R_SCAVENGER:     return raw::SlabType::ST_SCAVENGER;
         }
-        LOG() << "invalid room: " << room;
+        LOG_INFO() << "invalid room: " << room;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid room: " << room;
         throw std::invalid_argument( stream.str() );
@@ -144,7 +144,7 @@ namespace adiktedpp {
         case Trap::T_WORD_OF_POWER:  return raw::SubTypeTrap::STT_WORDPWR;
         case Trap::T_LAVA:           return raw::SubTypeTrap::STT_LAVA;
         }
-        LOG() << "invalid trap: " << (int)trap;
+        LOG_INFO() << "invalid trap: " << (int)trap;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid trap: " << (int)trap;
         throw std::invalid_argument( stream.str() );
@@ -157,7 +157,7 @@ namespace adiktedpp {
         case Door::D_IRON:   return raw::SubTypeDoor::STD_IRON;
         case Door::D_MAGIC:  return raw::SubTypeDoor::STD_MAGIC;
         }
-        LOG() << "invalid door: " << (int)door;
+        LOG_INFO() << "invalid door: " << (int)door;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid door: " << (int)door;
         throw std::invalid_argument( stream.str() );
@@ -198,7 +198,7 @@ namespace adiktedpp {
         case Creature::C_HORNY:          return raw::SubTypeCreature::STC_HORNY;
         }
 
-        LOG() << "invalid creature: " << (int)creature;
+        LOG_INFO() << "invalid creature: " << (int)creature;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid creature: " << (int)creature;
         throw std::invalid_argument( stream.str() );
@@ -216,7 +216,7 @@ namespace adiktedpp {
         case Player::P_UNSET: return raw::PlayerType::PT_UNSET;
         case Player::P_ALL:   return raw::PlayerType::PT_ALL;
         }
-        LOG() << "invalid player: " << (int)player;
+        LOG_INFO() << "invalid player: " << (int)player;
         std::stringstream stream;
         stream << FILE_NAME << ": invalid player: " << (int)player;
         throw std::invalid_argument( stream.str() );
@@ -232,7 +232,7 @@ namespace adiktedpp {
         }
         const std::size_t creaturesNum = rawLevel.countAllCreatures();
         if ( creaturesNum > 255 ) {
-            LOG() << "limit of 255 creatures exceeded, creatures number: " << creaturesNum;
+            LOG_INFO() << "limit of 255 creatures exceeded, creatures number: " << creaturesNum;
             return false;
         }
         return true;
@@ -396,7 +396,7 @@ namespace adiktedpp {
     void Level::setCreatureAuto( const std::size_t x, const std::size_t y, const Creature creature, const std::size_t number, const std::size_t expLevel, const Player owner ) {
         if ( x >= raw::RawLevel::MAP_SIZE_X || y >= raw::RawLevel::MAP_SIZE_Y ) {
             /// out of map
-            LOG() << "given point is outside map: [" << x << " " << y << "]";
+            LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
             return ;
         }
 

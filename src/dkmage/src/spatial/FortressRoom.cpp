@@ -471,7 +471,7 @@ namespace dkmage {
                     break;
                 }
                 default: {
-                    LOG() << "unknown trap index: " << trapIndex;
+                    LOG_INFO() << "unknown trap index: " << trapIndex;
                 }
                 }
 
@@ -884,7 +884,7 @@ namespace dkmage {
                         slots = drawBoulderCorridor( level, roomOwner, start, height, Point(0, 1), Point(-step, 0) );
                     }
                 } else {
-                    LOG() << "unable to draw " << type();
+                    LOG_INFO() << "unable to draw " << type();
                 }
 
                 /// set traps
@@ -1637,7 +1637,7 @@ namespace dkmage {
                 }
                 const std::vector< Direction > directions = dungeon.linkDirections( *this );
                 exitDirection = directions[ 0 ];
-                /// LOG() << "exitDirection: " << exitDirection << " " << directions.size();
+                /// LOG_INFO() << "exitDirection: " << exitDirection << " " << directions.size();
             }
 
             void draw( FortressData& data ) const override {
@@ -1702,7 +1702,7 @@ namespace dkmage {
             case FortressRoomType::FR_EXIT:                 return std::make_unique< FortressRoomExit >( dungeon );
             }
 
-            LOG() << "unhandled case: " << roomType;
+            LOG_INFO() << "unhandled case: " << roomType;
             return nullptr;
         }
 

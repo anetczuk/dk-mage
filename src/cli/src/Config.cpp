@@ -83,11 +83,11 @@ namespace cli {
             return true;
         }
         if ( lineNum < 0 ) {
-            LOG() << "can't open ini file";
+            LOG_INFO() << "can't open ini file";
             return false;
         }
 
-        LOG() << "parse error at line " << lineNum;
+        LOG_INFO() << "parse error at line " << lineNum;
         return false;
     }
 

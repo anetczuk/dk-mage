@@ -38,7 +38,7 @@ namespace dkmage {
 
             preparePlayerDungeon();
 
-            LOG() << "preparing script";
+            LOG_INFO() << "preparing script";
             prepareScript();
 
             return true;
@@ -46,7 +46,7 @@ namespace dkmage {
 
         bool HeroFortressMode::check() {
 //            if ( level.countClaimAreas() > 0 ) {
-//                LOG() << "map problem found: unclaimable areas";
+//                LOG_INFO() << "map problem found: unclaimable areas";
 //                return false;
 //            }
 
@@ -62,7 +62,7 @@ namespace dkmage {
 
             const int regionArea = region.area();
             if ( regionArea < 0 ) {
-                LOG() << "invalid region area: " << regionArea;
+                LOG_INFO() << "invalid region area: " << regionArea;
                 return ;
             }
 

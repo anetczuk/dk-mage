@@ -224,7 +224,7 @@ namespace dkmage {
 //            if ( diff < 0 ) {
 //                std::stringstream stream;
 //                stream << FILE_NAME << ": invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
-//                LOG() << stream.str();
+//                LOG_INFO() << stream.str();
 //                throw std::invalid_argument( stream.str() );
 //            }
 //            return { numberA, numberB };
@@ -246,7 +246,7 @@ namespace dkmage {
             if ( number < 0 ) {
                 std::stringstream stream;
                 stream << FILE_NAME << ": invalid range -- number have not be negative, passed: " << rawData;
-                LOG() << stream.str();
+                LOG_INFO() << stream.str();
                 throw std::invalid_argument( stream.str() );
             }
             return { (std::size_t)number };
@@ -256,21 +256,21 @@ namespace dkmage {
             if ( numberA < 0 ) {
                 std::stringstream stream;
                 stream << FILE_NAME << ": invalid range -- lower range have not be negative, passed: " << rawData;
-                LOG() << stream.str();
+                LOG_INFO() << stream.str();
                 throw std::invalid_argument( stream.str() );
             }
             const int numberB = stoi( stringList[1] );
             if ( numberB < 0 ) {
                 std::stringstream stream;
                 stream << FILE_NAME << ": invalid range -- upper range have not be negative, passed: " << rawData;
-                LOG() << stream.str();
+                LOG_INFO() << stream.str();
                 throw std::invalid_argument( stream.str() );
             }
             const int diff = numberB - numberA;
             if ( diff < 0 ) {
                 std::stringstream stream;
                 stream << FILE_NAME << ": invalid range -- lower range have to be not greater than upper range, passed: " << rawData;
-                LOG() << stream.str();
+                LOG_INFO() << stream.str();
                 throw std::invalid_argument( stream.str() );
             }
             return { (std::size_t)numberA, (std::size_t)numberB };
@@ -290,7 +290,7 @@ namespace dkmage {
         if ( range.size() != 2 ) {
             std::stringstream stream;
             stream << FILE_NAME << ": parameter " << parameter << " invalid range -- format not match {number}:{number}, passed: " << rawData;
-            LOG() << stream.str();
+            LOG_INFO() << stream.str();
             throw std::invalid_argument( stream.str() );
         }
         const int rangeFrom = range[ 0 ];

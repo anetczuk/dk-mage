@@ -114,12 +114,12 @@ namespace adiktedpp {
         std::string RawLevel::inputFileName() const {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return "";
             }
             const char* path = level->fname;
             if ( path == nullptr ) {
-    //            LOG() << "uninitialized fname";
+    //            LOG_INFO() << "uninitialized fname";
                 return "";
             }
             return std::string( path );
@@ -128,12 +128,12 @@ namespace adiktedpp {
         std::string RawLevel::outputFileName() const {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return "";
             }
             const char* path = level->savfname;
             if ( path == nullptr ) {
-    //            LOG() << "uninitialized savfname";
+    //            LOG_INFO() << "uninitialized savfname";
                 return "";
             }
             return std::string( path );
@@ -142,12 +142,12 @@ namespace adiktedpp {
         std::string RawLevel::levelsPath() const {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return "";
             }
             const char* path = level->optns.levels_path;
             if ( path == nullptr ) {
-    //            LOG() << "uninitialized levels_path";
+    //            LOG_INFO() << "uninitialized levels_path";
                 return "";
             }
             return std::string( path );
@@ -162,7 +162,7 @@ namespace adiktedpp {
         std::string RawLevel::dataPath() const {
             const char* path = data->getDataPath();
             if ( path == nullptr ) {
-    //            LOG() << "uninitialized data_path";
+    //            LOG_INFO() << "uninitialized data_path";
                 return "";
             }
             return std::string( path );
@@ -311,7 +311,7 @@ namespace adiktedpp {
             const short result = user_save_map( level, 0 );
             if (result != ERR_NONE) {
                 const char* recentError = Messages::get().getRecent();
-                LOG() << recentError;
+                LOG_INFO() << recentError;
                 return false;
             }
             return true;
@@ -353,7 +353,7 @@ namespace adiktedpp {
         SlabType RawLevel::getSlab( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return SlabType::ST_ROCK;
             }
             const LEVEL* level = data->lvl;
@@ -383,7 +383,7 @@ namespace adiktedpp {
         void RawLevel::setSlab( const std::size_t x, const std::size_t y, const SlabType type ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
             LEVEL* level = data->lvl;
@@ -410,11 +410,11 @@ namespace adiktedpp {
                              const SlabType type )
         {
             if ( startX >= MAP_SIZE_X || startY >= MAP_SIZE_Y ) {
-                LOG() << "given point is outside map: [" << startX << " " << startY << "]";
+                LOG_INFO() << "given point is outside map: [" << startX << " " << startY << "]";
                 return ;
             }
             if ( endX >= MAP_SIZE_X || endY >= MAP_SIZE_Y ) {
-                LOG() << "given point is outside map: [" << endX << " " << endY << "]";
+                LOG_INFO() << "given point is outside map: [" << endX << " " << endY << "]";
                 return ;
             }
 
@@ -449,11 +449,11 @@ namespace adiktedpp {
                              const SlabType room, const PlayerType owner )
         {
             if ( startX >= MAP_SIZE_X || startY >= MAP_SIZE_Y ) {
-                LOG() << "given point is outside map: [" << startX << " " << startY << "]";
+                LOG_INFO() << "given point is outside map: [" << startX << " " << startY << "]";
                 return ;
             }
             if ( endX >= MAP_SIZE_X || endY >= MAP_SIZE_Y ) {
-                LOG() << "given point is outside map: [" << endX << " " << endY << "]";
+                LOG_INFO() << "given point is outside map: [" << endX << " " << endY << "]";
                 return ;
             }
 
@@ -482,7 +482,7 @@ namespace adiktedpp {
         PlayerType RawLevel::getOwner( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return PlayerType::PT_UNSET;
             }
             LEVEL* level = data->lvl;
@@ -493,7 +493,7 @@ namespace adiktedpp {
         void RawLevel::setOwner( const std::size_t x, const std::size_t y, const PlayerType owner ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
             LEVEL* level = data->lvl;
@@ -552,7 +552,7 @@ namespace adiktedpp {
         std::size_t RawLevel::countItems( const std::size_t x, const std::size_t y ) const {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return 0;
             }
             LEVEL* level = data->lvl;
@@ -576,7 +576,7 @@ namespace adiktedpp {
         unsigned char* RawLevel::setItem( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeItem item ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return nullptr;
             }
             LEVEL* level = data->lvl;
@@ -625,7 +625,7 @@ namespace adiktedpp {
         void RawLevel::setTrap( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeTrap trap ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
 
@@ -673,7 +673,7 @@ namespace adiktedpp {
         void RawLevel::setDoor( const std::size_t x, const std::size_t y, const SubTypeDoor door, const bool locked ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
 
@@ -718,15 +718,15 @@ namespace adiktedpp {
         void RawLevel::setCreature( const std::size_t x, const std::size_t y, const std::size_t subIndex, const SubTypeCreature creature, const std::size_t number, const std::size_t expLevel, const PlayerType owner ) {
             if ( x >= MAP_SIZE_X || y >= MAP_SIZE_Y ) {
                 /// out of map
-                LOG() << "given point is outside map: [" << x << " " << y << "]";
+                LOG_INFO() << "given point is outside map: [" << x << " " << y << "]";
                 return ;
             }
             if ( expLevel < 1 ) {
-                LOG() << "invalid experience level value: " << expLevel;
+                LOG_INFO() << "invalid experience level value: " << expLevel;
                 return ;
             }
             if ( expLevel > 10 ) {
-                LOG() << "invalid experience level value: " << expLevel;
+                LOG_INFO() << "invalid experience level value: " << expLevel;
                 return ;
             }
             LEVEL* level = data->lvl;
@@ -937,7 +937,7 @@ namespace adiktedpp {
         void RawLevel::setAuthor( const std::string& info ) {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
             setTextField( &level->info.author_text, info.c_str() );
@@ -947,7 +947,7 @@ namespace adiktedpp {
         void RawLevel::setDesciption( const std::string& info ) {
             LEVEL* level = data->lvl;
             if ( level == nullptr ) {
-                LOG() << "uninitialized level";
+                LOG_INFO() << "uninitialized level";
                 return ;
             }
             setTextField( &level->info.desc_text, info.c_str() );

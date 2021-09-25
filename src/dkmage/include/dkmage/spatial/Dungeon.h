@@ -323,7 +323,7 @@ namespace dkmage {
                     }
                 }
 
-                LOG() << "unable to add room: " << (int)roomType;
+                LOG_INFO() << "unable to add room: " << (int)roomType;
                 return nullptr;
             }
 
@@ -343,7 +343,7 @@ namespace dkmage {
                     }
                 }
 
-    //            LOG() << "unable to add room: " << (int)roomType;
+    //            LOG_INFO() << "unable to add room: " << (int)roomType;
                 return nullptr;
             }
 
@@ -391,7 +391,7 @@ namespace dkmage {
                 collisionRect.grow( 1 );
                 if ( isCollision( collisionRect ) ) {
                     /// collision detected
-    //                LOG() << "unable to add room -- rooms collision detected: " << newRect << " " << direction;
+    //                LOG_INFO() << "unable to add room -- rooms collision detected: " << newRect << " " << direction;
                     return nullptr;
                 }
 
@@ -400,7 +400,7 @@ namespace dkmage {
                 const Point end = newRect.center();
                 if ( isCollision( start, end ) ) {
                     /// collision detected
-    //                LOG() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
+    //                LOG_INFO() << "unable to add room -- corridor collision detected: " << newRect << " " << direction;
                     return nullptr;
                 }
 
@@ -496,7 +496,7 @@ namespace dkmage {
                 for ( const EvilRoom* item: roomsList ) {
                     const Rect& itemRect = item->position();
                     if ( itemRect.isCollision( rect ) ) {
-    //                    LOG() << "collision detected, rectangles: " << itemRect << " " << rect;;
+    //                    LOG_INFO() << "collision detected, rectangles: " << itemRect << " " << rect;;
                         return true;
                     }
 

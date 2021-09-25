@@ -50,12 +50,12 @@ namespace dkmage {
 
             generateMazeItems( maze );
 
-            LOG() << "preparing dungeons";
+            LOG_INFO() << "preparing dungeons";
             preparePlayerDungeon();
 
             prepareEnemyDungeon();
 
-            LOG() << "preparing script";
+            LOG_INFO() << "preparing script";
             prepareScript();
 
             return true;
@@ -134,7 +134,7 @@ namespace dkmage {
             const int maxDistance = maze.maxDistance();
 
             const std::size_t trapsChambers = maze.corridorsNum() * 0.3;
-            LOG() << "generating traps chambers: " << trapsChambers;
+            LOG_INFO() << "generating traps chambers: " << trapsChambers;
             for ( std::size_t i=0; i<trapsChambers; ++i ) {
                 const std::size_t setIndex = rng_randi( indexSet.size() );
                 const std::size_t cIndex = get_item( indexSet, setIndex, true );
@@ -276,7 +276,7 @@ namespace dkmage {
 
             enemyDungeon.moveToTopEdge( 4 );
 
-        //    LOG() << "enemy dungeon:\n" << enemyDungeon.print();
+        //    LOG_INFO() << "enemy dungeon:\n" << enemyDungeon.print();
 
             Level& level = map.level;
 

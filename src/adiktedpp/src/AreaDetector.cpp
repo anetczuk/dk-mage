@@ -96,7 +96,7 @@ namespace adiktedpp {
     void AreaDetector::fill( const std::size_t x, const std::size_t y, const int value ) {
         const int oldValue = get( x, y );
         if ( oldValue == value ) {
-            LOG() << "area already filled";
+            LOG_INFO() << "area already filled";
             return ;
         }
         fillValue( x, y, oldValue, value );

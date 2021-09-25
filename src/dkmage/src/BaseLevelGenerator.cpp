@@ -38,7 +38,7 @@ namespace dkmage {
     }
 
     bool BaseLevelGenerator::generateAttempt() {
-        LOG() << "generating map";
+        LOG_INFO() << "generating map";
 
         /// reset/clear script
         map.script.clearData();
@@ -70,11 +70,11 @@ namespace dkmage {
             return false;
         }
 
-        LOG() << "creatures on map: " << level.getRawLevel().countAllCreatures();
+        LOG_INFO() << "creatures on map: " << level.getRawLevel().countAllCreatures();
 
         const std::size_t actionPointNum = level.getRawLevel().countActionPoints();
         const std::size_t actionPointsLimit = parameters.getSizeT( ParameterName::PN_ACTION_POINTS_LIMIT, PN_DEFAULT_ACTION_POINTS_LIMIT );
-        LOG() << "action points number: " << actionPointNum << "/" << actionPointsLimit;
+        LOG_INFO() << "action points number: " << actionPointNum << "/" << actionPointsLimit;
         if ( actionPointNum > actionPointsLimit ) {
             LOG_WARN() << "generated map is invalid -- too much action points";
             return false;
@@ -92,7 +92,7 @@ namespace dkmage {
             return false;
         }
 
-        LOG() << "map generated successfully";
+        LOG_INFO() << "map generated successfully";
         return true;
     }
 
@@ -111,7 +111,7 @@ namespace dkmage {
         const std::size_t ifCondsLimit    = parameters.getSizeT( ParameterName::PN_SCRIPT_IF_CONDS_LIMIT, PN_DEFAULT_SCRIPT_IF_CONDS_LIMIT );
         const std::size_t partyDefsLimit  = parameters.getSizeT( ParameterName::PN_SCRIPT_PARTY_DEFS_LIMIT, PN_DEFAULT_SCRIPT_PARTY_DEFS_LIMIT );
 
-        LOG() << "used script resources: "
+        LOG_INFO() << "used script resources: "
               << tunnellers           << "/" << tunnellersLimit << " tunneller triggers"
               << ", " << parties      << "/" << partiesLimit    << " party triggers"
               << ", " << scriptValues << "/" << valuesLimit     << " script values"
@@ -213,7 +213,7 @@ namespace dkmage {
         script::Script& script = map.script;
 
         std::size_t goldSlabsNum = parameters.getSizeT( ParameterName::PN_GOLD_SLABS_NUMBER, defaultGoldNum );
-        LOG() << "gold slabs number: " << goldSlabsNum;
+        LOG_INFO() << "gold slabs number: " << goldSlabsNum;
 
         const std::size_t leftVeinGold = goldSlabsNum / 3;
         generateLeftGoldVein( leftVeinGold, 0 );
@@ -227,9 +227,9 @@ namespace dkmage {
         gemSlabsNum = std::min( gemSlabsNum, gemFacesNum );
         gemFacesNum = std::min( gemFacesNum, gemSlabsNum * 4 );
 
-        LOG() << "gems slabs number: " << gemSlabsNum;
-        LOG() << "gems faces number: " << gemFacesNum;
-        LOG() << "gems traps number: " << gemTrapsNum;
+        LOG_INFO() << "gems slabs number: " << gemSlabsNum;
+        LOG_INFO() << "gems faces number: " << gemFacesNum;
+        LOG_INFO() << "gems traps number: " << gemTrapsNum;
 
         const SizeTSet gemGuardsNum  = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_NUMBER, PN_DEFAULT_GEM_GUARD_NUMBER );
         const SizeTSet gemGuardLevel = parameters.getSizeTSet( ParameterName::PN_GEM_GUARD_LEVEL, PN_DEFAULT_GEM_GUARD_LEVEL );
