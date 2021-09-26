@@ -10,8 +10,9 @@
 #include "dkmage/Draw.h"
 #include "dkmage/ParameterDefaults.h"
 
+#include "adiktedpp/Rand.h"
+
 #include "utils/Rect.h"
-#include "utils/Rand.h"
 
 #include <cmath>
 #include <fstream>

@@ -87,7 +87,7 @@ namespace dkmage {
 
             std::vector< Direction > available = availableDirs;
             while ( available.empty() == false ) {
-                const std::size_t rDir = utils::rng_randi( available.size() );
+                const std::size_t rDir = adiktedpp::rng_randi( available.size() );
                 const Direction newDir = utils::remove_at( available, rDir );
                 const bool added = createRoom( newRoom, from, newDir, corridorLength );
                 if ( added == false ) {
@@ -501,7 +501,8 @@ namespace dkmage {
                 std::vector< const spatial::FortressRoom* > nextRooms;
                 const std::size_t qSize = roomQueue.size();
                 for ( std::size_t x=0; x<qSize; ++x ) {
-                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                    const double roomNum = adiktedpp::rng_randd();
+                    const spatial::FortressRoomType roomType = roomProbability.get( roomNum );
                     const spatial::FortressRoom* item = roomQueue[ x ];
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
@@ -590,7 +591,8 @@ namespace dkmage {
                         continue ;
                     }
 
-                    const spatial::FortressRoomType roomType = roomProbability.getRandom();
+                    const double roomNum = adiktedpp::rng_randd();
+                    const spatial::FortressRoomType roomType = roomProbability.get( roomNum );
                     const spatial::FortressRoom* next = fortress.addRandomRoom( roomType, *item );
                     if ( next == nullptr ) {
                         /// unable to add next room from 'item' room
@@ -1122,7 +1124,9 @@ namespace dkmage {
                         continue ;
                     }
 
-                    const CorridorFurniture furniture = corridorItem.getRandom();
+                    const double furnitureNum = adiktedpp::rng_randd();
+                    const CorridorFurniture furniture = corridorItem.get( furnitureNum );
+
                     switch( furniture ) {
                     case CorridorFurniture::CF_EMPTY: {
                         /// do nothing

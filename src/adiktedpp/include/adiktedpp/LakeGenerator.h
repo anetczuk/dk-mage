@@ -6,8 +6,9 @@
 #ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_LAKEGENERATOR_H_
 #define ADIKTEDPP_INCLUDE_ADIKTEDPP_LAKEGENERATOR_H_
 
+#include "adiktedpp/Rand.h"
+
 #include "utils/Rect.h"
-#include "utils/Rand.h"
 
 #include <algorithm>
 #include <set>
@@ -34,7 +35,7 @@ namespace adiktedpp {
         void generate( const std::size_t size ) {
             while ( added.size() < size ) {
                 const std::size_t avSize = available.size();
-                const std::size_t vIndex = utils::rng_randi( avSize );
+                const std::size_t vIndex = adiktedpp::rng_randi( avSize );
                 const utils::Point point = getAvailable( vIndex );
                 add( point );
             }
@@ -49,7 +50,7 @@ namespace adiktedpp {
             const std::size_t area = std::min( (std::size_t) boundingArea, size );
             while ( added.size() < area ) {
                 const std::size_t avSize = available.size();
-                const std::size_t vIndex = utils::rng_randi( avSize );
+                const std::size_t vIndex = adiktedpp::rng_randi( avSize );
                 const utils::Point point = getAvailable( vIndex );
                 if ( boundingLimit.isInside( point ) == false ) {
                     continue ;

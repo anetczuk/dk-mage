@@ -5,10 +5,11 @@
 
 #include "dkmage/spatial/Maze.h"
 
-#include "utils/Rand.h"
+#include "adiktedpp/Rand.h"
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace dkmage {

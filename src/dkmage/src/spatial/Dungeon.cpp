@@ -6,8 +6,7 @@
 #include "dkmage/spatial/Dungeon.h"
 
 #include "adiktedpp/Level.h"
-
-#include "utils/Rand.h"
+#include "adiktedpp/Rand.h"
 
 
 using namespace utils;

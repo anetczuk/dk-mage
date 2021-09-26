@@ -8,9 +8,9 @@
 #include "dkmage/spatial/Maze.h"
 
 #include "adiktedpp/script/Creator.h"
+#include "adiktedpp/Rand.h"
 
 #include "utils/Container.h"
-#include "utils/Rand.h"
 
 
 using namespace utils;

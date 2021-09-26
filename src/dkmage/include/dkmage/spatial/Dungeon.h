@@ -10,11 +10,11 @@
 #include "dkmage/spatial/DungeonGraph.h"
 
 #include "adiktedpp/Type.h"
+#include "adiktedpp/Rand.h"
 
 #include "utils/Container.h"
 #include "utils/Log.h"
 #include "utils/Rect.h"
-#include "utils/Rand.h"
 
 #include <map>
 
@@ -311,7 +311,7 @@ namespace dkmage {
                 }
 
                 while ( roomsList.empty() == false ) {
-                    const std::size_t rRoom = utils::rng_randi( roomsList.size() );
+                    const std::size_t rRoom = adiktedpp::rng_randi( roomsList.size() );
                     EvilRoom* selected = utils::remove_at( roomsList, rRoom );
                     if ( selected == nullptr ) {
                         continue;
@@ -335,7 +335,7 @@ namespace dkmage {
                 std::vector< Direction > availableDirs = freeDirections( from );
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = utils::remove_at( availableDirs, rDir );
                     EvilRoom* added = addRoom( roomType, roomSizeX, roomSizeY, from, newDir, addLink, corridorLength );
                     if ( added != nullptr ) {

@@ -5,6 +5,8 @@
 
 #include "dkmage/Generator.h"
 
+#include "adiktedpp/raw/RawLevel.h"
+
 
 namespace dkmage {
 

@@ -10,9 +10,10 @@
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/ParameterDefaults.h"
 
+#include "adiktedpp/Rand.h"
+
 #include "utils/ProbabilityMass.h"
 #include "utils/Container.h"
-#include "utils/Rand.h"
 
 #include <cmath>
 
@@ -144,7 +145,8 @@ namespace dkmage {
                 const Point nodeCenter = nodeRect.center();
                 const int nodeDistance = maze.nodeDistance( nx, ny );
 
-                const Trap trapType = trapProbability.getRandom();
+                const double trapNum = rng_randd();
+                const Trap trapType = trapProbability.get( trapNum );
 
                 if ( maze.corridorSize == 1 ) {
                     level.setSlab( nodeCenter, Slab::S_PATH );
@@ -152,7 +154,8 @@ namespace dkmage {
                     continue ;
                 }
                 if ( maze.corridorSize == 3 ) {
-                    const MazeRoom roomType = roomProbability.getRandom();
+                    const double roomNum = rng_randd();
+                    const MazeRoom roomType = roomProbability.get( roomNum );
 
                     switch( roomType ) {
                     case MazeRoom::MR_DIAGONAL: {

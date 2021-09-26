@@ -7,7 +7,9 @@
 
 #include "dkmage/Parameter.h"
 
-#include "utils/Rand.h"
+#include "dkmage/Generator.h"
+
+#include "adiktedpp/Rand.h"
 
 
 using namespace utils;
@@ -90,7 +92,7 @@ TEST_CASE( "NumberSet_sizet_getRandom_1" ) {
 }
 
 TEST_CASE( "NumberSet_sizet_getRandom" ) {
-    rng_srand( 2 );
+    adiktedpp::rng_srand( 2 );
 
     SizeTSet container;
     container.add( 5 );
@@ -102,7 +104,7 @@ TEST_CASE( "NumberSet_sizet_getRandom" ) {
 }
 
 TEST_CASE( "NumberSet_sizet_getRandom_range_01" ) {
-    rng_srand( 2 );
+    adiktedpp::rng_srand( 2 );
 
     SizeTSet container;
     container.add( 5 );
@@ -114,7 +116,7 @@ TEST_CASE( "NumberSet_sizet_getRandom_range_01" ) {
 }
 
 TEST_CASE( "NumberSet_sizet_getRandom_range_02" ) {
-    rng_srand( 5 );
+    adiktedpp::rng_srand( 5 );
 
     SizeTSet container;
     container.add( 5 );
@@ -153,7 +155,7 @@ TEST_CASE( "ParametersMap_getString" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list" ) {
-    rng_srand( 3 );
+    adiktedpp::rng_srand( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "aaa,bbb,ccc,ddd" );
@@ -163,7 +165,7 @@ TEST_CASE( "ParametersMap_getString_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getString_list_emptyListElement" ) {
-    rng_srand( 2 );
+    adiktedpp::rng_srand( 2 );
 
     ParametersMap parameters;
     parameters.add( "param", ",,," );
@@ -180,7 +182,7 @@ TEST_CASE( "ParametersMap_getSizeT_item" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_list" ) {
-    rng_srand( 3 );
+    adiktedpp::rng_srand( 3 );
 
     ParametersMap parameters;
     parameters.add( "param", "1,3,5,7" );
@@ -190,7 +192,7 @@ TEST_CASE( "ParametersMap_getSizeT_list" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeT_range" ) {
-    rng_srand( 21 );
+    adiktedpp::rng_srand( 21 );
 
     ParametersMap parameters;
     parameters.add( "param", "10:20" );
@@ -200,7 +202,7 @@ TEST_CASE( "ParametersMap_getSizeT_range" ) {
 }
 
 TEST_CASE( "ParametersMap_getSizeTSet_range" ) {
-    rng_srand( 21 );
+    adiktedpp::rng_srand( 21 );
 
     ParametersMap parameters;
     parameters.add( "param", "5,10:20" );

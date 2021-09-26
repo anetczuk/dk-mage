@@ -8,8 +8,8 @@
 #include "adiktedpp/raw/RawLevel.h"
 
 #include "adiktedpp/Messages.h"
-#include "Path.h"
-#include "utils/Rand.h"
+#include "adiktedpp/Rand.h"
+
 #include "utils/Log.h"
 #include "utils/Separator.h"
 
@@ -97,14 +97,14 @@ TEST_CASE("RawLevel_setSlab_rng", "[classic]") {
      * Ensure that placing items on map does not consume random numbers.
      */
 
-    utils::rng_srand( 1 );
+    adiktedpp::rng_srand( 1 );
 
-    REQUIRE( utils::rng_randi() == 3796174982 );
+    REQUIRE( adiktedpp::rng_randi() == 3796174982 );
 
     RawLevelMock level;
     level.setSlab( 10, 10, raw::SlabType::ST_PATH );
 
-    REQUIRE( utils::rng_randi() == 4182529786 );
+    REQUIRE( adiktedpp::rng_randi() == 4182529786 );
 }
 
 //TEST_CASE("RawLevel_generateRandomMap", "[classic]") {

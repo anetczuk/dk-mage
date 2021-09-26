@@ -5,7 +5,8 @@
 
 #include "dkmage/Parameter.h"
 
-#include "utils/Rand.h"
+#include "adiktedpp/Rand.h"
+
 #include "utils/Log.h"
 
 #include <vector>
@@ -13,6 +14,7 @@
 
 
 using namespace utils;
+using namespace adiktedpp;
 
 
 namespace dkmage {

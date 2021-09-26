@@ -3,13 +3,11 @@
  *
  */
 
-#include "dkmage/spatial/Fortress.h"
-
 #include "catch2/catch.hpp"
 
 #include "dkmage/spatial/Fortress.h"
 
-//#include "dkmage/spatial/Fortress.h"
+#include "dkmage/Generator.h"
 
 
 using namespace adiktedpp;
@@ -30,7 +28,7 @@ namespace {
 
 
 TEST_CASE( "FortressDungeon_freeDirections" ) {
-    utils::rng_srand( 5 );
+    adiktedpp::rng_srand( 5 );
 
     FortressDungeonMock dungeon;
     const FortressRoom* next = nullptr;

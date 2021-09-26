@@ -4,7 +4,7 @@
 
 import unittest
 
-import utils.rand as rand
+import adiktedpp.rand as rand
 
 
 class RandTest(unittest.TestCase):

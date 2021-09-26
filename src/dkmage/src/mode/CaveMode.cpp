@@ -9,8 +9,9 @@
 #include "dkmage/spatial/Dungeon.h"
 #include "dkmage/ParameterDefaults.h"
 
+#include "adiktedpp/Rand.h"
+
 #include "utils/Container.h"
-#include "utils/Rand.h"
 
 
 using namespace utils;

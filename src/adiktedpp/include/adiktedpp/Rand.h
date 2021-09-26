@@ -3,22 +3,24 @@
  *
  */
 
-#ifndef UTILS_INCLUDE_UTILS_RAND_H_
-#define UTILS_INCLUDE_UTILS_RAND_H_
+#ifndef ADIKTEDPP_INCLUDE_ADIKTEDPP_RAND_H_
+#define ADIKTEDPP_INCLUDE_ADIKTEDPP_RAND_H_
 
-/// inclusion: #include "utils/Rand.h"
+/// inclusion: #include "adiktedpp/Rand.h"
 
 #include "utils/Container.h"
 
 #include <string>
 
 
-namespace utils {
+namespace adiktedpp {
 
     void rng_srand( unsigned int seed );
 
     /// initialize RNG with random seed
     void rng_srand();
+
+    /// =====================================
 
     bool rng_randb();
 
@@ -38,9 +40,9 @@ namespace utils {
      */
     double rng_randd();
 
-    void rng_consume( const std::size_t num );
+//    void rng_consume( const std::size_t num );
 
-    std::string genSeed( const std::size_t length = 8 );
+    std::string gen_seed( const std::size_t length = 8 );
 
     template< typename T>
     T rng_rand( const std::set<T>& data ) {
@@ -49,10 +51,10 @@ namespace utils {
             return T();
         }
         if ( dSize < 2 ) {
-            return get_item( data, 0 );
+            return utils::get_item( data, 0 );
         }
         const std::size_t index = rng_randi( data.size() );
-        return get_item( data, index );
+        return utils::get_item( data, index );
     }
 
     template< typename T>
@@ -62,10 +64,10 @@ namespace utils {
             return T();
         }
         if ( dSize < 2 ) {
-            return get_item( data, 0, popItem );
+            return utils::get_item( data, 0, popItem );
         }
         const std::size_t index = rng_randi( data.size() );
-        return get_item( data, index, popItem );
+        return utils::get_item( data, index, popItem );
     }
 
     template< typename T>
@@ -100,11 +102,11 @@ namespace utils {
             return data[ index ];
         }
         const T ret = data[ index ];
-        remove_at( data, index );
+        utils::remove_at( data, index );
         return ret;
     }
 
 }
 
 
-#endif /* UTILS_INCLUDE_UTILS_RAND_H_ */
+#endif /* ADIKTEDPP_INCLUDE_ADIKTEDPP_RAND_H_ */

@@ -310,7 +310,8 @@ namespace dkmage {
 
             FortressRoomColumnRect( FortressDungeon& dungeon ): FortressRoom( dungeon ) {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
-                roomSize = roomSize357.getRandom();
+                const double sizeNum = adiktedpp::rng_randd();
+                roomSize = roomSize357.get( sizeNum );
                 corridorLength = rng_randi( 5 ) + 1;
 
                 setBbox( roomSize, roomSize );
@@ -407,7 +408,9 @@ namespace dkmage {
                     trapIndexMass.normalize();
                 }
 
-                const std::size_t trapIndex = trapIndexMass.getRandom();
+                const double trapNum = adiktedpp::rng_randd();
+                const std::size_t trapIndex = trapIndexMass.get( trapNum );
+
                 switch( trapIndex ) {
                 case 0: {
                     /// gas traps
@@ -665,7 +668,9 @@ namespace dkmage {
             void prepare( const FortressRoom& from ) override {
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
-                const std::size_t rSize = roomSize357.getRandom();
+                const double sizeNum = adiktedpp::rng_randd();
+                const std::size_t rSize = roomSize357.get( sizeNum );
+
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 setBbox( rSize, rSize );
@@ -712,11 +717,13 @@ namespace dkmage {
 
                 const ProbabilityMass<std::size_t>& roomSize357 = FortressRoomSizeProbability();
 
-                const std::size_t roomLength = roomSize357.getRandom() - 1;
+                const double lengthNum = adiktedpp::rng_randd();
+                const std::size_t roomLength = roomSize357.get( lengthNum ) - 1;
+
                 const std::size_t corridorLength = 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     switch( newDir ) {
                     case Direction::D_NORTH:
@@ -829,7 +836,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     switch( newDir ) {
                     case Direction::D_NORTH:
@@ -932,7 +939,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     orientation = get_axis( newDir );
                     switch( orientation ) {
@@ -1054,7 +1061,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     orientation = get_axis( newDir );
                     switch( orientation ) {
@@ -1202,7 +1209,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     orientation = get_axis( newDir );
                     alternativePos = rng_randb();
@@ -1343,7 +1350,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     orientation = get_axis( newDir );
                     switch( orientation ) {
@@ -1486,7 +1493,7 @@ namespace dkmage {
                 const std::size_t corridorLength = rng_randi( 5 ) + 1;
 
                 while ( availableDirs.empty() == false ) {
-                    const std::size_t rDir = utils::rng_randi( availableDirs.size() );
+                    const std::size_t rDir = adiktedpp::rng_randi( availableDirs.size() );
                     const Direction newDir = remove_at( availableDirs, rDir );
                     orientation = get_axis( newDir );
                     alternativePos = rng_randb();

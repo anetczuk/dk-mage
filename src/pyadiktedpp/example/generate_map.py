@@ -15,9 +15,9 @@ import adiktedpp.level as level
 import adiktedpp.type as type
 import adiktedpp.raw as raw
 import adiktedpp.messages as messages
+import adiktedpp.rand as rand
 
 import utils.rect as rect
-import utils.rand as rand
 import utils.log as log
 
 

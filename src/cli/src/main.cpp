@@ -10,10 +10,10 @@
 #include "dkmage/ParameterDefaults.h"
 
 #include "adiktedpp/Level.h"
+#include "adiktedpp/Rand.h"
 #include "adiktedpp/Version.h"
 
 #include "utils/Container.h"
-#include "utils/Rand.h"
 #include "utils/Log.h"
 #include "utils/GlobalScope.h"
 
@@ -45,8 +45,8 @@ std::string getProperSeed( const std::string& seed ) {
         return seed;
     }
 
-    rng_srand();
-    const std::string newSeed = genSeed();
+    adiktedpp::rng_srand();
+    const std::string newSeed = gen_seed();
     if ( newSeed.empty() ) {
         LOG_INFO() << "unable to generate seed";
         return "";
@@ -70,7 +70,7 @@ void initializeRand( const std::string& seed ) {
     const std::uint32_t seedValue = hashCode( seed );
     LOG_INFO() << "using seed '" << seed << "'";
 //    LOG_INFO() << "using seed '" << seed << "' " << seedValue;
-    rng_srand( seedValue );
+    adiktedpp::rng_srand( seedValue );
 }
 
 std::string getProperType( const std::string& mapType ) {

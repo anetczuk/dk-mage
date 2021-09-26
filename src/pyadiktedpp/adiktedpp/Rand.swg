@@ -1,14 +1,14 @@
 %module rand
 
 %{
-#include "utils/Rand.h"
+#include "adiktedpp/Rand.h"
 %}
 
 
 ## export only selected methods
 
 
-namespace utils {
+namespace adiktedpp {
 
     void rng_srand( unsigned int seed );
 

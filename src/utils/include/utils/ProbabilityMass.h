@@ -8,8 +8,6 @@
 
 /// inclusion: #include "utils/ProbabilityMass.h"
 
-#include "utils/Rand.h"
-
 #include <sstream>
 #include <map>
 #include <set>
@@ -133,16 +131,6 @@ namespace utils {
             const T ret = get( value );
             popItem( ret );
             return ret;
-        }
-
-        T getRandom() const {
-            const double num = rng_randd();
-            return get( num );
-        }
-
-        T popRandom() {
-            const double num = rng_randd();
-            return pop( num );
         }
 
         std::string print() const {
