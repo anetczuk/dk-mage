@@ -27,7 +27,7 @@ namespace adiktedpp {
         raw::adikted_srand();
 
         raw::RNG& engine = rng_instance();
-        engine.goodseed();
+        engine.srand();
     }
 
     bool rng_randb() {

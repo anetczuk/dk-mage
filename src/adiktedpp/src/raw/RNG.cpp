@@ -47,7 +47,6 @@ namespace adiktedpp {
 
             RNGState() = default;
 
-
             void srand( unsigned int seed ) {
                 mts_seed32( &state, seed );
             }
@@ -67,17 +66,17 @@ namespace adiktedpp {
 
             /// ============================================================
 
-            /// returns value from range [ 0, maxValue )
-            unsigned int randi( const unsigned int maxValue ) {
-                const unsigned int rint = randi();
-                return ( rint % maxValue );
-            }
+//            /// returns value from range [ 0, maxValue )
+//            unsigned int randi( const unsigned int maxValue ) {
+//                const unsigned int rint = randi();
+//                return ( rint % maxValue );
+//            }
 
-            /// returns value from range [ minValue, maxValue )
-            unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) {
-                const unsigned int rint = randi();
-                return ( rint % (maxValue - minValue) ) + minValue;
-            }
+//            /// returns value from range [ minValue, maxValue )
+//            unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) {
+//                const unsigned int rint = randi();
+//                return ( rint % (maxValue - minValue) ) + minValue;
+//            }
 
             /**
              * Return value in range [0..1].
@@ -88,21 +87,43 @@ namespace adiktedpp {
                 return val;
             }
 
-            bool randb() {
-                return ( randi() % 2 == 1 );
-            }
+//            bool randb() {
+//                return ( randi() % 2 == 1 );
+//            }
 
-            bool randb( const double probability ) {
-                return ( randd() < probability );
-            }
+//            bool randb( const double probability ) {
+//                return ( randd() < probability );
+//            }
 
-            void consume( const std::size_t num ) {
-                for ( std::size_t i=0; i<num; ++i ) {
-                    randi();
-                }
-            }
+//            void consume( const std::size_t num ) {
+//                for ( std::size_t i=0; i<num; ++i ) {
+//                    randi();
+//                }
+//            }
 
         };
+
+
+        /// ==================================================================
+
+
+        unsigned int BaseRNG::randi( const unsigned int maxValue ) {
+            const unsigned int rint = randi();
+            return ( rint % maxValue );
+        }
+
+        unsigned int BaseRNG::randi( const unsigned int minValue, const unsigned int maxValue ) {
+            const unsigned int rint = randi();
+            return ( rint % (maxValue - minValue) ) + minValue;
+        }
+
+        bool BaseRNG::randb() {
+            return ( randi() % 2 == 1 );
+        }
+
+        bool BaseRNG::randb( const double probability ) {
+            return ( randd() < probability );
+        }
 
 
         /// ==================================================================
@@ -119,7 +140,7 @@ namespace adiktedpp {
             return ptr->srand( seed );
         }
 
-        void RNG::goodseed() {
+        void RNG::srand() {
             RNGState* ptr = state.get();
             return ptr->goodseed();
         }
@@ -135,36 +156,12 @@ namespace adiktedpp {
             return ptr->randi();
         }
 
-        /// ============================================================
-
-        /// returns value from range [ 0, maxValue )
-        unsigned int RNG::randi( const unsigned int maxValue ) {
-            RNGState* ptr = state.get();
-            return ptr->randi( maxValue );
-        }
-
-        /// returns value from range [ minValue, maxValue )
-        unsigned int RNG::randi( const unsigned int minValue, const unsigned int maxValue ) {
-            RNGState* ptr = state.get();
-            return ptr->randi( minValue, maxValue );
-        }
-
         /**
          * Return value in range [0..1].
          */
         double RNG::randd() {
             RNGState* ptr = state.get();
             return ptr->randd();
-        }
-
-        bool RNG::randb() {
-            RNGState* ptr = state.get();
-            return ptr->randb();
-        }
-
-        bool RNG::randb( const double probability ) {
-            RNGState* ptr = state.get();
-            return ptr->randb( probability );
         }
 
 //        void RNG::consume( const std::size_t num ) {

@@ -19,14 +19,72 @@ namespace adiktedpp {
         void adikted_srand();
 
 
-        /// ================================
+        /// ==========================================================================
+
+
+        class AbstractRNG {
+        public:
+
+            virtual ~AbstractRNG() = default;
+
+
+            virtual void srand( unsigned int seed ) = 0;
+
+            virtual void srand() = 0;
+
+//            virtual unsigned int rand_max() const = 0;
+
+            /// returns value from range [ 0, MAX )
+            virtual unsigned int randi() = 0;
+
+            virtual unsigned int randi( const unsigned int maxValue ) = 0;
+
+            virtual unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) = 0;
+
+            /**
+             * Return value in range [0..1].
+             */
+            virtual double randd() = 0;
+
+            virtual bool randb() = 0;
+
+            virtual bool randb( const double probability ) = 0;
+
+//            virtual void consume( const std::size_t num ) = 0;
+
+        };
+
+
+        class BaseRNG: public AbstractRNG {
+        public:
+
+            using AbstractRNG::randi;
+
+            /// returns value from range [ 0, maxValue )
+            unsigned int randi( const unsigned int maxValue ) override;
+
+            /// returns value from range [ minValue, maxValue )
+            unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) override;
+
+            bool randb();
+
+            bool randb( const double probability );
+
+        };
+
+
+        /// ==========================================================================
 
 
         class RNGState;
 
 
-        class RNG {
+        /**
+         * Wrapper class for Mersenne-Twist pseudo-RNG C implementation provided by libadikted.
+         */
+        class RNG: public BaseRNG {
             std::unique_ptr<RNGState> state;
+
 
         public:
 
@@ -34,31 +92,21 @@ namespace adiktedpp {
 
             ~RNG();
 
-            void srand( unsigned int seed );
+            void srand( unsigned int seed ) override;
 
-            void goodseed();
+            void srand() override;
 
 //            unsigned int rand_max() const;
 
+            using BaseRNG::randi;
+
             /// returns value from range [ 0, MAX )
-            unsigned int randi();
-
-            /// ============================================================
-
-            /// returns value from range [ 0, maxValue )
-            unsigned int randi( const unsigned int maxValue );
-
-            /// returns value from range [ minValue, maxValue )
-            unsigned int randi( const unsigned int minValue, const unsigned int maxValue );
+            unsigned int randi() override;
 
             /**
              * Return value in range [0..1].
              */
-            double randd();
-
-            bool randb();
-
-            bool randb( const double probability );
+            double randd() override;
 
 //            void consume( const std::size_t num );
 

@@ -16,4 +16,6 @@
 %include "SubTypeTrap.swg"
 %include "ThingType.swg"
 
+%include "RNG.swg"
+
 %include "RawLevel.swg"
