@@ -8,6 +8,7 @@ import utils.log as log
 
 
 class PrinterSink( log.LogSink ):
+
     def __init__( self ):
         super().__init__()
         self.callCounter = 0

@@ -66,6 +66,7 @@ namespace utils {
         const std::string prefix = logPrefix( level, file, lineNo );
         std::cerr  << prefix << ": " << message << "\n";
         fileStream << prefix << ": " << message << "\n";
+        fileStream.flush();
     }
 
     PrintLogSink::PrintLogSink( PrintFunction* function ): function( function ) {

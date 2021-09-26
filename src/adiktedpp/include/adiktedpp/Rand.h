@@ -8,6 +8,8 @@
 
 /// inclusion: #include "adiktedpp/Rand.h"
 
+#include "adiktedpp/raw/RNG.h"
+
 #include "utils/Container.h"
 
 #include <string>
@@ -15,12 +17,19 @@
 
 namespace adiktedpp {
 
+    /// pass RNG with ownership (release object's memory)
+    void rng_set( std::unique_ptr<raw::AbstractRNG>& newRNG );
+
+    /// pass RNG without granting ownership (do not release object's memory)
+    void rng_set_generator( raw::AbstractRNG& newRNG );
+
+    /// set internal RNG with given seed
     void rng_srand( unsigned int seed );
 
-    /// initialize RNG with random seed
+    /// set internal RNG with random seed
     void rng_srand();
 
-    /// =====================================
+    /// =============================================================================
 
     bool rng_randb();
 

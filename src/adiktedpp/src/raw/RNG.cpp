@@ -5,6 +5,8 @@
 
 #include "adiktedpp/raw/RNG.h"
 
+#include "utils/Log.h"
+
 
 ///// required for mtwist.h
 //#undef MT_GENERATE_CODE_IN_HEADER
@@ -67,13 +69,13 @@ namespace adiktedpp {
             /// ============================================================
 
 //            /// returns value from range [ 0, maxValue )
-//            unsigned int randi( const unsigned int maxValue ) {
+//            unsigned int randin( const unsigned int maxValue ) {
 //                const unsigned int rint = randi();
 //                return ( rint % maxValue );
 //            }
 
 //            /// returns value from range [ minValue, maxValue )
-//            unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) {
+//            unsigned int randir( const unsigned int minValue, const unsigned int maxValue ) {
 //                const unsigned int rint = randi();
 //                return ( rint % (maxValue - minValue) ) + minValue;
 //            }
@@ -107,12 +109,12 @@ namespace adiktedpp {
         /// ==================================================================
 
 
-        unsigned int BaseRNG::randi( const unsigned int maxValue ) {
+        unsigned int BaseRNG::randin( const unsigned int maxValue ) {
             const unsigned int rint = randi();
             return ( rint % maxValue );
         }
 
-        unsigned int BaseRNG::randi( const unsigned int minValue, const unsigned int maxValue ) {
+        unsigned int BaseRNG::randir( const unsigned int minValue, const unsigned int maxValue ) {
             const unsigned int rint = randi();
             return ( rint % (maxValue - minValue) ) + minValue;
         }

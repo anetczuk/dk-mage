@@ -5,64 +5,89 @@
 
 #include "adiktedpp/Rand.h"
 
-#include "adiktedpp/raw/RNG.h"
+#include "utils/Log.h"
 
 
 namespace adiktedpp {
 
-    raw::RNG& rng_instance() {
-        static raw::RNG rng;
+    std::unique_ptr<raw::AbstractRNG>& rng_instance() {
+        static std::unique_ptr<raw::AbstractRNG> rng( new raw::RNG() );
         return rng;
     }
 
+    /// ===============================================================
+
+    /// pass RNG with ownership (release object's memory)
+    void rng_set( std::unique_ptr<raw::AbstractRNG>& newRNG ) {
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        rngPtr.swap( newRNG );
+    }
+
+    /// pass RNG without granting ownership (do not release object's memory)
+    void rng_set_generator( raw::AbstractRNG& newRNG ) {
+        std::unique_ptr<raw::AbstractRNG> rng( new raw::WrapperRNG( &newRNG ) );
+        rng_set( rng );
+    }
 
     void rng_srand( unsigned int seed ) {
         raw::adikted_srand( seed );
 
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        rngPtr.reset( new raw::RNG() );
+        raw::AbstractRNG& engine = *rngPtr;
         engine.srand( seed );
     }
 
     void rng_srand() {
         raw::adikted_srand();
 
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        rngPtr.reset( new raw::RNG() );
+        raw::AbstractRNG& engine = *rngPtr;
         engine.srand();
     }
 
+    /// ===============================================================
+
     bool rng_randb() {
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
         return engine.randb();
     }
 
     bool rng_randb( const double probability ) {
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
         return engine.randb( probability );
     }
 
     /// returns value from range [ 0, MAX )
     unsigned int rng_randi() {
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
         return engine.randi();
     }
 
     /// returns value from range [ 0, maxValue )
     unsigned int rng_randi( const unsigned int maxValue ) {
-        raw::RNG& engine = rng_instance();
-        return engine.randi( maxValue );
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
+        return engine.randin( maxValue );
     }
 
     /// returns value from range [ minValue, maxValue )
     unsigned int rng_randi( const unsigned int minValue, const unsigned int maxValue ) {
-        raw::RNG& engine = rng_instance();
-        return engine.randi( minValue, maxValue );
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
+        return engine.randir( minValue, maxValue );
     }
 
     /**
      * Return value in range [0..1].
      */
     double rng_randd() {
-        raw::RNG& engine = rng_instance();
+        std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
+        raw::AbstractRNG& engine = *rngPtr;
         return engine.randd();
     }
 

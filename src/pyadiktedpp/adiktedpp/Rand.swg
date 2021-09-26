@@ -5,16 +5,8 @@
 %}
 
 
-## export only selected methods
+%pythoncode %{####################################################%}
 
 
-namespace adiktedpp {
-
-    void rng_srand( unsigned int seed );
-
-    /// initialize RNG with random seed
-    void rng_srand();
-    
-    unsigned int rng_randi();
-    
-}
+%import "adiktedpp/raw/RNG.h"
+%include "adiktedpp/Rand.h"

@@ -9,6 +9,7 @@ import sys
 import os.path
 import argparse
 import logging
+import random
 
 import adiktedpp.script as script
 import adiktedpp.level as level
@@ -87,8 +88,27 @@ class LoggingSink( log.LogSink ):
         else:
             self.logger.info( "%s: %s", prefix, message )
 
-logSink = LoggingSink()
-log.LogConfig.setLogSink( logSink )
+
+## =================================================================================
+
+
+class RandomRNG( raw.BaseRNG ):
+
+    def __init__( self ):
+        super().__init__()
+        self.rng = random.Random()
+          
+    def srand( self, seed ):
+        self.rng = random.Random( seed )
+
+    def srand( self ):
+        self.rng = random.Random()
+
+    def randi( self ):
+        return self.rng.randint(0, 4294967295 )     ## 2^31 - 1
+
+    def randd( self ):
+        return self.rng.random()
 
 
 ## =================================================================================
@@ -105,12 +125,22 @@ def main():
     
     ## set random number generator for map
     if args.seed:
-        rand.rng_srand( args.seed )
+        raw.adikted_srand( args.seed )
+        customRNG = RandomRNG()
+        rand.rng_set_generator( customRNG )
+        # rand.rng_srand( args.seed )
     else:
-        rand.rng_srand()
+        raw.adikted_srand()
+        customRNG = RandomRNG()
+        rand.rng_set_generator( customRNG )
+        # rand.rng_srand()
 
     ## initialize ADiKtEd internal logger
     adiktedLogger = messages.ScopeMessages( "adikted.log" )
+    
+    logSink = LoggingSink()
+    log.LogConfig.setLogSink( logSink )
+    ## log.LogConfig.setCerrFileSink( "dkmage.log" )
 
     log.log_info( "logger initialized" )
     

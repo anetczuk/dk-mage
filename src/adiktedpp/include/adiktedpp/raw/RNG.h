@@ -32,19 +32,21 @@ namespace adiktedpp {
 
             virtual void srand() = 0;
 
-//            virtual unsigned int rand_max() const = 0;
-
             /// returns value from range [ 0, MAX )
             virtual unsigned int randi() = 0;
-
-            virtual unsigned int randi( const unsigned int maxValue ) = 0;
-
-            virtual unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) = 0;
 
             /**
              * Return value in range [0..1].
              */
             virtual double randd() = 0;
+
+            /// =======================================
+
+//            virtual unsigned int rand_max() const = 0;
+
+            virtual unsigned int randin( const unsigned int maxValue ) = 0;
+
+            virtual unsigned int randir( const unsigned int minValue, const unsigned int maxValue ) = 0;
 
             virtual bool randb() = 0;
 
@@ -61,14 +63,65 @@ namespace adiktedpp {
             using AbstractRNG::randi;
 
             /// returns value from range [ 0, maxValue )
-            unsigned int randi( const unsigned int maxValue ) override;
+            unsigned int randin( const unsigned int maxValue ) override;
 
             /// returns value from range [ minValue, maxValue )
-            unsigned int randi( const unsigned int minValue, const unsigned int maxValue ) override;
+            unsigned int randir( const unsigned int minValue, const unsigned int maxValue ) override;
 
             bool randb();
 
             bool randb( const double probability );
+
+        };
+
+
+        /// ==========================================================================
+
+
+        class WrapperRNG: public AbstractRNG {
+            AbstractRNG* rng;
+
+
+        public:
+
+            WrapperRNG( AbstractRNG* rng = nullptr ): rng(rng) {
+            }
+
+            void srand( unsigned int seed ) override {
+                rng->srand( seed );
+            }
+
+            void srand() override {
+                rng->srand();
+            }
+
+            /// returns value from range [ 0, MAX )
+            unsigned int randi() override {
+                return rng->randi();
+            }
+
+            unsigned int randin( const unsigned int maxValue ) override {
+                return rng->randin( maxValue );
+            }
+
+            unsigned int randir( const unsigned int minValue, const unsigned int maxValue ) override {
+                return rng->randir( minValue, maxValue );
+            }
+
+            /**
+             * Return value in range [0..1].
+             */
+            double randd() override {
+                return rng->randd();
+            }
+
+            bool randb() override {
+                return rng->randb();
+            }
+
+            bool randb( const double probability ) override {
+                return rng->randb( probability );
+            }
 
         };
 
