@@ -45,7 +45,7 @@ std::string getProperSeed( const std::string& seed ) {
         return seed;
     }
 
-    adiktedpp::rng_srand();
+    adiktedpp::rng_srandr();
     const std::string newSeed = gen_seed();
     if ( newSeed.empty() ) {
         LOG_INFO() << "unable to generate seed";
@@ -54,20 +54,8 @@ std::string getProperSeed( const std::string& seed ) {
     return newSeed;
 }
 
-std::uint32_t hashCode( const std::string& text ) {
-    const std::size_t strlen = text.length();
-    if ( strlen == 0 ) {
-        return 0;
-    }
-    std::uint32_t hash = 0;
-    for ( std::size_t i = 0; i < strlen; ++i ) {
-        hash = (31 * hash) + text.at(i);
-    }
-    return hash;
-}
-
 void initializeRand( const std::string& seed ) {
-    const std::uint32_t seedValue = hashCode( seed );
+    const std::uint32_t seedValue = hash_code( seed );
     LOG_INFO() << "using seed '" << seed << "'";
 //    LOG_INFO() << "using seed '" << seed << "' " << seedValue;
     adiktedpp::rng_srand( seedValue );

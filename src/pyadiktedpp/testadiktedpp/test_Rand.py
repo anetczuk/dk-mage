@@ -18,7 +18,7 @@ class CustomRNG( raw.BaseRNG ):
         ## do nothing
         pass
 
-    def srand( self ):
+    def srandr( self ):
         ## do nothing
         pass
 
@@ -38,7 +38,7 @@ class RandTest(unittest.TestCase):
 
     def tearDown(self):
         ## called after testfunction was executed
-        rand.rng_srand()
+        rand.rng_srandr()
 
     def test_rng_srand(self):
         rand.rng_srand( 111 )

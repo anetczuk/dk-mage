@@ -27,7 +27,7 @@ namespace adiktedpp {
     void rng_srand( unsigned int seed );
 
     /// set internal RNG with random seed
-    void rng_srand();
+    void rng_srandr();
 
     /// =============================================================================
 
@@ -52,6 +52,8 @@ namespace adiktedpp {
 //    void rng_consume( const std::size_t num );
 
     std::string gen_seed( const std::size_t length = 8 );
+
+    std::uint32_t hash_code( const std::string& text );
 
     template< typename T>
     T rng_rand( const std::set<T>& data ) {

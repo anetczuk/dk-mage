@@ -13,7 +13,7 @@ import random
 
 import adiktedpp.script as script
 import adiktedpp.level as level
-import adiktedpp.type as type
+import adiktedpp.type as types
 import adiktedpp.raw as raw
 import adiktedpp.messages as messages
 import adiktedpp.rand as rand
@@ -35,7 +35,7 @@ class RandomRNG( raw.BaseRNG ):
     def srand( self, seed ):
         self.rng = random.Random( seed )
 
-    def srand( self ):
+    def srandr( self ):
         self.rng = random.Random()
 
     def randi( self ):
@@ -46,6 +46,12 @@ class RandomRNG( raw.BaseRNG ):
 
 
 ## =================================================================================
+
+
+def parse_seed( seed ):
+    if isinstance(seed, int):
+        return seed
+    return rand.hash_code( seed )
 
 
 def main():
@@ -59,15 +65,17 @@ def main():
     
     ## set random number generator for map
     if args.seed:
-        raw.adikted_srand( args.seed )
+        seedNum = parse_seed( args.seed )
+        raw.adikted_srand( seedNum )                ## required to initialize adokted's internal RNG
         customRNG = RandomRNG()
+        customRNG.srand( seedNum )
         rand.rng_set_generator( customRNG )
-        # rand.rng_srand( args.seed )
+        # rand.rng_srand( int(args.seed) )
     else:
-        raw.adikted_srand()
+        raw.adikted_srandr()                        ## required to initialize adokted's internal RNG
         customRNG = RandomRNG()
         rand.rng_set_generator( customRNG )
-        # rand.rng_srand()
+        # rand.rng_srandr()
 
     ## initialize ADiKtEd internal logger
     adiktedLogger = messages.ScopeMessages( "adikted.log" )
@@ -88,37 +96,37 @@ def main():
     mapLevel.generateRandomMap(25)
     
     ## add some items
-    owner = type.Player_P_P0
+    owner = types.Player_P_P0
     mapRect = raw.RawLevel.mapSize()
     heartCenter = mapRect.center()
     heartRect = rect.Rect( heartCenter, 5, 5 )
-    mapLevel.setRoom( heartRect, type.Room_R_DUNGEON_HEART, owner, True )
-    mapLevel.setCreature( heartCenter - rect.Point(0, 2), 1, type.Creature_C_IMP, 3, 1, owner )
-    mapLevel.setItem( heartCenter + rect.Point(0, 2), 1, type.Item_I_SPECIAL_REVMAP )
+    mapLevel.setRoom( heartRect, types.Room_R_DUNGEON_HEART, owner, True )
+    mapLevel.setCreature( heartCenter - rect.Point(0, 2), 1, types.Creature_C_IMP, 3, 1, owner )
+    mapLevel.setItem( heartCenter + rect.Point(0, 2), 1, types.Item_I_SPECIAL_REVMAP )
     
     treasureCenter = heartCenter + rect.Point(10, 0)
     mapLevel.digLine( heartCenter, treasureCenter, owner, True )
     treasureRect = rect.Rect( treasureCenter, 5, 5 )
-    mapLevel.setRoom( treasureRect, type.Room_R_TREASURE, owner, True )
-    mapLevel.setSlab( treasureCenter, type.Slab_S_GEMS )
-    mapLevel.setDoor( treasureCenter - rect.Point(3, 0), type.Door_D_IRON )
+    mapLevel.setRoom( treasureRect, types.Room_R_TREASURE, owner, True )
+    mapLevel.setSlab( treasureCenter, types.Slab_S_GEMS )
+    mapLevel.setDoor( treasureCenter - rect.Point(3, 0), types.Door_D_IRON )
     
     pointsList = rect.PointList()
     pointsList.append( rect.Point( heartCenter + rect.Point( 0, -3) ) )
     pointsList.append( rect.Point( heartCenter + rect.Point( 0, -4) ) )
     pointsList.append( rect.Point( heartCenter + rect.Point( 0, -5) ) )
     mapLevel.digClaimed( pointsList, owner, False )
-    mapLevel.setItem( pointsList[2], 4, type.Item_I_GOLDCHEST )
+    mapLevel.setItem( pointsList[2], 4, types.Item_I_GOLDCHEST )
     
     ## golder island
     goldRect = heartRect.moved( rect.Point(-20, 0) )
     goldRect.grow( 3 )
     lakeRect = rect.Rect( goldRect )
     lakeRect.grow( 1 )
-    mapLevel.setSlab( lakeRect, type.Slab_S_WATER )
+    mapLevel.setSlab( lakeRect, types.Slab_S_WATER )
     lakeRect.grow( 2 )
-    mapLevel.setCave( lakeRect, type.Slab_S_WATER )
-    mapLevel.setCave( goldRect, type.Slab_S_GOLD )
+    mapLevel.setCave( lakeRect, types.Slab_S_WATER )
+    mapLevel.setCave( goldRect, types.Slab_S_GOLD )
     
     ## script
     mapScript = script.Script()
@@ -139,12 +147,12 @@ def main():
     ###
     scriptInit.addEmptyLine()
     doorAvailable = script.DoorAvailableState()
-    doorAvailable.setStateAmount( owner, type.Door_D_WOOD, 2 )
+    doorAvailable.setStateAmount( owner, types.Door_D_WOOD, 2 )
     mapScript.set( doorAvailable )
     ###
     scriptInit.addEmptyLine()
     trapAvailable = script.TrapAvailableState()
-    trapAvailable.setStateFlag( owner, type.Trap_T_BOULDER, False )
+    trapAvailable.setStateFlag( owner, types.Trap_T_BOULDER, False )
     mapScript.set( trapAvailable )
     ###
     scriptInit.addEmptyLine()

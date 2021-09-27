@@ -16,7 +16,7 @@ namespace adiktedpp {
         void adikted_srand( unsigned int seed );
 
         /// initialize libadikted RNG with random seed
-        void adikted_srand();
+        void adikted_srandr();
 
 
         /// ==========================================================================
@@ -30,7 +30,7 @@ namespace adiktedpp {
 
             virtual void srand( unsigned int seed ) = 0;
 
-            virtual void srand() = 0;
+            virtual void srandr() = 0;
 
             /// returns value from range [ 0, MAX )
             virtual unsigned int randi() = 0;
@@ -91,8 +91,8 @@ namespace adiktedpp {
                 rng->srand( seed );
             }
 
-            void srand() override {
-                rng->srand();
+            void srandr() override {
+                rng->srandr();
             }
 
             /// returns value from range [ 0, MAX )
@@ -147,7 +147,7 @@ namespace adiktedpp {
 
             void srand( unsigned int seed ) override;
 
-            void srand() override;
+            void srandr() override;
 
 //            unsigned int rand_max() const;
 

@@ -38,13 +38,13 @@ namespace adiktedpp {
         engine.srand( seed );
     }
 
-    void rng_srand() {
-        raw::adikted_srand();
+    void rng_srandr() {
+        raw::adikted_srandr();
 
         std::unique_ptr<raw::AbstractRNG>& rngPtr = rng_instance();
         rngPtr.reset( new raw::RNG() );
         raw::AbstractRNG& engine = *rngPtr;
-        engine.srand();
+        engine.srandr();
     }
 
     /// ===============================================================
@@ -110,6 +110,18 @@ namespace adiktedpp {
             ret += alphanum[ index ];
         }
         return ret;
+    }
+
+    std::uint32_t hash_code( const std::string& text ) {
+        const std::size_t strlen = text.length();
+        if ( strlen == 0 ) {
+            return 0;
+        }
+        std::uint32_t hash = 0;
+        for ( std::size_t i = 0; i < strlen; ++i ) {
+            hash = (31 * hash) + text.at(i);
+        }
+        return hash;
     }
 
 }

@@ -5,6 +5,10 @@
 %}
 
 
+%include "std_string.i"
+%include "stdint.i"         /// for std::uint32_t
+
+
 %pythoncode %{####################################################%}
 
 

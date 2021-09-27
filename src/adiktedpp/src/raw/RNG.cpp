@@ -30,7 +30,7 @@ namespace adiktedpp {
             libadikted::rng_srand( seed );
         }
 
-        void adikted_srand() {
+        void adikted_srandr() {
             libadikted::rng_srand_random();
         }
 
@@ -142,7 +142,7 @@ namespace adiktedpp {
             return ptr->srand( seed );
         }
 
-        void RNG::srand() {
+        void RNG::srandr() {
             RNGState* ptr = state.get();
             return ptr->goodseed();
         }
