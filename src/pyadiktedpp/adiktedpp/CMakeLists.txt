@@ -3,9 +3,9 @@
 ##
 
 
-include_directories( ../../adiktedpp/include )
-include_directories( ../../utils/include )
-include_directories( ../../pyutils )
+include_directories( ${PROJECT_SOURCE_DIR}/adiktedpp/include )
+include_directories( ${PROJECT_SOURCE_DIR}/utils/include )
+include_directories( ${PROJECT_SOURCE_DIR}/pyutils )
 
 
 file(GLOB swg_files *.swg )

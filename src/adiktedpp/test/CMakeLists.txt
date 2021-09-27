@@ -31,8 +31,8 @@ endif()
 
 set( EXECUTABLE_WORKDIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
-generate_to_file( ../../run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
-#generate_to_file( ../../run_tests.sh.in run_tests.sh )
+generate_to_file( ${PROJECT_SOURCE_DIR}/run_tests.sh.in ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/run_${TARGET_NAME}.sh )
+#generate_to_file( ${PROJECT_SOURCE_DIR}/run_tests.sh.in run_tests.sh )
 
 
 add_test( NAME ${TARGET_NAME} COMMAND ${EXE_EMULATOR} ${TARGET_NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
