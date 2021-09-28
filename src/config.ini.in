@@ -60,6 +60,11 @@ levels_path =
 # type = @PN_DEFAULT_TYPE@
 
 
+## Number of failure attempts to perform before exit
+## Type: VALUE of unsigned integer
+fail_attempts = @PN_DEFAULT_FAIL_ATTEMPTS@
+
+
 ## Limit of action points on map allowed by game.
 ## Type: VALUE of unsigned integer
 # action_points_limit = @PN_DEFAULT_ACTION_POINTS_LIMIT@

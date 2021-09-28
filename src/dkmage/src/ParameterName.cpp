@@ -31,6 +31,8 @@ namespace dkmage {
             data.insert( ParameterName::PN_SEED );
             data.insert( ParameterName::PN_TYPE );
 
+            data.insert( ParameterName::PN_FAIL_ATTEMPTS );
+
             data.insert( ParameterName::PN_ACTION_POINTS_LIMIT );
 
             data.insert( ParameterName::PN_SCRIPT_TUNNELLERS_LIMIT );
@@ -97,6 +99,8 @@ namespace dkmage {
 
         case ParameterName::PN_SEED:                                  return "seed";
         case ParameterName::PN_TYPE:                                  return "type";
+
+        case ParameterName::PN_FAIL_ATTEMPTS:                         return "fail_attempts";
 
         case ParameterName::PN_ACTION_POINTS_LIMIT:                   return "action_points_limit";
 

@@ -34,6 +34,8 @@ namespace dkmage {
         PN_SEED,                                  /// seed
         PN_TYPE,                                  /// type
 
+        PN_FAIL_ATTEMPTS,                         /// fail_attempts - number of failure attempts
+
         PN_ACTION_POINTS_LIMIT,                   /// action_points_limit
 
         PN_SCRIPT_TUNNELLERS_LIMIT,               /// script_tunnellers_limit

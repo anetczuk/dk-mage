@@ -24,18 +24,24 @@ using namespace adiktedpp;
 
 namespace dkmage {
 
+    BaseLevelGenerator::BaseLevelGenerator(): messages( "adikted.log.txt" ), map() {
+        map.script.setHeaderInfo();
+    }
+
     void BaseLevelGenerator::generateLevel() {
-        const bool succeed = generateAttempt();
-        if ( succeed ) {
-            return ;
+        const std::size_t attempts = parameters.getSizeT( ParameterName::PN_FAIL_ATTEMPTS, PN_DEFAULT_FAIL_ATTEMPTS );
+        for ( std::size_t i=0; i<attempts; ++i ) {
+            const bool succeed = generateAttempt();
+            if ( succeed ) {
+                break ;
+            }
+            if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
+                /// do not attempt to generate
+                LOG_WARN() << "detected invalid map -- stopping";
+                break ;
+            }
+            LOG_WARN() << "detected invalid map -- restarting generation";
         }
-        if ( parameters.isSet( ParameterName::PN_STOP_ON_FAIL ) ) {
-            /// do not attempt to generate
-            LOG_WARN() << "detected invalid map -- stopping";
-            return ;
-        }
-        LOG_WARN() << "detected invalid map -- restarting generation";
-        generateLevel();
     }
 
     bool BaseLevelGenerator::generateAttempt() {

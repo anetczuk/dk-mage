@@ -27,6 +27,8 @@
 ,SEED,,,,,,,
 ,TYPE,,random,,,,,
 ,#,,,,,,,
+,FAIL_ATTEMPTS,,7,,,,,number of failure attempts
+,#,,,,,,,
 ,ACTION_POINTS_LIMIT,,31,,,,,
 ,#,,,,,,,
 ,SCRIPT_TUNNELLERS_LIMIT,,256,,,,,

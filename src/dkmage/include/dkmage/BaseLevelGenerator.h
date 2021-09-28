@@ -28,9 +28,7 @@ namespace dkmage {
         adiktedpp::GameMap map;
 
 
-        BaseLevelGenerator(): messages( "adikted.log.txt" ), map() {
-            map.script.setHeaderInfo();
-        }
+        BaseLevelGenerator();
 
         const ParametersMap& getParameters() const override {
             return parameters;

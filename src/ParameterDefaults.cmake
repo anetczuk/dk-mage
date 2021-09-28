@@ -12,6 +12,8 @@
 
 set( PN_DEFAULT_TYPE                                               "random" )        # type
 
+set( PN_DEFAULT_FAIL_ATTEMPTS                                      "7" )        # fail_attempts
+
 set( PN_DEFAULT_ACTION_POINTS_LIMIT                                "31" )        # action_points_limit
 
 set( PN_DEFAULT_SCRIPT_TUNNELLERS_LIMIT                            "256" )        # script_tunnellers_limit
