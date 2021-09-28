@@ -5,7 +5,7 @@
 
 add_subdirectory( dkmage )
 
-#add_subdirectory( testdkmage )
+add_subdirectory( testdkmage )
 
 
 ## copy examples

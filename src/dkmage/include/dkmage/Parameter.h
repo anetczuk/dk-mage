@@ -260,8 +260,10 @@ namespace dkmage {
         Optional< std::size_t > getSizeT( const ParameterName parameter ) const;
 
         /// handles list of values and ranges
-        std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
+        std::size_t getSizeT( const std::string& parameter, const std::size_t defaultValue ) const;
+        std::size_t getSizeT( const std::string& parameter, const std::string& defaultValue ) const;
 
+        std::size_t getSizeT( const ParameterName parameter, const std::size_t defaultValue ) const;
         std::size_t getSizeT( const ParameterName parameter, const std::string& defaultValue ) const;
 
         Optional< SizeTSet > getSizeTSet( const std::string& parameter ) const;
