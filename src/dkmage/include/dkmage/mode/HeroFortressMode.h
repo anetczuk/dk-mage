@@ -21,6 +21,15 @@ namespace dkmage {
             utils::Point evilHeartPosition;
 
 
+        public:
+
+            HeroFortressMode() {
+                setMessagesOutput();
+            }
+
+
+        protected:
+
             bool generate() override;
 
             bool check() override;

@@ -105,6 +105,7 @@ if( BUILD_PYTHON_BINDINGS )
 
     add_subdirectory( pyutils )
     add_subdirectory( pyadiktedpp )
+    add_subdirectory( pydkmage )
 endif()
 
 

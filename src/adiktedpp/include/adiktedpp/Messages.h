@@ -34,8 +34,8 @@ namespace adiktedpp {
 
     public:
 
-        Messages( const Messages& )       = delete;
-        void operator=( const Messages& ) = delete;
+        Messages( const Messages& )            = delete;
+        Messages& operator=( const Messages& ) = delete;
 
         bool isInitialized() const {
             return initialized;
@@ -49,7 +49,9 @@ namespace adiktedpp {
 
         const char* getRecent();
 
-        void readRecent();
+        void readRecentInfo();
+
+        void readRecentErr();
 
 
         /// get instance
@@ -77,18 +79,14 @@ namespace adiktedpp {
     public:
 
         ScopeMessages() {
-            checkActivated();
-            Messages::get();                                    /// initialize if needed
         }
 
         ScopeMessages( const std::string& fileName ) {
-            checkActivated();
-            Messages::get( fileName );
+            setFile( fileName );
         }
 
         ScopeMessages( const std::string& fileName, const std::string& fileSuffix ) {
-            checkActivated();
-            Messages::get( fileName, fileSuffix );
+            setFile( fileName, fileSuffix );
         }
 
         ~ScopeMessages() {
@@ -97,9 +95,24 @@ namespace adiktedpp {
             activated = false;
         }
 
-        void readRecent() {
+        void setFile( const std::string& fileName ) {
+            checkActivated();
+            Messages::get( fileName );
+        }
+
+        void setFile( const std::string& fileName, const std::string& fileSuffix ) {
+            checkActivated();
+            Messages::get( fileName, fileSuffix );
+        }
+
+        void readRecentInfo() {
             Messages& messages = Messages::get();
-            messages.readRecent();
+            messages.readRecentInfo();
+        }
+
+        void readRecentErr() {
+            Messages& messages = Messages::get();
+            messages.readRecentErr();
         }
 
     };

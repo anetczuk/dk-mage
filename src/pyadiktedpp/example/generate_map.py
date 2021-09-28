@@ -11,8 +11,8 @@ import argparse
 import logging
 import random
 
-import adiktedpp.script as script
 import adiktedpp.level as level
+import adiktedpp.script as script
 import adiktedpp.type as types
 import adiktedpp.raw as raw
 import adiktedpp.messages as messages
@@ -70,7 +70,7 @@ def main():
         customRNG = RandomRNG()
         customRNG.srand( seedNum )
         rand.rng_set_generator( customRNG )
-        # rand.rng_srand( int(args.seed) )
+        # rand.rng_srand( seedNum )
     else:
         raw.adikted_srandr()                        ## required to initialize adokted's internal RNG
         customRNG = RandomRNG()
@@ -78,7 +78,8 @@ def main():
         # rand.rng_srandr()
 
     ## initialize ADiKtEd internal logger
-    adiktedLogger = messages.ScopeMessages( "adikted.log" )
+    adiktedLogPath = os.path.join( args.output_dir, "adikted.log" )
+    adiktedLogger = messages.ScopeMessages( adiktedLogPath )
     
     logSink = loggingtools.LoggingSink()
     log.LogConfig.setLogSink( logSink )

@@ -73,11 +73,17 @@ python_copy() {
 
 python_copy "pyutils" "utils"
 python_copy "pyutils" "testutils"
+
 python_copy "pyadiktedpp" "adiktedpp"
 python_copy "pyadiktedpp" "testadiktedpp"
 
+python_copy "pydkmage" "dkmage"
+python_copy "pydkmage" "testdkmage"
+
+
 ## copy example
 copy_files "$SCRIPT_DIR/pyadiktedpp/*.py" $SCRIPT_DIR/deploy/pydkmage
+copy_files "$SCRIPT_DIR/pydkmage/*.py" $SCRIPT_DIR/deploy/pydkmage
 
 cd $SCRIPT_DIR/deploy
 OUT_NAME="pydkmage_@CMAKE_PROJECT_VERSION@_@CMAKE_SYSTEM_PROCESSOR@.zip"

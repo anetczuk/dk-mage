@@ -230,6 +230,10 @@ namespace dkmage {
 
         void add( const std::string& name, const std::size_t value );
 
+        void add( const ParameterName parameter, const std::string& value );
+
+        void add( const ParameterName parameter, const std::size_t value );
+
         bool isSet( const std::string& parameter ) const;
 
         bool isSet( const ParameterName parameter ) const;
@@ -280,7 +284,7 @@ namespace dkmage {
 
         SizeTSet getSizeTSet( const ParameterName parameter, const std::string& defaultValue ) const;
 
-        std::string print() const;
+        std::string printData() const;
 
     };
 

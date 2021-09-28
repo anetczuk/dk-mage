@@ -220,7 +220,7 @@ int main( int argc, char** argv ) {
             return invalid;
         }
 
-        LOG_INFO() << "entered parameters:" << parameters.print();
+        LOG_INFO() << "entered parameters:" << parameters.printData();
 
         const Optional<std::string> mapTypeParam = parameters.getString( "type" );
         const std::string mapType = mapTypeParam.value();

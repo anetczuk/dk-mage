@@ -24,8 +24,12 @@ using namespace adiktedpp;
 
 namespace dkmage {
 
-    BaseLevelGenerator::BaseLevelGenerator(): messages( "adikted.log.txt" ), map() {
+    BaseLevelGenerator::BaseLevelGenerator(): messages(), map() {
         map.script.setHeaderInfo();
+    }
+
+    void BaseLevelGenerator::setMessagesOutput( const std::string& fileName ) {
+        messages.setFile( fileName );
     }
 
     void BaseLevelGenerator::generateLevel() {

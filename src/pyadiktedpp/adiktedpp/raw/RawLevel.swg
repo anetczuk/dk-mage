@@ -8,6 +8,10 @@
 %pythoncode %{####################################################%}
 
 
+/// prevent unsupported nested class warning
+#pragma SWIG nowarn=362
+
+
 %include "std_string.i"
 
 

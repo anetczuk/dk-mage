@@ -22,6 +22,13 @@ namespace dkmage {
          *
          */
         class MazeMode: public BaseLevelGenerator {
+        public:
+
+            MazeMode() {
+                setMessagesOutput();
+            }
+
+
         protected:
 
             bool generate() override;

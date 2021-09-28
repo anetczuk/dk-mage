@@ -16,6 +16,13 @@ namespace dkmage {
          *
          */
         class CaveMode: public BaseLevelGenerator {
+        public:
+
+            CaveMode() {
+                setMessagesOutput();
+            }
+
+
         protected:
 
             bool generate() override;

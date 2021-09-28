@@ -321,6 +321,16 @@ namespace dkmage {
         data[ name ] = std::to_string( value );
     }
 
+    void ParametersMap::add( const ParameterName parameter, const std::string& value ) {
+        const std::string parameterName = getParameterName( parameter );
+        data[ parameterName ] = value;
+    }
+
+    void ParametersMap::add( const ParameterName parameter, const std::size_t value ) {
+        const std::string parameterName = getParameterName( parameter );
+        data[ parameterName ] = std::to_string( value );
+    }
+
     bool ParametersMap::isSet( const std::string& parameter ) const {
         auto iter = data.find( parameter );
         if ( iter == data.end() ) {
@@ -469,7 +479,7 @@ namespace dkmage {
         return (std::size_t) num;
     }
 
-    std::string ParametersMap::print() const {
+    std::string ParametersMap::printData() const {
         std::stringstream stream;
         auto iter  = data.begin();
         auto eiter = data.end();

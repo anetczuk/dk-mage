@@ -41,7 +41,7 @@ namespace adiktedpp {
 
         private:
 
-            std::unique_ptr<LevelData> data;
+            std::shared_ptr<LevelData> data;                /// shared_ptr needed for shallow copy
 
 
         public:
@@ -49,6 +49,12 @@ namespace adiktedpp {
             RawLevel();
 
             ~RawLevel();
+
+//            /// make move/swap of data
+//            RawLevel& operator=( RawLevel& object ) {
+//                data.swap( object.data );
+//                return *this;
+//            }
 
             LEVEL* rawData();
 

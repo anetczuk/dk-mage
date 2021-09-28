@@ -30,6 +30,12 @@ namespace dkmage {
 
         BaseLevelGenerator();
 
+        void setMessagesOutput( const std::string& fileName = "adikted.log.txt" );
+
+        adiktedpp::Level& getLevel() {
+            return map.level;
+        }
+
         const ParametersMap& getParameters() const override {
             return parameters;
         }
@@ -70,7 +76,7 @@ namespace dkmage {
             LOG_INFO() << "storing bmp in: " << filePath;
             map.level.setRescale( 3 );
             if ( map.level.generateBmp( filePath ) == false ) {
-                messages.readRecent();
+                messages.readRecentErr();
             }
         }
 
