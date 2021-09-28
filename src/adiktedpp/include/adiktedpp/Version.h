@@ -18,7 +18,7 @@ namespace adiktedpp {
     /**
      * Version number should be increased whenever calls to random number generator are changed.
      */
-    static const std::string VERSION_FULL_STRING = "1.5.2";
+    static const std::string VERSION_FULL_STRING = "1.5.3";
 
 }
 
