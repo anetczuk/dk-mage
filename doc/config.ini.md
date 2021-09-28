@@ -63,6 +63,11 @@ levels_path =
 # type = random
 
 
+## Number of failure attempts to perform before exit
+## Type: VALUE of unsigned integer
+fail_attempts = 7
+
+
 ## Limit of action points on map allowed by game.
 ## Type: VALUE of unsigned integer
 # action_points_limit = 31
