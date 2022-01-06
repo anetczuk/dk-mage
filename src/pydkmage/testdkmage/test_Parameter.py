@@ -33,6 +33,13 @@ class ParametersMapTest(unittest.TestCase):
         value = paramsMap.getSizeT( entry, 111 )
         self.assertEqual( value, 111 )
 
+    def test_ParametersMap_getString_rand(self):
+        paramsMap = parameter.ParametersMap()
+        paramsMap.add( "param", "aaa,bbb,ccc,ddd" );
+        
+        value = paramsMap.getString( "param", "abc" )
+        self.assertEqual( value, "bbb" )
+
 
 if __name__ == '__main__':
     unittest.main()
