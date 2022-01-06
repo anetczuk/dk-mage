@@ -7,7 +7,11 @@
 
 #include "utils/Log.h"
 
+/// turn off warning triggered from external library
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
 #include "inih/INIReader.h"
+#pragma GCC diagnostic pop
 
 #include <vector>
 

@@ -26,11 +26,13 @@ namespace utils {
         Point(): x(0), y(0) {
         }
 
-        Point( const Point& point ): x(point.x), y(point.y) {
-        }
+//        Point( const Point& point ): x(point.x), y(point.y) {
+//        }
 
         Point( const int ax, const int ay ): x(ax), y(ay) {
         }
+
+//        Point& operator=( const utils::Point& /*point*/ ) = default;
 
         bool operator==( const Point& data ) const {
             return ( x == data.x && y == data.y );
@@ -153,8 +155,8 @@ namespace utils {
         Rect(): min(0,0), max(-1,-1) {
         }
 
-        Rect( const Rect& rect ): min(rect.min), max(rect.max) {
-        }
+//        R
+
 
         Rect( const std::size_t aWidth, const std::size_t aHeight ): min(), max(aWidth - 1, aHeight - 1) {
         }
@@ -169,6 +171,8 @@ namespace utils {
 
         Rect( const int minX, const int minY, const int maxX, const int maxY ): min(minX, minY), max(maxX, maxY) {
         }
+
+//        Rect& operator=( const utils::Rect& /*rect*/ ) = default;
 
         bool valid() const {
             if ( width() < 1 ) {
